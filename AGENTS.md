@@ -42,7 +42,11 @@ src/                           # App source (to be scaffolded)
 - TypeScript strict mode (`tsconfig.json: strict: true`); no `any` outside generated DTO shims
 - React 19 functional components only; no class components
 - Redux Toolkit slices + RTK Query for all server state (no ad-hoc `fetch`)
-- TailwindCSS utility-first; HeadlessUI for unstyled interactive primitives
+- **Styling rules**:
+  - TailwindCSS for layout / spacing / responsive utilities only — not utility-first across the board. Component-specific styles (colors, complex hover states, animations, glass effects, brand-specific looks) live in `.css` files, colocated per-component or per-feature.
+  - HeadlessUI for unstyled interactive primitives.
+  - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
+  - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
 - Prettier: 2-space indent, single quotes, 100-char width, trailing commas
 - ESLint: `@typescript-eslint`, `react-hooks`, `jsx-a11y` rules enabled
 - Run `pnpm lint --fix` before committing
