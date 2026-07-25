@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, initial-scale=1.0">
+  <title>Wireframe B — /site/kitchen (KDS Order Queue)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; background: #050810; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    /* Spec §6.5 KDS colors */
+    :root {
+      --kds-ontrack:    #10B981;
+      --kds-approaching:#EAB308;
+      --kds-overdue:    #EF4444;
+      --kds-bg:         #0B1220;
+      --kds-card:       #131C2E;
+      --kds-card-edge:  #1F2B40;
+    }
+    .canvas {
+      background:
+        radial-gradient(circle at top right, rgba(16,185,129,0.04), transparent 40%),
+        var(--kds-bg);
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pin {
+      position: absolute;
+      width: 28px; height: 28px;
+      background: #f59e0b;
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.5), 0 0 0 3px #0B1220;
+      cursor: pointer;
+      z-index: 50;
+      transform: translate(-50%, -50%);
+    }
+    .pin:hover { transform: translate(-50%, -50%) scale(1.15); transition: transform .15s; }
+    .ticket {
+      background: var(--kds-card);
+      border: 2px solid var(--kds-card-edge);
+      transition: transform .15s, border-color .15s;
+    }
+    .ticket:hover { transform: translateY(-2px); border-color: #334155; }
+    .flash-new {
+      animation: glow-pulse 1.5s ease-out 3;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+      50% { box-shadow: 0 0 0 6px rgba(59,130,246,0.4); border-color: rgba(59,130,246,0.7); }
+    }
+    .bump-btn {
+      transition: all .12s;
+    }
+    .bump-btn:hover { background: #10B981; color: #04130C; }
+    .bump-btn:active { transform: scale(0.97); }
+    .station-pill.active { background: #0EA5E9; color: #052133; border-color: #0EA5E9; }
+  </style>
+</head>
+<body class="text-zinc-100 min-h-screen">
+  <!-- Header strip -->
+  <div class="bg-amber-500 text-amber-950 px-6 py-2 flex items-center justify-between text-xs font-bold">
+    <div class="flex items-center gap-3">
+      <span class="mono opacity-80 font-medium">docs/wireframes/wireframe-kitchen-order-queue.html</span>
+      <span class="px-2 py-0.5 bg-amber-700 text-amber-100 rounded">PHASE 1</span>
+      <span class="px-2 py-0.5 bg-amber-700 text-amber-100 rounded">WIREFRAME B</span>
+      <span class="px-2 py-0.5 bg-amber-700 text-amber-100 rounded">LO-FI · DARK</span>
+    </div>
+    <div class="mono opacity-80 font-medium">OrderlyWeb · KDS viewport: 1440×900+ (touch)</div>
+  </div>
+
+  <!-- Title -->
+  <div class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+    <div class="flex items-baseline justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-white">Kitchen Display — Wireframe B</h1>
+        <p class="text-zinc-400 text-sm mt-1">
+          Route <span class="mono text-xs bg-zinc-800 px-1.5 py-0.5 rounded">/site/kitchen</span>
+          · Audience: KitchenManager, KitchenStaff
+          · Source: <span class="mono text-xs">research/competitive-analysis-restaurant-crm.md §5.2</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 bg-zinc-800 text-zinc-300 rounded">v0.1</span>
+        <span class="px-2 py-1 bg-zinc-800 text-zinc-300 rounded">Spec §6.5 KDS palette</span>
+        <span class="px-2 py-1 bg-zinc-800 text-zinc-300 rounded">7 annotation pins</span>
+        <span class="px-2 py-1 bg-emerald-900/40 text-emerald-300 rounded border border-emerald-700">Dark default</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE WIREFRAME -->
+  <div class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="canvas">
+      <!-- ============= TOP BAR (SLIM, KDS) ============= -->
+      <header class="px-5 py-3 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/40">
+        <!-- Left: logo + restaurant + connection status -->
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-zinc-100 rounded-md flex items-center justify-center text-zinc-900 font-bold text-sm">O</div>
+            <span class="font-semibold text-sm">Orderly</span>
+            <span class="text-[10px] text-zinc-500 ml-1 uppercase tracking-widest">/ KDS</span>
+          </div>
+          <span class="h-6 w-px bg-zinc-700"></span>
+          <button class="flex items-center gap-2 px-3 py-1.5 bg-zinc-800/80 border border-zinc-700 rounded-lg text-sm">
+            <svg class="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+            <span class="font-medium">La Casa Roma — Main Kitchen</span>
+            <svg class="w-3.5 h-3.5 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <!-- Live status: always visible, no animation that distracts [PIN 1] -->
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-950 border border-emerald-800 rounded-lg text-sm">
+            <span class="relative flex items-center justify-center">
+              <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
+              <span class="absolute w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping opacity-60"></span>
+            </span>
+            <span class="font-semibold text-emerald-300">LIVE</span>
+            <span class="text-emerald-500/70 text-xs">12 ms · /hubs/orders</span>
+          </div>
+        </div>
+        <!-- Right: zone indicator, expand, settings -->
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-zinc-500 uppercase tracking-widest">STATIONS</span>
+          <!-- Hamburger / sidebar (collapsed by default) -->
+          <button class="w-9 h-9 flex items-center justify-center hover:bg-zinc-800 rounded-lg transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <button class="w-9 h-9 flex items-center justify-center hover:bg-zinc-800 rounded-lg transition" title="Fullscreen">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M3 17v2a2 2 0 0 0 2 2h2M21 7V5a2 2 0 0 0-2-2h-2M21 17v2a2 2 0 0 1-2 2h-2"/></svg>
+          </button>
+          <button class="w-9 h-9 flex items-center justify-center hover:bg-zinc-800 rounded-lg transition" title="KDS Settings">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.36.6.92 1.06 1.6 1.27H21a2 2 0 0 1 0 4h-.09c-.68.21-1.24.67-1.6 1.27Z"/></svg>
+          </button>
+          <span class="h-6 w-px bg-zinc-700 mx-1"></span>
+          <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-medium">CR</div>
+        </div>
+        <span class="pin" style="left: 38%; top: 32px;">1</span>
+      </header>
+
+      <!-- ============= STATION FILTER STRIP ============= -->
+      <div class="px-5 py-3 border-b border-zinc-800 flex items-center gap-3 flex-wrap bg-zinc-900/20 relative">
+        <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mr-1">View</span>
+        <button class="station-pill active px-3 py-1.5 text-xs font-semibold border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">All · 8</button>
+        <button class="station-pill px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">Hot line · 3</button>
+        <button class="station-pill px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">Cold line · 2</button>
+        <button class="station-pill px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">Grill · 2</button>
+        <button class="station-pill px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">Bar · 1</button>
+        <button class="station-pill px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-full bg-zinc-800 text-zinc-300">Expo · 0</button>
+
+        <div class="flex-1"></div>
+
+        <!-- Status legend / time thresholds -->
+        <div class="flex items-center gap-3 text-[10px] text-zinc-400 uppercase tracking-wider">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm" style="background: var(--kds-ontrack);"></span>On track · &lt;80%</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm" style="background: var(--kds-approaching);"></span>Approaching · 80–100%</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm" style="background: var(--kds-overdue);"></span>Overdue · &gt;100%</span>
+        </div>
+
+        <!-- Toggle: compact/expanded view (manager mode) -->
+        <button class="px-3 py-1.5 text-xs font-medium border border-zinc-700 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"/></svg>
+          Manager view
+        </button>
+
+        <span class="pin" style="left: 60%; top: 25px;">7</span>
+      </div>
+
+      <!-- ============= TICKET GRID ============= -->
+      <main class="p-5">
+        <div class="grid grid-cols-4 gap-4">
+          <!-- ===== TICKET #1042 (NEW, Dine-in, T-7) — on track ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Dine-in</span>
+              <span class="text-[10px] text-zinc-500">T-7</span>
+            </div>
+            <!-- TIME INDICATOR [PIN 2] -->
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(16,185,129,0.12); border-color: var(--kds-ontrack);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-ontrack);">4:18</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 6 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1042</div>
+                <div class="text-[10px] text-emerald-400/80 font-semibold mt-1">74%</div>
+              </div>
+            </div>
+            <!-- ITEMS -->
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Margherita Pizza</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Caesar Salad <span class="text-zinc-500 text-xs font-normal">· no anchovy</span></span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">2×</span>
+                <span>Tiramisu</span>
+              </div>
+            </div>
+            <!-- META -->
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+              <span>Server: Carlos</span><span>·</span><span>Seat 4</span>
+            </div>
+            <!-- BUMP [PIN 3] -->
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-ontrack); color: var(--kds-ontrack); background: rgba(16,185,129,0.08);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+            <span class="pin" style="left: 130px; top: 90px;">2</span>
+            <span class="pin" style="left: 50%; top: 92%;">3</span>
+          </div>
+
+          <!-- ===== TICKET #1043 (NEW, Takeout) — JUST ARRIVED, flash-new ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col flash-new" style="border-color: rgba(59,130,246,0.6);">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-300">Takeout</span>
+              <span class="text-[10px] text-blue-300 font-bold uppercase tracking-widest flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span> New
+              </span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(59,130,246,0.18); border-color: #3B82F6;">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight text-blue-300">0:08</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 8 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1043</div>
+                <div class="text-[10px] text-blue-400 font-semibold mt-1">2%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">2×</span>
+                <span>Veggie Pizza</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Cola <span class="text-zinc-500 text-xs font-normal">· no ice</span></span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest">
+              <span>Pickup: 19:25</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 border-blue-500 text-blue-300 font-bold text-base flex items-center justify-center gap-2" style="background: rgba(59,130,246,0.10);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1044 (Dine-in, T-2) — approaching ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Dine-in</span>
+              <span class="text-[10px] text-zinc-500">T-2</span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(234,179,8,0.15); border-color: var(--kds-approaching);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-approaching);">7:12</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 8 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1044</div>
+                <div class="text-[10px] font-semibold mt-1" style="color: var(--kds-approaching);">90%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Pasta Pomodoro</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Minestrone Soup</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+              <span>Server: Ana</span><span>·</span><span>Seat 1</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-approaching); color: var(--kds-approaching); background: rgba(234,179,8,0.08);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1045 (OVERDUE, dine-in) ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col" style="border-color: rgba(239,68,68,0.6);">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Dine-in</span>
+              <span class="text-[10px] text-zinc-500">T-5</span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(239,68,68,0.16); border-color: var(--kds-overdue);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-overdue);">12:48</div>
+                <div class="text-[10px] text-red-300/80 uppercase tracking-wider mt-0.5 font-semibold">OVERDUE · 9 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1045</div>
+                <div class="text-[10px] font-bold mt-1" style="color: var(--kds-overdue);">142%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Ribeye Steak <span class="text-zinc-500 text-xs font-normal">· medium-rare</span></span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Truffle Risotto</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Gnocchi <span class="text-zinc-500 text-xs font-normal">· gluten-free</span></span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+              <span>Server: Pedro</span><span>·</span><span>VIP guest</span>
+            </div>
+            <div class="mt-2 flex items-center gap-1 text-[10px] text-red-400 font-semibold uppercase tracking-widest">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+              Expediter please check
+            </div>
+            <button class="bump-btn mt-3 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-overdue); color: var(--kds-overdue); background: rgba(239,68,68,0.12);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1046 (NEW row 2 — Delivery) ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Delivery</span>
+              <span class="text-[10px] text-zinc-500">ETA 19:55</span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(16,185,129,0.12); border-color: var(--kds-ontrack);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-ontrack);">3:02</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 12 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1046</div>
+                <div class="text-[10px] text-emerald-400/80 font-semibold mt-1">25%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">2×</span>
+                <span>Lasagna Bolognese</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Garlic Bread</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Sparkling Water</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest">
+              <span>Driver: Maria</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-ontrack); color: var(--kds-ontrack); background: rgba(16,185,129,0.08);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1047 (approaching) ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Dine-in</span>
+              <span class="text-[10px] text-zinc-500">T-11</span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(234,179,8,0.15); border-color: var(--kds-approaching);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-approaching);">6:48</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 8 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1047</div>
+                <div class="text-[10px] font-semibold mt-1" style="color: var(--kds-approaching);">86%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">2×</span>
+                <span>Pesto Pasta</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Bruschetta <span class="text-zinc-500 text-xs font-normal">× 4 pcs</span></span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+              <span>Server: Lucia</span><span>·</span><span>Seat 3</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-approaching); color: var(--kds-approaching); background: rgba(234,179,8,0.08);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1048 (Ready, going out — on track) ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Takeout</span>
+              <span class="text-[10px] text-zinc-500">Caller: Anton</span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(16,185,129,0.12); border-color: var(--kds-ontrack);">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight" style="color: var(--kds-ontrack);">5:38</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 8 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1048</div>
+                <div class="text-[10px] text-emerald-400/80 font-semibold mt-1">70%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Carbonara</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>House Salad</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest">
+              <span>Pickup: 19:38</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 font-bold text-base flex items-center justify-center gap-2" style="border-color: var(--kds-ontrack); color: var(--kds-ontrack); background: rgba(16,185,129,0.08);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+
+          <!-- ===== TICKET #1049 (newest — flash) ===== -->
+          <div class="ticket rounded-2xl p-4 flex flex-col flash-new">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Dine-in</span>
+              <span class="text-[10px] text-blue-300 font-bold uppercase tracking-widest flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span> New
+              </span>
+            </div>
+            <div class="flex items-center justify-between mb-3 -mx-4 -mt-4 px-4 py-3 rounded-t-2xl border-b-2" style="background: rgba(59,130,246,0.18); border-color: #3B82F6;">
+              <div>
+                <div class="font-mono text-3xl font-bold tracking-tight text-blue-300">0:02</div>
+                <div class="text-[10px] text-zinc-400 uppercase tracking-wider mt-0.5">Elapsed · 9 m prep</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest">#1049</div>
+                <div class="text-[10px] text-blue-400 font-semibold mt-1">0.4%</div>
+              </div>
+            </div>
+            <div class="flex-1 space-y-1.5 mt-2 text-base">
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">2×</span>
+                <span>Quattro Formaggi</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Antipasto Misto</span>
+              </div>
+              <div class="flex items-start gap-2 font-semibold">
+                <span class="text-zinc-500 font-mono text-sm mt-1">1×</span>
+                <span>Tiramisu</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-3">
+              <span>Server: Ana</span><span>·</span><span>Seat 2</span>
+            </div>
+            <button class="bump-btn mt-4 w-full h-14 rounded-xl border-2 border-blue-500 text-blue-300 font-bold text-base flex items-center justify-center gap-2" style="background: rgba(59,130,246,0.10);">
+              ✓ BUMP
+              <span class="text-xs font-normal opacity-70 ml-2">or swipe →</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- EMPTY STATE: when nothing in queue -->
+        <div class="mt-4 text-center text-zinc-500 text-xs py-6 opacity-40">
+          <span class="mono">// No more tickets in this view</span>
+        </div>
+
+        <!-- PIN 4 — grid/cards -->
+        <span class="pin" style="left: 32%; top: 130px;">4</span>
+        <!-- PIN 5 — order details -->
+        <span class="pin" style="left: 18%; top: 230px;">5</span>
+        <!-- PIN 6 — bottom status bar / meta -->
+        <span class="pin" style="left: 79%; top: 540px;">6</span>
+      </main>
+
+      <!-- ============= FOOTER META BAR ============= -->
+      <footer class="border-t border-zinc-800 px-5 py-2.5 flex items-center justify-between text-xs text-zinc-500">
+        <div class="flex items-center gap-4">
+          <span class="font-mono text-zinc-400">KDS v0.1</span>
+          <span>·</span>
+          <span>8 tickets in queue</span>
+          <span>·</span>
+          <span>Avg prep time: <span class="font-mono text-emerald-400">6:24</span></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span>Stage: <span class="font-semibold text-zinc-300">Dinner Service</span></span>
+          <span>·</span>
+          <span>Shift: <span class="font-mono text-zinc-300">17:00–23:00</span></span>
+          <span>·</span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" style="background: var(--kds-ontrack);"></span>
+            <span class="text-zinc-300 font-semibold">3</span> on track
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" style="background: var(--kds-approaching);"></span>
+            <span class="text-zinc-300 font-semibold">2</span> approaching
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" style="background: var(--kds-overdue);"></span>
+            <span class="text-zinc-300 font-semibold">1</span> overdue
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            <span class="text-zinc-300 font-semibold">2</span> new
+          </span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ============= DESIGN RATIONALE ============= -->
+    <div class="mt-10 bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-zinc-100">
+      <div class="flex items-baseline justify-between mb-6 flex-wrap gap-3">
+        <h2 class="text-lg font-semibold">Design rationale — numbered annotations</h2>
+        <span class="text-xs text-zinc-500">Cross-ref <span class="mono">research/competitive-analysis-restaurant-crm.md §5.2</span> + <span class="mono">website-spec.md §5.4 &amp; §6.5</span></span>
+      </div>
+      <ol class="space-y-6">
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">1</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Connection status chip — always visible, top-left</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              <span class="mono text-xs">website-spec.md §5.4</span> mandates a connection status indicator. Placed prominently in the top bar because if SignalR drops, the KDS is *useless* (tickets won't arrive). The pulse animation on the green dot is a subtle "I'm alive" signal — no fancy toast pop-ups. Latency readout (12 ms) helps when troubleshooting. Shows the actual hub path (<span class="mono text-xs">/hubs/orders</span>) per
+              <span class="mono text-xs">website-spec.md §7.3</span>.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">2</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Time indicator — top of card, big monospace</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              Implements <span class="mono text-xs">website-spec.md §6.5</span> KDS time-color logic exactly: <span style="color: var(--kds-ontrack);">green &lt;80%</span>,
+              <span style="color: var(--kds-approaching);">yellow 80–100%</span>,
+              <span style="color: var(--kds-overdue);">red &gt;100%</span>. The elapsed time and % are at the top of the card — chefs' eyes scan top-down (pattern from Toast KDS, Fresh KDS, Lightspeed KDS). Monospace 36px keeps width predictable across different elapsed times; jumping widths would make scanning harder.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">3</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">BUMP primary CTA — 56pt tap target</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              Bump is the single most-used KDS action. 14px h-14 button = 56pt tap target (Apple HIG minimum is 44pt; we exceed). Bordered + filled tint so it reads at distance, color tracks the time indicator for at-a-glance scan. Bump signals "ready, send it to expo / runner". The "swipe →" hint is a power-user gesture available in the eventual implementation, but the button is the canonical path.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">4</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Card grid — 4 columns desktop, no scroll inside a card</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              Common KDS pattern across Toast / Square / TouchBistro / Lightspeed / Fresh KDS: tickets live in a CSS grid; chefs scan the whole board, not pages. The grid responds — 5 columns at 1920 px, 4 at 1440 px (this view), 3 at 1024 px, 2 at tablet-portrait. No horizontal scroll, no pagination. Every ticket must fit in one card face without internal scrolling (lifted from TouchBistro KDS best practice).
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">5</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Order type + items body — compact, monospace quantities</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              Top of body shows order type (Dine-in / Takeout / Delivery / Bar) per Square KDS and TouchBistro conventions. Quantities in monospace so 1×, 2×, 3× align cleanly. Modifications ("no anchovy", "medium-rare", "VIP guest") appear as <span class="italic text-zinc-400">smaller, lighter</span> text — they matter but aren't the primary read. Variations / seat numbers in footer line.
+            </p>
+            <p class="text-xs text-zinc-500 mt-1">
+              ↳ Multilingual support deferred — see TouchBistro's KDS as reference when we add it.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">6</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Footer meta bar — shift context, ticket counts by status</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              KitchenManager reads this on every glance: avg prep time + count by status. Shift context (Dinner Service, 17:00–23:00) anchors time-of-day reasoning. Mirrors Toast's "manager log synced with Toast Web" idea but specific to KDS data only.
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-5">
+          <span class="pin shrink-0" style="position: static; transform: none; box-shadow: 0 0 0 3px #18181B;">7</span>
+          <div class="flex-1">
+            <h3 class="font-semibold">Station filter pills + Manager view toggle</h3>
+            <p class="text-sm text-zinc-400 mt-1">
+              Stations (Hot / Cold / Grill / Bar / Expo) map directly to <span class="mono text-xs">website-spec.md §5.4</span> "Routing configurations assign tickets by prep station, menu category, or service type" — TouchBistro KDS pattern. Manager view toggle flips to a denser 6-column layout with re-assign / change-priority controls (answers spec §12 #6: "should KDS also have a non-full-screen mode for managers reviewing from the office?"). Counts on each pill (e.g. "All · 8", "Hot line · 3") borrowed from Square Dashboard filter chips.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ============= KDS-TIME LEGEND ============= -->
+    <div class="mt-8 bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-zinc-100">
+      <h2 class="text-lg font-semibold mb-4">KDS time-color legend — aligned to <span class="mono">website-spec.md §6.5</span></h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border-2" style="border-color: var(--kds-ontrack); background: rgba(16,185,129,0.08);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-4 h-4 rounded" style="background: var(--kds-ontrack);"></span>
+            <span class="font-semibold text-emerald-300">On track</span>
+          </div>
+          <p class="text-xs text-zinc-400"><span class="mono">orderAge &lt; prepTime × 0.8</span></p>
+          <p class="text-xs text-zinc-500 mt-1">Fresh ticket, chef has time. Default calm green.</p>
+        </div>
+        <div class="p-4 rounded-xl border-2" style="border-color: var(--kds-approaching); background: rgba(234,179,8,0.08);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-4 h-4 rounded" style="background: var(--kds-approaching);"></span>
+            <span class="font-semibold text-yellow-300">Approaching deadline</span>
+          </div>
+          <p class="text-xs text-zinc-400"><span class="mono">prepTime × 0.8 ≤ orderAge &lt; prepTime</span></p>
+          <p class="text-xs text-zinc-500 mt-1">Time to focus. Expediter checks status.</p>
+        </div>
+        <div class="p-4 rounded-xl border-2" style="border-color: var(--kds-overdue); background: rgba(239,68,68,0.10);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-4 h-4 rounded" style="background: var(--kds-overdue);"></span>
+            <span class="font-semibold text-red-300">Overdue</span>
+          </div>
+          <p class="text-xs text-zinc-400"><span class="mono">orderAge ≥ prepTime</span></p>
+          <p class="text-xs text-zinc-500 mt-1">Escalate; show alert message to expediter.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-8 text-xs text-zinc-600 text-center">
+      Wireframe B · Lo-fi · Tailwind + Spec §6.5 colors · Cards use CSS Grid · Flash animation on new tickets is CSS-only (no JS) · No BUMP action wired up — wireframe references the pattern, not the SignalR call
+    </div>
+  </div>
+</body>
+</html>

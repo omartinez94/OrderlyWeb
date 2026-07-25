@@ -1,93 +1,22 @@
 erDiagram
-    Users ||--o{ Orders : creates
-    Users ||--o{ Reservations : creates
-    Users ||--o{ OrderModificationLog : modifies
-    Users ||--o{ BulkOrderUploads : uploads
-    Users ||--o{ Baskets : creates
-    
-    Customers ||--o{ Orders : places
 
-    Restaurants ||--o{ Users : employs
-    Restaurants ||--o{ Tables : contains
-    Restaurants ||--o{ MenuCategories : has
-    Restaurants ||--o{ MenuItems : offers
-    Restaurants ||--o{ Ingredients : stocks
-    Restaurants ||--o{ Orders : processes
-    Restaurants ||--o{ Reservations : accepts
-    Restaurants ||--o{ WalkInQueue : manages
-    Restaurants ||--o{ PriceHistory : tracks
-    Restaurants ||--o{ Baskets : "active in"
-    Restaurants ||--o{ Coupons : "issues"
-    
-    Tables ||--o{ Orders : "assigned to"
-    Tables ||--o{ Reservations : "reserved for"
-    Tables ||--o{ MergedTables : "parent of"
-    Tables ||--o{ MergedTables : "child of"
-    Tables ||--o{ WalkInQueue : "seated at"
-    Tables ||--o{ Baskets : "assigned to"
-    
-    MenuCategories ||--o{ MenuSubCategories : contains
-    MenuSubCategories ||--o{ MenuItems : includes
-    
-    MenuItems ||--o{ OrderItems : "ordered as"
-    MenuItems ||--o{ MenuItemVariations : "has variations"
-    MenuItems ||--o{ ComboItems : "combo parent"
-    MenuItems ||--o{ ComboItems : "included in combo"
-    MenuItems ||--o{ MenuItemIngredients : requires
-    MenuItems ||--o{ MenuItemAnalytics : tracked
-    MenuItems ||--o{ PriceHistory : "price changes"
-    MenuItems ||--o{ BasketItems : "in basket"
-    
-    Ingredients ||--o{ MenuItemIngredients : "used in"
-    Ingredients ||--o{ IngredientAlternatives : "original ingredient"
-    Ingredients ||--o{ IngredientAlternatives : "alternative for"
-    
-    Orders ||--o{ OrderItems : contains
-    Orders ||--o{ OrderBills : "split into"
-    Orders ||--o{ OrderModificationLog : "tracked by"
-    Orders ||--o{ CustomerFeedback : "receives feedback"
-    Orders ||--o{ NotificationLog : triggers
-    Orders ||--o{ OrderTimingAnalytics : analyzed
-    Orders ||--o{ OrderSnapshot : "price snapshot"
-    
-    Baskets ||--o{ BasketItems : contains
-    Baskets ||--o{ Users : "belongs to"
-    
-    OrderItems ||--o{ OrderItemPriceAudit : "audit trail"
-    
-    Reservations ||--o{ NotificationLog : triggers
-    
-    CustomerFeedback ||--o{ Orders : "redeems reward in"
-    
-    Customers {
+    Brands {
         uuid Id PK
-        string Email
         string Name
-        string Phone
-        string CreatedBy
-        timestamp CreatedAt
-        string LastModifiedBy
-        timestamp LastModifiedAt
-        boolean IsActive
+        string LogoUrl
+        string WebsiteUrl
+        string ContactEmail
+        string ContactPhone
+        enum CuisineType "Italian,Mexican,Japanese,American,Other"
+        text Description
     }
 
-    Users {
-        uuid Id PK
-        string Email UK
-        string PasswordHash
-        string FirstName
-        string LastName
-        string PhoneNumber
-        enum Role "Admin,Manager,Waiter,KitchenStaff"
-        uuid RestaurantId FK
-        boolean IsActive
-        timestamp CreatedAt
-        timestamp UpdatedAt
-    }
-    
+    %% ----------------------------------------------------------------
+    %% CATALOG — relational entities
+    %% ----------------------------------------------------------------
     Restaurants {
         uuid Id PK
-        uuid BrandId
+        uuid BrandId FK
         string Name
         text Address
         string PhoneNumber
@@ -99,13 +28,19 @@ erDiagram
         boolean AutoConfirmReservations
         boolean AllowAutoSubstitute
         int EstimatedTurnoverMinutes
-        string CreatedBy
-        timestamp CreatedAt
-        string LastModifiedBy
-        timestamp LastModifiedAt
-        boolean IsActive
     }
-    
+
+    Users {
+        uuid Id PK
+        string Email UK
+        string PasswordHash
+        string FirstName
+        string LastName
+        string PhoneNumber
+        enum Role "Admin,Manager,Waiter,KitchenStaff"
+        uuid RestaurantId FK
+    }
+
     Tables {
         uuid Id PK
         uuid RestaurantId FK
@@ -116,11 +51,8 @@ erDiagram
         string Shape
         enum Status "available,occupied,reserved,cleaning,needs_attention"
         uuid CurrentOrderId FK
-        boolean IsActive
-        timestamp CreatedAt
-        timestamp UpdatedAt
     }
-    
+
     MergedTables {
         uuid Id PK
         uuid ParentTableId FK
@@ -129,19 +61,17 @@ erDiagram
         timestamp SplitAt
         boolean IsActive
     }
-    
+
     MenuCategories {
         int Id PK
         uuid RestaurantId FK
         string Name
         text Description
         int DisplayOrder
-        boolean IsActive
         boolean IsDeleted "Soft delete"
-        timestamp CreatedAt
         timestamp DeletedAt
     }
-    
+
     MenuSubCategories {
         int Id PK
         int CategoryId FK
@@ -152,7 +82,7 @@ erDiagram
         boolean IsDeleted "Soft delete"
         timestamp DeletedAt
     }
-    
+
     MenuItems {
         uuid Id PK
         uuid RestaurantId FK
@@ -172,13 +102,10 @@ erDiagram
         timestamp PromoStartDate
         timestamp PromoEndDate
         int DisplayOrder
-        boolean IsActive
         boolean IsDeleted "Soft delete for historical data"
-        timestamp CreatedAt
-        timestamp UpdatedAt
         timestamp DeletedAt
     }
-    
+
     MenuItemVariations {
         int Id PK
         uuid MenuItemId FK
@@ -190,7 +117,7 @@ erDiagram
         boolean IsDeleted "Soft delete"
         timestamp DeletedAt
     }
-    
+
     ComboItems {
         int Id PK
         uuid ComboMenuItemId FK
@@ -198,7 +125,7 @@ erDiagram
         int Quantity
         boolean IsOptional
     }
-    
+
     Ingredients {
         int Id PK
         uuid RestaurantId FK
@@ -207,9 +134,9 @@ erDiagram
         decimal CurrentStock
         decimal MinimumStock
         boolean IsAvailable
-        timestamp LastUpdated
+        timestamp LastModifiedAt "Renamed from LastUpdated for consistency"
     }
-    
+
     MenuItemIngredients {
         int Id PK
         uuid MenuItemId FK
@@ -217,7 +144,7 @@ erDiagram
         decimal QuantityRequired
         boolean IsOptional
     }
-    
+
     IngredientAlternatives {
         int Id PK
         int OriginalIngredientId FK
@@ -226,7 +153,7 @@ erDiagram
         boolean AutoSubstitute
         uuid RestaurantId FK
     }
-    
+
     PriceHistory {
         int Id PK
         uuid RestaurantId FK
@@ -237,136 +164,11 @@ erDiagram
         decimal OldPrice
         decimal NewPrice
         string Reason "Price increase, promotion, etc"
-        uuid ChangedByUserId FK
+        uuid ChangedByUserId
         timestamp EffectiveDate
         timestamp CreatedAt
     }
-    
-    Orders {
-        uuid Id PK
-        uuid RestaurantId FK
-        string OrderNumber UK "R1-20231015-001"
-        enum OrderType "dine-in,takeout,delivery"
-        uuid TableId FK
-        uuid CustomerId FK
-        text DeliveryAddress
-        decimal DeliveryLatitude
-        decimal DeliveryLongitude
-        text DeliveryNotes
-        enum DeliveryStatus "pending,dispatched,delivered"
-        enum Status "ordering,pending,confirmed,preparing,ready,delivered,completed,cancelled,on_hold"
-        decimal Subtotal "SNAPSHOT at order time"
-        decimal TaxAmount "SNAPSHOT calculated"
-        decimal TaxRate "SNAPSHOT of restaurant tax rate"
-        decimal TotalAmount "SNAPSHOT final total"
-        decimal DiscountAmount
-        string DiscountCode "Applied promo/reward code"
-        string Currency "SNAPSHOT of restaurant currency"
-        boolean IsModified
-        boolean RequiresAdminApproval
-        uuid ApprovedByAdminId FK
-        timestamp ApprovedAt
-        int EstimatedPrepTimeMinutes
-        int ActualPrepTimeMinutes
-        uuid CreatedByUserId FK
-        uuid ConfirmedByUserId FK
-        uuid CompletedByUserId FK
-        text Notes
-        string CreatedBy
-        timestamp CreatedAt
-        string LastModifiedBy
-        timestamp LastModifiedAt
-        boolean IsActive
-        timestamp ConfirmedAt
-        timestamp PreparingStartedAt
-        timestamp ReadyAt
-        timestamp DeliveredAt
-        timestamp CompletedAt
-        timestamp CancelledAt
-    }
-    
-    OrderItems {
-        int Id PK
-        uuid OrderId FK
-        uuid MenuItemId FK "NULL if item deleted"
-        string MenuItemName "SNAPSHOT name"
-        text MenuItemDescription "SNAPSHOT description"
-        string MenuItemImageUrl "SNAPSHOT image"
-        int Quantity
-        decimal BasePrice "SNAPSHOT base price"
-        decimal UnitPrice "SNAPSHOT final unit price"
-        decimal TotalPrice "SNAPSHOT total for this item"
-        jsonb SelectedVariations "SNAPSHOT with prices"
-        jsonb Customizations "SNAPSHOT with prices"
-        int SeatNumber "For bill splitting"
-        enum PrepStatus "pending,preparing,ready"
-        timestamp PrepStartedAt
-        timestamp PrepCompletedAt
-        text SpecialInstructions
-        timestamp CreatedAt
-    }
-    
-    OrderSnapshot {
-        int Id PK
-        uuid OrderId FK
-        jsonb FullOrderData "Complete order snapshot JSON"
-        jsonb MenuPricesSnapshot "All menu prices at order time"
-        jsonb TaxConfiguration "Tax rules at order time"
-        jsonb DiscountRules "Discount configuration snapshot"
-        text GeneratedReceiptHtml "Pre-generated receipt"
-        string SnapshotHash "SHA256 for integrity"
-        timestamp CreatedAt
-    }
-    
-    OrderItemPriceAudit {
-        int Id PK
-        int OrderItemId FK
-        uuid MenuItemId
-        decimal MenuBasePrice "From menu at order time"
-        decimal AppliedBasePrice "Actually charged"
-        jsonb VariationsBreakdown "Each variation with price"
-        decimal VariationsPriceTotal
-        jsonb CustomizationsBreakdown "Each customization with price"
-        decimal CustomizationsPriceTotal
-        decimal FinalUnitPrice
-        decimal DiscountApplied
-        string DiscountSource "promo_code, reward, manual"
-        uuid CapturedByUserId FK
-        timestamp CapturedAt
-    }
-    
-    OrderModificationLog {
-        int Id PK
-        uuid OrderId FK
-        uuid ModifiedByUserId FK
-        string PreviousStatus
-        string NewStatus
-        string ModificationType "status_change,item_added,item_removed,price_change,manager_override"
-        jsonb PreviousData "Complete state before change"
-        jsonb NewData "Complete state after change"
-        jsonb PriceImpact "Price differences"
-        boolean RequiresApproval
-        uuid ApprovedByUserId FK
-        timestamp ApprovedAt
-        timestamp CreatedAt
-    }
-    
-    OrderBills {
-        int Id PK
-        uuid OrderId FK
-        int BillNumber UK "1,2,3"
-        enum SplitType "equal,custom"
-        decimal Amount "SNAPSHOT subtotal"
-        decimal TaxAmount "SNAPSHOT tax"
-        decimal TotalAmount "SNAPSHOT total"
-        enum PaymentStatus "pending,paid,void"
-        string PaymentMethod "cash,card,transfer"
-        text PaymentReference
-        timestamp PaidAt
-        text Notes
-        timestamp CreatedAt
-    }
-    
+
     Reservations {
         uuid Id PK
         uuid RestaurantId FK
@@ -380,20 +182,19 @@ erDiagram
         uuid TableId FK
         enum Status "pending,confirmed,seated,completed,cancelled,no_show"
         boolean RequiresApproval
-        uuid ApprovedByUserId FK
+        uuid ApprovedByUserId
         timestamp ApprovedAt
         text SpecialRequests
         text Notes
         boolean ReminderSent
         timestamp ReminderSentAt
-        uuid CreatedByUserId FK
-        timestamp CreatedAt
+        uuid CreatedByUserId
         timestamp ConfirmedAt
         timestamp SeatedAt
         timestamp CompletedAt
         timestamp CancelledAt
     }
-    
+
     WalkInQueue {
         int Id PK
         uuid RestaurantId FK
@@ -405,10 +206,8 @@ erDiagram
         timestamp NotifiedAt
         timestamp SeatedAt
         uuid TableId FK
-        timestamp CreatedAt
-        timestamp UpdatedAt
     }
-    
+
     CustomerFeedback {
         int Id PK
         uuid OrderId FK
@@ -427,25 +226,7 @@ erDiagram
         uuid RedeemedInOrderId FK
         timestamp SubmittedAt
     }
-    
-    OrderTimingAnalytics {
-        int Id PK
-        uuid OrderId FK
-        uuid RestaurantId FK
-        int OrderingToPendingSeconds
-        int PendingToConfirmedSeconds
-        int ConfirmedToPreparingSeconds
-        int PreparingToReadySeconds
-        int ReadyToDeliveredSeconds
-        int TotalTimeSeconds
-        int EstimatedPrepMinutes
-        int ActualPrepMinutes
-        int PrepTimeDifferenceMinutes
-        uuid WaiterUserId FK
-        int KitchenStaffCount
-        timestamp RecordedAt
-    }
-    
+
     MenuItemAnalytics {
         int Id PK
         uuid MenuItemId FK
@@ -461,9 +242,229 @@ erDiagram
         int EveningOrders "6PM-12AM"
         int NightOrders "12AM-6AM"
     }
-    
-    NotificationLog {
+
+    OrderTimingAnalytics {
         int Id PK
+        uuid OrderId FK
+        uuid RestaurantId FK
+        int OrderingToPendingSeconds
+        int PendingToConfirmedSeconds
+        int ConfirmedToPreparingSeconds
+        int PreparingToReadySeconds
+        int ReadyToDeliveredSeconds
+        int TotalTimeSeconds
+        int EstimatedPrepMinutes
+        int ActualPrepMinutes
+        int PrepTimeDifferenceMinutes
+        uuid WaiterUserId
+        int KitchenStaffCount
+        timestamp RecordedAt
+    }
+
+    BulkOrderUploads {
+        int Id PK
+        uuid RestaurantId FK
+        uuid UploadedByUserId
+        string FileName
+        int TotalRows
+        int SuccessfulRows
+        int FailedRows
+        enum Status "pending,processing,completed,failed"
+        jsonb ErrorLog
+        uuid ApprovedByAdminId
+        timestamp ApprovedAt
+        timestamp CompletedAt
+        %% Cleanup (Phase 4, 2026-07-11): base flipped to AuditableEntity<int>.
+        %% Audit columns from base: CreatedBy (string), CreatedAt (Instant),
+        %% LastModifiedBy (string), LastModifiedAt (Instant?).
+        timestamp CreatedAt
+        string CreatedBy
+        timestamp LastModifiedAt
+        string LastModifiedBy
+    }
+
+    %% NOTE: `Coupons` is owned by the Discount service (Discount.Grpc/Models/Coupon.cs)
+    %% and is not a Catalog relational entity. Coupon was never implemented in Catalog;
+    %% the relational block previously shown here represented mermaid drift only.
+    %% Per CATALOG_SERVICE_PLAN.md §7.6.2 (Phase 6.2), the Coupon entity moves to
+    %% Discount; the `Restaurants ||--o{ Coupons : "issues"` relationship below is
+    %% removed (see that row for the migration note). The relational `Coupons`
+    %% entity block was deleted on 2026-07-13 (Phase 6.2 reconciliation) — the
+    %% diagram no longer renders a Catalog-owned Coupon table.
+
+    %% Phase 7 (Discount plan §7 hardening): the Discount-owned relational tables
+    %% (Coupons, RewardCodes, DiscountRules, processed_inbound_events, outbox_messages,
+    %% outbox_messages_dead) re-render under a Discount — relational tables (SQLite)
+    %% divider comment. Stays in the same file because the project uses a single
+    %% `erDiagram` block + comment-divided sections (companion-doc line 4).
+    %% ----------------------------------------------------------------
+    %% DISCOUNT — relational tables (SQLite)
+    %% ----------------------------------------------------------------
+    %% SQLite file at discountdb (per docker-compose.override.yml); single-replica
+    %% deployment; column store types are SQLite-flavored (TEXT for jsonb-shaped
+    %% payloads; INTEGER for enum mappings; long/ticks for `Instant` via the
+    %% InstantToLongConverter at DiscountContext.cs:175).
+
+    Coupons {
+        %% Discount-owned (per Phase 6.2 reconciliation, CATALOG_SERVICE_PLAN §7.6.2).
+        %% Historical note: previously rendered in this section under Catalog ownership,
+        %% deleted on 2026-07-13 (Phase 6.2), re-emitted here under Discount ownership
+        %% on 2026-07-16 (Phase 7 hardening).
+        uuid Id PK
+        uuid RestaurantId "FK semantics in EF — flat column, no navigation per audit-FK convention"
+        string Code "UK per tenant (RestaurantId, Code); varchar(64) cap per §0.3.3"
+        string Description
+        decimal Amount "Percentage (0, 100] or fixed currency per DiscountType"
+        int RedeemAmount "Incremented by RedeemDiscount atomic conditional UPDATE"
+        int MaxRedeemAmount "NULL = uncapped"
+        timestamp ExpirationDate "Instant?; NULL = no expiry"
+        timestamp DeletedAt "Instant?; soft-delete column set by DiscountExpirySweepService"
+        string DeletedBy "Audit column (actor string from DiscountActors)"
+        %% Audit columns from AuditableEntity<int>:
+        %% CreatedBy (string), CreatedAt (Instant),
+        %% LastModifiedBy (string), LastModifiedAt (Instant?).
+        string CreatedBy
+        timestamp CreatedAt
+        string LastModifiedBy
+        timestamp LastModifiedAt
+        boolean IsActive "Default true; admin toggle"
+    }
+
+    DiscountRules {
+        %% Phase 2 (2026-07-14) — eligibility predicate attached to a Coupon.
+        int Id PK
+        uuid RestaurantId "Tenant scope; flat column"
+        int CouponId "FK -> Coupons.Id, ON DELETE RESTRICT (rule FK enforces 'delete rule before coupon')"
+        enum RuleType "MinOrderAmount | RequiredMenuItems | TimeWindow | Bogo"
+        string RuleDataJson "Kind-discriminated JSON, parsed at handler boundary"
+        boolean IsActive "Default true; admin toggle (new override; shadows base IsActive)"
+        timestamp DeletedAt "Instant?; soft-delete"
+        string DeletedBy
+        %% Audit columns (AuditableEntity<int>):
+        string CreatedBy
+        timestamp CreatedAt
+        string LastModifiedBy
+        timestamp LastModifiedAt
+    }
+
+    ProcessedInboundevents {
+        %% Phase 2 (2026-07-14) — consumer-side idempotency log. Composite PK
+        %% on (EventId, ConsumerType) detects redelivery via a unique-key violation
+        %% that the consumer swallows (`InboundEventDedup.TryRecordAsync`).
+        %% Used by MenuItemChangedConsumer + RestaurantConfigurationChangedConsumer.
+        uuid EventId PK
+        string ConsumerType PK "PK with EventId"
+        timestamp ConsumedAt "UTC timestamp of consumption"
+    }
+
+    RewardCodes {
+        %% Phase 3 (2026-07-15) — customer-feedback-generated reward.
+        int Id PK
+        uuid RestaurantId "Tenant scope; flat column"
+        string Code "UK per tenant (RestaurantId, Code); varchar(120) cap per §0.3.3; C# required modifier per v1.1 M7"
+        enum Kind "Percentage | FixedAmount | FreeItem | Points"
+        decimal Value "Overloaded across kinds — see RewardCode.cs:55 XAML doc"
+        string Description "FreeItem rewards carry 'free-item:{menuItemId}' target id"
+        timestamp ExpirationDate "Instant?"
+        int RedeemAmount "Incremented by RedeemRewardCode atomic conditional UPDATE"
+        int MaxRedeemAmount "NULL = uncapped"
+        uuid RedeemedInOrderId "Set by the conditional UPDATE alongside RedeemedAt"
+        timestamp RedeemedAt
+        timestamp DeletedAt "Instant?; soft-delete column set by DiscountExpirySweepService"
+        string DeletedBy
+        %% Audit columns (AuditableEntity<int>):
+        string CreatedBy
+        timestamp CreatedAt
+        string LastModifiedBy
+        timestamp LastModifiedAt
+        boolean IsActive "Default true; admin toggle"
+    }
+
+    OutboxMessages {
+        %% Phase 1 + 1B.a (SQLite-flavored outbox; BuildingBlocks.Messaging.Outbox).
+        %% The Phase 6.7 ClaimId column enables the per-instance atomic-claim
+        %% pattern (single-replica deployment assumption carries forward).
+        uuid Id PK
+        timestamp OccurredOn "When the publisher staged the message"
+        string Type "Assembly-qualified CLR type name; discriminator for the consumer"
+        text Payload "JSON-serialised event body"
+        timestamp DispatchedAt "NULL = not yet dispatched"
+        %% Phase 6.7: ClaimId introduced for the SQLite CTE claim SQL.
+        uuid ClaimId "NULL = unclaimed; set by the dispatcher's atomic CTE UPDATE"
+        %% Audit columns (AuditableEntity<int>? actually OutboxMessage
+        %% implements IOutboxDbContext-level entity, not AuditableEntity — see
+        %% BuildingBlocks/Messaging/Outbox/OutboxMessage.cs:1-30).
+    }
+
+    OutboxDeadMessages {
+        %% Dead-letter table — rows here mean the dispatcher's poison-message
+        %% threshold tripped. `/ready` health probe reads COUNT(*) against
+        %% DiscountOptions.OutboxDeadLetterThreshold (default 5).
+        int Id PK
+        string OriginalType
+        text OriginalPayload
+        string FailureReason
+        timestamp FailedAt
+    }
+
+    %% ----------------------------------------------------------------
+    %% CATALOG — Marten documents (NOT relational tables)
+    %% ----------------------------------------------------------------
+    OrderSnapshot {
+        %% MARTEN DOCUMENT — stored in mt_doc_order_snapshot
+        %% Cleanup (2026-07-11): code matches storage — Guid Id, no relational base.
+        uuid Id PK "Marten synthetic"
+        uuid OrderId FK
+        jsonb FullOrderData "Complete order snapshot JSON"
+        jsonb MenuPricesSnapshot "All menu prices at order time"
+        jsonb TaxConfiguration "Tax rules at order time"
+        jsonb DiscountRules "Discount configuration snapshot"
+        text GeneratedReceiptHtml "Pre-generated receipt"
+        string SnapshotHash "SHA256 for integrity"
+        timestamp CreatedAt
+    }
+
+    OrderModificationLog {
+        %% MARTEN DOCUMENT — stored in mt_doc_order_modification_log
+        %% Cleanup (2026-07-11): code matches storage — Guid Id, no relational base.
+        uuid Id PK "Marten synthetic"
+        uuid OrderId FK
+        uuid ModifiedByUserId
+        string PreviousStatus
+        string NewStatus
+        string ModificationType "status_change,item_added,item_removed,price_change,manager_override"
+        jsonb PreviousData "Complete state before change"
+        jsonb NewData "Complete state after change"
+        jsonb PriceImpact "Price differences"
+        boolean RequiresApproval
+        uuid ApprovedByUserId
+        timestamp ApprovedAt
+        timestamp CreatedAt
+    }
+
+    OrderItemPriceAudit {
+        %% MARTEN DOCUMENT — stored in mt_doc_order_item_price_audit
+        %% Cleanup (2026-07-11): code matches storage — Guid Id, no relational base.
+        uuid Id PK "Marten synthetic"
+        int OrderItemId FK
+        uuid MenuItemId
+        decimal MenuBasePrice "From menu at order time"
+        decimal AppliedBasePrice "Actually charged"
+        jsonb VariationsBreakdown "Each variation with price"
+        decimal VariationsPriceTotal
+        jsonb CustomizationsBreakdown "Each customization with price"
+        decimal CustomizationsPriceTotal
+        decimal FinalUnitPrice
+        decimal DiscountApplied
+        string DiscountSource "promo_code, reward, manual"
+        uuid CapturedByUserId
+        timestamp CapturedAt
+    }
+
+    NotificationLog {
+        %% MARTEN DOCUMENT — stored in mt_doc_notification_log
+        %% Code declares Entity<int> but Marten assigns synthetic Guid Ids.
+        uuid Id PK "Marten synthetic"
         enum RecipientType "customer,staff,manager"
         string RecipientIdentifier "phone/email"
         enum Channel "email,whatsapp,sms"
@@ -476,59 +477,259 @@ erDiagram
         text FailureReason
         timestamp CreatedAt
     }
-    
-    BulkOrderUploads {
-        int Id PK
-        uuid RestaurantId FK
-        uuid UploadedByUserId FK
-        string FileName
-        int TotalRows
-        int SuccessfulRows
-        int FailedRows
-        enum Status "pending,processing,completed,failed"
-        jsonb ErrorLog
-        uuid ApprovedByAdminId FK
-        timestamp ApprovedAt
-        timestamp CreatedAt
-        timestamp CompletedAt
-    }
-    
-    Baskets {
-        uuid UserId PK
-        uuid RestaurantId FK
-        jsonb AppliedDiscounts
-        decimal Subtotal "Calculated from items"
-        timestamp CreatedAt
-        timestamp ExpiresAt "Auto-expire after 2 hours"
-    }
-    
-    BasketItems {
+
+    %% ----------------------------------------------------------------
+    %% ORDERING — relational entities (DDD aggregates)
+    %% ----------------------------------------------------------------
+    Customers {
         uuid Id PK
-        uuid BasketId FK
-        int MenuItemId FK
+        string Email
+        string Name
+        string Phone
+        %% Address is an owned type (EF Core OwnsOne) — Street, City, State,
+        %% ZipCode, Country all Required.
+        text Address "Owned: Street, City, State, ZipCode, Country"
+    }
+
+    Orders {
+        uuid Id PK
+        uuid RestaurantId FK
+        string OrderNumber UK "R1-20231015-001 — stored as OrderNumber value object"
+        enum OrderType "dine-in,takeout,delivery"
+        uuid TableId FK
+        uuid CustomerId FK
+        %% BillingAddress & DeliveryAddress are owned types (ComplexProperty).
+        text BillingAddress "Owned: Street, City, State, ZipCode, Country"
+        text DeliveryAddress "Owned: Street, City, State, ZipCode, Country"
+        decimal DeliveryLatitude
+        decimal DeliveryLongitude
+        text DeliveryNotes
+        enum DeliveryStatus "pending,dispatched,delivered"
+        enum Status "ordering,pending,confirmed,preparing,ready,delivered,completed,cancelled,on_hold"
+        decimal Subtotal "SNAPSHOT at order time"
+        decimal TaxAmount "SNAPSHOT calculated"
+        decimal TaxRate "SNAPSHOT of restaurant tax rate"
+        decimal TotalAmount "SNAPSHOT final total"
+        decimal DiscountAmount
+        string DiscountCode "Applied promo/reward code"
+        string Currency "SNAPSHOT of restaurant currency"
+        %% Payment is an owned type (ComplexProperty) — CardName, CardNumber,
+        %% Expiration, Ccv, PaymentMethod.
+        text Payment "Owned: CardName, CardNumber, Expiration, Ccv, PaymentMethod"
+        boolean IsModified
+        boolean RequiresAdminApproval
+        uuid ApprovedByAdminId
+        %% ConfirmedAt placed between ApprovedByAdminId and ApprovedAt per
+        %% ORDERING_CLEANUP_BACKLOG.md Phase A spec. Lifecycle is strictly
+        %% after ApprovedAt (Pending → Approved stamps ApprovedAt; the next
+        %% Pending → Confirmed stamps ConfirmedAt) but the spec mirrors the
+        %% existing snapshot-column cluster as the single visual group.
+        timestamp ConfirmedAt
+        timestamp ApprovedAt
+        %% Lifecycle snapshot cluster — every transition timestamps on the
+        %% aggregate (Pending → Confirmed → Preparing → Ready → Delivered →
+        %% Completed). All nullable; null when the transition has not fired.
+        %% See db_model_drift_report.md §B + ORDERING_CLEANUP_BACKLOG.md Phase A.
+        timestamp PreparingStartedAt
+        timestamp ReadyAt
+        timestamp DeliveredAt
+        timestamp CompletedAt
+        timestamp CancelledAt
+        uuid CancelledByUserId
+        string CancellationReason "Reason text"
+        int EstimatedPrepTimeMinutes
+        int ActualPrepTimeMinutes
+        uuid CreatedByUserId
+        uuid ConfirmedByUserId
+        uuid CompletedByUserId
+        text Notes
+        %% Order does NOT inherit audit fields from Aggregate<OrderId> —
+        %% the `Entity<T>` base (`db_relational_model.md` line 92) is used
+        %% by OrderItem, OrderBill, MenuItem (Ordering), NOT Order. The
+        %% only audit-style column on Order is `CreatedByUserId`, which is
+        %% explicitly declared on the aggregate and rendered as the uuid
+        %% column above. See ORDERING_CLEANUP_BACKLOG.md Phase B + the §C
+        %% "Audit-fields comment drift" finding in db_model_drift_report.md.
+        boolean IsActive "Explicit — Aggregate<OrderId> base lacks IsActive"
+    }
+
+    OrderItems {
+        uuid Id PK
+        uuid OrderId FK
+        uuid MenuItemId FK "NULL if item deleted"
         string MenuItemName "SNAPSHOT name"
+        text MenuItemDescription "SNAPSHOT description"
         string MenuItemImageUrl "SNAPSHOT image"
         int Quantity
         decimal BasePrice "SNAPSHOT base price"
         decimal UnitPrice "SNAPSHOT final unit price"
-        decimal TotalPrice "SNAPSHOT total"
-        jsonb Variations "SNAPSHOT with prices"
+        decimal TotalPrice "SNAPSHOT total for this item"
+        jsonb SelectedVariations "SNAPSHOT with prices"
         jsonb Customizations "SNAPSHOT with prices"
+        int SeatNumber "For bill splitting"
+        enum PrepStatus "pending,preparing,ready"
+        timestamp PrepStartedAt
+        timestamp PrepCompletedAt
         text SpecialInstructions
         timestamp CreatedAt
     }
-    
-    Coupons {
+
+    %% SelectedVariations sub-shape (jsonb on OrderItems, nvarchar(max) column):
+    %%   KitchenOrderItemVariation[] — typed per Ordering.Infrastructure/Data/Configurations/OrderItemConfiguration.cs.
+    %%     string Name "Variation display label (e.g. 'Size: Large')"
+    %%     decimal Price "SNAPSHOT price delta from base unit price"
+    %% Customizations sub-shape (jsonb on OrderItems, nvarchar(max) column):
+    %%   KitchenOrderItemCustomization[] — typed per OrderItemConfiguration.cs.
+    %%     string Label "Customization text (e.g. 'No onions')"
+    %%     string Value "Optional qualifier (e.g. 'Spicy')"
+    %%     decimal Price "Optional price delta"
+    %% Records live in BuildingBlocks.Messaging/Events/; wire format and
+    %% jsonb storage shape are identical (no string round-trip on the boundary).
+    %% See db_relational_model.md "Relational jsonb sub-shapes" convention.
+
+    %% Indexes (relational, non-clustered, configured in OrderActivityConfiguration.cs):
+    %%   IX_order_activities_OrderId_OccurredAt ON order_activities (OrderId, OccurredAt)
+    %% — covering index for the only read pattern (WHERE OrderId = @id ORDER BY OccurredAt ASC).
+    %% See ORDER_ACTIVITY_PLAN.md §0.5 Performance: "Do not drop this index without re-measuring."
+
+    OrderBills {
         int Id PK
-        uuid RestaurantId FK
-        string Code UK
-        string Description
-        decimal Amount
-        int MaxRedeemAmount
-        timestamp ExpirationDate
-        boolean IsActive
-        string CreatedBy
+        uuid OrderId FK
+        int BillNumber UK "1,2,3"
+        enum SplitType "equal,custom"
+        decimal Amount "SNAPSHOT subtotal"
+        decimal TaxAmount "SNAPSHOT tax"
+        decimal TotalAmount "SNAPSHOT total"
+        enum PaymentStatus "pending,paid,void"
+        string PaymentMethod "cash,card,transfer"
+        text PaymentReference
+        timestamp PaidAt
+        text Notes
         timestamp CreatedAt
-        string LastModifiedBy
-        timestamp LastModifiedAt
     }
+
+    OrderActivities {
+        uuid Id PK "Stored as OrderActivityId value object (Guid wrapper)"
+        uuid OrderId FK "FK -> Orders.Id, ON DELETE CASCADE"
+        %% ActivityType is stored as string via EF Core HasConversion<string>()
+        %% (mirrors OrderStatus pattern at OrderConfiguration.cs:58).
+        %% Enum values: OrderCreated, OrderUpdated, OrderConfirmed, OrderPreparingStarted,
+        %% OrderReady, OrderDeliveryStarted, OrderDelivered, OrderCompleted, OrderCancelled,
+        %% OrderItemPrepStarted, OrderItemPrepCompleted.
+        string ActivityType "nvarchar(50) — typed enum, see comment"
+        uuid ActorUserId "NULL when transition is system-driven (Update / MarkPreparing / etc.)"
+        timestamp OccurredAt
+        string CorrelationId "nvarchar(100) NULL — from BuildingBlocks.Correlation.CorrelationContext.Current"
+        string Notes "nvarchar(2000) NULL — only populated on cancellation today"
+        %% Metadata shape (jsonb):
+        %%   string Reason "Cancellation reason (duplicated in Notes for cancellation)"
+        %%   uuid OrderItemId "NULL except on OrderItemPrepStarted / OrderItemPrepCompleted"
+        %%   string OrderItemName "NULL except on item-prep activities"
+        %%   enum PreviousOrderStatus "Pending/Confirmed/Preparing/Ready/Delivered/Cancelled"
+        %%   enum NewOrderStatus "Same enum"
+        %%   enum PreviousPrepStatus "Pending/Preparing"
+        %%   enum NewPrepStatus "Same enum"
+        %%   enum PreviousDeliveryStatus "Dispatched"
+        %%   enum NewDeliveryStatus "Dispatched/Delivered"
+        %% JsonStringEnumConverter registered in OrderActivityJson.Options so enums serialize
+        %% as strings ("Confirmed", not 2). No DbSet<OrderActivity> on IApplicationDbContext —
+        %% child entity loaded only via Order.Activities navigation. Pre-migration orders
+        %% return Activities: [] (no backfill).
+        text Metadata "jsonb NULL — typed OrderActivityMetadata record, see comment"
+    }
+
+    %% ----------------------------------------------------------------
+    %% BASKET — Marten document (single document per user)
+    %% ----------------------------------------------------------------
+    Basket {
+        %% MARTEN DOCUMENT — stored in mt_doc_basket
+        %% Identity is UserId (declared via [Identity] attribute).
+        %% Multi-tenant: CreateDatabasesForTenants creates per-tenant schemas.
+        %% Items are embedded in the document, NOT a separate table.
+        uuid UserId PK "Document identity ([Identity])"
+        uuid RestaurantId FK
+        %% Items shape (embedded BasketItem[]):
+        %%   int MenuItemId "TODO: should be uuid to match MenuItem.Id"
+        %%   int Quantity
+        %%   decimal UnitPrice
+        %%   jsonb Variations "embedded BasketItemVariation[] (Name, Value, Price)"
+        %%   jsonb Customizations "embedded BasketItemCustomization[] (Ingredient, Action)"
+        %%   decimal TotalPrice "computed = (UnitPrice + sum Variations.Price) * Quantity"
+        jsonb Items "embedded BasketItem[]"
+        jsonb AppliedDiscounts "embedded string[]"
+        decimal Subtotal "Computed from Items"
+        timestamp CreatedAt
+        timestamp ExpiresAt "Auto-expire after 2 hours"
+    }
+
+    %% =================================================================
+    %% RELATIONSHIPS
+    %% =================================================================
+
+    %% Brand ownership
+    Brands ||--o{ Restaurants : contains
+
+    %% Restaurant-owned relational entities
+    Restaurants ||--o{ Users : employs
+    Restaurants ||--o{ Tables : contains
+    Restaurants ||--o{ MenuCategories : has
+    Restaurants ||--o{ MenuItems : offers
+    Restaurants ||--o{ Ingredients : stocks
+    Restaurants ||--o{ Orders : processes
+    Restaurants ||--o{ Reservations : accepts
+    Restaurants ||--o{ WalkInQueue : manages
+    Restaurants ||--o{ PriceHistory : tracks
+    %% NOTE: `Restaurants ||--o{ Coupons : "issues"` was removed in Phase 6.2
+    %% (2026-07-11). Coupon ownership moved to the Discount service.
+    %% Phase 7 (2026-07-16): re-emitted under Discount ownership as
+    %% "Restaurants ||--o{ Coupons : 'issues'" below — Discount owns the table
+    %% but the relationship edge is drawn from the catalog parent (mirroring
+    %% the "Discount mermaid lives in this header even though Discount owns
+    %% the tables" authoring pattern per DISCOUNT_SERVICE_PLAN.md §7 Phase 7).
+    Restaurants ||--o{ Coupons : "issues"
+    Restaurants ||--o{ RewardCodes : "issues"
+    Coupons ||--o{ DiscountRules : "rules"
+
+    %% Tables
+    Tables ||--o{ Orders : "assigned to"
+    Tables ||--o{ Reservations : "reserved for"
+    Tables ||--o{ MergedTables : "parent of"
+    Tables ||--o{ MergedTables : "child of"
+    Tables ||--o{ WalkInQueue : "seated at"
+
+    %% Menu tree
+    MenuCategories ||--o{ MenuSubCategories : contains
+    MenuSubCategories ||--o{ MenuItems : includes
+
+    %% MenuItems fan-out
+    MenuItems ||--o{ MenuItemVariations : "has variations"
+    MenuItems ||--o{ ComboItems : "combo parent"
+    MenuItems ||--o{ ComboItems : "included in combo"
+    MenuItems ||--o{ MenuItemIngredients : requires
+    MenuItems ||--o{ MenuItemAnalytics : tracked
+    MenuItems ||--o{ PriceHistory : "price changes"
+
+    %% Ingredients fan-out
+    Ingredients ||--o{ MenuItemIngredients : "used in"
+    Ingredients ||--o{ IngredientAlternatives : "original ingredient"
+    Ingredients ||--o{ IngredientAlternatives : "alternative for"
+
+    %% Ordering aggregates
+    Customers ||--o{ Orders : places
+    Orders ||--o{ OrderItems : contains
+    Orders ||--o{ OrderBills : "split into"
+    Orders ||--o{ OrderActivities : "audit-trail of"
+    Orders ||--o{ OrderModificationLog : "tracked by"
+    Orders ||--o{ CustomerFeedback : "receives feedback"
+    Orders ||--o{ NotificationLog : triggers
+    Orders ||--o{ OrderTimingAnalytics : analyzed
+    Orders ||--o{ OrderSnapshot : "price snapshot"
+    OrderItems ||--o{ OrderItemPriceAudit : "audit trail"
+
+    %% Cross-aggregate feedback & reservations
+    Reservations ||--o{ NotificationLog : triggers
+    CustomerFeedback ||--o{ Orders : "redeems reward in"
+
+    %% Basket is a standalone document; its relationship to a user is
+    %% expressed as Basket.UserId PK (no FK edge needed — User is in the
+    %% Identity schema which is out of scope for this diagram).

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, initial-scale=1.0">
+  <title>Wireframe F — /site/restaurant/orders/:id (Order Detail + Modification Log)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .canvas { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; position: relative; overflow: hidden; }
+    .grid-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px); background-size: 16px 16px; }
+    .pin { position: absolute; width: 28px; height: 28px; background: #f59e0b; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.25), 0 0 0 3px #fff; cursor: pointer; z-index: 60; transform: translate(-50%, -50%); font-family: 'Outfit', sans-serif; }
+    .pin:hover { transform: translate(-50%, -50%) scale(1.15); transition: transform .15s; }
+
+    /* System bar + dock (compact) */
+    .sysbar { display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 14px; background: rgba(245, 245, 247, 0.78); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: #3f3f46; }
+    .sysbar-cluster { display: flex; align-items: center; gap: 14px; }
+    .sysbar-apple { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; color: #18181b; }
+    .sysbar-apple:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-app { font-weight: 700; letter-spacing: -0.01em; font-size: 12.5px; }
+    .sysbar-menu { cursor: pointer; padding: 2px 8px; border-radius: 4px; font-weight: 500; transition: background .12s; }
+    .sysbar-menu:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; color: #52525b; position: relative; transition: background .12s; }
+    .sysbar-icon-btn:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn .kbd-hint { position: absolute; top: -4px; right: -4px; font-size: 8px; font-weight: 600; background: rgba(0,0,0,0.55); color: #fff; border-radius: 3px; padding: 1px 3px; line-height: 1; }
+    .sysbar-icon-btn .sys-badge { position: absolute; top: 1px; right: 1px; min-width: 14px; height: 14px; padding: 0 3px; background: #EF4444; color: #fff; border-radius: 7px; font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(245,245,247,0.85); }
+    .sysbar-clock { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+    .sysbar-clock:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user { display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; border-radius: 16px; cursor: pointer; transition: background .12s; }
+    .sysbar-user:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user .avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; font-weight: 700; background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+    .dock { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: rgba(24, 24, 27, 0.72); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .dock-item { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; transition: transform .15s, background .15s; color: rgba(255,255,255,0.92); }
+    .dock-item:hover { transform: translateY(-4px) scale(1.08); background: rgba(255,255,255,0.08); }
+    .dock-item.active { background: rgba(14,165,233,0.20); }
+    .dock-item.active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: #0EA5E9; box-shadow: 0 0 6px #0EA5E9; }
+    .dock-item.kitchen { background: rgba(16,185,129,0.08); }
+    .dock-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); margin: 0 4px; }
+    .dock-badge { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; background: #EF4444; color: #fff; border-radius: 8px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px rgba(24,24,27,0.72); }
+    .dock-badge.green { background: #10B981; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #10B981; box-shadow: 0 0 0 0 #10B981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+    /* Order detail specific */
+    .timeline-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #d4d4d8; }
+    .timeline-line { width: 1px; background: #e4e4e7; flex: 1; min-height: 24px; }
+
+    /* Mod log row */
+    .mod-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed #f4f4f5; position: relative; }
+    .mod-row:last-child { border-bottom: none; }
+    .mod-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .mod-avatar.system { background: #71717a; }
+    .mod-action-bar { border: 2px dashed #f59e0b; background: #fffbeb; border-radius: 12px; padding: 12px 16px; }
+
+    /* Item row */
+    .item-row { transition: background .12s; }
+    .item-row:hover { background: #f9fafb; }
+  </style>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+
+  <!-- ============ HEADER STRIP ============ -->
+  <div class="bg-zinc-900 text-white px-6 py-2.5 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-3">
+      <span class="mono opacity-80">docs/wireframes/wireframe-order-detail.html</span>
+      <span class="px-2 py-0.5 bg-amber-500 text-amber-950 rounded font-semibold">Phase 2</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">WIREFRAME F</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">ORDER DETAIL · MOD LOG</span>
+    </div>
+    <div class="mono opacity-60">OrderlyWeb · Companion to A (orders list) and B (kitchen)</div>
+  </div>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <div class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+    <div class="flex items-baseline justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight">Order Detail — Wireframe F</h1>
+        <p class="text-zinc-600 text-sm mt-1">
+          Route <span class="mono text-xs">/site/restaurant/orders/:id</span> · Audience: Waiter (own orders), Cashier (billing), Manager (all + approval), RestaurantAdmin (audit)
+          · Source: <span class="mono text-xs">research/competitive-analysis-restaurant-crm.md §6.4 (audit log gap #5)</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 bg-zinc-200 rounded">v0.1</span>
+        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold">8 annotation pins</span>
+        <span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded">+ Approval modal bonus</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ THE WIREFRAME ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+
+      <!-- ============ 3-TIER HEADER (compact) ============ -->
+      <div class="relative z-10">
+        <div class="sysbar">
+          <div class="sysbar-cluster">
+            <div class="sysbar-apple"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg></div>
+            <span class="sysbar-app">Orderly</span>
+            <span class="sysbar-menu">File</span>
+            <span class="sysbar-menu">Edit</span>
+            <span class="sysbar-menu">View</span>
+            <span class="sysbar-menu">Window</span>
+            <span class="sysbar-menu">Help</span>
+          </div>
+          <div class="sysbar-cluster">
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="kbd-hint">⌘K</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="sys-badge">3</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </div>
+            <div class="sysbar-clock">14:35</div>
+            <div class="sysbar-user">
+              <div class="avatar">MG</div>
+              <span style="font-weight: 500; font-size: 11.5px;">Maria</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700">
+            <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+            <span class="text-zinc-500">Restaurant:</span>
+            <span class="font-medium">La Casa Roma</span>
+          </button>
+          <span class="text-zinc-300">|</span>
+          <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1">
+            <span class="pulse"></span> Live
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-zinc-600">
+          <span class="font-medium text-zinc-700">Maria Gomez</span>
+          <span class="text-zinc-400">·</span>
+          <span class="text-zinc-500">Manager (Approval authority)</span>
+        </div>
+      </div>
+      <div class="relative z-10 py-3 flex justify-center bg-zinc-50 border-b border-zinc-200">
+        <div class="dock">
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+          <button class="dock-item active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="dock-badge">12</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item kitchen"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        </div>
+      </div>
+
+      <!-- ============ ORDER DETAIL BODY ============ -->
+      <main class="relative z-10" style="min-height: 760px;">
+
+        <!-- Order header -->
+        <div class="bg-white border-b border-zinc-200 px-6 py-4">
+          <div class="flex items-start justify-between flex-wrap gap-4">
+            <div>
+              <!-- Breadcrumb -->
+              <div class="flex items-center gap-2 text-[11px] text-zinc-500 mb-1">
+                <a class="hover:text-zinc-700 hover:underline">Orders</a>
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                <span class="font-medium text-zinc-700">Order #1046</span>
+              </div>
+              <div class="flex items-baseline gap-3">
+                <h2 class="text-2xl font-semibold tracking-tight mono">#1046</h2>
+                <!-- Big status pill [PIN 1] -->
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium" style="background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;">
+                  <span class="dot" style="background:#D97706;width:7px;height:7px;border-radius:50%;"></span>
+                  Preparing
+                </span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-300">
+                  ⚠ Overdue · 21:10 elapsed
+                </span>
+              </div>
+              <div class="flex items-center gap-4 mt-1.5 text-xs text-zinc-600">
+                <span><span class="text-zinc-400">Table:</span> <span class="font-medium">T-09 · Patio</span></span>
+                <span><span class="text-zinc-400">Waiter:</span> <span class="font-medium">Sofia R.</span></span>
+                <span><span class="text-zinc-400">Guests:</span> <span class="font-medium">2</span></span>
+                <span><span class="text-zinc-400">Customer:</span> <span class="font-medium">Hernández M.</span> <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-semibold ml-1">VIP</span></span>
+                <span><span class="text-zinc-400">Created:</span> <span class="font-mono">14:14</span> by Carlos M.</span>
+              </div>
+            </div>
+            <!-- Action bar [PIN 2] -->
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-1.5 text-xs border border-zinc-200 rounded-lg hover:bg-zinc-50 text-zinc-700 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/></svg>
+                Print
+              </button>
+              <button class="px-3 py-1.5 text-xs border border-cyan-200 text-cyan-800 bg-cyan-50 rounded-lg hover:bg-cyan-100 flex items-center gap-1.5 font-medium">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Send to Cashier
+              </button>
+              <button class="px-3 py-1.5 text-xs border border-emerald-200 text-emerald-800 bg-emerald-50 rounded-lg hover:bg-emerald-100 flex items-center gap-1.5 font-medium">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                Mark Ready
+              </button>
+              <button class="px-2.5 py-1.5 text-xs text-rose-600 border border-rose-200 rounded-lg hover:bg-rose-50">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ SPLIT BODY ============ -->
+        <div class="flex" style="min-height: 600px;">
+
+          <!-- LEFT: Items + totals -->
+          <div class="flex-1 p-6 bg-white">
+
+            <!-- Items -->
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">Items · 4 line items</h3>
+              <button class="text-xs text-cyan-700 hover:underline flex items-center gap-1">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                Add item
+              </button>
+            </div>
+
+            <div class="border border-zinc-200 rounded-lg overflow-hidden mb-5">
+              <table class="w-full text-sm">
+                <thead class="bg-zinc-50 border-b border-zinc-200 text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
+                  <tr>
+                    <th class="px-3 py-2.5 text-left w-10">Qty</th>
+                    <th class="px-2 py-2.5 text-left">Item</th>
+                    <th class="px-2 py-2.5 text-left">Modifiers</th>
+                    <th class="px-2 py-2.5 text-right">Unit</th>
+                    <th class="px-2 py-2.5 text-right">Subtotal</th>
+                    <th class="px-2 py-2.5 text-right w-10"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="item-row">
+                    <td class="px-3 py-3 mono font-semibold text-zinc-700">1×</td>
+                    <td class="px-2 py-3">
+                      <div class="font-medium">Lasagna Bolognese</div>
+                      <div class="text-[11px] text-zinc-400">Station: Pasta · ~18 min cook time</div>
+                    </td>
+                    <td class="px-2 py-3 text-xs text-zinc-500">—</td>
+                    <td class="px-2 py-3 text-right mono">$ 18.40</td>
+                    <td class="px-2 py-3 text-right mono font-semibold">$ 18.40</td>
+                    <td class="px-2 py-3 text-right"><button class="text-zinc-400 hover:text-rose-600">×</button></td>
+                  </tr>
+                  <tr class="item-row">
+                    <td class="px-3 py-3 mono font-semibold text-zinc-700">2×</td>
+                    <td class="px-2 py-3">
+                      <div class="font-medium">Bruschetta Pomodoro</div>
+                      <div class="text-[11px] text-zinc-400">Station: Salad · ready in 4 min</div>
+                    </td>
+                    <td class="px-2 py-3 text-xs">
+                      <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-medium">+ extra tomato</span>
+                    </td>
+                    <td class="px-2 py-3 text-right mono">$ 6.00</td>
+                    <td class="px-2 py-3 text-right mono font-semibold">$ 12.00</td>
+                    <td class="px-2 py-3 text-right"><button class="text-zinc-400 hover:text-rose-600">×</button></td>
+                  </tr>
+                  <tr class="item-row">
+                    <td class="px-3 py-3 mono font-semibold text-zinc-700">3×</td>
+                    <td class="px-2 py-3">
+                      <div class="font-medium">Sparkling water 750ml</div>
+                      <div class="text-[11px] text-zinc-400">Station: Bar</div>
+                    </td>
+                    <td class="px-2 py-3 text-xs text-zinc-500">
+                      <span class="px-1.5 py-0.5 bg-zinc-100 text-zinc-600 rounded text-[10px]">with ice + lemon</span>
+                    </td>
+                    <td class="px-2 py-3 text-right mono">$ 3.00</td>
+                    <td class="px-2 py-3 text-right mono font-semibold">$ 9.00</td>
+                    <td class="px-2 py-3 text-right"><button class="text-zinc-400 hover:text-rose-600">×</button></td>
+                  </tr>
+                  <tr class="item-row bg-amber-50/60">
+                    <td class="px-3 py-3 mono font-semibold text-amber-700">+1</td>
+                    <td class="px-2 py-3">
+                      <div class="font-medium text-amber-800">Espresso (added later)</div>
+                      <div class="text-[11px] text-amber-600">Station: Bar · added by Sofia · 14:32</div>
+                    </td>
+                    <td class="px-2 py-3 text-xs text-zinc-500">—</td>
+                    <td class="px-2 py-3 text-right mono">$ 3.50</td>
+                    <td class="px-2 py-3 text-right mono font-semibold text-amber-700">$ 3.50</td>
+                    <td class="px-2 py-3 text-right"><button class="text-zinc-400 hover:text-rose-600">×</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Totals -->
+            <div class="ml-auto max-w-xs space-y-1.5 text-sm mb-5">
+              <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono">$ 42.90</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Discount (10% VIP)</span><span class="mono text-amber-700">−$ 4.29</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Service (5%)</span><span class="mono">$ 1.93</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Tax (10%)</span><span class="mono">$ 4.05</span></div>
+              <div class="flex justify-between border-t border-zinc-200 pt-2 mt-2"><span class="font-semibold">Total</span><span class="mono font-semibold text-base">$ 44.59</span></div>
+              <div class="flex justify-between text-[11px] text-zinc-400 pt-1"><span>Paid to date</span><span class="mono">$ 0.00</span></div>
+            </div>
+
+            <!-- Approval action bar [PIN 2 — manager review queue] -->
+            <div class="mod-action-bar relative">
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-700 flex-shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-amber-900">1 action awaiting your approval</span>
+                    <span class="px-1.5 py-0.5 bg-amber-200 text-amber-900 rounded text-[10px] font-semibold">PENDING</span>
+                  </div>
+                  <p class="text-xs text-amber-800 mt-0.5">
+                    <span class="font-medium">Sofia R.</span> applied <span class="font-mono">10% VIP discount</span> at 14:35 — 1 min ago
+                  </p>
+                  <div class="flex items-center gap-2 mt-2.5">
+                    <button class="px-3 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 font-medium flex items-center gap-1">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                      Approve
+                    </button>
+                    <button class="px-3 py-1 text-xs bg-white text-rose-700 border border-rose-200 rounded hover:bg-rose-50 font-medium flex items-center gap-1">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                      Reject
+                    </button>
+                    <button class="px-3 py-1 text-xs text-zinc-600 hover:underline">View diff</button>
+                  </div>
+                </div>
+              </div>
+              <span class="pin" style="left: 50%; top: -16px;">2</span>
+            </div>
+
+            <!-- Notes -->
+            <div class="mt-5 border-t border-zinc-100 pt-4">
+              <h4 class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mb-2">Internal notes</h4>
+              <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+                <div class="flex items-start gap-2">
+                  <svg class="w-3.5 h-3.5 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>
+                  <div>
+                    <span class="font-medium">Sofia R.</span> · 14:18
+                    <span class="text-amber-700">— Allergic to tree nuts. Confirmed no pesto / no nuts in salad. KDS notified.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <span class="pin" style="left: 25%; top: 8px;">3</span>
+          </div>
+
+          <!-- RIGHT: Modification Log + Timeline [PIN 7 — biggest gap differentiator] -->
+          <div class="w-96 bg-zinc-50 border-l border-zinc-200 relative">
+
+            <div class="px-5 py-4 border-b border-zinc-200 bg-white sticky top-0 z-10">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold">Activity</h3>
+                <div class="flex items-center gap-1.5 text-[11px] text-zinc-500">
+                  <span class="pulse"></span>
+                  <span>Live · /hubs/orders</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 mt-2 text-[10px] text-zinc-500">
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>created</span>
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>kitchen</span>
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>payment</span>
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>mod</span>
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>alert</span>
+                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>system</span>
+              </div>
+            </div>
+
+            <!-- Mod log entries -->
+            <div class="px-5 py-3">
+
+              <!-- 21:10 alert -->
+              <div class="mod-row">
+                <div class="mod-avatar system" style="background:#EF4444;">!</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs text-rose-700">Alert</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:35:10</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">Order crossed 20 min threshold · KDS overdue flag raised</div>
+                </div>
+              </div>
+
+              <!-- 14:35 Sofia discount — pending -->
+              <div class="mod-row bg-amber-50 -mx-2 px-2 rounded">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #f472b6, #f43f5e);">SR</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Sofia R.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:35:01</span>
+                    <span class="px-1.5 py-0.5 bg-amber-200 text-amber-900 rounded text-[9px] font-bold ml-auto">PENDING</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Applied discount: <span class="font-mono text-amber-700 font-semibold">10% VIP</span>
+                    <div class="text-[10px] text-zinc-500 mt-0.5">−$ 4.29 · awaiting Maria's approval</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 14:32 Carlos added espresso -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">CS</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Carlos S. (KDS)</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:32:48</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Added item to kitchen: <span class="font-medium">1× Espresso</span> · bar station
+                  </div>
+                </div>
+              </div>
+
+              <!-- 14:28 Sofia added espresso (waiter) -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #f472b6, #f43f5e);">SR</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Sofia R.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:32:14</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Added item to order: <span class="font-medium">1× Espresso</span> · $ 3.50
+                  </div>
+                </div>
+              </div>
+
+              <!-- 14:21 → kitchen -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">→</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Sofia R.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:21:30</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Sent to kitchen · 3 items to <span class="font-mono">pasta</span> + <span class="font-mono">salad</span> + <span class="font-mono">bar</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 14:18 Sofia note -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #f472b6, #f43f5e);">SR</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Sofia R.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:18:02</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">Added note: <span class="italic text-zinc-500">"Allergic to tree nuts. KDS notified."</span></div>
+                </div>
+              </div>
+
+              <!-- 14:15 Carlos added water -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">CM</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Carlos M.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:15:48</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Added item: <span class="font-medium">3× Sparkling water</span> · $ 9.00
+                    <div class="text-[10px] text-zinc-500 mt-0.5">Modifiers: with ice + lemon</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 14:14 Carlos created order -->
+              <div class="mod-row">
+                <div class="mod-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">CM</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-medium text-xs">Carlos M.</span>
+                    <span class="text-[10px] text-zinc-400 mono">14:14:22</span>
+                    <span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[9px] font-bold ml-auto">NEW</span>
+                  </div>
+                  <div class="text-xs text-zinc-700">
+                    Created order · 2 guests · T-09 · 3 initial items
+                    <div class="text-[10px] text-zinc-500 mt-0.5">Subtotal: $ 30.40</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Load more -->
+              <div class="text-center pt-3">
+                <button class="text-[11px] text-cyan-700 hover:underline">Load earlier events (4 more) →</button>
+              </div>
+            </div>
+
+            <!-- Floating pins -->
+            <span class="pin" style="left: 50%; top: 8px;">7</span>
+            <span class="pin" style="left: 12px; top: 50%;">8</span>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-zinc-50 border-t border-zinc-200 px-6 py-2 text-[10px] text-zinc-400 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="font-mono">Order #1046</span>
+            <span>· Created 14:14 · Elapsed 21:10 · KDS queue position: 2/6</span>
+          </div>
+          <div>Spec §5.4 · §4.3 gap #5 (inline audit log) · v0.1</div>
+        </div>
+
+        <span class="pin" style="left: 8px; top: 12px;">1</span>
+        <span class="pin" style="left: 92%; top: 12px;">4</span>
+        <span class="pin" style="left: 8px; top: 90%;">5</span>
+        <span class="pin" style="left: 92%; top: 30%;">6</span>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ ANNOTATIONS / RATIONALE ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12 mt-8">
+    <h2 class="text-lg font-semibold tracking-tight mb-4">Annotation pins — what to look at, and why</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+          <strong class="text-zinc-900">Big status pill + amber overdue flag</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Status pill is duplicated at top of the page (same as list) PLUS this order-specific amber "Overdue" flag because elapsed &gt; 20 min. The flag is what triggers Carlos (waiter) to take action — either bump kitchen or escalate to manager.
+          <span class="text-zinc-400">Cross-ref KDS time-color system, spec §6.5.</span>
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+          <strong class="text-zinc-900">Inline approval queue</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Waiters can't apply discounts &gt; $5 without manager approval (research §4.3 gap #5). When Sofia applies the 10% VIP discount, Maria sees a yellow review bar on the order detail with Approve / Reject / View diff buttons. Replaces a separate inbox — see spec §12 #5.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+          <strong class="text-zinc-900">Items table with highlighted additions</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Every line item shows qty · name · station · cook time · modifiers · unit · subtotal · delete. Items added <em>after</em> the order was sent to kitchen get a soft amber background tint (#1046 +1 Espresso) — visual cue that this is a "post-fire" modification the kitchen should bump.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+          <strong class="text-zinc-900">Action button menu (Print · Send to Cashier · Mark Ready · …)</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Order-level actions, not item-level. Right-side destructive (trash) action stays icon-only to avoid accidental cancel. Buttons disable based on state (e.g. Send to Cashier disabled if order already at cashier, Mark Ready disabled if status isn't Preparing).
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+          <strong class="text-zinc-900">Totals breakdown — transparent math</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Subtotal · Discount · Service · Tax · Total — each line explicit. The discount line shows what was applied (10% VIP, $ -4.29) so the cashier can verify on payment. Customers increasingly ask "what's the 5% for" so we make it visible.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+          <strong class="text-zinc-900">Internal notes — staff-only (not on customer receipt)</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          The allergies alert is a critical use case — Sofia flagged the tree-nut allergy and notified KDS. Notes are persistent (don't disappear when scrolled), visually distinct (amber), and timestamp-attributed. Spec §5.4 mandates allergy notes be propagated to kitchen.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">7</span>
+          <strong class="text-zinc-900">Activity panel — the differentiation (research §4.3 #5)</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Inline audit log, sticky right rail. Every modification to this order is recorded with timestamp + actor + action type. Color-coded by event category (created · kitchen · payment · modification · alert · system). <span class="font-medium text-zinc-900">None of the 5 competitor platforms surface a per-order audit log inline.</span> This is a clear UX differentiator and a critical audit/compliance artifact.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">8</span>
+          <strong class="text-zinc-900">Pending reviews flagged inline · realtime</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          The pending discount (#1046 row) sits in the activity log itself, not somewhere separate. Maria sees a row with "PENDING" badge and 2 button actions, all in the same scroll. Decision: Approve in-place; the row updates to "Approved by Maria at 14:38" inline.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ============ IMPLEMENTATION NOTES ============ -->
+    <div class="mt-10 bg-zinc-900 text-white rounded-lg p-6">
+      <h3 class="text-sm font-semibold mb-3 text-amber-400">Decision points flagged for production</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-zinc-300">
+        <div>
+          <div class="text-white font-semibold mb-1">Component shape</div>
+          <p>Three sections — <code class="text-cyan-300">OrderHeader</code> (status pill, metadata, action bar) · <code class="text-cyan-300">OrderItems</code> (table + totals + approval bar) · <code class="text-cyan-300">ActivityLog</code> (right rail, sticky). All three consume route param <code class="text-cyan-300">:orderId</code> and subscribe to <code class="text-cyan-300">/hubs/orders</code> filtered to that order.</p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Permission model</div>
+          <p>Waiter: view own orders, add items. Manager: approve discounts &gt; $5. Cashier: edit payment-only fields. RestaurantAdmin: see full audit + revert last action. Approval bar visibility driven by RBAC claims from JWT (per backend spec).</p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Realtime strategy</div>
+          <p>Single SignalR subscription filtered by <code class="text-cyan-300">orderId</code> arriving in JWT. Activity log prepends new rows in-place via React Query <code class="text-cyan-300">useInfiniteQuery</code> with optimistic updates. No full refetch — millisecond-latency feel.</p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Approval flow</div>
+          <p>Optimization: "View diff" pre-computes the totals before/after and shows them side-by-side (e.g. 51.36 → 47.07 with VIP). Approve triggers a single PATCH; row badge updates from "PENDING" to "APPROVED by Maria" without scroll. If dispute, "View audit" expands to full timeline.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SOURCES ============ -->
+    <div class="mt-10 border-t border-zinc-200 pt-6 text-xs text-zinc-500">
+      <h3 class="text-xs font-semibold text-zinc-700 uppercase tracking-widest mb-3">Sources &amp; cross-refs</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <div>· <span class="mono">docs/website-spec.md</span> §5.4 (Orders), §6.4–6.5 (palette), §12 #5 (audit log open Q)</div>
+        <div>· <span class="mono">docs/research/competitive-analysis-restaurant-crm.md</span> §4.3 #5 (audit log gap)</div>
+        <div>· Toast Order Detail — items table + station labels pattern</div>
+        <div>· Square Restaurant Order Detail — discount line-item visibility</div>
+        <div>· Companion: <span class="mono">wireframe-restaurant-orders.html</span> (list view), <span class="mono">wireframe-header-and-dock.html</span></div>
+        <div>· Gap addressed: §4.3 #5 (inline audit log) — biggest differentiator</div>
+      </div>
+    </div>
+
+    <!-- ============ NEXT STEPS ============ -->
+    <div class="mt-8 bg-zinc-900 text-white rounded-lg p-5">
+      <h3 class="text-sm font-semibold mb-2">Next moves</h3>
+      <ol class="text-xs space-y-1.5 text-zinc-300 list-decimal list-inside">
+        <li>Open <span class="bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300 font-mono">wireframe-split-bill.html</span> (the last wireframe) to see the drag-drop split-bill interaction — extends the items table on the left side of this view.</li>
+        <li>Add a 5th wireframe: <code class="bg-zinc-800 px-1 rounded text-cyan-300 font-mono">/site/admin/staff</code> with role-preview modal — closes out Phase 2.</li>
+        <li>Hand Order Detail to dev rein — it's the most-referenced deep view in the system (not just order-related but a general modal pattern for ticket/refund/discount entities).</li>
+      </ol>
+    </div>
+
+  </div>
+</body>
+</html>

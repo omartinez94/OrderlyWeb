@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, initial-scale=1.0">
+  <title>Wireframe H — /site/restaurant · Dashboard (Card Grid + Overview combined)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .canvas { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; position: relative; overflow: hidden; }
+    .grid-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px); background-size: 16px 16px; }
+    .pin { position: absolute; width: 28px; height: 28px; background: #f59e0b; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.25), 0 0 0 3px #fff; cursor: pointer; z-index: 60; transform: translate(-50%, -50%); font-family: 'Outfit', sans-serif; }
+    .pin.pin-cardgrid { background: #06b6d4; }
+    .pin.pin-overview { background: #10B981; }
+    .pin:hover { transform: translate(-50%, -50%) scale(1.15); transition: transform .15s; }
+
+    /* System bar (canonical) */
+    .sysbar { display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 14px; background: rgba(245, 245, 247, 0.78); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: #3f3f46; }
+    .sysbar-cluster { display: flex; align-items: center; gap: 14px; }
+    .sysbar-apple { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; color: #18181b; }
+    .sysbar-apple:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-app { font-weight: 700; letter-spacing: -0.01em; font-size: 12.5px; }
+    .sysbar-menu { cursor: pointer; padding: 2px 8px; border-radius: 4px; font-weight: 500; transition: background .12s; }
+    .sysbar-menu:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; color: #52525b; position: relative; transition: background .12s; }
+    .sysbar-icon-btn:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn .kbd-hint { position: absolute; top: -4px; right: -4px; font-size: 8px; font-weight: 600; background: rgba(0,0,0,0.55); color: #fff; border-radius: 3px; padding: 1px 3px; line-height: 1; }
+    .sysbar-icon-btn .sys-badge { position: absolute; top: 1px; right: 1px; min-width: 14px; height: 14px; padding: 0 3px; background: #EF4444; color: #fff; border-radius: 7px; font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(245,245,247,0.85); }
+    .sysbar-clock { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+    .sysbar-clock:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user { display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; border-radius: 16px; cursor: pointer; transition: background .12s; }
+    .sysbar-user:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user .avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; font-weight: 700; background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+
+    /* Dock */
+    .dock { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: rgba(24, 24, 27, 0.72); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .dock-item { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; transition: transform .15s, background .15s; color: rgba(255,255,255,0.92); }
+    .dock-item:hover { transform: translateY(-4px) scale(1.08); background: rgba(255,255,255,0.08); }
+    .dock-item.active { background: rgba(14,165,233,0.20); }
+    .dock-item.active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: #0EA5E9; box-shadow: 0 0 6px #0EA5E9; }
+    .dock-item.kitchen { background: rgba(16,185,129,0.08); }
+    .dock-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); margin: 0 4px; }
+    .dock-badge { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; background: #EF4444; color: #fff; border-radius: 8px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px rgba(24,24,27,0.72); }
+    .dock-badge.green { background: #10B981; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #10B981; box-shadow: 0 0 0 0 #10B981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+    /* KPI Card */
+    .kpi-card { background: #fff; border: 1px solid #e4e4e7; border-radius: 14px; padding: 18px 18px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: box-shadow .15s, transform .15s; cursor: pointer; }
+    .kpi-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
+    .delta-up { color: #10B981; } .delta-down { color: #EF4444; }
+
+    /* Time-range segmented control */
+    .seg-control { display: inline-flex; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; padding: 2px; }
+    .seg-control button { padding: 5px 12px; font-size: 11px; font-weight: 500; color: #52525b; border-radius: 6px; transition: all .12s; }
+    .seg-control button.active { background: #fff; color: #18181b; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .seg-control button:hover:not(.active) { color: #18181b; }
+
+    /* Activity row hover state */
+    .activity-row { transition: background .12s; cursor: pointer; }
+    .activity-row:hover { background: #f9fafb; }
+
+    /* Section divider (between Card Grid and Overview) */
+    .sec-divider { display: flex; align-items: center; gap: 14px; padding: 14px 24px; background: #f4f4f5; border-top: 1px solid #e4e4e7; border-bottom: 1px solid #e4e4e7; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #52525b; }
+    .sec-divider::before, .sec-divider::after { content: ''; flex: 1; height: 1px; background: #d4d4d8; }
+    .sec-divider .badge-a { background: #06b6d4; color: #fff; padding: 2px 8px; border-radius: 9999px; font-size: 9px; }
+    .sec-divider .badge-b { background: #10B981; color: #fff; padding: 2px 8px; border-radius: 9999px; font-size: 9px; }
+
+    /* Overview-mode specific */
+    .kpi-compact { background: #fff; border: 1px solid #e4e4e7; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .order-row-overview { transition: background .12s; cursor: pointer; border-left: 3px solid transparent; }
+    .order-row-overview:hover { background: #f9fafb; border-left-color: #06b6d4; }
+  </style>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+
+  <!-- ============ HEADER STRIP ============ -->
+  <div class="bg-zinc-900 text-white px-6 py-2.5 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-3">
+      <span class="mono opacity-80">docs/wireframes/wireframe-dashboard.html</span>
+      <span class="px-2 py-0.5 bg-amber-500 text-amber-950 rounded font-semibold">Phase 1</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">WIREFRAME H</span>
+      <span class="px-2 py-0.5 bg-cyan-700 rounded font-semibold text-white">DASHBOARD · COMBINED</span>
+    </div>
+    <div class="mono opacity-60">OrderlyWeb · Companion to A, B, D, F, G</div>
+  </div>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <div class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+    <div class="flex items-baseline justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight">Restaurant Dashboard — Combined (Card Grid + Overview)</h1>
+        <p class="text-zinc-600 text-sm mt-1">
+          Route <span class="mono text-xs">/site/restaurant</span> · Same data, two layouts · Pin-prefix <span class="font-mono bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded">A</span> = Card Grid (analytical) · Pin-prefix <span class="font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">B</span> = Overview (operational) · Source: <span class="mono text-xs">research §4.1, §4.3, §5.1</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 bg-zinc-200 rounded">v0.2</span>
+        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold">16 annotation pins (A1–A8 + B1–B8)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DECISION FRAMEWORK — when to use which layout ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-6">
+    <div class="bg-zinc-900 text-white rounded-lg p-5">
+      <h3 class="text-sm font-semibold mb-3 text-amber-400">Both layouts ship — default per persona</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-zinc-300">
+        <div>
+          <div class="text-white font-semibold mb-1.5 text-cyan-300">§ A — Card Grid <span class="text-zinc-400 font-normal">(analytical persona)</span></div>
+          <div class="flex items-center gap-1.5 mb-1 text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full" style="background:#06b6d4;"></span> Default for: RestaurantAdmin · Manager (review mode)
+          </div>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>4 large KPI cards with sparklines + deltas</li>
+            <li>Revenue trend bar chart (7 days)</li>
+            <li>Top items list with progress bars</li>
+            <li>Server leaderboard (research §4.3 #2)</li>
+            <li>Live activity feed as a side stream</li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1.5 text-emerald-300">§ B — Overview <span class="text-zinc-400 font-normal">(operational persona)</span></div>
+          <div class="flex items-center gap-1.5 mb-1 text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full" style="background:#10B981;"></span> Default for: Manager (shift mode) · Waiter with admin tasks
+          </div>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>4 compact KPI cards (smaller, status pills)</li>
+            <li>Compact revenue trend (same data, less prominent)</li>
+            <li>Server leaderboard (podium visualization)</li>
+            <li><strong>Live orders panel</strong> — actionable row-per-order</li>
+            <li>Urgent-row highlighting (rose + ⚠ for overdue)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="mt-3 text-xs text-zinc-400 italic">
+        Both views pull from the same RTK Query endpoints (kpiSummary, revenueTrend, topItems, serverLeaderboard, liveOrders) — only the layout component differs. Toggle in user prefs OR route-based on persona claim from JWT.
+      </p>
+    </div>
+  </div>
+
+  <!-- ============ THE WIREFRAME ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+
+      <!-- =================================================================== -->
+      <!-- =================== § A — CARD GRID VARIANT ===================== -->
+      <!-- =================================================================== -->
+      <div data-section="A">
+        <div class="relative z-10">
+          <div class="sysbar">
+            <div class="sysbar-cluster">
+              <div class="sysbar-apple"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg></div>
+              <span class="sysbar-app">Orderly</span>
+              <span class="sysbar-menu">File</span><span class="sysbar-menu">Edit</span><span class="sysbar-menu">View</span><span class="sysbar-menu">Window</span><span class="sysbar-menu">Help</span>
+            </div>
+            <div class="sysbar-cluster">
+              <div class="sysbar-icon-btn relative"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="kbd-hint">⌘K</span></div>
+              <div class="sysbar-icon-btn"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+              <div class="sysbar-icon-btn relative"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="sys-badge">3</span></div>
+              <div class="sysbar-icon-btn"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></div>
+              <div class="sysbar-clock">14:35</div>
+              <div class="sysbar-user"><div class="avatar">MG</div><span style="font-weight: 500; font-size: 11.5px;">Maria</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700">
+              <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+              <span class="text-zinc-500">Restaurant:</span><span class="font-medium">La Casa Roma</span>
+            </button>
+            <span class="text-zinc-300">|</span>
+            <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1"><span class="pulse"></span> Live</span>
+          </div>
+          <div class="flex items-center gap-2 text-zinc-600">
+            <button class="text-zinc-500 hover:text-zinc-900 text-[11px] flex items-center gap-1 border border-dashed border-zinc-300 px-2 py-0.5 rounded">⚖ Compare with…</button>
+            <span class="font-medium text-zinc-700">Maria Gomez</span><span class="text-zinc-400">·</span><span class="text-zinc-500">RestaurantAdmin</span>
+          </div>
+        </div>
+        <div class="relative z-10 py-3 flex justify-center bg-zinc-50 border-b border-zinc-200">
+          <div class="dock">
+            <button class="dock-item active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="dock-badge">12</span></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item kitchen"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Card Grid body -->
+        <main class="relative z-10 p-6">
+          <div class="flex items-start justify-between mb-5 flex-wrap gap-3">
+            <div>
+              <div class="flex items-center gap-2 text-xs text-zinc-500 mb-1"><span>Run</span><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span class="font-medium text-zinc-700">Dashboard</span></div>
+              <h2 class="text-xl font-semibold tracking-tight">Good afternoon, Maria</h2>
+              <p class="text-xs text-zinc-500 mt-0.5">La Casa Roma · Wed 2 Jul 2026 · Lunch shift · 2h 25m left</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="seg-control">
+                <button>Today</button><button class="active">Yesterday</button><button>7 days</button><button>30 days</button><button>Custom</button>
+              </div>
+              <button class="px-3 py-1.5 text-xs border border-zinc-200 rounded-lg hover:bg-zinc-50 text-zinc-700 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Export
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 KPI cards -->
+          <div class="grid grid-cols-4 gap-4 mb-4">
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-1">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Revenue</div>
+                <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="text-2xl font-semibold tracking-tight mono">$ 4,820</div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="flex items-center gap-1 text-[11px]">
+                  <svg class="w-3 h-3 delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  <span class="delta-up font-semibold">+12%</span><span class="text-zinc-400">vs mon</span>
+                </div>
+                <svg viewBox="0 0 80 24" class="w-20 h-6"><polyline fill="none" stroke="#10B981" stroke-width="1.5" points="0,16 8,14 16,18 24,12 32,10 40,13 48,8 56,9 64,5 72,7 80,3"/><circle cx="80" cy="3" r="2" fill="#10B981"/></svg>
+              </div>
+              <span class="pin pin-cardgrid" style="left: 12.5%; top: -14px;">A1</span>
+            </div>
+
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-1">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Tickets</div>
+                <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+              </div>
+              <div class="text-2xl font-semibold tracking-tight mono">87 <span class="text-xs text-zinc-400 font-normal">orders</span></div>
+              <div class="flex items-center gap-1.5 text-[11px] mt-2">
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium"><span class="w-1 h-1 rounded-full bg-blue-600"></span>8 live</span>
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium"><span class="w-1 h-1 rounded-full bg-yellow-600"></span>12 prep</span>
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium"><span class="w-1 h-1 rounded-full bg-emerald-600"></span>3 ready</span>
+              </div>
+            </div>
+
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-1">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Avg ticket time</div>
+                <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div class="text-2xl font-semibold tracking-tight mono">14:32 <span class="text-xs text-zinc-400 font-normal">mm:ss</span></div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="flex items-center gap-1 text-[11px]">
+                  <svg class="w-3 h-3 delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  <span class="delta-up font-semibold">−2:15</span><span class="text-zinc-400">faster</span>
+                </div>
+                <svg viewBox="0 0 80 24" class="w-20 h-6"><polyline fill="none" stroke="#10B981" stroke-width="1.5" points="0,8 8,10 16,7 24,12 32,9 40,11 48,15 56,12 64,16 72,18 80,17"/><circle cx="80" cy="17" r="2" fill="#10B981"/></svg>
+              </div>
+              <span class="pin pin-cardgrid" style="left: 60%; top: -14px;">A3</span>
+            </div>
+
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-1">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Table utilization</div>
+                <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              </div>
+              <div class="text-2xl font-semibold tracking-tight mono">78% <span class="text-xs text-zinc-400 font-normal">10 / 13</span></div>
+              <div class="flex items-center gap-1 text-[11px] mt-2">
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium"><span class="w-1 h-1 rounded-full bg-emerald-600"></span>10 sat</span>
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium"><span class="w-1 h-1 rounded-full bg-purple-600"></span>3 res</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue trend + top items -->
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div class="kpi-card col-span-2 relative" style="min-height: 220px;">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Revenue · last 7 days</div>
+                  <div class="flex items-baseline gap-3 mt-1">
+                    <div class="text-xl font-semibold tracking-tight mono">$ 32,480</div>
+                    <div class="flex items-center gap-1 text-xs">
+                      <svg class="w-3 h-3 delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                      <span class="delta-up font-semibold">+8.4%</span><span class="text-zinc-400">WoW</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex gap-1 text-xs">
+                  <button class="text-cyan-700 font-medium">$</button><span class="text-zinc-300">·</span>
+                  <button class="text-zinc-400">Orders</button><span class="text-zinc-300">·</span>
+                  <button class="text-zinc-400">Avg</button>
+                </div>
+              </div>
+              <div class="mt-3 flex items-end gap-2 h-32 px-2 border-b border-zinc-100">
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t" style="height: 38%;"></div><div class="text-[9px] text-zinc-400">Tue</div><div class="text-[9px] mono text-zinc-500">$3.2k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t" style="height: 52%;"></div><div class="text-[9px] text-zinc-400">Wed</div><div class="text-[9px] mono text-zinc-500">$4.1k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t" style="height: 68%;"></div><div class="text-[9px] text-zinc-400">Thu</div><div class="text-[9px] mono text-zinc-500">$4.9k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t" style="height: 80%;"></div><div class="text-[9px] text-zinc-400">Fri</div><div class="text-[9px] mono text-zinc-500">$5.8k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t ring-2 ring-cyan-300" style="height: 95%;"></div><div class="text-[9px] text-cyan-700 font-semibold">Sat</div><div class="text-[9px] mono text-cyan-700 font-semibold">$6.2k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-cyan-500 rounded-t" style="height: 62%;"></div><div class="text-[9px] text-zinc-400">Sun</div><div class="text-[9px] mono text-zinc-500">$4.7k</div></div>
+                <div class="flex-1 flex flex-col items-center justify-end gap-1"><div class="w-full bg-zinc-300 rounded-t" style="height: 45%;"></div><div class="text-[9px] text-zinc-500">Mon</div><div class="text-[9px] mono text-zinc-600">$3.4k</div></div>
+              </div>
+              <span class="pin pin-cardgrid" style="left: 90%; top: 8px;">A4</span>
+            </div>
+
+            <div class="kpi-card relative">
+              <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold mb-3">Top items</div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 text-xs"><div class="mono text-[10px] text-zinc-400 w-3">1</div><div class="flex-1 truncate font-medium">Tacos al pastor · 4×</div><div class="mono text-zinc-600">$ 52</div></div><div class="w-full h-1 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: 92%;"></div></div>
+                <div class="flex items-center gap-2 text-xs mt-2"><div class="mono text-[10px] text-zinc-400 w-3">2</div><div class="flex-1 truncate font-medium">Ribeye · 3×</div><div class="mono text-zinc-600">$ 87</div></div><div class="w-full h-1 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: 78%;"></div></div>
+                <div class="flex items-center gap-2 text-xs mt-2"><div class="mono text-[10px] text-zinc-400 w-3">3</div><div class="flex-1 truncate font-medium">Lasagna · 3×</div><div class="mono text-zinc-600">$ 38</div></div><div class="w-full h-1 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: 64%;"></div></div>
+                <div class="flex items-center gap-2 text-xs mt-2"><div class="mono text-[10px] text-zinc-400 w-3">4</div><div class="flex-1 truncate font-medium">Risotto · 2×</div><div class="mono text-zinc-600">$ 32</div></div><div class="w-full h-1 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: 52%;"></div></div>
+                <div class="flex items-center gap-2 text-xs mt-2"><div class="mono text-[10px] text-zinc-400 w-3">5</div><div class="flex-1 truncate font-medium">Margherita · 2×</div><div class="mono text-zinc-600">$ 26</div></div><div class="w-full h-1 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: 42%;"></div></div>
+              </div>
+              <span class="pin pin-cardgrid" style="left: 90%; top: 50%;">A6</span>
+            </div>
+          </div>
+
+          <!-- Server leaderboard + Live activity -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Server leaderboard</div>
+                  <p class="text-[11px] text-zinc-500 mt-0.5">By tickets handled · last shift</p>
+                </div>
+                <button class="text-[11px] text-cyan-700 hover:underline">View all →</button>
+              </div>
+              <table class="w-full text-xs">
+                <tbody class="divide-y divide-zinc-100">
+                  <tr><td class="py-2.5 pr-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[10px] font-bold">CM</div><div><div class="font-medium">Carlos M.</div><div class="text-[10px] text-zinc-500">Waiter · 4 yrs</div></div></div></td><td class="py-2.5 text-right"><div class="mono font-semibold">28</div><div class="text-[10px] text-zinc-400">tickets</div></td><td class="py-2.5 text-right"><div class="mono font-semibold">$ 1,420</div></td><td class="py-2.5 text-right"><div class="mono font-semibold text-emerald-600">+8%</div></td></tr>
+                  <tr><td class="py-2.5 pr-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-[10px] font-bold">SR</div><div><div class="font-medium">Sofia R.</div><div class="text-[10px] text-zinc-500">Waiter · 2 yrs</div></div></div></td><td class="py-2.5 text-right"><div class="mono font-semibold">24</div><div class="text-[10px] text-zinc-400">tickets</div></td><td class="py-2.5 text-right"><div class="mono font-semibold">$ 1,180</div></td><td class="py-2.5 text-right"><div class="mono font-semibold text-emerald-600">+5%</div></td></tr>
+                  <tr><td class="py-2.5 pr-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-[10px] font-bold">DL</div><div><div class="font-medium">Diego L.</div><div class="text-[10px] text-zinc-500">Waiter · 1 yr</div></div></div></td><td class="py-2.5 text-right"><div class="mono font-semibold">19</div><div class="text-[10px] text-zinc-400">tickets</div></td><td class="py-2.5 text-right"><div class="mono font-semibold">$ 980</div></td><td class="py-2.5 text-right"><div class="mono font-semibold text-rose-600">−2%</div></td></tr>
+                </tbody>
+              </table>
+              <span class="pin pin-cardgrid" style="left: 8px; top: 8px;">A5</span>
+            </div>
+
+            <div class="kpi-card relative">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold flex items-center gap-1.5"><span class="pulse"></span> Live activity</div>
+                  <p class="text-[11px] text-zinc-500 mt-0.5">Last 30 min · SignalR</p>
+                </div>
+                <button class="text-[11px] text-cyan-700 hover:underline">Filter</button>
+              </div>
+              <div class="space-y-0 -mx-4">
+                <div class="activity-row px-4 py-2 flex items-start gap-2.5 border-t border-zinc-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></div><div class="flex-1 text-[11px]"><div><span class="font-medium">Sofia R.</span> marked <span class="mono">#1042</span> Ready</div><div class="text-[10px] text-zinc-400 mt-0.5 mono">14:31 · T-04</div></div></div>
+                <div class="activity-row px-4 py-2 flex items-start gap-2.5 border-t border-zinc-100"><div class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div><div class="flex-1 text-[11px]"><div><span class="font-medium">Diego L.</span> created <span class="mono">#1049</span></div><div class="text-[10px] text-zinc-400 mt-0.5 mono">14:28 · T-12</div></div></div>
+                <div class="activity-row px-4 py-2 flex items-start gap-2.5 border-t border-zinc-100"><div class="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-1.5 flex-shrink-0"></div><div class="flex-1 text-[11px]"><div><span class="font-medium">Kitchen</span> bumped <span class="mono">#1041</span></div><div class="text-[10px] text-zinc-400 mt-0.5 mono">14:24 · grill + pasta</div></div></div>
+                <div class="activity-row px-4 py-2 flex items-start gap-2.5 border-t border-zinc-100"><div class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0"></div><div class="flex-1 text-[11px]"><div><span class="font-medium">Carlos M.</span> cancelled <span class="mono">#1040</span></div><div class="text-[10px] text-zinc-400 mt-0.5 mono">14:18 · refund $24.40</div></div></div>
+                <div class="activity-row px-4 py-2 flex items-start gap-2.5 border-t border-zinc-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></div><div class="flex-1 text-[11px]"><div><span class="font-medium">Reservation</span> booked · Hernández · 6 guests · 19:00</div><div class="text-[10px] text-zinc-400 mt-0.5 mono">14:12</div></div></div>
+                <div class="activity-row px-4 py-2 flex items-center justify-center border-t border-zinc-100"><button class="text-[10px] text-cyan-700 hover:underline font-medium">View full activity log →</button></div>
+              </div>
+              <span class="pin pin-cardgrid" style="left: 90%; top: 8px;">A7</span>
+            </div>
+          </div>
+
+          <!-- A-pins placed -->
+          <span class="pin pin-cardgrid" style="left: 50%; top: 8px;">A2</span>
+          <span class="pin pin-cardgrid" style="left: 8px; bottom: 8px;">A8</span>
+        </main>
+
+        <!-- ============ SECTION DIVIDER ============ -->
+        <div class="sec-divider">
+          <span class="badge-a">§ A</span>
+          <span>CARD GRID · analytical persona</span>
+          <span>↓ § B · OVERVIEW · operational persona</span>
+          <span class="badge-b">§ B</span>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- =================== § B — OVERVIEW VARIANT ====================== -->
+      <!-- =================================================================== -->
+      <div data-section="B">
+        <div class="relative z-10">
+          <div class="sysbar">
+            <div class="sysbar-cluster">
+              <div class="sysbar-apple"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg></div>
+              <span class="sysbar-app">Orderly</span>
+              <span class="sysbar-menu">File</span><span class="sysbar-menu">Edit</span><span class="sysbar-menu">View</span><span class="sysbar-menu">Window</span><span class="sysbar-menu">Help</span>
+            </div>
+            <div class="sysbar-cluster">
+              <div class="sysbar-icon-btn relative"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="kbd-hint">⌘K</span></div>
+              <div class="sysbar-icon-btn"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+              <div class="sysbar-icon-btn relative"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="sys-badge">3</span></div>
+              <div class="sysbar-icon-btn"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></div>
+              <div class="sysbar-clock">14:35</div>
+              <div class="sysbar-user"><div class="avatar">MG</div><span style="font-weight: 500; font-size: 11.5px;">Maria</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-3">
+            <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700">
+              <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+              <span class="text-zinc-500">Restaurant:</span><span class="font-medium">La Casa Roma</span>
+            </button>
+            <span class="text-zinc-300">|</span>
+            <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1"><span class="pulse"></span> Live</span>
+            <span class="text-zinc-500">· Lunch shift · 2h 25m left</span>
+          </div>
+          <div class="flex items-center gap-2 text-zinc-600">
+            <button class="text-zinc-500 hover:text-zinc-900 text-[11px] flex items-center gap-1 border border-dashed border-zinc-300 px-2 py-0.5 rounded">+ Compare with…</button>
+            <span class="font-medium text-zinc-700">Maria Gomez</span><span class="text-zinc-400">·</span><span class="text-zinc-500">Manager (shift)</span>
+          </div>
+        </div>
+        <div class="relative z-10 py-3 flex justify-center bg-zinc-50 border-b border-zinc-200">
+          <div class="dock">
+            <button class="dock-item active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="dock-badge">12</span></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item kitchen"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+            <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Overview body -->
+        <main class="relative z-10" style="min-height: 660px;">
+          <div class="px-6 pt-5 pb-3 flex items-end justify-between flex-wrap gap-3">
+            <div>
+              <div class="flex items-center gap-2 text-xs text-zinc-500 mb-0.5"><span>Run</span><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span class="font-medium text-zinc-700">Dashboard</span></div>
+              <h2 class="text-lg font-semibold tracking-tight">Good afternoon, Maria</h2>
+            </div>
+            <div class="flex items-center gap-2 text-[11px] text-zinc-500">
+              <span class="font-mono">Updated 2 sec ago</span>
+              <span class="pulse"></span>
+              <span class="font-medium text-emerald-600">Live</span>
+              <button class="text-cyan-700 hover:underline ml-2">View full report →</button>
+            </div>
+          </div>
+
+          <div class="flex" style="min-height: 540px;">
+            <!-- LEFT: compact KPIs -->
+            <div class="flex-1 p-5 relative" style="background: #fafafa;">
+              <div class="grid grid-cols-2 gap-3 mb-3 relative">
+                <div class="kpi-compact relative">
+                  <div class="flex items-start justify-between mb-1">
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Revenue · today</div>
+                    <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <div class="text-xl font-semibold tracking-tight mono">$ 4,820</div>
+                    <div class="flex items-center gap-0.5 text-[10px]"><svg class="w-2.5 h-2.5 delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg><span class="delta-up font-semibold">+12%</span></div>
+                  </div>
+                  <svg viewBox="0 0 80 16" class="w-full h-4 mt-1"><polyline fill="none" stroke="#10B981" stroke-width="1.5" points="0,12 8,11 16,13 24,9 32,7 40,10 48,5 56,7 64,3 72,4 80,2"/></svg>
+                </div>
+
+                <div class="kpi-compact">
+                  <div class="flex items-start justify-between mb-1">
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Tickets · live</div>
+                    <span class="text-[10px] px-1 py-0.5 bg-emerald-100 text-emerald-700 rounded font-medium flex items-center gap-1"><span class="pulse" style="width:5px;height:5px;"></span> 23</span>
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <div class="text-xl font-semibold tracking-tight mono">8</div>
+                    <div class="text-[10px] text-zinc-400">of 87 today</div>
+                  </div>
+                  <div class="flex items-center gap-1 mt-1.5 text-[10px]">
+                    <span class="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">8 live</span>
+                    <span class="px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">12 prep</span>
+                    <span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">3 ready</span>
+                  </div>
+                </div>
+
+                <div class="kpi-compact">
+                  <div class="flex items-start justify-between mb-1">
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Avg ticket time</div>
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <div class="text-xl font-semibold tracking-tight mono">14:32</div>
+                    <span class="delta-up font-semibold text-[10px]">−2:15</span>
+                  </div>
+                  <div class="text-[10px] text-zinc-400 mt-1">Target: ≤ 15:00 · on track</div>
+                </div>
+
+                <div class="kpi-compact">
+                  <div class="flex items-start justify-between mb-1">
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Table utilization</div>
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <div class="text-xl font-semibold tracking-tight mono">78%</div>
+                    <div class="text-[10px] text-zinc-400">10 / 13</div>
+                  </div>
+                  <div class="mt-1.5 h-1.5 bg-zinc-100 rounded-full overflow-hidden flex">
+                    <div class="h-full bg-emerald-500" style="width: 77%;"></div>
+                    <div class="h-full bg-purple-400" style="width: 23%;"></div>
+                  </div>
+                </div>
+                <span class="pin pin-overview" style="left: 50%; top: 50%;">B1</span>
+              </div>
+
+              <!-- Compact revenue trend -->
+              <div class="kpi-compact relative">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Revenue trend · last 7 days</div>
+                    <div class="flex items-baseline gap-2 mt-1">
+                      <div class="text-lg font-semibold tracking-tight mono">$ 32,480</div>
+                      <span class="delta-up font-semibold text-[10px]">+8.4% WoW</span>
+                    </div>
+                  </div>
+                  <select class="text-[10px] border border-zinc-200 rounded px-1.5 py-0.5 bg-white"><option>$ Revenue</option><option># Orders</option></select>
+                </div>
+                <div class="flex items-end gap-1.5 h-20 px-1 border-b border-zinc-100">
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t" style="height: 38%;"></div><div class="text-[9px] text-zinc-400">Tue</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t" style="height: 52%;"></div><div class="text-[9px] text-zinc-400">Wed</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t" style="height: 68%;"></div><div class="text-[9px] text-zinc-400">Thu</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t" style="height: 80%;"></div><div class="text-[9px] text-zinc-400">Fri</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t ring-2 ring-cyan-300" style="height: 95%;"></div><div class="text-[9px] text-cyan-700 font-semibold">Sat</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-cyan-500 rounded-t" style="height: 62%;"></div><div class="text-[9px] text-zinc-400">Sun</div></div>
+                  <div class="flex-1 flex flex-col items-center justify-end gap-0.5"><div class="w-full bg-zinc-300 rounded-t" style="height: 45%;"></div><div class="text-[9px] text-zinc-500">Mon</div></div>
+                </div>
+                <span class="pin pin-overview" style="left: 50%; top: 12px;">B2</span>
+              </div>
+
+              <!-- Server leaderboard (compact podium) -->
+              <div class="kpi-compact mt-3 relative">
+                <div class="flex items-start justify-between mb-2">
+                  <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Server leaderboard · today</div>
+                  <button class="text-[10px] text-cyan-700 hover:underline">All →</button>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="flex-1 flex items-end justify-around h-20">
+                    <div class="flex flex-col items-center"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-[9px] font-bold">SR</div><div class="mt-1 text-[9px] text-zinc-500 font-medium">2. Sofia</div></div>
+                    <div class="flex flex-col items-center"><div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[9px] font-bold ring-2 ring-amber-300">CM</div><div class="mt-1 text-[9px] text-amber-700 font-bold">1. Carlos</div></div>
+                    <div class="flex flex-col items-center"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-[9px] font-bold">DL</div><div class="mt-1 text-[9px] text-zinc-500 font-medium">3. Diego</div></div>
+                  </div>
+                  <div class="flex-1 space-y-1 text-[10px] border-l border-zinc-100 pl-4">
+                    <div class="flex items-center justify-between"><span class="text-zinc-500">Carlos · tickets</span><span class="mono font-semibold">28</span></div>
+                    <div class="flex items-center justify-between"><span class="text-zinc-500">Carlos · sales</span><span class="mono font-semibold">$ 1,420</span></div>
+                    <div class="flex items-center justify-between"><span class="text-zinc-500">Sofia · tickets</span><span class="mono font-semibold">24</span></div>
+                    <div class="flex items-center justify-between"><span class="text-zinc-500">Sofia · sales</span><span class="mono font-semibold">$ 1,180</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zone divider -->
+            <div class="zone-divider"></div>
+
+            <!-- RIGHT: Live orders panel -->
+            <div class="flex-1 bg-white p-5 relative">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="flex items-center gap-2 text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">
+                    <span class="pulse"></span><span>Live orders</span>
+                    <span class="px-1.5 bg-zinc-100 text-zinc-600 rounded normal-case tracking-normal">8 active</span>
+                  </div>
+                  <p class="text-[11px] text-zinc-500 mt-0.5">Click any row → drill into order detail</p>
+                </div>
+                <div class="flex items-center gap-1 text-[11px]">
+                  <button class="px-2 py-0.5 bg-zinc-100 rounded text-zinc-700 font-medium">All</button>
+                  <button class="px-2 py-0.5 text-zinc-500 hover:bg-zinc-50 rounded">Live only</button>
+                  <button class="px-2 py-0.5 text-zinc-500 hover:bg-zinc-50 rounded">My section</button>
+                </div>
+              </div>
+
+              <div class="space-y-1.5 -mx-2">
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-blue-500 bg-blue-50/40">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1047</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">Ordering</span><span class="text-[10px] text-zinc-500">T-03 · Diego L.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">3 guests · 0 items yet</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-blue-600 font-semibold">NEW</div><div class="text-[10px] text-zinc-400">02:08</div></div>
+                  </div>
+                </div>
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-amber-400">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1045</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Confirmed</span><span class="text-[10px] text-zinc-500">T-02 · Carlos M.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">Risotto · Tiramisu · 2× Wine</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-amber-600 font-semibold">07:55</div><div class="text-[10px] text-zinc-400">$ 47.90</div></div>
+                  </div>
+                </div>
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-rose-500 bg-rose-50/30">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1046</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Preparing</span><span class="text-[10px] text-zinc-500">T-09 · Sofia R.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">Lasagna · Bruschetta · Water</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-rose-600 font-bold">21:10 ⚠</div><div class="text-[10px] text-zinc-400">$ 31.40</div></div>
+                  </div>
+                </div>
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-amber-400">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1043</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Preparing</span><span class="text-[10px] text-zinc-500">T-07 · Carlos M.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">Ribeye · Old Fashioned</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-amber-600 font-semibold">11:48</div><div class="text-[10px] text-zinc-400">$ 64.20</div></div>
+                  </div>
+                </div>
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-amber-400">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1044</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Confirmed</span><span class="text-[10px] text-zinc-500">T-12 · Diego L.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">4× Tacos al pastor · Guacamole</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-amber-600 font-semibold">09:22</div><div class="text-[10px] text-zinc-400">$ 52.00</div></div>
+                  </div>
+                </div>
+                <div class="order-row-overview px-2 py-2 rounded-lg border-l-4 border-emerald-500">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <div class="flex items-center gap-2"><span class="font-mono text-xs font-semibold">#1042</span><span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">Ready</span><span class="text-[10px] text-zinc-500">T-04 · Carlos M.</span></div>
+                      <div class="text-[11px] text-zinc-600 mt-1">2× Margherita · Caesar</div>
+                    </div>
+                    <div class="text-right"><div class="mono text-[11px] text-emerald-600 font-semibold">14:21</div><div class="text-[10px] text-emerald-600 font-semibold">↑ EXPEDITE</div></div>
+                  </div>
+                </div>
+                <div class="px-2 pt-3 pb-1 text-[10px] text-zinc-400 uppercase tracking-widest font-semibold flex items-center gap-2">
+                  <span class="flex-1 h-px bg-zinc-100"></span><span>Last events</span><span class="flex-1 h-px bg-zinc-100"></span>
+                </div>
+                <div class="px-2 py-1.5 flex items-start gap-2 text-[11px]"><div class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1"></div><div class="flex-1"><span class="font-medium">Carlos M.</span> cancelled <span class="mono">#1040</span> · 14:18 · refund $24.40</div></div>
+                <div class="px-2 py-1.5 flex items-start gap-2 text-[11px]"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1"></div><div class="flex-1"><span class="font-medium">Reservation</span> booked · Hernández · 6 guests · 19:00</div></div>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400">
+                <span class="font-mono">/hubs/orders</span> · 4 events in last 60s
+                <button class="text-cyan-700 hover:underline">Open Orders list →</button>
+              </div>
+              <span class="pin pin-overview" style="left: 50%; top: 8px;">B3</span>
+              <span class="pin pin-overview" style="left: 50%; top: 50%;">B4</span>
+            </div>
+          </div>
+
+          <div class="px-6 py-2 text-[10px] text-zinc-400 flex items-center justify-between border-t border-zinc-100">
+            <div class="flex items-center gap-2"><span class="pulse"></span><span>Realtime via SignalR · 2 hubs connected · last sync 2s ago</span></div>
+            <span>Spec §5.1 · v0.2</span>
+          </div>
+
+          <!-- B-pins placed -->
+          <span class="pin pin-overview" style="left: 8px; top: 90%;">B5</span>
+          <span class="pin pin-overview" style="left: 92%; top: 12px;">B6</span>
+          <span class="pin pin-overview" style="left: 8px; top: 30%;">B7</span>
+          <span class="pin pin-overview" style="left: 92%; top: 60%;">B8</span>
+        </main>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ ANNOTATIONS / RATIONALE ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12 mt-8">
+    <h2 class="text-lg font-semibold tracking-tight mb-4">Annotation pins — combined rationale (A1–A8 + B1–B8)</h2>
+
+    <h3 class="text-sm font-semibold uppercase tracking-widest text-cyan-700 mt-4 mb-2">§ A — Card Grid (analytical)</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm mb-8">
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A1</span><strong class="text-zinc-900">KPI card anatomy</strong></div>
+        <p class="text-zinc-600 text-xs">4-card row · same layout primitive everywhere: icon · label · big mono number · delta + sparkline. Scales to any KPI (revenue, tickets, time, utilization, staff count, NPA — research §4.2 #6).</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A2</span><strong class="text-zinc-900">Time-range segmented control</strong></div>
+        <p class="text-zinc-600 text-xs">Top-right segmented control — borrowed from Toast Dashboard + Square Reports. Default Today · Yesterday shown active as example. Custom opens date-range popover. URL-stateful (?range=yesterday).</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A3</span><strong class="text-zinc-900">Sparkline component (reusable)</strong></div>
+        <p class="text-zinc-600 text-xs">Tiny inline-SVG sparkline with last-point dot. Used in 4+ places on this dashboard, plus staff activity, ticket volume, analytics. Build as &lt;Sparkline values color /&gt; with color prop.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A4</span><strong class="text-zinc-900">Revenue trend · 7-day bar chart</strong></div>
+        <p class="text-zinc-600 text-xs">Switchable between $ / Orders / Avg metric. Today (Mon) gets a neutral zinc color (data still collecting). Saturday is ringed in cyan to indicate peak. 7 bars fit comfortably at 1/7 width each.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A5</span><strong class="text-zinc-900">Server leaderboard · actionable personnel data</strong></div>
+        <p class="text-zinc-600 text-xs">Research §4.3 #2 gap. Pink highlight if any server is &gt;15% below average → actionable for floor reassignment. Sortable by tickets / revenue / avg-ticket. Click row → server detail / shift history.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A6</span><strong class="text-zinc-900">Top items · progress-bar visualization</strong></div>
+        <p class="text-zinc-600 text-xs">Wider gradient-bar (emerald-500) for higher rank. Tap row → item detail. When a promo menu is active, the top 1 item shows a promo badge. Bar width shows relative ranking, not absolute sales.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A7</span><strong class="text-zinc-900">Live activity feed · SignalR-driven</strong></div>
+        <p class="text-zinc-600 text-xs">Subscribed to /hubs/orders + /hubs/notifications. Color-dot = event type (green=ready, blue=new, yellow=kitchen, rose=cancel, zinc=mod). Last 30 min only — beyond that lives at /site/admin/activity (reserved route, see spec §4.3).</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-cyan-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-cyan-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">A8</span><strong class="text-zinc-900">"Compare with…" toggle · competitive edge</strong></div>
+        <p class="text-zinc-600 text-xs">Dashed-border ghost in utility bar. Research §4.3 #3 — none of the 5 competitors have true side-by-side multi-restaurant KPI comparison. Pre-MVP; route /site/admin/compare reserved.</p>
+      </div>
+    </div>
+
+    <h3 class="text-sm font-semibold uppercase tracking-widest text-emerald-700 mt-4 mb-2">§ B — Overview (operational)</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B1</span><strong class="text-zinc-900">Compact KPI snapshot (2×2)</strong></div>
+        <p class="text-zinc-600 text-xs">Same 4 KPIs but ~30% smaller. Slot reads "what's the state of the world right now" not "let me analyze trends". Sparkline, status pills, mini progress bar replace the deeper metrics.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B2</span><strong class="text-zinc-900">Trend stays · but compact</strong></div>
+        <p class="text-zinc-600 text-xs">Same 7-day chart, ~30% less prominent. Manager glances "are we up/down" without leaving. The toggle is now a dropdown (saves space). Same data, lower weight.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B3</span><strong class="text-zinc-900">Live orders panel · the reason this view exists</strong></div>
+        <p class="text-zinc-600 text-xs">Right panel = the new addition vs Card Grid. 8 currently-active orders as a vertical feed of actionable rows. Color-coded urgency (urgent #1046 with 21:10 elapsed gets rose bg + ⚠) — at-a-glance triage.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B4</span><strong class="text-zinc-900">Filter row · All · Live only · My section</strong></div>
+        <p class="text-zinc-600 text-xs">Three quick filters in the right panel header. "My section" is a research gap — none of the 5 competitor platforms surface per-server filtering at this level. Especially valuable for senior waiters who also act as shift supervisors.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B5</span><strong class="text-zinc-900">Persona-tuned · Shift-Manager</strong></div>
+        <p class="text-zinc-600 text-xs">Built for the manager mid-floor, not one doing P&amp;L review. "Updated 2 sec ago" + live pulse near header reassures this isn't a stale snapshot. Density is intentionally lower than Card Grid.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B6</span><strong class="text-zinc-900">Compact server leaderboard · podium visualization</strong></div>
+        <p class="text-zinc-600 text-xs">Same server data as §A but rendered as a podium (1-2-3) instead of a table. Winner gets amber ring. Takes ~50% less vertical space while keeping the same scanability.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B7</span><strong class="text-zinc-900">Split layout · "two adjacent rooms"</strong></div>
+        <p class="text-zinc-600 text-xs">Same split pattern as Wireframe C's combined-ops experimental layout. At ≥1440 px both panels breathe. At &lt;1280 px the right panel collapses to a slide-over drawer triggered by the orders dock badge.</p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-emerald-300 transition">
+        <div class="flex items-center gap-2 mb-1.5"><span class="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">B8</span><strong class="text-zinc-900">Recent events merge at the bottom</strong></div>
+        <p class="text-zinc-600 text-xs">Below the active orders, a small "Last events" list. Same /hubs/orders stream. Tells the manager what just happened (cancellations, reservations, modifications). Click → opens full /site/admin/activity route.</p>
+      </div>
+    </div>
+
+    <!-- ============ IMPLEMENTATION NOTES ============ -->
+    <div class="mt-10 bg-zinc-900 text-white rounded-lg p-6">
+      <h3 class="text-sm font-semibold mb-3 text-amber-400">Implementation hand-off (single component set, two layouts)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-zinc-300">
+        <div>
+          <div class="text-white font-semibold mb-1">Components built ONCE, rendered in TWO layouts</div>
+          <ul class="space-y-1 list-disc list-inside">
+            <li><code class="text-cyan-300">KpiCard</code> — props: variant={'cardgrid'|'compact'}, label, value, delta, sparkline</li>
+            <li><code class="text-cyan-300">RevenueTrendChart</code> — bars; takes metric + range props</li>
+            <li><code class="text-cyan-300">TopItemsList</code> — used in §A; could feed §B's "Top today" podium (B6 area)</li>
+            <li><code class="text-cyan-300">ServerLeaderboard</code> — variant={'table'|'podium'}</li>
+            <li><code class="text-cyan-300">LiveActivityFeed</code> — uses §A directly; §B replaces it with LiveOrdersPanel</li>
+            <li><code class="text-cyan-300">LiveOrdersPanel</code> — only in §B; row-click → /orders/:id</li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Data sources (RTK Query + SignalR)</div>
+          <ul class="space-y-1 list-disc list-inside">
+            <li><code class="text-cyan-300">useGetKpiSummaryQuery</code> — revenue, tickets, time, util — cached 60s</li>
+            <li><code class="text-cyan-300">useGetRevenueTrendQuery</code> — range param, cached per range</li>
+            <li><code class="text-cyan-300">useGetTopItemsQuery</code> — by quantity or revenue</li>
+            <li><code class="text-cyan-300">useGetServerLeaderboardQuery</code> — by tickets / sales / avg</li>
+            <li><code class="text-cyan-300">/hubs/notifications</code> — activity feed events</li>
+            <li><code class="text-cyan-300">/hubs/orders</code> — live orders panel (B only)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SOURCES ============ -->
+    <div class="mt-10 border-t border-zinc-200 pt-6 text-xs text-zinc-500">
+      <h3 class="text-xs font-semibold text-zinc-700 uppercase tracking-widest mb-3">Sources &amp; cross-refs</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <div>· <span class="mono">docs/website-spec.md</span> §5.1 (Dashboard), §4.3 (personas)</div>
+        <div>· <span class="mono">docs/research/competitive-analysis-restaurant-crm.md</span> §4.1, §4.3, §5.1</div>
+        <div>· Toast Dashboard — KPI card layout + sparklines (§A)</div>
+        <div>· Square Reports — time-range segmented control</div>
+        <div>· Toast Now — manager mobile command center (§B inspiration)</div>
+        <div>· Companion: <span class="mono">wireframe-header-and-dock.html</span> · <span class="mono">wireframe-restaurant-orders.html</span></div>
+        <div>· Replaces: <span class="mono line-through">wireframe-dashboard-cardgrid.html</span> · <span class="mono line-through">wireframe-dashboard-overview.html</span></div>
+      </div>
+    </div>
+
+    <!-- ============ NEXT STEPS ============ -->
+    <div class="mt-8 bg-zinc-900 text-white rounded-lg p-5">
+      <h3 class="text-sm font-semibold mb-2">Next moves</h3>
+      <ol class="text-xs space-y-1.5 text-zinc-300 list-decimal list-inside">
+        <li>Hand-off doc: see <span class="font-mono bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300">docs/wireframes/HANDOFF.md</span> for the complete cross-reference index.</li>
+        <li>Pick default per persona: <span class="text-cyan-300">RestaurantAdmin → §A</span> · <span class="text-emerald-300">Shift-Manager → §B</span>. Toggle in user prefs as v1 default.</li>
+        <li>Iterate: KPI density (could §A borrow §B's compact slots on small screens?), leaderboard sort orders, live-orders filter set.</li>
+        <li>Optional: extract §A and §B into separate Storybook stories for designer handoff.</li>
+      </ol>
+    </div>
+
+  </div>
+</body>
+</html>

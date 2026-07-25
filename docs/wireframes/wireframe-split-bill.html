@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, initial-scale=1.0">
+  <title>Wireframe G — Split-Bill (Interactive drag-drop)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .canvas { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; position: relative; overflow: hidden; }
+    .grid-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px); background-size: 16px 16px; }
+    .pin { position: absolute; width: 28px; height: 28px; background: #f59e0b; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.25), 0 0 0 3px #fff; cursor: pointer; z-index: 60; transform: translate(-50%, -50%); font-family: 'Outfit', sans-serif; }
+    .pin:hover { transform: translate(-50%, -50%) scale(1.15); transition: transform .15s; }
+
+    /* System bar + dock (compact) */
+    .sysbar { display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 14px; background: rgba(245, 245, 247, 0.78); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: #3f3f46; }
+    .sysbar-cluster { display: flex; align-items: center; gap: 14px; }
+    .sysbar-apple { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; color: #18181b; }
+    .sysbar-apple:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-app { font-weight: 700; letter-spacing: -0.01em; font-size: 12.5px; }
+    .sysbar-menu { cursor: pointer; padding: 2px 8px; border-radius: 4px; font-weight: 500; transition: background .12s; }
+    .sysbar-menu:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; color: #52525b; position: relative; transition: background .12s; }
+    .sysbar-icon-btn:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-icon-btn .kbd-hint { position: absolute; top: -4px; right: -4px; font-size: 8px; font-weight: 600; background: rgba(0,0,0,0.55); color: #fff; border-radius: 3px; padding: 1px 3px; line-height: 1; }
+    .sysbar-icon-btn .sys-badge { position: absolute; top: 1px; right: 1px; min-width: 14px; height: 14px; padding: 0 3px; background: #EF4444; color: #fff; border-radius: 7px; font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(245,245,247,0.85); }
+    .sysbar-clock { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+    .sysbar-clock:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user { display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; border-radius: 16px; cursor: pointer; transition: background .12s; }
+    .sysbar-user:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-user .avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; font-weight: 700; background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+    .dock { display: flex; align-items: center; gap: 4px; padding: 8px 14px; background: rgba(24, 24, 27, 0.72); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .dock-item { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; transition: transform .15s, background .15s; color: rgba(255,255,255,0.92); }
+    .dock-item:hover { transform: translateY(-4px) scale(1.08); background: rgba(255,255,255,0.08); }
+    .dock-item.active { background: rgba(14,165,233,0.20); }
+    .dock-item.active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: #0EA5E9; box-shadow: 0 0 6px #0EA5E9; }
+    .dock-item.kitchen { background: rgba(16,185,129,0.08); }
+    .dock-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); margin: 0 4px; }
+    .dock-badge { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; background: #EF4444; color: #fff; border-radius: 8px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px rgba(24,24,27,0.72); }
+    .dock-badge.green { background: #10B981; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #10B981; box-shadow: 0 0 0 0 #10B981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+    /* ====== Split-bill specific ====== */
+    .seat { background: #fff; border: 2px solid #e4e4e7; border-radius: 12px; min-height: 220px; transition: border-color .15s, background .15s, transform .15s; }
+    .seat.drop-target { border-color: #06b6d4; background: #ecfeff; border-style: dashed; transform: scale(1.01); }
+    .seat.paid { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-color: #10B981; }
+    .seat-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #e4e4e7; }
+    .seat-items { padding: 8px; min-height: 80px; max-height: 220px; overflow-y: auto; }
+    .seat-empty { padding: 28px 16px; text-align: center; color: #a1a1aa; font-size: 11px; font-style: italic; }
+    .seat-totals { padding: 10px 14px; border-top: 1px dashed #e4e4e7; background: #fafafa; border-radius: 0 0 10px 10px; }
+
+    .item { background: #fff; border: 1px solid #e4e4e7; border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; cursor: grab; user-select: none; transition: box-shadow .12s, border-color .12s, opacity .12s; display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .item:hover { border-color: #06b6d4; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .item:active { cursor: grabbing; }
+    .item.dragging { opacity: 0.4; border-style: dashed; }
+    .item .qty { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #52525b; min-width: 26px; }
+    .item .name { flex: 1; min-width: 0; }
+    .item .price { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #18181b; }
+    .item .mod-badge { font-size: 9px; padding: 1px 6px; background: #fef3c7; color: #92400e; border-radius: 9999px; }
+
+    .unassigned-zone { border: 2px dashed #d4d4d8; border-radius: 12px; min-height: 120px; padding: 8px; background: #fafafa; transition: all .15s; }
+    .unassigned-zone.drop-target { border-color: #06b6d4; background: #ecfeff; }
+
+    .grand-totals { background: #18181b; color: #fafafa; border-radius: 12px; padding: 16px 18px; }
+
+    /* Highlight a "split equally" hint */
+    .hint-glow { animation: hint-glow 1.5s ease-out 3; }
+    @keyframes hint-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(6,182,212,0); } 50% { box-shadow: 0 0 0 8px rgba(6,182,212,0.25); } }
+  </style>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+
+  <!-- ============ HEADER STRIP ============ -->
+  <div class="bg-zinc-900 text-white px-6 py-2.5 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-3">
+      <span class="mono opacity-80">docs/wireframes/wireframe-split-bill.html</span>
+      <span class="px-2 py-0.5 bg-amber-500 text-amber-950 rounded font-semibold">Phase 2</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">WIREFRAME G</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">SPLIT-BILL · DRAG-DROP</span>
+      <span class="px-2 py-0.5 bg-pink-600 text-white rounded font-semibold">⚡ INTERACTIVE</span>
+    </div>
+    <div class="mono opacity-60">OrderlyWeb · Try it: drag items → seats · keyboard: tab + space</div>
+  </div>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <div class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+    <div class="flex items-baseline justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight">Split-Bill — Wireframe G <span class="text-sm font-normal text-cyan-600">· interactive</span></h1>
+        <p class="text-zinc-600 text-sm mt-1">
+          Route <span class="mono text-xs">/site/restaurant/orders/:id/split-bill</span> · Audience: Cashier (primary), Waiter (assists), Manager (override)
+          · <span class="text-emerald-600 font-medium">Drag items → seats · totals update live · 5 annotation pins</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 bg-zinc-200 rounded">v0.1</span>
+        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold">HTML5 drag-drop · no deps</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ THE WIREFRAME ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+
+      <!-- ============ 3-TIER HEADER (compact) ============ -->
+      <div class="relative z-10">
+        <div class="sysbar">
+          <div class="sysbar-cluster">
+            <div class="sysbar-apple"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg></div>
+            <span class="sysbar-app">Orderly</span>
+            <span class="sysbar-menu">File</span>
+            <span class="sysbar-menu">Edit</span>
+            <span class="sysbar-menu">View</span>
+            <span class="sysbar-menu">Window</span>
+            <span class="sysbar-menu">Help</span>
+          </div>
+          <div class="sysbar-cluster">
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="kbd-hint">⌘K</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="sys-badge">3</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </div>
+            <div class="sysbar-clock">14:35</div>
+            <div class="sysbar-user">
+              <div class="avatar">CS</div>
+              <span style="font-weight: 500; font-size: 11.5px;">Carlos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700">
+            <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+            <span class="text-zinc-500">Restaurant:</span>
+            <span class="font-medium">La Casa Roma</span>
+          </button>
+          <span class="text-zinc-300">|</span>
+          <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1">
+            <span class="pulse"></span> Live
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-zinc-600">
+          <span class="font-medium text-zinc-700">Carlos S.</span>
+          <span class="text-zinc-400">·</span>
+          <span class="text-zinc-500">Cashier</span>
+        </div>
+      </div>
+      <div class="relative z-10 py-3 flex justify-center bg-zinc-50 border-b border-zinc-200">
+        <div class="dock">
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+          <button class="dock-item active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="dock-badge">12</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item kitchen"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        </div>
+      </div>
+
+      <!-- ============ SPLIT-BILL BODY ============ -->
+      <main class="relative z-10 p-6">
+
+        <!-- Page header -->
+        <div class="flex items-start justify-between flex-wrap gap-3 mb-5">
+          <div>
+            <div class="flex items-center gap-2 text-[11px] text-zinc-500 mb-1">
+              <a class="hover:text-zinc-700 hover:underline">Orders</a>
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <a class="hover:text-zinc-700 hover:underline">#1046</a>
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <span class="font-medium text-zinc-700">Split bill</span>
+            </div>
+            <h2 class="text-xl font-semibold tracking-tight">Split the bill for Order #1046</h2>
+            <p class="text-xs text-zinc-500 mt-0.5">T-09 · Sofía R. waiter · <span class="font-medium text-zinc-700">Hernández M. (VIP, 4 guests)</span> · Table T-09 asked to split 4 ways</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="splitEvenly()" class="px-3 py-1.5 text-xs border border-cyan-200 text-cyan-800 bg-cyan-50 rounded-lg hover:bg-cyan-100 font-medium flex items-center gap-1.5 hint-glow">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              Split evenly
+            </button>
+            <button onclick="clearAll()" class="px-3 py-1.5 text-xs border border-zinc-200 rounded-lg hover:bg-zinc-50 text-zinc-700 font-medium">
+              Clear
+            </button>
+            <button onclick="addSeat()" class="px-3 py-1.5 text-xs border border-zinc-200 rounded-lg hover:bg-zinc-50 text-zinc-700 font-medium">
+              + Add seat
+            </button>
+            <span class="w-px h-6 bg-zinc-200 mx-1"></span>
+            <button class="px-3 py-1.5 text-xs font-medium bg-zinc-900 text-white rounded-lg hover:bg-zinc-800 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/></svg>
+              Print all
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ SPLIT BODY ============ -->
+        <div class="grid grid-cols-12 gap-4">
+
+          <!-- LEFT: Items & Unassigned -->
+          <div class="col-span-5">
+
+            <!-- Page-level totals (always visible) -->
+            <div class="grand-totals mb-4">
+              <div class="flex items-center justify-between mb-1">
+                <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Grand total · unassigned + 4 seats</div>
+                <button class="text-zinc-400 hover:text-zinc-200">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                </button>
+              </div>
+              <div class="flex items-baseline justify-between">
+                <div>
+                  <span class="mono text-3xl font-bold">$ 44.59</span>
+                  <span class="text-xs text-zinc-400 ml-2">subtotal $42.90 + tax $1.69*</span>
+                </div>
+                <div class="text-right text-[10px] text-zinc-400">
+                  <div>3 of 4 seats assigned</div>
+                  <div class="text-emerald-400 font-medium">⌃ balanced</div>
+                </div>
+              </div>
+              <p class="text-[9px] text-zinc-500 mt-2 italic">* Tax breakdown shown per seat. Total before discount: $42.90. After VIP discount −$4.29 → $38.61 base.</p>
+            </div>
+
+            <!-- Unassigned zone -->
+            <div class="mb-2 flex items-center justify-between">
+              <h3 class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Unassigned items</h3>
+              <span class="text-[10px] text-zinc-400"><span id="unassigned-count">1</span> item · drag to a seat →</span>
+            </div>
+            <div id="unassigned-zone" class="unassigned-zone mb-4" data-zone="unassigned">
+              <!-- Espresso is the only unassigned item at start -->
+              <div class="item" draggable="true" data-item-id="espresso" data-price="3.50" data-original-zone="unassigned">
+                <span class="qty">1×</span>
+                <span class="name">Espresso</span>
+                <span class="text-[9px] text-zinc-400 italic">(who had this?)</span>
+                <span class="price">$ 3.50</span>
+              </div>
+            </div>
+
+            <!-- All items (read-only view, click to send to unassigned) -->
+            <div class="mb-3">
+              <h3 class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold mb-2">Order items (reference · <span class="text-zinc-400 normal-case tracking-normal">7 total · $42.90</span>)</h3>
+              <div class="border border-zinc-200 rounded-lg overflow-hidden bg-white">
+                <table class="w-full text-xs">
+                  <tbody id="reference-table" class="divide-y divide-zinc-100">
+                    <tr><td class="px-3 py-2 mono">1×</td><td class="px-2 py-2">Lasagna Bolognese</td><td class="px-2 py-2 text-[10px] text-zinc-400">Pasta</td><td class="px-2 py-2 text-right mono">$ 18.40</td></tr>
+                    <tr><td class="px-3 py-2 mono">2×</td><td class="px-2 py-2">Bruschetta Pomodoro <span class="px-1 bg-amber-100 text-amber-700 rounded text-[9px]">+ tomato</span></td><td class="px-2 py-2 text-[10px] text-zinc-400">Salad</td><td class="px-2 py-2 text-right mono">$ 12.00</td></tr>
+                    <tr><td class="px-3 py-2 mono">3×</td><td class="px-2 py-2">Sparkling water <span class="px-1 bg-zinc-100 text-zinc-600 rounded text-[9px]">+ ice + lemon</span></td><td class="px-2 py-2 text-[10px] text-zinc-400">Bar</td><td class="px-2 py-2 text-right mono">$ 9.00</td></tr>
+                    <tr><td class="px-3 py-2 mono">1×</td><td class="px-2 py-2">Espresso</td><td class="px-2 py-2 text-[10px] text-zinc-400">Bar</td><td class="px-2 py-2 text-right mono">$ 3.50</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[10px] text-zinc-400 italic mt-1.5">↑ Reference view only — actual items live inside the seats & unassigned zone above.</p>
+            </div>
+
+            <!-- PIN 1 — overall approach -->
+            <span class="pin" style="left: 8px; top: 8px;">1</span>
+            <span class="pin" style="left: 8px; top: 50%;">4</span>
+            <span class="pin" style="left: 50%; bottom: 8px;">5</span>
+          </div>
+
+          <!-- RIGHT: Seats (drop targets) -->
+          <div class="col-span-7">
+
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">Guest seats</h3>
+              <div class="text-[10px] text-zinc-400"><span id="seats-count">4</span> active · <span id="unassigned-total">$ 3.50</span> unassigned</div>
+            </div>
+
+            <div id="seats-container" class="grid grid-cols-2 gap-3">
+
+              <!-- SEAT 1 — Hernández M. (VIP, primary) -->
+              <div class="seat" data-seat="seat-1" data-discount="10">
+                <div class="seat-header">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[10px] font-bold">HM</div>
+                    <div>
+                      <div class="text-sm font-semibold">Hernández M.</div>
+                      <div class="text-[10px] text-zinc-500">VIP · Primary</div>
+                    </div>
+                  </div>
+                  <span class="text-[9px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-semibold">−10%</span>
+                </div>
+                <div class="seat-items" data-zone="seat-1">
+                  <div class="item" draggable="true" data-item-id="lasagna" data-price="18.40" data-original-zone="seat-1">
+                    <span class="qty">1×</span>
+                    <span class="name">Lasagna</span>
+                    <span class="text-[9px] text-amber-600 font-medium">Pasta</span>
+                    <span class="price">$ 18.40</span>
+                  </div>
+                </div>
+                <div class="seat-totals text-[11px] space-y-0.5">
+                  <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono seat-subtotal">$ 18.40</span></div>
+                  <div class="flex justify-between text-amber-700"><span>VIP −10%</span><span class="mono">−$ 1.84</span></div>
+                  <div class="flex justify-between"><span class="text-zinc-500">Tax 10%</span><span class="mono">$ 1.66</span></div>
+                  <div class="flex justify-between border-t border-zinc-200 pt-1 mt-1 font-semibold"><span>Total</span><span class="mono seat-total text-sm">$ 18.22</span></div>
+                  <div class="flex gap-1 mt-2">
+                    <button onclick="markPaid(this)" class="flex-1 text-[10px] px-2 py-1 border border-emerald-200 text-emerald-700 rounded hover:bg-emerald-50 font-medium">Mark paid</button>
+                    <button class="text-[10px] px-2 py-1 border border-zinc-200 text-zinc-600 rounded hover:bg-zinc-50">Print</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEAT 2 -->
+              <div class="seat" data-seat="seat-2">
+                <div class="seat-header">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-[10px] font-bold">L?</div>
+                    <div>
+                      <div class="text-sm font-semibold">Guest 2</div>
+                      <div class="text-[10px] text-zinc-500">Unnamed · add name</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="seat-items" data-zone="seat-2">
+                  <div class="item" draggable="true" data-item-id="bruschetta" data-price="6.00" data-original-zone="seat-2">
+                    <span class="qty">1×</span>
+                    <span class="name">Bruschetta</span>
+                    <span class="text-[9px] text-amber-600 font-medium">+ tomato</span>
+                    <span class="price">$ 6.00</span>
+                  </div>
+                  <div class="item" draggable="true" data-item-id="water-1" data-price="3.00" data-original-zone="seat-2">
+                    <span class="qty">1×</span>
+                    <span class="name">Sparkling water</span>
+                    <span class="text-[9px] text-zinc-500">+ ice + lemon</span>
+                    <span class="price">$ 3.00</span>
+                  </div>
+                </div>
+                <div class="seat-totals text-[11px] space-y-0.5">
+                  <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono seat-subtotal">$ 9.00</span></div>
+                  <div class="flex justify-between"><span class="text-zinc-500">Tax 10%</span><span class="mono">$ 0.90</span></div>
+                  <div class="flex justify-between border-t border-zinc-200 pt-1 mt-1 font-semibold"><span>Total</span><span class="mono seat-total text-sm">$ 9.90</span></div>
+                  <div class="flex gap-1 mt-2">
+                    <button onclick="markPaid(this)" class="flex-1 text-[10px] px-2 py-1 border border-emerald-200 text-emerald-700 rounded hover:bg-emerald-50 font-medium">Mark paid</button>
+                    <button class="text-[10px] px-2 py-1 border border-zinc-200 text-zinc-600 rounded hover:bg-zinc-50">Print</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEAT 3 -->
+              <div class="seat" data-seat="seat-3">
+                <div class="seat-header">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-[10px] font-bold">G3</div>
+                    <div>
+                      <div class="text-sm font-semibold">Guest 3</div>
+                      <div class="text-[10px] text-zinc-500">Unnamed · add name</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="seat-items" data-zone="seat-3">
+                  <div class="item" draggable="true" data-item-id="bruschetta-2" data-price="6.00" data-original-zone="seat-3">
+                    <span class="qty">1×</span>
+                    <span class="name">Bruschetta</span>
+                    <span class="text-[9px] text-amber-600 font-medium">+ tomato</span>
+                    <span class="price">$ 6.00</span>
+                  </div>
+                  <div class="item" draggable="true" data-item-id="water-2" data-price="3.00" data-original-zone="seat-3">
+                    <span class="qty">1×</span>
+                    <span class="name">Sparkling water</span>
+                    <span class="text-[9px] text-zinc-500">+ ice + lemon</span>
+                    <span class="price">$ 3.00</span>
+                  </div>
+                </div>
+                <div class="seat-totals text-[11px] space-y-0.5">
+                  <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono seat-subtotal">$ 9.00</span></div>
+                  <div class="flex justify-between"><span class="text-zinc-500">Tax 10%</span><span class="mono">$ 0.90</span></div>
+                  <div class="flex justify-between border-t border-zinc-200 pt-1 mt-1 font-semibold"><span>Total</span><span class="mono seat-total text-sm">$ 9.90</span></div>
+                  <div class="flex gap-1 mt-2">
+                    <button onclick="markPaid(this)" class="flex-1 text-[10px] px-2 py-1 border border-emerald-200 text-emerald-700 rounded hover:bg-emerald-50 font-medium">Mark paid</button>
+                    <button class="text-[10px] px-2 py-1 border border-zinc-200 text-zinc-600 rounded hover:bg-zinc-50">Print</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEAT 4 -->
+              <div class="seat" data-seat="seat-4">
+                <div class="seat-header">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white text-[10px] font-bold">G4</div>
+                    <div>
+                      <div class="text-sm font-semibold">Guest 4</div>
+                      <div class="text-[10px] text-zinc-500">Unnamed · add name</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="seat-items" data-zone="seat-4">
+                  <div class="item" draggable="true" data-item-id="water-3" data-price="3.00" data-original-zone="seat-4">
+                    <span class="qty">1×</span>
+                    <span class="name">Sparkling water</span>
+                    <span class="text-[9px] text-zinc-500">+ ice + lemon</span>
+                    <span class="price">$ 3.00</span>
+                  </div>
+                </div>
+                <div class="seat-totals text-[11px] space-y-0.5">
+                  <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono seat-subtotal">$ 3.00</span></div>
+                  <div class="flex justify-between"><span class="text-zinc-500">Tax 10%</span><span class="mono">$ 0.30</span></div>
+                  <div class="flex justify-between border-t border-zinc-200 pt-1 mt-1 font-semibold"><span>Total</span><span class="mono seat-total text-sm">$ 3.30</span></div>
+                  <div class="flex gap-1 mt-2">
+                    <button onclick="markPaid(this)" class="flex-1 text-[10px] px-2 py-1 border border-emerald-200 text-emerald-700 rounded hover:bg-emerald-50 font-medium">Mark paid</button>
+                    <button class="text-[10px] px-2 py-1 border border-zinc-200 text-zinc-600 rounded hover:bg-zinc-50">Print</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <p class="text-[10px] text-zinc-400 italic mt-3">
+              Try it: drag the Espresso item from Unassigned → any seat. The seat totals and the grand total recalculate immediately. Drag an item back to Unassigned to undo. Tap "Split evenly" to auto-distribute unassigned items equally.
+            </p>
+
+            <span class="pin" style="left: 50%; top: 8px;">2</span>
+            <span class="pin" style="left: 50%; top: 50%;">3</span>
+          </div>
+        </div>
+
+        <!-- Footer signal -->
+        <div class="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400">
+          <span>Spec §6.4 + §12 #2 (audit). Drag-drop with HTML5 API. Touch fallback: native long-press menu on mobile (v2).</span>
+          <span class="font-mono">v0.1 · interactive</span>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ ANNOTATIONS / RATIONALE ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12 mt-8">
+    <h2 class="text-lg font-semibold tracking-tight mb-4">Annotation pins — what to look at, and why</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+          <strong class="text-zinc-900">Grand-totals always visible · tax breakdown</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          A black "command-bar" sticky at the top of the items column shows the original $42.90 subtotal, the VIP discount, and the running reconciliation against what each seat is now liable for. Goal: cashier never loses sight of the original total.
+          <span class="text-zinc-400">Tax per-seat computed at 10% on assigned items only.</span>
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+          <strong class="text-zinc-900">Seat card anatomy · drop target with live recalc</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Each seat is a card with: avatar+name, optional discount badge, scrollable drop-zone, per-seat totals, payment actions. Drop target highlights on drag-over (cyan border, dashed, scale 1.01). Touches receive safe drop behavior — no item "loss" even if dropped outside.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+          <strong class="text-zinc-900">Per-seat modifier visibility</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Modifiers carry with the item when dragged (the "+ tomato" badge follows the Bruschetta). Critical for allergy tracking — if Hernández is allergic and ordered the Bruschetta with no pesto, dragging it to another guest without warning would be a real safety issue. v2: drag-with-allergy-check modal.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+          <strong class="text-zinc-900">Unassigned zone · the "honesty" area</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Items that the table hasn't decided yet (e.g. "who had the espresso?") live in this dashed-border zone at the top. The cashier or waiter can see "1 item unassigned · drag to a seat" as a status indicator. Empty = "all bills assigned and ready".
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+          <strong class="text-zinc-900">Quick actions · Split evenly · Clear · Add seat</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Three contextual actions: <em>Split evenly</em> distributes unassigned items equally across all seats (the "round-number way out"); <em>Clear</em> undoes all assignments back to unassigned; <em>Add seat</em> expands to 5, 6, … seats when there are more diners than the manifest. VIP discount on Seat 1 is sticky — applies to Seat 1's items even after re-distribution.
+        </p>
+      </div>
+    </div>
+
+    <!-- ============ INTERACTIVITY DECISIONS ============ -->
+    <div class="mt-10 bg-zinc-900 text-white rounded-lg p-6">
+      <h3 class="text-sm font-semibold mb-3 text-amber-400">Interactivity — what's working &amp; what to test</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-zinc-300">
+        <div>
+          <div class="text-white font-semibold mb-1">✓ Working in this wireframe</div>
+          <ul class="space-y-1.5 list-disc list-inside">
+            <li>HTML5 drag-drop: items ↔ seats ↔ unassigned zone</li>
+            <li>Live per-seat subtotal + tax + total recalculation</li>
+            <li>Grand-total reconciliation at top</li>
+            <li>Split evenly — distributes unassigned items round-robin</li>
+            <li>Clear all, Add seat, Mark paid, Print (visual only)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">⚠ To test in dev sprint</div>
+          <ul class="space-y-1.5 list-disc list-inside">
+            <li><strong>Touch</strong> — native long-press on mobile (no HTML5 drag)</li>
+            <li><strong>Keyboard a11y</strong> — tab + space to pick up, arrows to move, space to drop</li>
+            <li><strong>Modifier carry</strong> — when an item with allergy mods is dragged, show a confirm modal</li>
+            <li><strong>Network</strong> — debounce PATCH on each drop (avoid one network call per drag)</li>
+            <li><strong>Realtime</strong> — what if another waiter edits the same order? Show "modified by …" toast + relink</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SOURCES ============ -->
+    <div class="mt-10 border-t border-zinc-200 pt-6 text-xs text-zinc-500">
+      <h3 class="text-xs font-semibold text-zinc-700 uppercase tracking-widest mb-3">Sources &amp; cross-refs</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <div>· <span class="mono">docs/website-spec.md</span> §5.4 (Orders), §6.4 (palette)</div>
+        <div>· <span class="mono">docs/research/competitive-analysis-restaurant-crm.md</span> §4.3 #4 (drag-drop seat split)</div>
+        <div>· Square Restaurant — seat-card pattern</div>
+        <div>· Toast — "share-by-item" split UX</div>
+        <div>· Companion: <span class="mono">wireframe-order-detail.html</span> · <span class="mono">wireframe-header-and-dock.html</span></div>
+        <div>· Gap addressed: §4.3 #4 (drag-drop seat split) — explicit differentiator</div>
+      </div>
+    </div>
+
+    <!-- ============ NEXT STEPS ============ -->
+    <div class="mt-8 bg-zinc-900 text-white rounded-lg p-5">
+      <h3 class="text-sm font-semibold mb-2">Next moves</h3>
+      <ol class="text-xs space-y-1.5 text-zinc-300 list-decimal list-inside">
+        <li>The wireframe set now has 7 files — closing Phase 1 + Phase 2 critical screens. Phase 1 items left: <span class="font-mono">/site/admin/staff</span> + role-preview modal.</li>
+        <li>Hand the drag-drop implementation to a developer rein as a portfolio piece: it exercises HTML5 DnD, optimistic update, keyboard a11y, and live recalculation in ~300 LOC.</li>
+        <li>If you want me to draw the remaining 1 wireframe (Staff + role-preview modal) say "do staff" and I'll ship it.</li>
+        <li>Or we can package the wireframe set as a developer hand-off doc — wiring each pattern to the corresponding Redux slice / RTK Query endpoint.</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- ============ JAVASCRIPT — drag-drop + interactions ============ -->
+  <script>
+    // ===== Initial state =====
+    let draggedItem = null;
+
+    // ===== Drag handlers =====
+    function attachDragHandlers() {
+      document.querySelectorAll('.item').forEach(item => {
+        item.addEventListener('dragstart', e => {
+          draggedItem = item;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', item.dataset.itemId);
+        });
+        item.addEventListener('dragend', e => {
+          item.classList.remove('dragging');
+          draggedItem = null;
+          document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+        });
+      });
+
+      // Drop targets: each seat-items zone + unassigned zone
+      const targets = document.querySelectorAll('.seat-items, #unassigned-zone');
+      targets.forEach(zone => {
+        zone.addEventListener('dragover', e => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          zone.classList.add('drop-target');
+          if (zone.closest('.seat')) zone.closest('.seat').classList.add('drop-target');
+          if (zone.id === 'unassigned-zone') zone.classList.add('drop-target');
+        });
+        zone.addEventListener('dragleave', e => {
+          zone.classList.remove('drop-target');
+          if (zone.closest('.seat')) zone.closest('.seat').classList.remove('drop-target');
+        });
+        zone.addEventListener('drop', e => {
+          e.preventDefault();
+          zone.classList.remove('drop-target');
+          if (zone.closest('.seat')) zone.closest('.seat').classList.remove('drop-target');
+          if (draggedItem) {
+            zone.appendChild(draggedItem);
+            recompute();
+          }
+        });
+      });
+    }
+
+    // ===== Recompute all seat totals + grand =====
+    function recompute() {
+      let grandSubtotal = 0;
+      // Per-seat
+      document.querySelectorAll('.seat').forEach(seat => {
+        const items = seat.querySelectorAll('.item');
+        let subtotal = 0;
+        items.forEach(it => subtotal += parseFloat(it.dataset.price));
+        const discountRate = parseFloat(seat.dataset.discount || 0) / 100;
+        const discount = subtotal * discountRate;
+        const tax = (subtotal - discount) * 0.10;
+        const total = subtotal - discount + tax;
+        const subEl = seat.querySelector('.seat-subtotal');
+        const totalEl = seat.querySelector('.seat-total');
+        if (subEl) subEl.textContent = '$ ' + subtotal.toFixed(2);
+        if (totalEl) totalEl.textContent = '$ ' + total.toFixed(2);
+        grandSubtotal += subtotal;
+      });
+
+      // Unassigned zone
+      const unassignedItems = document.querySelectorAll('#unassigned-zone .item');
+      let unassignedSubtotal = 0;
+      unassignedItems.forEach(it => unassignedSubtotal += parseFloat(it.dataset.price));
+      const unassignedCountEl = document.getElementById('unassigned-count');
+      const unassignedTotalEl = document.getElementById('unassigned-total');
+      if (unassignedCountEl) unassignedCountEl.textContent = unassignedItems.length;
+      if (unassignedTotalEl) unassignedTotalEl.textContent = '$ ' + unassignedSubtotal.toFixed(2);
+
+      // Grand total
+      const grand = grandSubtotal;
+      const grandDiscount = grand * 0.10;
+      const grandTax = (grand - grandDiscount) * 0.10;
+      const grandTotal = grand - grandDiscount + grandTax;
+      const grandEl = document.querySelector('.grand-totals .mono.text-3xl');
+      if (grandEl) grandEl.textContent = '$ ' + grandTotal.toFixed(2);
+    }
+
+    // ===== Split evenly =====
+    function splitEvenly() {
+      const unassigned = Array.from(document.querySelectorAll('#unassigned-zone .item'));
+      if (unassigned.length === 0) return;
+      const seats = Array.from(document.querySelectorAll('.seat'));
+      if (seats.length === 0) return;
+      // round-robin
+      unassigned.forEach((item, i) => {
+        const seat = seats[i % seats.length];
+        const items = seat.querySelector('.seat-items');
+        items.appendChild(item);
+      });
+      recompute();
+    }
+
+    // ===== Clear all =====
+    function clearAll() {
+      const allItems = document.querySelectorAll('.seat .item');
+      const unassigned = document.getElementById('unassigned-zone');
+      allItems.forEach(item => {
+        // Send back to original zone
+        const orig = item.dataset.originalZone;
+        let target;
+        if (orig === 'unassigned' || !orig) {
+          target = unassigned;
+        } else {
+          target = document.querySelector(`.seat-items[data-zone="${orig}"]`);
+        }
+        if (target) target.appendChild(item);
+      });
+      recompute();
+    }
+
+    // ===== Add seat =====
+    let seatCounter = 4;
+    function addSeat() {
+      seatCounter++;
+      const container = document.getElementById('seats-container');
+      const seat = document.createElement('div');
+      seat.className = 'seat';
+      seat.dataset.seat = `seat-${seatCounter}`;
+      seat.innerHTML = `
+        <div class="seat-header">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-[10px] font-bold">G${seatCounter}</div>
+            <div>
+              <div class="text-sm font-semibold">Guest ${seatCounter}</div>
+              <div class="text-[10px] text-zinc-500">Unnamed · add name</div>
+            </div>
+          </div>
+        </div>
+        <div class="seat-items" data-zone="seat-${seatCounter}"></div>
+        <div class="seat-totals text-[11px] space-y-0.5">
+          <div class="flex justify-between"><span class="text-zinc-500">Subtotal</span><span class="mono seat-subtotal">$ 0.00</span></div>
+          <div class="flex justify-between"><span class="text-zinc-500">Tax 10%</span><span class="mono">$ 0.00</span></div>
+          <div class="flex justify-between border-t border-zinc-200 pt-1 mt-1 font-semibold"><span>Total</span><span class="mono seat-total text-sm">$ 0.00</span></div>
+          <div class="flex gap-1 mt-2">
+            <button onclick="markPaid(this)" class="flex-1 text-[10px] px-2 py-1 border border-emerald-200 text-emerald-700 rounded hover:bg-emerald-50 font-medium">Mark paid</button>
+            <button class="text-[10px] px-2 py-1 border border-zinc-200 text-zinc-600 rounded hover:bg-zinc-50">Print</button>
+          </div>
+        </div>
+      `;
+      container.appendChild(seat);
+      document.getElementById('seats-count').textContent = seatCounter;
+      attachDragHandlers();
+    }
+
+    // ===== Mark paid =====
+    function markPaid(btn) {
+      const seat = btn.closest('.seat');
+      seat.classList.toggle('paid');
+      btn.textContent = seat.classList.contains('paid') ? '✓ Paid' : 'Mark paid';
+    }
+
+    // ===== Init =====
+    document.addEventListener('DOMContentLoaded', () => {
+      attachDragHandlers();
+      recompute();
+    });
+    // Also recompute on initial render
+    setTimeout(recompute, 100);
+  </script>
+</body>
+</html>

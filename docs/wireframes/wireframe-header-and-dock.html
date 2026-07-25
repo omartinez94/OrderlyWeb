@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1440, initial-scale=1.0">
+  <title>Wireframe D — Header &amp; Dock Nav Component</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Canvas */
+    .canvas {
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .canvas-dark {
+      background: radial-gradient(circle at top right, rgba(16,185,129,0.05), transparent 40%), #050810;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .grid-overlay {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .grid-overlay-dark {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* Annotation pins */
+    .pin {
+      position: absolute;
+      width: 28px; height: 28px;
+      background: #f59e0b;
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25), 0 0 0 3px #fff;
+      cursor: pointer;
+      z-index: 60;
+      transform: translate(-50%, -50%);
+      font-family: 'Outfit', sans-serif;
+    }
+    .pin-dark {
+      background: #f59e0b;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,.6), 0 0 0 3px #050810;
+    }
+    .pin:hover { transform: translate(-50%, -50%) scale(1.15); transition: transform .15s; }
+
+    /* ============ macOS SYSTEM BAR (top tier — NEW) ============ */
+    .sysbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 30px;
+      padding: 0 14px;
+      background: rgba(245, 245, 247, 0.78);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      font-size: 12px;
+      color: #3f3f46;
+    }
+    .sysbar-dark {
+      background: rgba(15, 18, 28, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #d4d4d8;
+    }
+    .sysbar-cluster {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sysbar-apple {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #18181b;
+    }
+    .sysbar-dark .sysbar-apple { color: #f4f4f5; }
+    .sysbar-apple:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-dark .sysbar-apple:hover { background: rgba(255,255,255,0.08); }
+    .sysbar-app {
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-size: 12.5px;
+      cursor: default;
+    }
+    .sysbar-menu {
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background .12s;
+    }
+    .sysbar-menu:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-dark .sysbar-menu { color: #d4d4d8; }
+    .sysbar-dark .sysbar-menu:hover { background: rgba(255,255,255,0.10); color: #fff; }
+    .sysbar-icon-btn {
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #52525b;
+      position: relative;
+      transition: background .12s;
+    }
+    .sysbar-icon-btn:hover { background: rgba(0,0,0,0.06); color: #18181b; }
+    .sysbar-dark .sysbar-icon-btn { color: #a1a1aa; }
+    .sysbar-dark .sysbar-icon-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .sysbar-icon-btn .kbd-hint {
+      position: absolute;
+      top: -4px; right: -4px;
+      font-size: 8px;
+      font-weight: 600;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border-radius: 3px;
+      padding: 1px 3px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .sysbar-icon-btn .sys-badge {
+      position: absolute;
+      top: 1px; right: 1px;
+      min-width: 14px; height: 14px;
+      padding: 0 3px;
+      background: #EF4444;
+      color: #fff;
+      border-radius: 7px;
+      font-size: 8px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid rgba(245,245,247,0.85);
+    }
+    .sysbar-dark .sysbar-icon-btn .sys-badge {
+      border-color: rgba(15,18,28,0.85);
+    }
+    .sysbar-clock {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .sysbar-clock:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-dark .sysbar-clock:hover { background: rgba(255,255,255,0.08); }
+    .sysbar-user {
+      display: flex; align-items: center; gap: 6px;
+      padding: 2px 6px 2px 2px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .sysbar-user:hover { background: rgba(0,0,0,0.06); }
+    .sysbar-dark .sysbar-user:hover { background: rgba(255,255,255,0.08); }
+    .sysbar-user .avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 9px; font-weight: 700;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    }
+
+    /* ============ DOCK (shared with Wireframe C, refactored into a component) ============ */
+    .dock {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 14px;
+      background: rgba(24, 24, 27, 0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.18),
+        0 2px 6px rgba(0,0,0,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    /* Variant for dark-zone canvas: warmer tint, still frosted but hint at "kitchen glow" */
+    .dock-warm {
+      background: rgba(20, 24, 32, 0.75);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.5),
+        0 2px 6px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -20px 40px rgba(245,158,11,0.04);
+    }
+    .dock-item {
+      position: relative;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .15s, background .15s;
+      color: rgba(255,255,255,0.92);
+    }
+    .dock-item:hover { transform: translateY(-4px) scale(1.08); background: rgba(255,255,255,0.08); }
+    .dock-item:hover .dock-tip { opacity: 1; transform: translate(-50%, 0); }
+    .dock-item.active { background: rgba(14,165,233,0.20); }
+    .dock-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: #0EA5E9;
+      box-shadow: 0 0 6px #0EA5E9;
+    }
+    /* Special: kitchen icon gets a green tint hint */
+    .dock-item.kitchen {
+      background: rgba(16,185,129,0.08);
+    }
+    .dock-divider {
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 4px;
+    }
+    .dock-tip {
+      position: absolute;
+      bottom: 54px;
+      left: 50%;
+      transform: translate(-50%, 6px);
+      opacity: 0;
+      pointer-pointer: none;
+      background: rgba(24,24,27,0.95);
+      color: #fff;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: opacity .12s, transform .15s;
+      z-index: 70;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .dock-tip::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 8px; height: 8px;
+      background: rgba(24,24,27,0.95);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .dock-badge {
+      position: absolute;
+      top: 4px; right: 4px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      background: #EF4444;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 2px rgba(24,24,27,0.72);
+    }
+    .dock-badge.green { background: #10B981; }
+    .dock-badge.blue { background: #0EA5E9; }
+
+    /* Single-item exploded view — anatomy of one dock item */
+    .anatomy-item {
+      position: relative;
+      width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 18px;
+      background: rgba(24, 24, 27, 0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .anatomy-item svg { width: 36px; height: 36px; color: rgba(255,255,255,0.92); }
+
+    /* Live pulse */
+    .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 0 #10B981;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    }
+
+    /* Responsive device frames */
+    .device-frame {
+      border: 1.5px solid #d4d4d8;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #fafafa;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+    .device-frame.tablet { width: 768px; max-width: 100%; }
+    .device-frame.mobile { width: 375px; max-width: 100%; }
+
+    /* Hamburger button */
+    .hamburger {
+      width: 44px; height: 44px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .hamburger span {
+      width: 18px; height: 2px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 1px;
+    }
+  </style>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+
+  <!-- ============ HEADER STRIP ============ -->
+  <div class="bg-zinc-900 text-white px-6 py-2.5 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-3">
+      <span class="mono opacity-80">docs/wireframes/wireframe-header-and-dock.html</span>
+      <span class="px-2 py-0.5 bg-amber-500 text-amber-950 rounded font-semibold">Phase 1</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">WIREFRAME D</span>
+      <span class="px-2 py-0.5 bg-zinc-700 rounded font-semibold">HEADER · 3 TIERS</span>
+      <span class="px-2 py-0.5 bg-cyan-600 text-white rounded font-semibold">REUSABLE COMPONENT</span>
+    </div>
+    <div class="mono opacity-60">OrderlyWeb · Component exploration · multiple variants</div>
+  </div>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <div class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+    <div class="flex items-baseline justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight">Header &amp; Dock Nav — Wireframe D</h1>
+        <p class="text-zinc-600 text-sm mt-1">
+          A dedicated exploration of the page header component — built as <span class="font-medium text-zinc-800">3 stacked tiers</span>:
+          macOS-style system bar (top) + utility bar (middle) + dock nav (bottom). Used across all <span class="font-medium text-zinc-800">3 zones</span> (&nbsp;<span class="mono text-xs">/site/admin</span>, <span class="mono text-xs">/site/kitchen</span>, <span class="mono text-xs">/site/restaurant</span>&nbsp;)
+          and <span class="font-medium text-zinc-800">all personas</span> (Manager, Waiter, KitchenStaff, Cashier, Host, SuperAdmin).&nbsp;
+          Source: <span class="mono text-xs">research/competitive-analysis-restaurant-crm.md §5.3 (Toast Now) + macOS Dock &amp; Menu Bar visual language</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="px-2 py-1 bg-zinc-200 rounded">v0.2</span>
+        <span class="px-2 py-1 bg-zinc-200 rounded">Component spec</span>
+        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded font-semibold">13 annotation pins</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CANVAS 1 — SYSTEM BAR (top tier, macOS-style) ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 1 — System bar (top tier — macOS Apple-menu pattern)</h2>
+      <span class="text-xs text-zinc-500">28–30 px · 3-zone persistent · Apple-logo left + app menus · system tray right</span>
+    </div>
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+      <div class="relative z-10">
+        <!-- The system bar -->
+        <div class="sysbar">
+          <!-- LEFT cluster: app logo + name + menus -->
+          <div class="sysbar-cluster">
+            <div class="sysbar-apple" title="App menu">
+              <!-- Apple-style rounded squircle (Orderly brand) -->
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/>
+              </svg>
+            </div>
+            <span class="sysbar-app">Orderly</span>
+            <span class="sysbar-menu">File</span>
+            <span class="sysbar-menu">Edit</span>
+            <span class="sysbar-menu">View</span>
+            <span class="sysbar-menu">Window</span>
+            <span class="sysbar-menu">Help</span>
+          </div>
+          <!-- RIGHT cluster: spotlight · theme · notifications · fullscreen · clock · user -->
+          <div class="sysbar-cluster">
+            <!-- Spotlight / global search (Cmd+K hint) [PIN 3] -->
+            <div class="sysbar-icon-btn relative group">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="kbd-hint">⌘K</span>
+            </div>
+            <!-- Theme toggle (light ↔ dark) [PIN 4] -->
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <!-- Notification bell with badge [PIN 2] -->
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="sys-badge">3</span>
+            </div>
+            <!-- Fullscreen toggle -->
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </div>
+            <!-- Clock [PIN 3 shared] -->
+            <div class="sysbar-clock">14:35</div>
+            <!-- User avatar + name (dropdown) -->
+            <div class="sysbar-user">
+              <div class="avatar">MG</div>
+              <span style="font-weight: 500; font-size: 11.5px;">Maria</span>
+            </div>
+          </div>
+        </div>
+        <!-- Annotation markers -->
+        <span class="pin" style="left: 18px; top: 50%;">1</span>
+        <span class="pin" style="left: 85%; top: 50%;">2</span>
+        <span class="pin" style="left: 92.5%; top: 50%;">3</span>
+        <span class="pin" style="left: 80%; top: 50%;">4</span>
+      </div>
+    </div>
+    <p class="text-xs text-zinc-500 mt-3 italic">
+      ↑ <strong>Pin 1</strong> marks the left cluster (Apple-menu equivalent: app logo + name + menus).
+      <strong>Pin 2</strong> marks the right cluster (system tray: search · theme · notifications · fullscreen · clock · user).
+      <strong>Pin 3</strong> marks the always-visible clock.
+      <strong>Pin 4</strong> marks the theme toggle (1-click light ↔ dark, no settings round-trip).
+    </p>
+  </div>
+
+  <!-- ============ CANVAS 1b — SYSTEM BAR (dark variant — kitchen zone) ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 1b — System bar on dark canvas (kitchen zone)</h2>
+      <span class="text-xs text-zinc-500">Same anatomy · darker glass · warmer app-mark accent (kitchen glow)</span>
+    </div>
+    <div class="canvas-dark">
+      <div class="grid-overlay-dark"></div>
+      <div class="relative z-10">
+        <div class="sysbar sysbar-dark">
+          <div class="sysbar-cluster">
+            <div class="sysbar-apple" style="color: #10B981;" title="App menu">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/>
+              </svg>
+            </div>
+            <span class="sysbar-app" style="color: #f4f4f5;">Orderly · Kitchen</span>
+            <span class="sysbar-menu">File</span>
+            <span class="sysbar-menu">Edit</span>
+            <span class="sysbar-menu">View</span>
+            <span class="sysbar-menu">Window</span>
+            <span class="sysbar-menu">Help</span>
+          </div>
+          <div class="sysbar-cluster">
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="kbd-hint">⌘K</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="sys-badge">5</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </div>
+            <div class="sysbar-clock">14:35</div>
+            <div class="sysbar-user">
+              <div class="avatar" style="background: linear-gradient(135deg, #f97316, #ef4444);">CS</div>
+              <span style="font-weight: 500; font-size: 11.5px; color: #f4f4f5;">Carlos</span>
+            </div>
+          </div>
+        </div>
+        <span class="pin pin-dark" style="left: 18px; top: 50%;">5</span>
+        <span class="pin pin-dark" style="left: 85%; top: 50%;">6</span>
+      </div>
+    </div>
+    <p class="text-xs text-zinc-500 mt-3 italic">
+      On dark canvas: same anatomy, glass darkens, Orderly icon picks up the kitchen-green accent, persona-tinted avatar (Carlos = orange→red shift).
+    </p>
+  </div>
+
+  <!-- ============ CANVAS 2 — UTILITY BAR ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 2 — Utility bar (middle tier — restaurant context)</h2>
+      <span class="text-xs text-zinc-500">Restaurant switcher · shift · live status · restaurant-scoped search · help</span>
+    </div>
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+      <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+        <!-- Left: restaurant switcher + shift + live status -->
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700 hover:bg-zinc-50 transition">
+            <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+            <span class="text-zinc-500">Restaurant:</span>
+            <span class="font-medium">La Casa Roma</span>
+            <svg class="w-2.5 h-2.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <span class="text-zinc-300">|</span>
+          <button class="text-[11px] text-zinc-600 hover:text-zinc-900 transition">Shift: Lunch · ends 16:00</button>
+          <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1">
+            <span class="pulse"></span> Live
+          </span>
+        </div>
+        <!-- Right: restaurant-scoped search + help (notifications moved to system bar) -->
+        <div class="flex items-center gap-2 text-zinc-600">
+          <div class="relative">
+            <svg class="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="search" placeholder="Search this restaurant…" class="text-[11px] border border-zinc-200 rounded pl-7 pr-2 py-1 w-56 bg-white">
+          </div>
+          <button class="text-zinc-500 hover:text-zinc-900 transition text-[11px] flex items-center gap-1">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+            Help
+          </button>
+          <div class="flex items-center gap-1.5 pl-1.5 border-l border-zinc-200">
+            <div class="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-[9px] font-semibold">MG</div>
+            <span class="font-medium text-zinc-700">Maria Gomez</span>
+            <span class="text-zinc-400">·</span>
+            <span class="text-zinc-500">Manager</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-xs text-zinc-500 mt-3 italic">
+      Note: <strong>clock + notifications + theme</strong> have moved up to the system bar (§ 1) — utility bar now focuses only on restaurant context.
+    </p>
+  </div>
+
+  <!-- ============ CANVAS 3 — DOCK (light canvas / restaurant zone) ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 3 — Dock nav (bottom tier — restaurant / admin zone)</h2>
+      <span class="text-xs text-zinc-500">Frosted translucent dock · centered · 9 icons · hover-lift + tooltip</span>
+    </div>
+    <div class="canvas relative">
+      <div class="grid-overlay"></div>
+      <div class="dock-wrap relative z-10 py-4 flex justify-center bg-zinc-50 border-b border-zinc-200">
+        <div class="dock">
+          <button class="dock-item" data-tip="Dashboard — KPIs · spec §5.1">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            <span class="dock-tip">Dashboard</span>
+          </button>
+          <button class="dock-item active" data-tip="Orders — spec §5.4">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+            <span class="dock-tip">Orders</span>
+            <span class="dock-badge">12</span>
+          </button>
+          <button class="dock-item" data-tip="Tables — spec §5.3">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span class="dock-tip">Tables</span>
+          </button>
+          <button class="dock-item" data-tip="Menu — Catalog">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span class="dock-tip">Menu</span>
+          </button>
+
+          <div class="dock-divider"></div>
+
+          <button class="dock-item kitchen" data-tip="Kitchen — KDS · spec §5.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg>
+            <span class="dock-tip">Kitchen</span>
+            <span class="dock-badge green">6</span>
+          </button>
+          <button class="dock-item" data-tip="Reservations — spec §5.2">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span class="dock-tip">Reservations</span>
+          </button>
+
+          <div class="dock-divider"></div>
+
+          <button class="dock-item" data-tip="Staff — spec §5.1">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="dock-tip">Staff</span>
+          </button>
+          <button class="dock-item" data-tip="Reports · Analytics">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg>
+            <span class="dock-tip">Reports</span>
+          </button>
+          <button class="dock-item" data-tip="Settings">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span class="dock-tip">Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CANVAS 4 — KITCHEN ZONE DARK VARIANT ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 4 — Dock on dark canvas (kitchen zone)</h2>
+      <span class="text-xs text-zinc-500">Same dock, warmer glass tint · "kitchen glow" inset · idle orders badge active</span>
+    </div>
+    <div class="canvas-dark relative">
+      <div class="grid-overlay-dark"></div>
+      <div class="relative z-10 py-4 flex justify-center bg-zinc-900/60 border-b border-zinc-800">
+        <div class="dock dock-warm">
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item kitchen active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        </div>
+        <span class="pin pin-dark" style="left: 50%; top: 50%;">7</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CANVAS 5 — DOCK ITEM ANATOMY ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 5 — Dock item anatomy (states &amp; measurements)</h2>
+      <span class="text-xs text-zinc-500">Default · Hover (lift+scale+tip) · Active (dot) · With badge</span>
+    </div>
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+      <div class="relative z-10 bg-zinc-50/50 border-b border-zinc-200 p-6">
+        <div class="grid grid-cols-4 gap-6 items-end justify-items-center">
+
+          <!-- State 1: Default -->
+          <div class="state-default relative">
+            <div class="anatomy-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <div class="font-semibold text-zinc-900">Default</div>
+              <div class="text-zinc-500 mt-0.5">44 × 44 px · radius 12</div>
+              <div class="mono text-[10px] text-zinc-400 mt-0.5">bg: rgba(24,24,27,.72)</div>
+            </div>
+          </div>
+
+          <!-- State 2: Hover -->
+          <div class="state-hover relative">
+            <div class="anatomy-item" style="position: relative;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+              <div class="absolute -top-12 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded text-[10px] font-medium bg-zinc-900 text-white whitespace-nowrap shadow-lg border border-zinc-700">
+                Orders · spec §5.4
+                <div class="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-900 rotate-45 -mt-1 border-r border-b border-zinc-700"></div>
+              </div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <div class="font-semibold text-zinc-900">Hover</div>
+              <div class="text-zinc-500 mt-0.5">translateY(-8) scale(1.15)</div>
+              <div class="mono text-[10px] text-zinc-400 mt-0.5">+ tooltip ↑ 54px</div>
+            </div>
+          </div>
+
+          <!-- State 3: Active -->
+          <div class="state-active relative">
+            <div class="anatomy-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+              <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_#0EA5E9]"></div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <div class="font-semibold text-zinc-900">Active</div>
+              <div class="text-zinc-500 mt-0.5">cyan dot · -12px below</div>
+              <div class="mono text-[10px] text-zinc-400 mt-0.5">bg: rgba(14,165,233,.20)</div>
+            </div>
+          </div>
+
+          <!-- State 4: With badge -->
+          <div class="state-default relative">
+            <div class="anatomy-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+              <div class="absolute top-1 right-1 min-w-4 h-4 px-1 bg-rose-500 text-white rounded-lg text-[9px] font-bold flex items-center justify-center shadow-[0_0_0_2px_rgba(24,24,27,0.72)]">12</div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <div class="font-semibold text-zinc-900">With badge</div>
+              <div class="text-zinc-500 mt-0.5">live counts (12 orders)</div>
+              <div class="mono text-[10px] text-zinc-400 mt-0.5">color: red·green·blue</div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="left: 50%; top: 8px;">8</span>
+        <span class="pin" style="left: 25%; top: 50%;">9</span>
+        <span class="pin" style="left: 50%; top: 75%;">10</span>
+        <span class="pin" style="left: 75%; top: 30%;">11</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CANVAS 6 — RESPONSIVE BEHAVIOR ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 6 — Responsive behavior</h2>
+      <span class="text-xs text-zinc-500">1280+ : full system-bar + utility + dock · 768–1279 : dock compressed · &lt;768 : hamburger</span>
+    </div>
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+      <div class="relative z-10 bg-zinc-50/50 border-b border-zinc-200 p-6">
+        <div class="flex flex-wrap gap-8 items-end justify-center">
+
+          <!-- Desktop: full 3 tiers -->
+          <div class="flex flex-col items-center">
+            <div class="device-frame" style="width: 1024px;">
+              <div class="sysbar" style="font-size:10px;">
+                <div class="sysbar-cluster">
+                  <div class="sysbar-apple" style="width:14px;height:14px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1z"/></svg></div>
+                  <span class="sysbar-app" style="font-size:10px;">Orderly</span>
+                  <span class="sysbar-menu" style="font-size:10px;">File</span>
+                  <span class="sysbar-menu" style="font-size:10px;">Edit</span>
+                </div>
+                <div class="sysbar-cluster">
+                  <div class="sysbar-clock" style="font-size:9px;">14:35</div>
+                  <div class="w-3 h-3 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500"></div>
+                </div>
+              </div>
+              <div class="bg-white px-4 py-1.5 flex items-center justify-between text-[10px] border-b border-zinc-200">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-zinc-700">Orderly · La Casa Roma</span>
+                </div>
+              </div>
+              <div class="bg-zinc-50 border-b border-zinc-200 py-1.5 flex justify-center">
+                <div class="dock" style="padding: 5px 10px;">
+                  <div class="dock-item" style="width:32px;height:32px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
+                  <div class="dock-item active" style="width:32px;height:32px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><span class="dock-badge">12</span></div>
+                  <div class="dock-item" style="width:32px;height:32px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+                  <div class="dock-item kitchen" style="width:32px;height:32px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18"/></svg><span class="dock-badge green">6</span></div>
+                </div>
+              </div>
+              <div class="p-6 text-center text-zinc-400 text-xs italic">page content…</div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <span class="mono px-2 py-0.5 bg-cyan-100 text-cyan-800 rounded">≥ 1280 px</span>
+              <div class="text-zinc-500 mt-1">All 3 tiers · system bar + utility + dock</div>
+            </div>
+          </div>
+
+          <!-- Tablet -->
+          <div class="flex flex-col items-center">
+            <div class="device-frame tablet">
+              <div class="sysbar" style="font-size:10px;">
+                <div class="sysbar-cluster">
+                  <div class="sysbar-apple" style="width:14px;height:14px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1z"/></svg></div>
+                  <span class="sysbar-app" style="font-size:10px;">Orderly</span>
+                </div>
+                <div class="sysbar-cluster">
+                  <div class="sysbar-clock" style="font-size:9px;">14:35</div>
+                </div>
+              </div>
+              <div class="bg-white px-4 py-1.5 flex items-center justify-between text-[10px] border-b border-zinc-200">
+                <span class="font-semibold text-zinc-700">Orderly · La Casa</span>
+              </div>
+              <div class="bg-zinc-50 border-b border-zinc-200 py-1.5 flex justify-center">
+                <div class="dock" style="padding: 5px 8px; gap: 2px;">
+                  <div class="dock-item" style="width:30px;height:30px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/></svg></div>
+                  <div class="dock-item active" style="width:30px;height:30px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><span class="dock-badge">12</span></div>
+                  <div class="dock-item" style="width:30px;height:30px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+                  <div class="dock-item kitchen" style="width:30px;height:30px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18"/></svg><span class="dock-badge green">6</span></div>
+                </div>
+              </div>
+              <div class="p-6 text-center text-zinc-400 text-xs italic">page content…</div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <span class="mono px-2 py-0.5 bg-cyan-100 text-cyan-800 rounded">768 – 1279 px</span>
+              <div class="text-zinc-500 mt-1">All 3 tiers · compressed 30 px icons · 2 menu items hidden</div>
+            </div>
+          </div>
+
+          <!-- Mobile -->
+          <div class="flex flex-col items-center">
+            <div class="device-frame mobile">
+              <div class="sysbar" style="font-size:10px;">
+                <div class="sysbar-cluster">
+                  <div class="sysbar-apple" style="width:14px;height:14px;"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1z"/></svg></div>
+                  <span class="sysbar-app" style="font-size:10px;">Orderly</span>
+                </div>
+                <div class="sysbar-cluster">
+                  <div class="sysbar-clock" style="font-size:9px;">14:35</div>
+                </div>
+              </div>
+              <div class="bg-white px-4 py-1.5 flex items-center justify-between text-[10px] border-b border-zinc-200">
+                <span class="font-semibold text-zinc-700">Orderly</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="px-1 bg-emerald-100 text-emerald-700 rounded text-[9px] font-semibold flex items-center gap-0.5">
+                    <span class="pulse" style="width:4px;height:4px;"></span> 12
+                  </span>
+                  <div class="hamburger" style="width:24px;height:24px;">
+                    <span style="width:12px;"></span><span style="width:12px;"></span><span style="width:12px;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 text-center text-zinc-400 text-xs italic">page content…</div>
+            </div>
+            <div class="text-center mt-3 text-xs">
+              <span class="mono px-2 py-0.5 bg-cyan-100 text-cyan-800 rounded">&lt; 768 px</span>
+              <div class="text-zinc-500 mt-1">System bar only · dock collapses to hamburger · live-count badge persists</div>
+            </div>
+          </div>
+
+        </div>
+        <span class="pin" style="left: 50%; top: 8px;">12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CANVAS 7 — COMPOSED HEADER (all 3 tiers stacked) ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-700">§ 7 — Composed header (all 3 tiers · production shape)</h2>
+      <span class="text-xs text-zinc-500">128 px total · restaurant zone · how it sits on the canvas</span>
+    </div>
+    <div class="canvas">
+      <div class="grid-overlay"></div>
+      <!-- Tier 1: System bar -->
+      <div class="relative z-10">
+        <div class="sysbar">
+          <div class="sysbar-cluster">
+            <div class="sysbar-apple" title="App menu">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 12.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.7-4.1zM16.5 5.6c.7-.8 1.1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>
+            </div>
+            <span class="sysbar-app">Orderly</span>
+            <span class="sysbar-menu">File</span>
+            <span class="sysbar-menu">Edit</span>
+            <span class="sysbar-menu">View</span>
+            <span class="sysbar-menu">Window</span>
+            <span class="sysbar-menu">Help</span>
+          </div>
+          <div class="sysbar-cluster">
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="kbd-hint">⌘K</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <div class="sysbar-icon-btn relative">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="sys-badge">3</span>
+            </div>
+            <div class="sysbar-icon-btn">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </div>
+            <div class="sysbar-clock">14:35</div>
+            <div class="sysbar-user">
+              <div class="avatar">MG</div>
+              <span style="font-weight: 500; font-size: 11.5px;">Maria</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tier 2: Utility bar -->
+      <div class="relative z-10 bg-white border-b border-zinc-200 px-5 py-2 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-1.5 px-2 py-1 border border-zinc-200 rounded text-zinc-700">
+            <svg class="w-3 h-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9l2-5h14l2 5"/></svg>
+            <span class="text-zinc-500">Restaurant:</span>
+            <span class="font-medium">La Casa Roma</span>
+          </button>
+          <span class="text-zinc-300">|</span>
+          <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-semibold flex items-center gap-1">
+            <span class="pulse"></span> Live
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-zinc-600">
+          <div class="relative">
+            <svg class="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="search" placeholder="Search this restaurant…" class="text-[11px] border border-zinc-200 rounded pl-7 pr-2 py-1 w-48 bg-white">
+          </div>
+          <div class="flex items-center gap-1.5 pl-1.5 border-l border-zinc-200">
+            <div class="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-[9px] font-semibold">MG</div>
+            <span class="font-medium text-zinc-700">Maria Gomez</span>
+            <span class="text-zinc-400">·</span>
+            <span class="text-zinc-500">Manager</span>
+          </div>
+        </div>
+      </div>
+      <!-- Tier 3: Dock -->
+      <div class="relative z-10 py-3 flex justify-center bg-zinc-50 border-b border-zinc-200">
+        <div class="dock">
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></button>
+          <button class="dock-item active"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="dock-badge">12</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item kitchen"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 8V6M15 8V6"/></svg><span class="dock-badge green">6</span></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+          <div class="dock-divider"></div>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6"/><rect x="12" y="9" width="3" height="10"/><rect x="17" y="5" width="3" height="14"/></svg></button>
+          <button class="dock-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        </div>
+      </div>
+      <!-- Below the header: hint -->
+      <div class="relative z-10 px-6 py-8 text-center text-zinc-400 text-xs italic">
+        (page content sits below — header is <span class="font-semibold text-zinc-700">126 px</span> tall total: <span class="font-mono">30 sysbar + 36 utility + 60 dock</span>)
+        <span class="pin" style="left: 50%; bottom: 12px;">13</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ANNOTATIONS / RATIONALE ============ -->
+  <div class="max-w-7xl mx-auto px-6 pb-12 mt-8">
+    <h2 class="text-lg font-semibold tracking-tight mb-4">Annotation pins — what to look at, and why</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+
+      <!-- § 1 — System bar pins -->
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+          <strong class="text-zinc-900">macOS Apple-menu pattern · left cluster</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Orderly brand mark (left) → <em>app name</em> → app menus (File / Edit / View / Window / Help). The brand mark replaces the literal Apple logo — same affordance: click → dropdown with app-level actions (preferences, about, sign out, hide). Menus become dropdowns on click, identical to native macOS.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+          <strong class="text-zinc-900">System tray · right cluster</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Six controls right-aligned: Spotlight (Cmd+K), theme toggle, notification bell (with badge), fullscreen, clock, user avatar. Sourced directly from macOS — operators get the muscle memory for free. Notification badge stays visible across every page, including while focused on table content.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+          <strong class="text-zinc-900">Always-visible mono clock</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Mono 11.5 px · right-aligned · no seconds (matches macOS clock default). Click → opens a small calendar popover. Operators don't need to look at the clock app or their phone for shift changeover or ticket-urgency timing.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+          <strong class="text-zinc-900">1-click theme toggle</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Sun/moon icon · instantly swaps system bar + utility bar + dock + page theme via <code class="bg-zinc-100 px-1 rounded text-[10px]">data-theme="dark"</code> on <code class="bg-zinc-100 px-1 rounded text-[10px]">&lt;html&gt;</code>. Persisted in localStorage. KDS monitors who need dark mode no longer have to go to Settings to toggle.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+          <strong class="text-zinc-900">Same bar on dark canvas (kitchen zone)</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Glass darkens, Orderly brand mark picks up <span class="text-emerald-500 font-medium">kitchen-green</span> accent, persona-tinted avatar (Maria = cyan → Carlos = orange). Operators moving between zones keep the same anchoring visual.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+          <strong class="text-zinc-900">Same control set survives across personas</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Cashier, Waiter, Host, Manager, KitchenStaff, SuperAdmin — every persona sees the same system bar. The only thing that varies is the avatar (and shape, e.g. on dark canvas vs light).
+        </p>
+      </div>
+
+      <!-- § 4 — Kitchen dark dock -->
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">7</span>
+          <strong class="text-zinc-900">Cross-zone consistency — same dock on dark canvas</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Kitchen zone uses the same dock geometry but a warmer glass (<code class="bg-zinc-900 px-1 rounded text-[10px] text-zinc-200">dock-warm</code>) and a subtle amber inset-shadow hint at "kitchen glow". Operators moving between zones get the same muscle memory.
+        </p>
+      </div>
+
+      <!-- § 5 — Item anatomy pins -->
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">8</span>
+          <strong class="text-zinc-900">Dock item anatomy — three interaction states</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Default · Hover (lift+scale+tooltip) · Active (cyan dot) · With badge. All 4 states use the same bounding box for the icon container, so the layout never shifts between hover/active — only the icon scales and lifts.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">9</span>
+          <strong class="text-zinc-900">Hover lift behavior</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          <code class="bg-zinc-100 px-1 rounded text-[10px]">transform: translateY(-8px) scale(1.15)</code> on hover. Gives the same magnification feel as the real macOS dock. Pairs with tooltip 54 px above showing route + spec link.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">10</span>
+          <strong class="text-zinc-900">Active state — cyan dot indicator</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Active icon gets a 5×5 px cyan dot at <code class="bg-zinc-100 px-1 rounded text-[10px]">bottom: -12px</code> with glow. Always visible — never animates away. Lets the operator confirm "what zone am I in" even with peripheral vision while reading page content.
+        </p>
+      </div>
+
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">11</span>
+          <strong class="text-zinc-900">Live-count badge · color-coded by zone</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          Red badge for orders/tables, green for kitchen. 16×16 px, top-right of icon, with a 2-px ring matching the dock background so it stays legible on any hover state. Counts pushed via SignalR.
+        </p>
+      </div>
+
+      <!-- § 6 — Responsive -->
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">12</span>
+          <strong class="text-zinc-900">Responsive collapse — system bar always survives</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          All three breakpoints keep the system bar — it's the OS-level chrome that operators expect to see at all sizes. ≥1280: 3 tiers · 768–1279: compressed dock (30 px icons, fewer menus visible) · &lt;768: hamburger replaces dock row, system bar still present.
+        </p>
+      </div>
+
+      <!-- § 7 — Composed -->
+      <div class="border border-zinc-200 rounded-lg p-3 bg-white hover:border-amber-300 transition">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">13</span>
+          <strong class="text-zinc-900">Total header height: ~126 px</strong>
+        </div>
+        <p class="text-zinc-600 text-xs leading-relaxed">
+          30 px (sysbar) + 36 px (utility) + 60 px (dock) = <span class="font-semibold text-zinc-900">126 px</span>. Saves vs a left-sidebar layout (~240 px wide × full height) by reclaiming 60+ px vertically while gaining a global control surface. Mobile shrinks to ~70 px (just system bar + utility, no dock row).
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ============ IMPLEMENTATION NOTES (for developer rein) ============ -->
+    <div class="mt-10 bg-zinc-900 text-white rounded-lg p-6">
+      <h3 class="text-sm font-semibold mb-3 text-amber-400">Implementation hand-off notes</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-zinc-300">
+        <div>
+          <div class="text-white font-semibold mb-1">Component shape — now 3 components</div>
+          <p>
+            <code class="text-cyan-300">SystemBar</code> (NEW — top tier) · <code class="text-cyan-300">UtilityBar</code> (middle tier) · <code class="text-cyan-300">DockNav</code> (bottom tier).
+            <code class="text-cyan-300">SystemBar</code> consumes theme state + persona + notification count.
+            <code class="text-cyan-300">UtilityBar</code> consumes restaurant context.
+            <code class="text-cyan-300">DockNav</code> consumes a route-list config (icon + spec-link + active match) + per-route badge counts from <code class="text-cyan-300">useDockCounts()</code>.
+          </p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Styling</div>
+          <p>
+            Tailwind utilities + custom classes <code class="text-cyan-300">.sysbar</code> / <code class="text-cyan-300">.sysbar-dark</code> / <code class="text-cyan-300">.sysbar-menu</code> / <code class="text-cyan-300">.sysbar-icon-btn</code> / <code class="text-cyan-300">.sysbar-clock</code> / <code class="text-cyan-300">.sysbar-user</code> · <code class="text-cyan-300">.dock</code> / <code class="text-cyan-300">.dock-warm</code> / <code class="text-cyan-300">.dock-item</code> / <code class="text-cyan-300">.dock-tip</code> / <code class="text-cyan-300">.dock-badge</code>. Glass effect (<code class="text-cyan-300">backdrop-filter: blur(20px) saturate(180%)</code>) supported in all modern browsers.
+          </p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">State</div>
+          <p>
+            System bar: theme (Zustand store or Redux Toolkit slice), notifications (SignalR /hubs/notifications), current persona. Utility bar: active restaurant, live status. Dock nav: active route from <code class="text-cyan-300">useRouter()</code>, badge counts from RTK Query + SignalR.
+          </p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">App menus (File/Edit/View/etc.)</div>
+          <p>
+            Wire to real behaviors: File → New Order / Export / Sign out · Edit → Undo / Find · View → Toggle theme / Toggle notifications / Fullscreen · Window → Minimize / Zoom · Help → Docs / Keyboard shortcuts / About. HeadlessUI <code class="text-cyan-300">Menu</code> component recommended for the dropdowns.
+          </p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Accessibility</div>
+          <p>
+            Each system bar button = real <code class="text-cyan-300">&lt;button&gt;</code> with <code class="text-cyan-300">aria-label</code>. Dock items get <code class="text-cyan-300">aria-current="page"</code> when active. Keyboard nav: arrow keys cycle between dock icons · Tab cycles header-level · ESC closes open dropdowns. Spotlight opens via Cmd+K (or Ctrl+K on Windows) — see spec §12.
+          </p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-1">Theme persistence</div>
+          <p>
+            Toggle sets <code class="text-cyan-300">document.documentElement.dataset.theme</code> + persists to <code class="text-cyan-300">localStorage</code> (not a cookie — localStorage is fine for UI prefs, not auth). Tailwind config: enable <code class="text-cyan-300">darkMode: ['class', '[data-theme="dark"]']</code>. HeadlessUI components use <code class="text-cyan-300">.dark</code> modifier.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SOURCES ============ -->
+    <div class="mt-10 border-t border-zinc-200 pt-6 text-xs text-zinc-500">
+      <h3 class="text-xs font-semibold text-zinc-700 uppercase tracking-widest mb-3">Sources &amp; cross-refs</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <div>· <span class="mono">docs/website-spec.md</span> §4 (zones), §11 (stack), §12 (open Qs)</div>
+        <div>· <span class="mono">docs/research/competitive-analysis-restaurant-crm.md</span> §4.1, §5.3</div>
+        <div>· Toast Now mobile app — dock + manager command pattern</div>
+        <div>· macOS Dock + Menu Bar — Apple HIG (Human Interface Guidelines)</div>
+        <div>· Companion: <span class="mono">wireframe-restaurant-orders.html</span> (now sidebar-free), <span class="mono">wireframe-kitchen-order-queue.html</span></div>
+        <div>· Inspired by: WebOS / iPadOS dock + menu-bar patterns</div>
+      </div>
+    </div>
+
+    <!-- ============ NEXT STEPS ============ -->
+    <div class="mt-8 bg-zinc-900 text-white rounded-lg p-5">
+      <h3 class="text-sm font-semibold mb-2">Next moves</h3>
+      <ol class="text-xs space-y-1.5 text-zinc-300 list-decimal list-inside">
+        <li>Hand the <code class="bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300">SystemBar</code> + <code class="bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300">UtilityBar</code> + <code class="bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300">DockNav</code> components spec to a developer rein — they're the three most-reused components across the entire app shell.</li>
+        <li>Iterate the system bar menu set — currently File / Edit / View / Window / Help. Confirm which app-level actions map to which menu in the next design sprint.</li>
+        <li>Decide on theme as system-level (follows OS) vs app-level (operator toggles). Recommendation: app-level, persisted to localStorage, with a first-run prompt.</li>
+        <li>If the 3-tier header lands at 126 px and the spec suggests ~96 px is the budget — decision: accept 126 px (it's the cost of the system bar tier; alternatively, compress utility to 28 px or dock to 48 px).</li>
+        <li>Add a 4th wireframe if needed: <code class="bg-zinc-800 px-1.5 py-0.5 rounded text-cyan-300">/site/restaurant/orders/:id</code> order detail (modification log + split-bill) — the only Tier-1 screen not yet mocked.</li>
+      </ol>
+    </div>
+
+  </div>
+</body>
+</html>
