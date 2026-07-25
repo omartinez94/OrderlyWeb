@@ -1,0 +1,72 @@
+/* ---------------------------------------------------------------------------
+ * StatusPill — order status badge.
+ *
+ * The token (--token-deep / --token-teal / --token-aqua / --token-amber /
+ * --token-tangerine / --token-muted) is set as a CSS variable on the
+ * element itself, then the background and dot pull from it via
+ * color-mix(). This keeps the palette centralized in index.css.
+ * --------------------------------------------------------------------------- */
+
+.status-pill {
+  --pill-fg: var(--color-service-deep);
+  --pill-bg: color-mix(in srgb, var(--color-service-deep) 12%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-deep) 28%, transparent);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--pill-fg);
+  background-color: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  white-space: nowrap;
+}
+
+.status-pill__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--pill-fg);
+  flex-shrink: 0;
+}
+
+.status-pill--deep {
+  --pill-fg: var(--color-service-deep);
+  --pill-bg: color-mix(in srgb, var(--color-service-deep) 12%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-deep) 28%, transparent);
+}
+
+.status-pill--teal {
+  --pill-fg: var(--color-service-teal);
+  --pill-bg: color-mix(in srgb, var(--color-service-teal) 14%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-teal) 30%, transparent);
+}
+
+.status-pill--aqua {
+  --pill-fg: var(--color-service-aqua);
+  --pill-bg: color-mix(in srgb, var(--color-service-aqua) 16%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-aqua) 32%, transparent);
+}
+
+.status-pill--amber {
+  --pill-fg: var(--color-service-amber);
+  --pill-bg: color-mix(in srgb, var(--color-service-amber) 16%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-amber) 34%, transparent);
+}
+
+.status-pill--tangerine {
+  --pill-fg: var(--color-service-tangerine);
+  --pill-bg: color-mix(in srgb, var(--color-service-tangerine) 14%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-service-tangerine) 32%, transparent);
+}
+
+.status-pill--muted {
+  --pill-fg: var(--color-ink-muted);
+  --pill-bg: color-mix(in srgb, var(--color-ink-muted) 10%, transparent);
+  --pill-border: color-mix(in srgb, var(--color-ink-muted) 22%, transparent);
+}

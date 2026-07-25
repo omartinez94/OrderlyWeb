@@ -1,0 +1,218 @@
+/* ---------------------------------------------------------------------------
+ * Global design tokens — Orderly Web
+ * Source of truth for color, gradient, and glow values used across the app.
+ *
+ * Themes:
+ *   :root                 -> light theme (default)
+ *   [data-theme="dark"]   -> dark theme
+ *
+ * Three ways to consume:
+ *   1. Tailwind utility:                className="bg-primary text-ink"
+ *   2. CSS variable in any stylesheet:  color: var(--color-primary);
+ *   3. Typed constant in TS:            import { colors } from '@/lib/tokens'
+ *
+ * If you add or change a value here, mirror it in src/lib/tokens.ts.
+ * --------------------------------------------------------------------------- */
+
+@import 'tailwindcss';
+
+/* Tell Tailwind our color tokens. `inline` keeps the var() reference so the
+ * theme cascade (light/dark via [data-theme]) still works at runtime. */
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-foreground: var(--color-primary-foreground);
+
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-foreground: var(--color-accent-foreground);
+
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-ink-subtle: var(--color-ink-subtle);
+
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-overlay: var(--color-surface-overlay);
+
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-strong: var(--color-border-strong);
+
+  --color-service-deep: var(--color-service-deep);
+  --color-service-teal: var(--color-service-teal);
+  --color-service-aqua: var(--color-service-aqua);
+  --color-service-amber: var(--color-service-amber);
+  --color-service-tangerine: var(--color-service-tangerine);
+
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --color-info: var(--color-info);
+
+  /* Gradients — `bg-gradient-*` resolve to these. The :root block above
+   * owns the actual values; `inline` keeps the var() reference so dark
+   * mode still works. */
+  --background-image-gradient-service-cool: var(--gradient-service-cool);
+  --background-image-gradient-service-warm: var(--gradient-service-warm);
+  --background-image-gradient-primary: var(--gradient-primary);
+}
+
+:root {
+  /* --- Brand: primary (deep blue-teal) --- */
+  --color-primary: #1F4254;
+  --color-primary-hover: #16303D;
+  --color-primary-foreground: #FFFFFF;
+
+  /* --- Brand: accent (tangerine) --- */
+  --color-accent: #F26A3A;
+  --color-accent-hover: #D8582C;
+  --color-accent-foreground: #FFFFFF;
+
+  /* --- Neutral: ink (near-black text) --- */
+  --color-ink: #0E141A;
+  --color-ink-muted: #4A5560;
+  --color-ink-subtle: #7A8590;
+
+  /* --- Neutral: surface (sage-tinted page bg) --- */
+  --color-surface: #EFF1ED;
+  --color-surface-elevated: #F6F8F4;
+  --color-surface-overlay: #FFFFFF;
+  --color-border-subtle: #D8DED5;
+  --color-border-strong: #B8C0B2;
+
+  /* --- Service hues (5 stops; the gradient uses 3 of them — see below) --- */
+  --color-service-deep: #1F4254;
+  --color-service-teal: #4A8B98;
+  --color-service-aqua: #7AB89E;
+  --color-service-amber: #E8A340;
+  --color-service-tangerine: #F26A3A;
+
+  /* --- Semantic states --- */
+  --color-success: #4A8870;
+  --color-warning: #E8A340;
+  --color-danger: #C84A3A;
+  --color-info: #4A8B98;
+
+  /* --- Gradients: 3 colors max each, two flows --- */
+  /* Cool side: order received flow (deep → teal → aqua) */
+  --gradient-service-cool: linear-gradient(
+    90deg,
+    var(--color-service-deep) 0%,
+    var(--color-service-teal) 50%,
+    var(--color-service-aqua) 100%
+  );
+  /* Warm side: order ready flow (surface → amber → tangerine) */
+  --gradient-service-warm: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-service-amber) 50%,
+    var(--color-service-tangerine) 100%
+  );
+  /* Brand signature gradient — primary → accent */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 100%
+  );
+
+  /* --- Glows --- */
+  --shadow-glow-primary: 0 0 16px rgba(31, 66, 84, 0.25);
+  --shadow-glow-accent: 0 0 16px rgba(242, 106, 58, 0.3);
+}
+
+[data-theme='dark'] {
+  /* --- Brand: primary (lifted blue-teal) --- */
+  --color-primary: #4A8B98;
+  --color-primary-hover: #5FA0AE;
+  --color-primary-foreground: #0E141A;
+
+  /* --- Brand: accent (lifted tangerine) --- */
+  --color-accent: #FF8A5A;
+  --color-accent-hover: #FFA478;
+  --color-accent-foreground: #0E141A;
+
+  /* --- Neutral: ink (light text in dark) --- */
+  --color-ink: #ECF0F2;
+  --color-ink-muted: #A8B2BC;
+  --color-ink-subtle: #6E7984;
+
+  /* --- Neutral: surface (deep near-black) --- */
+  --color-surface: #0E141A;
+  --color-surface-elevated: #152028;
+  --color-surface-overlay: #1C2832;
+  --color-border-subtle: #1F2A33;
+  --color-border-strong: #2F3D48;
+
+  /* --- Service hues (lifted for dark contrast) --- */
+  --color-service-deep: #4A8B98;
+  --color-service-teal: #6BA5B0;
+  --color-service-aqua: #98C9B0;
+  --color-service-amber: #F0B560;
+  --color-service-tangerine: #FF8A5A;
+
+  /* --- Semantic states --- */
+  --color-success: #6BA88E;
+  --color-warning: #F0B560;
+  --color-danger: #E87060;
+  --color-info: #6BA5B0;
+
+  /* --- Glows (stronger in dark for the KDS effect) --- */
+  --shadow-glow-primary: 0 0 20px rgba(74, 139, 152, 0.45);
+  --shadow-glow-accent: 0 0 20px rgba(255, 138, 90, 0.5);
+}
+
+/* --- Base / reset --------------------------------------------------------- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+/* --- Glass / glassmorphism ------------------------------------------------ */
+/* Glass on a flat single-tone background is invisible — pair with a gradient
+ * or busy image to see the frosted effect. */
+
+.glass {
+  background: color-mix(in srgb, var(--color-surface-overlay) 60%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.75rem;
+}
+
+.glass-strong {
+  background: color-mix(in srgb, var(--color-surface-overlay) 80%, transparent);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.75rem;
+}
+
+.glass-primary {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: 0.75rem;
+}
+
+.glass-accent {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  border-radius: 0.75rem;
+}
