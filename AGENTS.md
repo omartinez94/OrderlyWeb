@@ -51,6 +51,52 @@ src/                           # App source (to be scaffolded)
 - ESLint: `@typescript-eslint`, `react-hooks`, `jsx-a11y` rules enabled
 - Run `pnpm lint --fix` before committing
 
+## Design system
+
+The visual system is locked in. Two themes, one source of truth in `src/index.css` and `src/lib/tokens.ts`. All tokens are exposed as Tailwind utilities via `@theme inline`, so components reference them by semantic name (`bg-primary`, `text-ink`, `bg-gradient-service-cool`, etc.) — never by raw hex. Hex values live in tokens only.
+
+### Brand tokens
+
+| Token | Light | Dark | Purpose |
+|---|---|---|---|
+| `primary` | `#1F4254` | `#4A8B98` | Deep blue-teal — primary CTAs, active nav, links |
+| `accent` | `#F26A3A` | `#FF8A5A` | Tangerine — in-progress states, urgent CTAs |
+| `ink` | `#0E141A` | `#ECF0F2` | Body text |
+| `surface` | `#EFF1ED` | `#0E141A` | Page background — **sage-tinted in light** (the only off-white surface color; no pure white anywhere in the system) |
+| `surface-elevated` | `#F6F8F4` | `#152028` | Card backgrounds |
+| `surface-overlay` | `#FFFFFF` | `#1C2832` | Modals, popovers |
+| `border-subtle` | `#D8DED5` | `#1F2A33` | Hairline borders |
+| `border-strong` | `#B8C0B2` | `#2F3D48` | Emphasized borders |
+
+### Service hues (status / order flow)
+
+5 stops. Each maps to one of the order statuses in the `StatusPill` component, and the two gradients below are subsets of these.
+
+| Token | Light | Dark | StatusPill label |
+|---|---|---|---|
+| `service-deep` | `#1F4254` | `#4A8B98` | `new` |
+| `service-teal` | `#4A8B98` | `#6BA5B0` | `acknowledged` |
+| `service-aqua` | `#7AB89E` | `#98C9B0` | `preparing` |
+| `service-amber` | `#E8A340` | `#F0B560` | `plating` |
+| `service-tangerine` | `#F26A3A` | `#FF8A5A` | `ready` |
+
+### Gradients (max 3 colors each)
+
+| Utility | Stops | Use case |
+|---|---|---|
+| `bg-gradient-service-cool` | `deep → teal → aqua` | Received/acknowledged/preparing flow (KDS calm state) |
+| `bg-gradient-service-warm` | `surface → amber → tangerine` | Plating/ready flow (KDS urgent state, "your food is on its way") |
+| `bg-gradient-primary` | `primary → accent` | Brand signature, hero sections |
+
+### Theme switching
+
+- `useTheme()` hook (`src/hooks/useTheme.ts`) returns `{ mode, resolvedTheme, setMode, toggle }`
+- Modes: `light` / `dark` / `system` (default)
+- Persists to `localStorage` under `orderly-theme`
+- Applies via `data-theme` attribute on `<html>` — every Tailwind utility that references a token repaints with zero JS re-render
+- When `mode === 'system'`, listens to `prefers-color-scheme` via `matchMedia` and re-applies on OS-level change
+- `<ThemeToggle />` component (`src/components/ThemeToggle/`) is a sun/moon button for manual flip
+
 ## Three-zone architecture
 
 The app is split into three top-level zones, each with its own sidebar:
