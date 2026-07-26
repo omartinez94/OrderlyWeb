@@ -31,7 +31,7 @@
 /* Tell Tailwind our color tokens. `inline` keeps the var() reference so the
  * theme cascade (light/dark via [data-theme]) still works at runtime. */
 @theme inline {
-  /* --- Color tokens --- */
+  /* --- Orderly color tokens (semantic) --- */
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
   --color-primary-foreground: var(--color-primary-foreground);
@@ -62,6 +62,26 @@
   --color-danger: var(--color-danger);
   --color-info: var(--color-info);
 
+  /* --- shadcn/ui CSS variables (aliased to Orderly tokens) ---
+   * These power the base component library (src/components/ui/). They are
+   * aliases — the canonical values live in the `:root` and `[data-theme="dark"]`
+   * blocks below. The theme cascade flows through automatically. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
   /* --- Font tokens (consumed by Tailwind's font-display / font-sans /
    * font-mono utilities) --- */
   --font-display: var(--font-display);
@@ -74,6 +94,15 @@
   --background-image-gradient-service-cool: var(--gradient-service-cool);
   --background-image-gradient-service-warm: var(--gradient-service-warm);
   --background-image-gradient-primary: var(--gradient-primary);
+
+  /* --- Radius tokens (shadcn convention) ---
+   * Orderly radii: --radius-control (8px), --radius-card (12px),
+   * --radius-panel (16px), --radius-pill (999px). The base radius
+   * matches the control radius; specific components may override. */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 :root {
@@ -151,6 +180,31 @@
   --font-display: 'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* --- shadcn/ui base library aliases ---
+   * These are *aliases* to the Orderly tokens above. The light/dark
+   * cascade flows through the references automatically — no need to
+   * redefine them in [data-theme="dark"]. The base component library
+   * (src/components/ui/) consumes these variables; raw hex values
+   * must never appear in the primitives. */
+  --background: var(--color-surface);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface-elevated);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface-overlay);
+  --popover-foreground: var(--color-ink);
+  --secondary: var(--color-surface-elevated);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-surface-elevated);
+  --muted-foreground: var(--color-ink-muted);
+  --destructive: var(--color-danger);
+  --destructive-foreground: var(--color-primary-foreground);
+  --border: var(--color-border-subtle);
+  --input: var(--color-border-strong);
+  --ring: var(--color-primary);
+
+  /* shadcn base radius — aligns with the Orderly "control" radius (8px). */
+  --radius: 0.5rem;
 }
 
 [data-theme='dark'] {

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
 import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
 import { Header } from './components/Header/Header';
+import { Button } from './components/ui/button';
 import {
   MOCK_CURRENT_USER,
   MOCK_NOTIFICATIONS,
@@ -234,18 +235,23 @@ function App() {
 
         <Section title="Components">
           <div className="flex flex-wrap gap-3 items-center mb-8">
-            <button className="px-6 py-3 rounded-lg font-semibold text-sm bg-primary text-primary-foreground hover:bg-primary-hover transition-colors">
-              Primary action
-            </button>
-            <button className="px-6 py-3 rounded-lg font-semibold text-sm bg-accent text-accent-foreground hover:bg-accent-hover transition-colors">
-              Accent action
-            </button>
-            <button className="px-6 py-3 rounded-lg font-semibold text-sm bg-transparent border border-border-strong text-ink hover:bg-surface-elevated hover:border-primary hover:text-primary transition-colors">
-              Outline
-            </button>
-            <button className="px-6 py-3 rounded-lg font-semibold text-sm bg-transparent text-ink-muted hover:bg-surface-elevated hover:text-ink transition-colors">
-              Ghost
-            </button>
+            <Button variant="default">Primary action</Button>
+            <Button variant="accent">Accent action</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="destructive">Destructive</Button>
+            <Button variant="link">Link</Button>
+          </div>
+
+          <div className="flex flex-wrap gap-3 items-center mb-8">
+            <Button size="sm">Small</Button>
+            <Button size="default">Default</Button>
+            <Button size="lg">Large</Button>
+            <Button size="icon" aria-label="Icon button">
+              <span aria-hidden="true">★</span>
+            </Button>
+            <Button disabled>Disabled</Button>
           </div>
 
           <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
