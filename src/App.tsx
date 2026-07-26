@@ -106,6 +106,39 @@ import { Skeleton } from './components/ui/skeleton';
 import { Progress } from './components/ui/progress';
 import { Toaster, toast } from './components/ui/sonner';
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from './components/ui/breadcrumb';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from './components/ui/pagination';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from './components/ui/navigation-menu';
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
+} from './components/ui/menubar';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -799,6 +832,172 @@ function App() {
                 Tangerine-tinted. Active states, hot offers, urgent alerts.
               </p>
             </div>
+          </div>
+        </Section>
+
+        <Section title="Navigation primitives">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Navigation controls — breadcrumbs, pagination, top
+            navigation, and tool palettes. Each primitive carries
+            the right semantic role (current page, current
+            breadcrumb, expanded submenu) so screen readers can
+            orient quickly.
+          </p>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Breadcrumb</CardTitle>
+                <CardDescription>
+                  Header slot + standalone usage.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="#">Acme Bistro</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="#">Orders</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Order #1284</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Pagination</CardTitle>
+                <CardDescription>
+                  Current page uses <code>aria-current</code>.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious href="#" />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#" isActive>
+                        2
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">3</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext href="#" />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))]">
+            <Card>
+              <CardHeader>
+                <CardTitle>NavigationMenu</CardTitle>
+                <CardDescription>
+                  Top-level horizontal navigation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger>
+                        Overview
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid gap-2 p-3 w-[320px]">
+                          <li>
+                            <NavigationMenuLink href="#">
+                              <div className="font-medium text-ink">
+                                Today
+                              </div>
+                              <p className="text-ink-muted text-xs">
+                                Reservations, prep load, recent orders.
+                              </p>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink href="#">
+                              <div className="font-medium text-ink">
+                                This week
+                              </div>
+                              <p className="text-ink-muted text-xs">
+                                Staff utilization, peak hours, top items.
+                              </p>
+                            </NavigationMenuLink>
+                          </li>
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink
+                        className="px-4 py-2 text-sm font-medium"
+                        href="#"
+                      >
+                        Reports
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink
+                        className="px-4 py-2 text-sm font-medium"
+                        href="#"
+                      >
+                        Settings
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Menubar</CardTitle>
+                <CardDescription>
+                  Horizontal tool palette for working surfaces.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Menubar>
+                  <MenubarMenu>
+                    <MenubarTrigger>File</MenubarTrigger>
+                    <MenubarContent>
+                      <MenubarItem>New order</MenubarItem>
+                      <MenubarItem>Open recent</MenubarItem>
+                      <MenubarSeparator />
+                      <MenubarItem>Print ticket</MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                  <MenubarMenu>
+                    <MenubarTrigger>Edit</MenubarTrigger>
+                    <MenubarContent>
+                      <MenubarItem>Undo</MenubarItem>
+                      <MenubarItem>Redo</MenubarItem>
+                      <MenubarSeparator />
+                      <MenubarItem>Find order</MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </Menubar>
+              </CardContent>
+            </Card>
           </div>
         </Section>
 
