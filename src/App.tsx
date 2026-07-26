@@ -6,6 +6,19 @@ import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import { Textarea } from './components/ui/textarea';
+import { Checkbox } from './components/ui/checkbox';
+import { Switch } from './components/ui/switch';
+import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './components/ui/select';
+import { Slider } from './components/ui/slider';
+import { Toggle } from './components/ui/toggle';
+import { ToggleGroup, ToggleGroupItem } from './components/ui/toggle-group';
 import {
   Form,
   FormControl,
@@ -301,6 +314,116 @@ function App() {
           </div>
         </Section>
 
+        <Section title="Selection primitives">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Selection controls share the same focus-visible ring, border
+            weight, and checked-state palette. Keyboard semantics are
+            Radix-driven: arrow keys for{' '}
+            <code className="font-mono text-sm">Select</code> and{' '}
+            <code className="font-mono text-sm">RadioGroup</code>, Space/Enter
+            for <code className="font-mono text-sm">Checkbox</code>,{' '}
+            <code className="font-mono text-sm">Switch</code>, and{' '}
+            <code className="font-mono text-sm">Toggle</code>.
+          </p>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <SelectionCard title="Checkbox">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Checkbox id="show-on-menu" />
+                  <Label htmlFor="show-on-menu">Show on the public menu</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="check-default" defaultChecked />
+                  <Label htmlFor="check-default">Default checked</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="check-disabled" disabled />
+                  <Label htmlFor="check-disabled">Disabled</Label>
+                </div>
+              </div>
+            </SelectionCard>
+
+            <SelectionCard title="Switch">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Switch id="accept-orders" />
+                  <Label htmlFor="accept-orders">Accept new orders</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch id="show-on-floor" defaultChecked />
+                  <Label htmlFor="show-on-floor">Show on floor (default on)</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch id="compact-mode" size="sm" />
+                  <Label htmlFor="compact-mode">Compact mode (sm)</Label>
+                </div>
+              </div>
+            </SelectionCard>
+
+            <SelectionCard title="RadioGroup">
+              <RadioGroup defaultValue="dine-in">
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="dine-in" id="order-dine" />
+                  <Label htmlFor="order-dine">Dine-in</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="takeout" id="order-take" />
+                  <Label htmlFor="order-take">Takeout</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="delivery" id="order-del" />
+                  <Label htmlFor="order-del">Delivery</Label>
+                </div>
+              </RadioGroup>
+            </SelectionCard>
+
+            <SelectionCard title="Select">
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose a station" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="grill">Grill</SelectItem>
+                  <SelectItem value="saute">Sauté</SelectItem>
+                  <SelectItem value="pastry">Pastry</SelectItem>
+                  <SelectItem value="bar">Bar</SelectItem>
+                </SelectContent>
+              </Select>
+            </SelectionCard>
+          </div>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+            <SelectionCard title="Slider">
+              <div className="grid gap-2">
+                <Label htmlFor="prep-minutes">Prep time (minutes)</Label>
+                <Slider id="prep-minutes" defaultValue={[12]} max={45} step={1} />
+                <p className="text-ink-subtle text-xs font-mono">Default 12</p>
+              </div>
+            </SelectionCard>
+
+            <SelectionCard title="Toggle">
+              <div className="flex flex-wrap gap-2">
+                <Toggle aria-label="Bold">B</Toggle>
+                <Toggle aria-label="Italic" pressed>
+                  I
+                </Toggle>
+                <Toggle aria-label="Underline" variant="outline">
+                  U
+                </Toggle>
+              </div>
+            </SelectionCard>
+
+            <SelectionCard title="ToggleGroup (single)">
+              <ToggleGroup type="single" defaultValue="day">
+                <ToggleGroupItem value="day">Day</ToggleGroupItem>
+                <ToggleGroupItem value="week">Week</ToggleGroupItem>
+                <ToggleGroupItem value="month">Month</ToggleGroupItem>
+              </ToggleGroup>
+            </SelectionCard>
+          </div>
+        </Section>
+
         <Section title="Form primitives">
           <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
             Form primitives bind to React Hook Form + Zod through{' '}
@@ -385,6 +508,23 @@ function App() {
 }
 
 export default App;
+
+function SelectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="bg-surface-elevated border border-border-strong p-5 rounded-xl">
+      <h3 className="text-primary text-sm font-bold m-0 mb-4 uppercase tracking-wider">
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+}
 
 /**
  * FormShowcase — exercises the Form + FormField + FormControl +

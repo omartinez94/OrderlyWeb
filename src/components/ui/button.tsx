@@ -38,7 +38,7 @@ const buttonVariants = cva(
     'disabled:pointer-events-none disabled:opacity-50',
     'aria-disabled:pointer-events-none aria-disabled:opacity-50',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
-    'active:scale-[0.96]',
+    'active:scale-[0.96] cursor-pointer',
   ],
   {
     variants: {
