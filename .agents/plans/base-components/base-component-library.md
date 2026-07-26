@@ -6,15 +6,15 @@
 
 ## Status
 
-> **Plan version**: `v1.3` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
-> **Current state**: 🚧 Phase 3 complete; Phase 4 pending.
+> **Plan version**: `v1.4` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
+> **Current state**: 🚧 Phase 4 complete; Phase 5 pending.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Foundation — `cn`, `components.json`, theming glue, Button primitive | ✅ Done |
 | 2 | Form primitives — Input, Label, Textarea, Form helpers, Field | ✅ Done |
 | 3 | Selection primitives — Select, Checkbox, Radio, Switch, Slider, Toggle | ✅ Done |
-| 4 | Layout primitives — Card, Separator, AspectRatio, ScrollArea, Tabs, Accordion, Collapsible | ⏸ Pending |
+| 4 | Layout primitives — Card, Separator, AspectRatio, ScrollArea, Tabs, Accordion, Collapsible | ✅ Done |
 | 5 | Overlay primitives — Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard | ⏸ Pending |
 | 6 | Data display & feedback — Table, Badge, Avatar, Skeleton, Progress, Toast (Sonner) | ⏸ Pending |
 | 7 | Navigation primitives — Breadcrumb, Pagination, NavigationMenu, Menubar | ⏸ Pending |
@@ -559,17 +559,40 @@ The adoption contract is documented in the showcase page header and copied into 
 
 **Goal**: Tonal layering and content structure that respects the design system rules.
 
-**Status**: 🔒 Blocked by Phase 3
+**Status**: ✅ Done (2026-07-26)
 
 **Deliverables**:
 
-- [ ] Run `npx shadcn@latest add card separator aspect-ratio scroll-area tabs accordion collapsible`.
-- [ ] Card variants: `default` (flat), `bordered` (1px border-strong), `glass` (uses existing `.glass` class), `muted` (surface tone). No shadows on the default variants.
-- [ ] `Tabs` enforces roving tabindex and `aria-orientation`; documented in the showcase.
-- [ ] Verbatim screen-reader semantics for `Accordion` (Radix already handles this — verify with axe).
-- [ ] Vitest + jest-axe tests per primitive.
+- [x] Run `npx shadcn@latest add card separator aspect-ratio scroll-area tabs accordion collapsible`.
+- [x] Card variants: `default` (flat), `bordered` (1px border-strong), `glass` (uses existing `.glass` class), `muted` (surface tone). No shadows on the default variants.
+- [x] `Tabs` enforces roving tabindex and `aria-orientation`; documented in the showcase.
+- [x] Verbatim screen-reader semantics for `Accordion` (Radix already handles this — verify with axe).
+- [x] Vitest + jest-axe tests per primitive.
 
-**Exit criteria**: All layout primitives render correctly and pass a11y. The showcase demonstrates each variant in light and dark.
+**Exit criteria**: `pnpm typecheck`, `pnpm build`, and `pnpm test:run` all pass. All layout primitives render correctly and pass a11y. The showcase demonstrates each variant in light and dark.
+
+**Phase 4 implementation notes**
+
+**§6.5 items — adopted in Phase 4.**
+- Tonal layering — `[✅ adopted]`. The Card's four variants are wired to the design system rule: `default` and `muted` carry no shadow; `bordered` adds a 1px `border-strong`; `glass` reuses the existing `.glass` utility for use over gradients. The brand glow stays reserved for status.
+- Separator decorative vs semantic — `[✅ adopted]`. Default is `decorative` (`role="none"`); `decorative={false}` exposes `role="separator"` and `aria-orientation`. Both states are covered by tests and jest-axe.
+- `Tabs` roving tabindex — `[✅ adopted]`. Radix handles focus management; the `default` variant sits in a `bg-muted` container; the `line` variant uses a primary-color underline on the active trigger. `aria-orientation` follows the `orientation` prop (default `horizontal`).
+- `Accordion` keyboard semantics — `[✅ adopted]` from Radix. Trigger is a button, chevron is decorative and rotates 180° on open, item separator is a single `border-b`. The Plan's `aria-expanded` and arrow-key contracts are verified in the showcase and tests.
+- `Collapsible` — `[✅ adopted]` as a thin pass-through over Radix. Used for in-place show/hide (e.g. "Show advanced settings"); not a substitute for `Accordion` in stacked lists.
+
+**Bugs found + fixed during implementation.**
+- `CardTitle` token mismatch — `[fixed]`. The first cut had a duplicated `text-primary]` class (extra `]` from a copy/paste) and was missing the `font-display` rule. Cleaned up so the title uses the same MuseoModerno + Tilled Teal rule as the design-system showcase order cards.
+
+**Deferred to a Phase 4 follow-up.**
+- None. All Phase 4 deliverables adopted.
+
+**Phase 4 verification (2026-07-26).**
+- `pnpm typecheck` → exit 0, no errors.
+- `pnpm build` → exit 0; bundle 589.12 kB JS / 91.04 kB CSS (gzip 179.68 kB / 16.08 kB). Chunk-size warning is expected — the showcase eagerly imports every primitive; Phase 8 lazy-loads it.
+- `pnpm test:run` → 58 tests passed (16 new). jest-axe covers every primitive in default + active states; Card variants, Tabs roving tabindex, Accordion expand/collapse, and Separator decorative vs semantic are all explicitly tested.
+- Manual showcase review — the four Card variants on a warm-gradient backdrop show the glass effect; Tabs and Accordion render with the expected keyboard semantics; ScrollArea, Collapsible, and AspectRatio+Separator row render correctly.
+
+**Files added.** `src/components/ui/card.tsx`, `src/components/ui/separator.tsx`, `src/components/ui/aspect-ratio.tsx`, `src/components/ui/scroll-area.tsx`, `src/components/ui/tabs.tsx`, `src/components/ui/accordion.tsx`, `src/components/ui/collapsible.tsx`, plus 7 matching test files. **Files modified:** `src/App.tsx`.
 
 ---
 
@@ -773,3 +796,11 @@ The adoption contract is documented in the showcase page header and copied into 
 - Documented the shadcn CLI Windows path-bug recovery (still happens) and the Select/RadioGroup jsdom keyboard quirks.
 - Deferred full Playwright keyboard script for `Select` to Phase 8 (per the plan's deferred Playwright setup).
 - Test count: 42 (was 21 in v1.2).
+
+### v1.4 (2026-07-26) — Phase 4 complete
+
+- Phase 4 status → ✅ Done; `[ ]` → `[x]` on all deliverables.
+- Phase 4 implementation notes appended (`Card` with four variants, `Separator`, `AspectRatio`, `ScrollArea`, `Tabs`, `Accordion`, `Collapsible`).
+- Added `src/components/ui/{card,separator,aspect-ratio,scroll-area,tabs,accordion,collapsible}.tsx` plus 7 matching test files.
+- Enforced the Flat-By-Default Rule from `DESIGN.md`: no `box-shadow` on any default Card variant; the brand glow stays reserved for status.
+- Test count: 58 (was 42 in v1.3).
