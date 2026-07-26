@@ -42,6 +42,56 @@ import {
   CollapsibleTrigger,
 } from './components/ui/collapsible';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from './components/ui/dialog';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './components/ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './components/ui/tooltip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './components/ui/alert-dialog';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from './components/ui/command';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -134,6 +184,7 @@ function HeaderPreview({
 
 function App() {
   return (
+    <TooltipProvider delayDuration={200}>
     <div className="min-h-screen bg-surface text-ink font-sans antialiased py-12 px-8 transition-colors duration-200">
       <div className="max-w-6xl mx-auto">
         <header className="mb-12">
@@ -530,7 +581,7 @@ function App() {
               </CardContent>
             </Card>
 
-            <div className="rounded-xl bg-gradient-service-warm p-4">
+            <div className="rounded-xl bg-gradient-service-cool p-4">
               <Card variant="glass">
                 <CardHeader>
                   <CardTitle>Glass card</CardTitle>
@@ -735,8 +786,195 @@ function App() {
             </div>
           </div>
         </Section>
+
+        <Section title="Overlay primitives">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Overlays trap focus, escape to close, and return focus to
+            the trigger. Body scroll is locked while a modal is open.
+            Tooltip is mounted via <code className="font-mono text-sm">TooltipProvider</code>{' '}
+            with a 200ms hover delay.
+          </p>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Tooltip</CardTitle>
+                <CardDescription>Hover or focus the trigger.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline">Hover me</Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Station prep time, today.
+                  </TooltipContent>
+                </Tooltip>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Popover</CardTitle>
+                <CardDescription>Lightweight anchored surface.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">Open</Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <div className="grid gap-2">
+                      <h4 className="font-medium text-ink leading-none">
+                        Station details
+                      </h4>
+                      <p className="text-sm text-ink-muted">
+                        Tilled Teal means calm; Saffron Amber
+                        approaches the deadline.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>DropdownMenu</CardTitle>
+                <CardDescription>Keyboard-navigable menu.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">Actions</Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Order #1284</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Mark preparing</DropdownMenuItem>
+                    <DropdownMenuItem>Mark ready</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive">
+                      Cancel order
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Dialog</CardTitle>
+                <CardDescription>Modal confirmation.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Edit order</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit order #1284</DialogTitle>
+                      <DialogDescription>
+                        Changes are sent back to the kitchen.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <p className="text-sm text-ink-muted">
+                      The form lives inside the dialog body. The
+                      close button is in the top-right.
+                    </p>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Sheet</CardTitle>
+                <CardDescription>Edge-anchored panel.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline">Open sheet</Button>
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Side panel</SheetTitle>
+                      <SheetDescription>
+                        Use for navigation drawers and detail
+                        drill-downs.
+                      </SheetDescription>
+                    </SheetHeader>
+                    <p className="text-sm text-ink-muted px-4">
+                      Content fills the sheet; the close button is
+                      top-right.
+                    </p>
+                  </SheetContent>
+                </Sheet>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>AlertDialog</CardTitle>
+                <CardDescription>
+                  For destructive or irreversible actions.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">Cancel order</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Cancel order #1284?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This cannot be undone. The kitchen will be
+                        notified and the ticket will close.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Keep order</AlertDialogCancel>
+                      <AlertDialogAction>Cancel order</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Command</CardTitle>
+              <CardDescription>Fast search palette (⌘K).</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-xl border border-border-subtle overflow-hidden">
+                <Command className="max-w-md">
+                  <CommandInput placeholder="Search orders, staff, settings…" />
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandGroup heading="Orders">
+                      <CommandItem>Order #1284 — Table 7</CommandItem>
+                      <CommandItem>Order #1285 — Table 12</CommandItem>
+                    </CommandGroup>
+                    <CommandGroup heading="Settings">
+                      <CommandItem>Restaurant preferences</CommandItem>
+                      <CommandItem>Notifications</CommandItem>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </div>
+            </CardContent>
+          </Card>
+        </Section>
       </div>
     </div>
+    </TooltipProvider>
   );
 }
 
