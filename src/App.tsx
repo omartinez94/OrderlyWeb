@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, Suspense, lazy, type ReactNode } from 'react';
 import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
 import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
 import { Header } from './components/Header/Header';
@@ -229,7 +229,25 @@ function HeaderPreview({
   );
 }
 
+// Lazy-loaded so the production bundle does not pay for the
+// showcase until `?showcase=1` is in the URL.
+const ShowcasePage = lazy(() => import('./pages/ShowcasePage'));
+
 function App() {
+  // The showcase route is gated by a `?showcase=1` query flag in
+  // development. Production builds never serve the route — it's
+  // an internal quality surface, not a user-facing page.
+  if (
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('showcase') === '1'
+  ) {
+    return (
+      <Suspense fallback={<div className="p-8 text-ink-muted">Loading showcase…</div>}>
+        <ShowcasePage />
+      </Suspense>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={200}>
     <Toaster />

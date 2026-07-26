@@ -52,6 +52,20 @@ src/                           # App source (to be scaffolded)
 - Run `pnpm lint --fix` before committing
 - When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)
 
+## Base component library (mandatory)
+
+All interactive surfaces — buttons, inputs, selects, dialogs, tables, dropdowns, tooltips, breadcrumbs, toasts, anything the user can click or focus — **must** consume the primitives in `src/components/ui/`. The full plan lives at `.agents/plans/base-components/base-component-library.md`; the lazy-loaded showcase at `?showcase=1` in development is the visual contract.
+
+The adoption contract:
+
+- **Do not** hand-roll a button, input, dialog, tooltip, or table. Add or extend a primitive in `src/components/ui/` instead, themed to the Orderly tokens.
+- **Do not** introduce a second component library. Radix UI (via the shadcn install path) is the single source of interactive primitives; cmdk is the single source for the command palette; Sonner is the single source for toasts. New primitives must fit one of these or extend an existing one.
+- **Do not** bypass the theme system. The shadcn CSS variables in `src/index.css` already alias the Orderly tokens; use `bg-primary`, `text-ink`, `border-border-subtle`, etc. — never raw hex, never literal font families, never inline `style={{}}` for static values.
+- **Do not** add a base component without a Vitest + jest-axe test that covers its open/closed states and the keyboard contract documented in the plan.
+- **Do not** commit a base component that does not pass `pnpm ui:check` (typecheck + lint + a11y tests + Playwright axe).
+
+When in doubt, open `?showcase=1` in the dev server and check what the primitive looks like there — the showcase is the single source of truth.
+
 ## Design system
 
 The visual system is locked in. Two themes, one source of truth in `src/index.css` and `src/lib/tokens.ts`. All tokens are exposed as Tailwind utilities via `@theme inline`, so components reference them by semantic name (`bg-primary`, `text-ink`, `bg-gradient-service-cool`, etc.) — never by raw hex. Hex values live in tokens only.

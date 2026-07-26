@@ -487,6 +487,14 @@ If the current-user, refresh, or accessible-restaurants operation has no secure 
 
 **Exit criteria**: Mocked login, session bootstrap, refresh/retry, and terminal-expiry flows pass; no token survives a full reload except through the backend-managed refresh cookie.
 
+**Adoption note (added 2026-07-26, base-components plan v1.8)**: When this phase ships, the `LoginForm` and `ProfilePage` **must** consume the base components shipped by `.agents/plans/base-components/base-component-library.md` rather than hand-rolled HTML. Concretely:
+- `LoginForm` uses `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `Input`, `Button` (default for submit, link for "forgot password").
+- `ProfilePage` uses `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `Avatar` + `AvatarFallback` for the identity block, `Separator` between sections, and `Button variant="destructive"` for the sign-out action.
+- The sign-out `AlertDialog` ships with the AlertDialog primitive from Phase 5.
+- The toast for "session expired" / "signed out" ships with the Sonner `toast` helper from Phase 6 (`politeness: polite`).
+
+Open `?showcase=1` in the dev server to confirm the visual contract before writing the phase-4 code.
+
 ---
 
 ### Phase 3 — Protected routing and restaurant context

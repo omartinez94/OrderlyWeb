@@ -1,0 +1,7 @@
+# Playwright E2E suite
+#
+# Run with: pnpm test:e2e
+# Browsers: pnpm exec playwright install chromium
+#
+# Tests are gated behind the dev server (webServer in playwright.config.ts).
+# The showcase route is mounted at `?showcase=1` (see src/App.tsx).
