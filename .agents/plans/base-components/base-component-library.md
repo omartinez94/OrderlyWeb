@@ -6,8 +6,8 @@
 
 ## Status
 
-> **Plan version**: `v1.6` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
-> **Current state**: 🚧 Phase 6 complete; Phase 7 pending.
+> **Plan version**: `v1.7` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
+> **Current state**: 🚧 Phase 7 complete; Phase 8 pending.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
@@ -17,7 +17,7 @@
 | 4 | Layout primitives — Card, Separator, AspectRatio, ScrollArea, Tabs, Accordion, Collapsible | ✅ Done |
 | 5 | Overlay primitives — Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard | ✅ Done |
 | 6 | Data display & feedback — Table, Badge, Avatar, Skeleton, Progress, Toast (Sonner) | ✅ Done |
-| 7 | Navigation primitives — Breadcrumb, Pagination, NavigationMenu, Menubar | ⏸ Pending |
+| 7 | Navigation primitives — Breadcrumb, Pagination, NavigationMenu, Menubar | ✅ Done |
 | 8 | Accessibility hardening, showcase, and adoption gate | ⏸ Pending |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
@@ -696,17 +696,39 @@ The adoption contract is documented in the showcase page header and copied into 
 
 **Goal**: Canonical navigation primitives for breadcrumbs, pagination, and complex menus.
 
-**Status**: 🔒 Blocked by Phase 6
+**Status**: ✅ Done (2026-07-26)
 
 **Deliverables**:
 
-- [ ] Run `npx shadcn@latest add breadcrumb pagination navigation-menu menubar`.
-- [ ] `Breadcrumb` reuses the Header's `Breadcrumb` slot pattern; the primitive is the canonical source for any other breadcrumb.
-- [ ] `Pagination` exposes `aria-current` and `aria-label="Pagination"`.
-- [ ] `NavigationMenu` and `Menubar` pass axe in the showcase.
-- [ ] Vitest + jest-axe tests per primitive.
+- [x] Run `npx shadcn@latest add breadcrumb pagination navigation-menu menubar`.
+- [x] `Breadcrumb` reuses the Header's `Breadcrumb` slot pattern; the primitive is the canonical source for any other breadcrumb.
+- [x] `Pagination` exposes `aria-current` and `aria-label="Pagination"`.
+- [x] `NavigationMenu` and `Menubar` pass axe in the showcase.
+- [x] Vitest + jest-axe tests per primitive.
 
-**Exit criteria**: All four navigation primitives pass automated a11y, render correctly in light and dark, and document their use in the showcase.
+**Exit criteria**: `pnpm typecheck`, `pnpm build`, and `pnpm test:run` all pass. All four navigation primitives pass automated a11y, render correctly in light and dark, and document their use in the showcase.
+
+**Phase 7 implementation notes**
+
+**§6.7 items — adopted in Phase 7.**
+- `Breadcrumb` contract — `[✅ adopted]`. Root is `<nav aria-label="breadcrumb">`; `BreadcrumbPage` is `role="link"` with `aria-disabled` and `aria-current="page"`; `BreadcrumbSeparator` and `BreadcrumbEllipsis` are `aria-hidden` so screen readers announce only the path, not the chevrons.
+- `Pagination` contract — `[✅ adopted]`. Root is `<nav role="navigation" aria-label="pagination">`; the active page is `aria-current="page"`; Previous/Next have explicit `aria-label`s; ellipsis is `aria-hidden` with an `sr-only` "More pages" label.
+- `NavigationMenu` — `[✅ adopted]`. Trigger is a transparent pill that lifts to `bg-surface-elevated` on hover/active; content sits on `bg-popover` with `shadow-md`; `data-active` on the link reflects the current route.
+- `Menubar` — `[✅ adopted]`. Bar on `bg-surface` with a 1px `border-strong` ring and no shadow (the Flat-By-Default Rule). Trigger lifts to `bg-surface-elevated` on hover/active; content on `bg-popover` with `shadow-md`; destructive variant uses `text-danger` + `bg-danger/10`.
+
+**Bugs found + fixed during implementation.**
+- None reported. Phase 7 was clean — Radix's keyboard semantics handled all four primitives without jsdom quirks.
+
+**Deferred to a Phase 7 follow-up.**
+- None. All Phase 7 deliverables adopted.
+
+**Phase 7 verification (2026-07-26).**
+- `pnpm typecheck` → exit 0, no errors.
+- `pnpm build` → exit 0; bundle 722.64 kB JS / 107.19 kB CSS (gzip 212.42 kB / 18.31 kB). Chunk-size warning is expected — the showcase eagerly imports every primitive; Phase 8 lazy-loads it.
+- `pnpm test:run` → 112 tests passed (12 new). jest-axe covers every navigation primitive; the keyboard test for NavigationMenu verifies that the trigger click opens the content region.
+- Manual showcase review — the Breadcrumb path reads with the right chevrons; the Pagination renders with the active page in the outline variant; the NavigationMenu opens the Overview submenu on click; the Menubar opens the File and Edit menus.
+
+**Files added.** `src/components/ui/breadcrumb.tsx`, `src/components/ui/pagination.tsx`, `src/components/ui/navigation-menu.tsx`, `src/components/ui/menubar.tsx`, plus 4 matching test files. **Files modified:** `src/App.tsx` (added the "Navigation primitives" section).
 
 ---
 
@@ -879,3 +901,11 @@ The adoption contract is documented in the showcase page header and copied into 
 - Documented the `Progress` `value` propagation fix (the destructure-and-spread pattern dropped `value` before it reached Radix).
 - Documented the Avatar test simplification (Radix swaps the image in only after `onLoadingStatusChange('loaded')` fires; jsdom never reports that for a data URL).
 - Test count: 100 (was 84 in v1.5).
+
+### v1.7 (2026-07-26) — Phase 7 complete
+
+- Phase 7 status → ✅ Done; `[ ]` → `[x]` on all deliverables.
+- Phase 7 implementation notes appended (Breadcrumb, Pagination, NavigationMenu, Menubar).
+- Added `src/components/ui/{breadcrumb,pagination,navigation-menu,menubar}.tsx` plus 4 matching test files.
+- Documented the per-primitive accessibility contracts: `aria-current` on active page/breadcrumb, `aria-label` on root nav, `aria-hidden` on separators and ellipsis.
+- Test count: 112 (was 100 in v1.6).
