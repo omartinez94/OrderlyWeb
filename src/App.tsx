@@ -20,6 +20,28 @@ import { Slider } from './components/ui/slider';
 import { Toggle } from './components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from './components/ui/toggle-group';
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './components/ui/card';
+import { Separator } from './components/ui/separator';
+import { AspectRatio } from './components/ui/aspect-ratio';
+import { ScrollArea } from './components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './components/ui/accordion';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './components/ui/collapsible';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -467,6 +489,217 @@ function App() {
           </div>
 
           <FormShowcase />
+        </Section>
+
+        <Section title="Layout primitives">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Layout primitives carry the tonal layering rule: content
+            surfaces are flat (Sage Linen → Sage Linen High → Linen
+            Overlay), overlays lift with shadow, and the brand glow is
+            reserved for status.
+          </p>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Default card</CardTitle>
+                <CardDescription>
+                  Flat <code>bg-card</code>, no border, no shadow.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-ink-muted m-0 text-sm leading-relaxed">
+                  The standard content surface. Use the default variant
+                  for grouped content within a page.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card variant="bordered">
+              <CardHeader>
+                <CardTitle>Bordered card</CardTitle>
+                <CardDescription>
+                  1px <code>border-strong</code> ring.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-ink-muted m-0 text-sm leading-relaxed">
+                  For emphasized surfaces — the perimeter reads as
+                  interactive even at rest.
+                </p>
+              </CardContent>
+            </Card>
+
+            <div className="rounded-xl bg-gradient-service-warm p-4">
+              <Card variant="glass">
+                <CardHeader>
+                  <CardTitle>Glass card</CardTitle>
+                  <CardDescription className="text-ink">
+                    The <code>.glass</code> utility.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-ink m-0 text-sm leading-relaxed">
+                    For use over gradients or busy images. Pair with a
+                    gradient backdrop to see the frosted effect.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card variant="muted">
+              <CardHeader>
+                <CardTitle>Muted card</CardTitle>
+                <CardDescription>
+                  Recedes to <code>bg-surface</code>.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-ink-muted m-0 text-sm leading-relaxed">
+                  For grouping related items without a visible lift.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Tabs</CardTitle>
+                <CardDescription>
+                  Roving tabindex. Arrow keys move between triggers.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="overview">
+                  <TabsList>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="staff">Staff</TabsTrigger>
+                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="overview">
+                    <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      Today's reservation count and order backlog.
+                    </p>
+                  </TabsContent>
+                  <TabsContent value="staff">
+                    <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      On-shift staff and station assignments.
+                    </p>
+                  </TabsContent>
+                  <TabsContent value="settings">
+                    <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      Restaurant and zone configuration.
+                    </p>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Accordion</CardTitle>
+                <CardDescription>
+                  One or many regions. Radix handles keyboard.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="prep">
+                    <AccordionTrigger>Prep time</AccordionTrigger>
+                    <AccordionContent>
+                      Average prep time per station, broken down by
+                      menu category.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="kitchen">
+                    <AccordionTrigger>Kitchen load</AccordionTrigger>
+                    <AccordionContent>
+                      Live ticket count per station. Tilled Teal
+                      indicates calm; Saffron Amber approaches the
+                      deadline; Burnt Tangerine is overdue.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="floor">
+                    <AccordionTrigger>Floor status</AccordionTrigger>
+                    <AccordionContent>
+                      Table states across the floor — open, seated,
+                      ordered, bill-out, dirty.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+            <Card>
+              <CardHeader>
+                <CardTitle>ScrollArea</CardTitle>
+                <CardDescription>
+                  Custom scrollbar on a fixed-height region.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-40 w-full rounded-md border border-border-subtle p-3">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <p
+                      key={i}
+                      className="text-ink-muted text-sm m-0 py-1"
+                    >
+                      Order line item {i + 1} — 2× Margherita, 1× Caesar
+                    </p>
+                  ))}
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Collapsible</CardTitle>
+                <CardDescription>
+                  In-place show/hide. Trigger is a button.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      Show advanced
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-2 text-sm text-ink-muted">
+                    Advanced settings: tax rate, tip policy, late-night
+                    override rules.
+                  </CollapsibleContent>
+                </Collapsible>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Separator + AspectRatio</CardTitle>
+                <CardDescription>
+                  Hairline divider; constrained media frame.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AspectRatio
+                  ratio={16 / 9}
+                  className="bg-muted rounded-md mb-3"
+                >
+                  <div className="flex items-center justify-center h-full text-ink-subtle text-xs font-mono">
+                    16:9
+                  </div>
+                </AspectRatio>
+                <Separator />
+                <p className="text-ink-muted text-sm m-0 mt-3">
+                  A card with an embedded image and a divider above the
+                  caption.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </Section>
 
         <Section title="Glass effects">
