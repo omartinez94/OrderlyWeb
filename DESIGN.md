@@ -287,10 +287,10 @@ The form language is softly rounded everywhere. There are no sharp corners in th
 - **Icon:** Inline sun (in dark mode) or moon (in light mode), 18px. No icon library.
 - **Motion:** Active state uses `transform: scale(0.96)`. Transitions are 150ms for color, 100ms for transform.
 
-### Navigation (declared, not yet built)
+### Navigation
 
-- **Top Bar:** Restaurant name + switcher on the left, zone breadcrumb in the center, theme toggle and user avatar on the right. Sage Linen ground, hairline Linen Edge bottom border, fixed.
-- **Zone Sidebars:** Each zone has its own sidebar; switching zones replaces the sidebar entirely. Sage Linen High ground, 240px width, Linen Edge right border. Active item: Tilled Teal label, Linen Edge Strong left rail. Inactive item: Muted Ink label.
+- **Top Bar (built):** Six-slot composition at `src/components/Header/`. Restaurant name + switcher on the left, breadcrumb center-left, ops badge (floor and kitchen only) center-right, then notifications bell, theme toggle, and user menu on the right. Sage Linen ground, hairline Linen Edge bottom border, fixed at the top of every zone layout. The bell and ops badge subscribe to live state (Redux + RTK Query + SignalR) once the wiring layer lands. The component is a controlled prop API today; mock data lives in `src/components/Header/mockData.ts` for the design-system showcase. Implementation and full surface brief at `.impeccable/surfaces/header.md`.
+- **Zone Sidebars (declared, not yet built):** Each zone has its own sidebar; switching zones replaces the sidebar entirely. Sage Linen High ground, 240px width, Linen Edge right border. Active item: Tilled Teal label, Linen Edge Strong left rail. Inactive item: Muted Ink label.
 
 ## Do's and Don'ts
 

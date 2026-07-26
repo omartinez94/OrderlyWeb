@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
 import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
+import { Header } from './components/Header/Header';
+import {
+  MOCK_CURRENT_USER,
+  MOCK_NOTIFICATIONS,
+  MOCK_RESTAURANTS,
+} from './components/Header/mockData';
 import { brandPalette, servicePalette, type PaletteEntry } from './lib/tokens';
 
 /**
@@ -57,6 +63,25 @@ function Swatch({ entry }: { entry: PaletteEntry }) {
   );
 }
 
+function HeaderPreview({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="mb-8 last:mb-0">
+      <div className="text-xs font-mono text-ink-subtle uppercase tracking-wider mb-2">
+        {label}
+      </div>
+      <div className="rounded-xl border border-border-subtle overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <div className="min-h-screen bg-surface text-ink font-sans antialiased py-12 px-8 transition-colors duration-200">
@@ -74,6 +99,93 @@ function App() {
             between light and dark.
           </p>
         </header>
+
+        <Section title="App Header — the global top bar">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            The Header is consumed by all three zone layouts (admin,
+            kitchen, restaurant). Six slots, fixed at the top, flat at
+            rest, hairline Linen Edge bottom border. The ops badge appears
+            on the floor and kitchen only — the One-Voice Rule still
+            binds; Burnt Tangerine on the ops badge is a service hue
+            carrying status, not decoration.
+          </p>
+
+          <HeaderPreview label="Admin zone — no ops badge, 3 notifications">
+            <Header
+              zone="admin"
+              currentRestaurantId="r-001"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={MOCK_NOTIFICATIONS}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Restaurant zone — 3 in progress (neutral)">
+            <Header
+              zone="restaurant"
+              currentRestaurantId="r-001"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={MOCK_NOTIFICATIONS}
+              opsCount={3}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Restaurant zone — 7 in progress (Saffron Amber)">
+            <Header
+              zone="restaurant"
+              currentRestaurantId="r-001"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={MOCK_NOTIFICATIONS}
+              opsCount={7}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Kitchen zone — 12 in kitchen (Burnt Tangerine)">
+            <Header
+              zone="kitchen"
+              currentRestaurantId="r-001"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={MOCK_NOTIFICATIONS}
+              opsCount={12}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Single-restaurant user (1 restaurant) — switcher is a static label">
+            <Header
+              zone="restaurant"
+              currentRestaurantId="r-001"
+              restaurants={[{ id: 'r-001', name: 'Acme Bistro — Downtown', role: 'Owner' }]}
+              notifications={MOCK_NOTIFICATIONS}
+              opsCount={4}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Multi-restaurant — 8 restaurants (typeahead kicks in at 6+)">
+            <Header
+              zone="restaurant"
+              currentRestaurantId="r-004"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={MOCK_NOTIFICATIONS}
+              opsCount={2}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+
+          <HeaderPreview label="Empty notifications — bell has no badge">
+            <Header
+              zone="restaurant"
+              currentRestaurantId="r-001"
+              restaurants={MOCK_RESTAURANTS}
+              notifications={[]}
+              opsCount={1}
+              user={MOCK_CURRENT_USER}
+            />
+          </HeaderPreview>
+        </Section>
 
         <Section title="Brand tokens">
           <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
