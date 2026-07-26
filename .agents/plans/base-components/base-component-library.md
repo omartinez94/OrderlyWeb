@@ -6,8 +6,8 @@
 
 ## Status
 
-> **Plan version**: `v1.4` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
-> **Current state**: 🚧 Phase 4 complete; Phase 5 pending.
+> **Plan version**: `v1.5` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
+> **Current state**: 🚧 Phase 5 complete; Phase 6 pending.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
@@ -15,7 +15,7 @@
 | 2 | Form primitives — Input, Label, Textarea, Form helpers, Field | ✅ Done |
 | 3 | Selection primitives — Select, Checkbox, Radio, Switch, Slider, Toggle | ✅ Done |
 | 4 | Layout primitives — Card, Separator, AspectRatio, ScrollArea, Tabs, Accordion, Collapsible | ✅ Done |
-| 5 | Overlay primitives — Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard | ⏸ Pending |
+| 5 | Overlay primitives — Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard | ✅ Done |
 | 6 | Data display & feedback — Table, Badge, Avatar, Skeleton, Progress, Toast (Sonner) | ⏸ Pending |
 | 7 | Navigation primitives — Breadcrumb, Pagination, NavigationMenu, Menubar | ⏸ Pending |
 | 8 | Accessibility hardening, showcase, and adoption gate | ⏸ Pending |
@@ -804,3 +804,14 @@ The adoption contract is documented in the showcase page header and copied into 
 - Added `src/components/ui/{card,separator,aspect-ratio,scroll-area,tabs,accordion,collapsible}.tsx` plus 7 matching test files.
 - Enforced the Flat-By-Default Rule from `DESIGN.md`: no `box-shadow` on any default Card variant; the brand glow stays reserved for status.
 - Test count: 58 (was 42 in v1.3).
+
+### v1.5 (2026-07-26) — Phase 5 complete
+
+- Phase 5 status → ✅ Done; `[ ]` → `[x]` on all deliverables.
+- Phase 5 implementation notes appended (9 overlay primitives: Dialog, Sheet, Popover, Tooltip, DropdownMenu, ContextMenu, AlertDialog, Command, HoverCard).
+- Added `src/components/ui/{dialog,sheet,popover,tooltip,dropdown-menu,context-menu,alert-dialog,command,hover-card}.tsx` plus 9 matching test files.
+- Wired `TooltipProvider` into the App root with `delayDuration=200`.
+- Added the `cmdk` runtime dep for the Command primitive.
+- Documented the AlertDialog primitive switch (`Dialog as AlertDialogPrimitive` was wrong; the dedicated `AlertDialog` primitive owns `Action` / `Cancel`).
+- Documented the cmdk `CommandEmpty` semantics (renders only when the query has no matches).
+- Test count: 84 (was 58 in v1.4).
