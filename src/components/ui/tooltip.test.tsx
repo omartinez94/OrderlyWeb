@@ -41,7 +41,6 @@ describe('Tooltip', () => {
   });
 
   it('passes axe when open', async () => {
-    const user = userEvent.setup();
     const { container } = renderTooltip(
       <Tooltip defaultOpen>
         <TooltipTrigger asChild>

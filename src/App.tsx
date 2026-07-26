@@ -92,6 +92,20 @@ import {
   CommandList,
 } from './components/ui/command';
 import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './components/ui/table';
+import { Badge } from './components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from './components/ui/avatar';
+import { Skeleton } from './components/ui/skeleton';
+import { Progress } from './components/ui/progress';
+import { Toaster, toast } from './components/ui/sonner';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -185,6 +199,7 @@ function HeaderPreview({
 function App() {
   return (
     <TooltipProvider delayDuration={200}>
+    <Toaster />
     <div className="min-h-screen bg-surface text-ink font-sans antialiased py-12 px-8 transition-colors duration-200">
       <div className="max-w-6xl mx-auto">
         <header className="mb-12">
@@ -784,6 +799,212 @@ function App() {
                 Tangerine-tinted. Active states, hot offers, urgent alerts.
               </p>
             </div>
+          </div>
+        </Section>
+
+        <Section title="Data display & feedback">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Tables, badges, avatars, and progress follow the
+            surface rules: content stays on{' '}
+            <code className="font-mono text-sm">bg-surface-overlay</code>,
+            status colors are service hues, and Toast visibility is
+            announced via Sonner's polite/assertive live regions.
+          </p>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Table</CardTitle>
+              <CardDescription>
+                Accessible table with caption, scope, and
+                sortable headers.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableCaption className="sr-only">
+                  Today's active orders with status, table, and
+                  elapsed time.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead scope="col">Order</TableHead>
+                    <TableHead scope="col">Table</TableHead>
+                    <TableHead scope="col" aria-sort="ascending">
+                      Status
+                    </TableHead>
+                    <TableHead scope="col">Elapsed</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-sm">#1284</TableCell>
+                    <TableCell>7</TableCell>
+                    <TableCell>
+                      <Badge variant="service-preparing">Preparing</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-ink-muted">
+                      4m
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-sm">#1285</TableCell>
+                    <TableCell>12</TableCell>
+                    <TableCell>
+                      <Badge variant="service-ready">Ready</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-ink-muted">
+                      8m
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-sm">#1286</TableCell>
+                    <TableCell>3</TableCell>
+                    <TableCell>
+                      <Badge variant="service-new">New</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-ink-muted">
+                      1m
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Badge</CardTitle>
+                <CardDescription>
+                  Service hues follow the StatusPill tint rule.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="default">Primary</Badge>
+                  <Badge variant="secondary">Secondary</Badge>
+                  <Badge variant="outline">Outline</Badge>
+                  <Badge variant="destructive">Destructive</Badge>
+                  <Badge variant="neutral">Neutral</Badge>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <Badge variant="service-new">New</Badge>
+                  <Badge variant="service-acknowledged">
+                    Acknowledged
+                  </Badge>
+                  <Badge variant="service-preparing">Preparing</Badge>
+                  <Badge variant="service-plating">Plating</Badge>
+                  <Badge variant="service-ready">Ready</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Avatar</CardTitle>
+                <CardDescription>
+                  Image + initials fallback.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-3">
+                  <Avatar size="lg">
+                    <AvatarImage
+                      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'/>"
+                      alt="Jane Doe"
+                    />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <Avatar>
+                    <AvatarFallback>AB</AvatarFallback>
+                  </Avatar>
+                  <Avatar size="sm">
+                    <AvatarFallback>CK</AvatarFallback>
+                  </Avatar>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Progress</CardTitle>
+                <CardDescription>
+                  Determinate and indeterminate states.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3">
+                  <div>
+                    <p className="text-ink-muted text-xs mb-1">
+                      Prep progress — 64%
+                    </p>
+                    <Progress value={64} aria-label="Prep progress" />
+                  </div>
+                  <div>
+                    <p className="text-ink-muted text-xs mb-1">
+                      Syncing — indeterminate
+                    </p>
+                    <Progress
+                      aria-valuetext="Loading"
+                      aria-label="Syncing"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Skeleton</CardTitle>
+                <CardDescription>
+                  Loading placeholder.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Toast (Sonner)</CardTitle>
+                <CardDescription>
+                  Polite and assertive live regions.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.success('Order marked ready.')}
+                  >
+                    Success
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.info('Sync started.')}
+                  >
+                    Info
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => toast.warning('Kitchen load is high.')}
+                  >
+                    Warning
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => toast.error('Failed to save changes.')}
+                  >
+                    Error
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </Section>
 
