@@ -50,6 +50,7 @@ src/                           # App source (to be scaffolded)
 - Prettier: 2-space indent, single quotes, 100-char width, trailing commas
 - ESLint: `@typescript-eslint`, `react-hooks`, `jsx-a11y` rules enabled
 - Run `pnpm lint --fix` before committing
+- When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)
 
 ## Design system
 
