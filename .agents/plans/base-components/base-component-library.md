@@ -6,8 +6,8 @@
 
 ## Status
 
-> **Plan version**: `v1.5` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
-> **Current state**: 🚧 Phase 5 complete; Phase 6 pending.
+> **Plan version**: `v1.6` (2026-07-26) — minor versions increment after each phase completion; major versions are reserved for breaking restructures of this plan.
+> **Current state**: 🚧 Phase 6 complete; Phase 7 pending.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
@@ -16,7 +16,7 @@
 | 3 | Selection primitives — Select, Checkbox, Radio, Switch, Slider, Toggle | ✅ Done |
 | 4 | Layout primitives — Card, Separator, AspectRatio, ScrollArea, Tabs, Accordion, Collapsible | ✅ Done |
 | 5 | Overlay primitives — Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard | ✅ Done |
-| 6 | Data display & feedback — Table, Badge, Avatar, Skeleton, Progress, Toast (Sonner) | ⏸ Pending |
+| 6 | Data display & feedback — Table, Badge, Avatar, Skeleton, Progress, Toast (Sonner) | ✅ Done |
 | 7 | Navigation primitives — Breadcrumb, Pagination, NavigationMenu, Menubar | ⏸ Pending |
 | 8 | Accessibility hardening, showcase, and adoption gate | ⏸ Pending |
 
@@ -842,3 +842,13 @@ The adoption contract is documented in the showcase page header and copied into 
 - Documented the AlertDialog primitive switch (`Dialog as AlertDialogPrimitive` was wrong; the dedicated `AlertDialog` primitive owns `Action` / `Cancel`).
 - Documented the cmdk `CommandEmpty` semantics (renders only when the query has no matches).
 - Test count: 84 (was 58 in v1.4).
+
+### v1.6 (2026-07-26) — Phase 6 complete
+
+- Phase 6 status → ✅ Done; `[ ]` → `[x]` on all deliverables.
+- Phase 6 implementation notes appended (Table, Badge with 5 service-hue variants, Avatar, Skeleton, Progress determinate + indeterminate, Sonner Toast).
+- Added `src/components/ui/{table,badge,avatar,skeleton,progress,sonner}.tsx` plus 6 matching test files.
+- Wired `<Toaster />` in App.tsx; added a `toast` helper with `success` / `info` / `warning` / `error` / `dismiss` methods.
+- Documented the `Progress` `value` propagation fix (the destructure-and-spread pattern dropped `value` before it reached Radix).
+- Documented the Avatar test simplification (Radix swaps the image in only after `onLoadingStatusChange('loaded')` fires; jsdom never reports that for a data URL).
+- Test count: 100 (was 84 in v1.5).
