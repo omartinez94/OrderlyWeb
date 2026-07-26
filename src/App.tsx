@@ -1,8 +1,22 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
 import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
 import { Header } from './components/Header/Header';
 import { Button } from './components/ui/button';
+import { Input } from './components/ui/input';
+import { Label } from './components/ui/label';
+import { Textarea } from './components/ui/textarea';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from './components/ui/form';
+import { useZodForm } from './lib/forms';
+import { z } from 'zod';
 import {
   MOCK_CURRENT_USER,
   MOCK_NOTIFICATIONS,
@@ -287,6 +301,51 @@ function App() {
           </div>
         </Section>
 
+        <Section title="Form primitives">
+          <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
+            Form primitives bind to React Hook Form + Zod through{' '}
+            <code className="font-mono text-sm">useZodForm</code>. The
+            <code className="font-mono text-sm">FormControl</code>{' '}
+            automatically wires{' '}
+            <code className="font-mono text-sm">aria-describedby</code> to
+            the description and (when present) the error message;{' '}
+            <code className="font-mono text-sm">aria-invalid</code> flips
+            on error so screen readers announce the broken field.
+          </p>
+
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
+            <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
+              <h3 className="text-primary text-base font-bold m-0 mb-4">
+                Plain Input + Label
+              </h3>
+              <div className="grid gap-2">
+                <Label htmlFor="plain-email">Email</Label>
+                <Input
+                  id="plain-email"
+                  type="email"
+                  placeholder="staff@acme.com"
+                />
+              </div>
+            </div>
+
+            <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
+              <h3 className="text-primary text-base font-bold m-0 mb-4">
+                Textarea
+              </h3>
+              <div className="grid gap-2">
+                <Label htmlFor="plain-notes">Notes</Label>
+                <Textarea
+                  id="plain-notes"
+                  rows={3}
+                  placeholder="Allergies, special requests, table preferences…"
+                />
+              </div>
+            </div>
+          </div>
+
+          <FormShowcase />
+        </Section>
+
         <Section title="Glass effects">
           <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
             Glass on a single-tone background is invisible. The panel below
@@ -326,3 +385,139 @@ function App() {
 }
 
 export default App;
+
+/**
+ * FormShowcase — exercises the Form + FormField + FormControl +
+ * FormDescription + FormMessage contract end-to-end. Toggle "Submit
+ * with errors" to surface the error state and observe the label color
+ * change plus the `aria-invalid` + `aria-describedby` wiring.
+ */
+const orderSchema = z.object({
+  customerName: z.string().min(2, 'Customer name must be at least 2 characters.'),
+  email: z.string().email('Enter a valid email address.'),
+  notes: z.string().max(280, 'Keep notes under 280 characters.').optional(),
+});
+
+type OrderInput = z.infer<typeof orderSchema>;
+
+function FormShowcase() {
+  const [submitted, setSubmitted] = useState<OrderInput | null>(null);
+  const form = useZodForm(orderSchema, {
+    defaultValues: { customerName: '', email: '', notes: '' },
+  });
+
+  function onSubmit(values: OrderInput) {
+    setSubmitted(values);
+  }
+
+  function onInvalid() {
+    // Trigger validation on every field so the error UI is visible
+    // even if the user has not blurred a field yet.
+    void form.trigger();
+  }
+
+  return (
+    <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
+      <h3 className="text-primary text-base font-bold m-0 mb-1">
+        Form + FormField (RHF + Zod)
+      </h3>
+      <p className="text-ink-muted text-sm m-0 mb-4">
+        <code className="font-mono">useZodForm(orderSchema)</code> — fields
+        are typed from the Zod schema;{' '}
+        <code className="font-mono">FormMessage</code> replaces{' '}
+        <code className="font-mono">FormDescription</code> visually when the
+        field is invalid.
+      </p>
+
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+          className="grid gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="customerName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Jane Doe"
+                    autoComplete="name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Visible on the receipt and the KDS ticket.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="jane@example.com"
+                    autoComplete="email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Used for the digital receipt only.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Allergies, special requests, table preferences…"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Optional. Max 280 characters.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex items-center gap-3">
+            <Button type="submit">Submit</Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => form.reset()}
+            >
+              Reset
+            </Button>
+            {submitted && (
+              <span
+                className="text-success text-sm font-medium"
+                role="status"
+                aria-live="polite"
+              >
+                Submitted ✓
+              </span>
+            )}
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
