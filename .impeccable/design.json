@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-25T18:25:00-06:00",
+  "title": "Design System: Orderly Admin Panel",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Tilled Teal",
+        "canonical": "#1F4254",
+        "darkCanonical": "#4A8B98",
+        "tonalRamp": [
+          "oklch(15% 0.025 220)",
+          "oklch(25% 0.035 220)",
+          "oklch(35% 0.04 220)",
+          "oklch(45% 0.045 220)",
+          "oklch(55% 0.04 220)",
+          "oklch(65% 0.035 220)",
+          "oklch(80% 0.02 220)",
+          "oklch(95% 0.005 220)"
+        ]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Burnt Tangerine",
+        "canonical": "#F26A3A",
+        "darkCanonical": "#FF8A5A",
+        "tonalRamp": [
+          "oklch(20% 0.08 45)",
+          "oklch(35% 0.13 45)",
+          "oklch(50% 0.17 45)",
+          "oklch(60% 0.18 45)",
+          "oklch(70% 0.16 45)",
+          "oklch(80% 0.12 45)",
+          "oklch(90% 0.06 45)",
+          "oklch(96% 0.02 45)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Carbon Ink",
+        "canonical": "#0E141A",
+        "darkCanonical": "#ECF0F2",
+        "tonalRamp": [
+          "oklch(15% 0.005 220)",
+          "oklch(25% 0.005 220)",
+          "oklch(35% 0.005 220)",
+          "oklch(50% 0.005 220)",
+          "oklch(65% 0.005 220)",
+          "oklch(78% 0.005 220)",
+          "oklch(90% 0.005 220)",
+          "oklch(97% 0.005 220)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Sage Linen",
+        "canonical": "#EFF1ED",
+        "darkCanonical": "#0E141A",
+        "tonalRamp": [
+          "oklch(15% 0.005 140)",
+          "oklch(25% 0.005 140)",
+          "oklch(35% 0.005 140)",
+          "oklch(50% 0.005 140)",
+          "oklch(65% 0.005 140)",
+          "oklch(80% 0.005 140)",
+          "oklch(92% 0.005 140)",
+          "oklch(97% 0.005 140)"
+        ]
+      },
+      "service-deep": {
+        "role": "service",
+        "displayName": "Tilled Teal (status: new)",
+        "canonical": "#1F4254",
+        "darkCanonical": "#4A8B98",
+        "tonalRamp": [
+          "oklch(15% 0.025 220)",
+          "oklch(25% 0.035 220)",
+          "oklch(35% 0.04 220)",
+          "oklch(45% 0.045 220)",
+          "oklch(55% 0.04 220)",
+          "oklch(65% 0.035 220)",
+          "oklch(80% 0.02 220)",
+          "oklch(95% 0.005 220)"
+        ]
+      },
+      "service-teal": {
+        "role": "service",
+        "displayName": "Hushed Teal (status: acknowledged)",
+        "canonical": "#4A8B98",
+        "darkCanonical": "#6BA5B0",
+        "tonalRamp": [
+          "oklch(25% 0.04 200)",
+          "oklch(35% 0.05 200)",
+          "oklch(45% 0.06 200)",
+          "oklch(55% 0.07 200)",
+          "oklch(65% 0.06 200)",
+          "oklch(75% 0.04 200)",
+          "oklch(88% 0.02 200)",
+          "oklch(95% 0.005 200)"
+        ]
+      },
+      "service-aqua": {
+        "role": "service",
+        "displayName": "Patina Aqua (status: preparing)",
+        "canonical": "#7AB89E",
+        "darkCanonical": "#98C9B0",
+        "tonalRamp": [
+          "oklch(30% 0.04 160)",
+          "oklch(40% 0.05 160)",
+          "oklch(50% 0.06 160)",
+          "oklch(60% 0.07 160)",
+          "oklch(70% 0.06 160)",
+          "oklch(80% 0.045 160)",
+          "oklch(90% 0.025 160)",
+          "oklch(96% 0.008 160)"
+        ]
+      },
+      "service-amber": {
+        "role": "service",
+        "displayName": "Saffron Amber (status: plating)",
+        "canonical": "#E8A340",
+        "darkCanonical": "#F0B560",
+        "tonalRamp": [
+          "oklch(25% 0.07 70)",
+          "oklch(40% 0.1 70)",
+          "oklch(55% 0.12 70)",
+          "oklch(65% 0.13 70)",
+          "oklch(75% 0.11 70)",
+          "oklch(85% 0.08 70)",
+          "oklch(92% 0.04 70)",
+          "oklch(97% 0.01 70)"
+        ]
+      },
+      "service-tangerine": {
+        "role": "service",
+        "displayName": "Burnt Tangerine (status: ready)",
+        "canonical": "#F26A3A",
+        "darkCanonical": "#FF8A5A",
+        "tonalRamp": [
+          "oklch(20% 0.08 45)",
+          "oklch(35% 0.13 45)",
+          "oklch(50% 0.17 45)",
+          "oklch(60% 0.18 45)",
+          "oklch(70% 0.16 45)",
+          "oklch(80% 0.12 45)",
+          "oklch(90% 0.06 45)",
+          "oklch(96% 0.02 45)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Muted Forest",
+        "canonical": "#4A8870",
+        "darkCanonical": "#6BA88E",
+        "tonalRamp": [
+          "oklch(25% 0.04 150)",
+          "oklch(40% 0.06 150)",
+          "oklch(50% 0.07 150)",
+          "oklch(60% 0.07 150)",
+          "oklch(70% 0.06 150)",
+          "oklch(80% 0.04 150)",
+          "oklch(90% 0.02 150)",
+          "oklch(96% 0.005 150)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Smoked Brick",
+        "canonical": "#C84A3A",
+        "darkCanonical": "#E87060",
+        "tonalRamp": [
+          "oklch(25% 0.08 25)",
+          "oklch(40% 0.12 25)",
+          "oklch(50% 0.15 25)",
+          "oklch(60% 0.16 25)",
+          "oklch(70% 0.14 25)",
+          "oklch(80% 0.1 25)",
+          "oklch(90% 0.05 25)",
+          "oklch(96% 0.015 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display (MuseoModerno)",
+        "fontFamily": "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+        "purpose": "Page-level heroes. Reserved for surfaces where one number or one word has to land. Used 1–2 times per screen. MuseoModerno is the high-contrast display sans that carries titles and any text that should contrast with body."
+      },
+      "headline": {
+        "displayName": "Headline (MuseoModerno)",
+        "fontFamily": "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+        "purpose": "Section headers, card titles, the lead label on a panel. The dominant text on a screen that is not a hero."
+      },
+      "title": {
+        "displayName": "Title (MuseoModerno)",
+        "fontFamily": "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+        "purpose": "Within-card emphasis — order number on an order card, staff name in a list row."
+      },
+      "body": {
+        "displayName": "Body (Urbanist)",
+        "fontFamily": "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+        "purpose": "Description copy, helper text, table cells, long-form content. Stays inside 65–75ch. Urbanist is the clean, modern, geometric sans that carries any text the eye has to live in."
+      },
+      "label": {
+        "displayName": "Label (system mono)",
+        "fontFamily": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        "purpose": "Status pills, table column headers, button text, form labels. Mono variant reserved for timestamps, IDs, and numeric readouts."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-overlay",
+        "value": "0 8px 24px rgba(14, 20, 26, 0.08)",
+        "purpose": "Modals, popovers, command palettes. The single ambient shadow. TBD when overlays are first built."
+      },
+      {
+        "name": "glow-primary",
+        "value": "0 0 16px rgba(31, 66, 84, 0.25)",
+        "darkValue": "0 0 20px rgba(74, 139, 152, 0.45)",
+        "purpose": "Tilled Teal glow. Reserved for KDS in-progress emphasis. The only colored shadow in the system besides glow-accent."
+      },
+      {
+        "name": "glow-accent",
+        "value": "0 0 16px rgba(242, 106, 58, 0.3)",
+        "darkValue": "0 0 20px rgba(255, 138, 90, 0.5)",
+        "purpose": "Burnt Tangerine glow. Reserved for KDS ready-to-serve emphasis — the one moment the system is allowed to shout."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-soft",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default easing for entrance and state transitions. Soft landing, no overshoot."
+      },
+      {
+        "name": "ease-standard",
+        "value": "ease",
+        "purpose": "Color/border transitions on controls. The 150ms default."
+      },
+      {
+        "name": "duration-color",
+        "value": "150ms",
+        "purpose": "Background, border, and text color transitions on buttons, controls, and the theme toggle."
+      },
+      {
+        "name": "duration-transform",
+        "value": "100ms",
+        "purpose": "Active-state press (scale 0.96). Faster than color so the press feels physical."
+      },
+      {
+        "name": "duration-theme",
+        "value": "200ms",
+        "purpose": "Theme switch — background-color and color on html/body. The only transition that crosses the whole page."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single affirmative action on a screen. Tilled Teal ground, white label, 8px radius. Label sets in Urbanist 600. The default affirmative voice.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Save changes</button>",
+      "css": ".ds-btn-primary { background: var(--color-primary); color: var(--color-primary-foreground); padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid transparent; font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.2; cursor: pointer; transition: background-color 150ms ease, transform 100ms ease; } .ds-btn-primary:hover { background: var(--color-primary-hover); } .ds-btn-primary:active { transform: scale(0.96); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "The urgent CTA. Burnt Tangerine ground, white label, Label sets in Urbanist 600. Reserved for in-progress actions: Mark Ready, Send to Kitchen.",
+      "html": "<button class=\"ds-btn-accent\" type=\"button\">Mark Ready</button>",
+      "css": ".ds-btn-accent { background: var(--color-accent); color: var(--color-accent-foreground); padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid transparent; font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.2; cursor: pointer; transition: background-color 150ms ease, transform 100ms ease; } .ds-btn-accent:hover { background: var(--color-accent-hover); } .ds-btn-accent:active { transform: scale(0.96); } .ds-btn-accent:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "The secondary action. Transparent ground, Linen Edge Strong border, Carbon Ink label. Label sets in Urbanist 600. Hovers lift the ground to Sage Linen High.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">Cancel</button>",
+      "css": ".ds-btn-outline { background: transparent; color: var(--color-ink); padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid var(--color-border-strong); font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.2; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease; } .ds-btn-outline:hover { background: var(--color-surface-elevated); border-color: var(--color-primary); color: var(--color-primary); } .ds-btn-outline:active { transform: scale(0.96); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The tertiary action. Transparent ground, Muted Ink label. Label sets in Urbanist 600. Hovers lift the ground to Sage Linen High and the label to Carbon Ink.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Dismiss</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: var(--color-ink-muted); padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid transparent; font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.2; cursor: pointer; transition: background-color 150ms ease, color 150ms ease, transform 100ms ease; } .ds-btn-ghost:hover { background: var(--color-surface-elevated); color: var(--color-ink); } .ds-btn-ghost:active { transform: scale(0.96); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill",
+      "description": "Order status badge. Background is a 12–16% tint of the service hue; foreground (text + dot) is the full service hue. Label sets in Urbanist 600. The pill whispers the status, it does not shout. The data-status attribute switches the hue (deep | teal | aqua | amber | tangerine | muted).",
+      "html": "<span class=\"ds-status-pill\" data-status=\"preparing\" role=\"status\" aria-label=\"Order status: Preparing\"><span class=\"ds-status-pill__dot\" aria-hidden=\"true\"></span><span class=\"ds-status-pill__label\">Preparing</span></span>",
+      "css": ".ds-status-pill { --pill-fg: var(--color-service-deep); --pill-bg: color-mix(in srgb, var(--color-service-deep) 12%, transparent); --pill-border: color-mix(in srgb, var(--color-service-deep) 28%, transparent); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.7rem; border-radius: 999px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.01em; color: var(--pill-fg); background-color: var(--pill-bg); border: 1px solid var(--pill-border); white-space: nowrap; } .ds-status-pill__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background-color: var(--pill-fg); flex-shrink: 0; } .ds-status-pill[data-status='teal'] { --pill-fg: var(--color-service-teal); --pill-bg: color-mix(in srgb, var(--color-service-teal) 14%, transparent); --pill-border: color-mix(in srgb, var(--color-service-teal) 30%, transparent); } .ds-status-pill[data-status='aqua'] { --pill-fg: var(--color-service-aqua); --pill-bg: color-mix(in srgb, var(--color-service-aqua) 16%, transparent); --pill-border: color-mix(in srgb, var(--color-service-aqua) 32%, transparent); } .ds-status-pill[data-status='amber'] { --pill-fg: var(--color-service-amber); --pill-bg: color-mix(in srgb, var(--color-service-amber) 16%, transparent); --pill-border: color-mix(in srgb, var(--color-service-amber) 34%, transparent); } .ds-status-pill[data-status='tangerine'] { --pill-fg: var(--color-service-tangerine); --pill-bg: color-mix(in srgb, var(--color-service-tangerine) 14%, transparent); --pill-border: color-mix(in srgb, var(--color-service-tangerine) 32%, transparent); } .ds-status-pill[data-status='muted'] { --pill-fg: var(--color-ink-muted); --pill-bg: color-mix(in srgb, var(--color-ink-muted) 10%, transparent); --pill-border: color-mix(in srgb, var(--color-ink-muted) 22%, transparent); }"
+    },
+    {
+      "name": "Order Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Sage Linen High ground, 12px radius, no shadow. Title in MuseoModerno (Tilled Teal), body in Urbanist (Muted Ink), status pill and time-elapsed (system mono) in the footer. The default surface for structured content.",
+      "html": "<div class=\"ds-card-surface\"><h3 class=\"ds-card-surface__title\">Order #1284</h3><p class=\"ds-card-surface__body\">Margherita Pizza, Caesar Salad, two Tiramisu. Table 7.</p><div class=\"ds-card-surface__footer\"><span class=\"ds-status-pill\" data-status=\"preparing\" role=\"status\" aria-label=\"Order status: Preparing\"><span class=\"ds-status-pill__dot\" aria-hidden=\"true\"></span><span class=\"ds-status-pill__label\">Preparing</span></span><span class=\"ds-card-surface__time\">4m elapsed</span></div></div>",
+      "css": ".ds-card-surface { background: var(--color-surface-elevated); color: var(--color-ink); border-radius: 0.75rem; padding: 1.5rem; } .ds-card-surface__title { margin: 0 0 0.25rem; color: var(--color-primary); font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; line-height: 1.3; } .ds-card-surface__body { margin: 0 0 1rem; color: var(--color-ink-muted); font-family: var(--font-body); font-size: 0.875rem; line-height: 1.55; } .ds-card-surface__footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; } .ds-card-surface__time { color: var(--color-ink-subtle); font-family: var(--font-mono); font-size: 0.75rem; }"
+    },
+    {
+      "name": "Theme Toggle",
+      "kind": "button",
+      "refersTo": "theme-toggle",
+      "description": "Single 36px square button. Inline sun or moon SVG, no icon library. Toggles the resolved theme between light and dark via the data-theme attribute on <html>.",
+      "html": "<button class=\"ds-theme-toggle\" type=\"button\" aria-label=\"Switch to dark theme\" title=\"Switch to dark theme\"><svg class=\"ds-theme-toggle__icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"></path></svg></button>",
+      "css": ".ds-theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; border: 1px solid var(--color-border-subtle); background-color: var(--color-surface-elevated); color: var(--color-ink); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease; } .ds-theme-toggle:hover { background-color: var(--color-surface-overlay); border-color: var(--color-border-strong); } .ds-theme-toggle:active { transform: scale(0.96); } .ds-theme-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; } .ds-theme-toggle__icon { display: block; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Workshop",
+    "overview": "The Quiet Workshop is a tool-first room. Surfaces exist to do work, not to be admired. Nothing on screen competes with the status of an order, the data on a dashboard, or the next action a staff member needs to take. The visual system earns its place by being quiet, accurate, and fast to read in every operating environment — the heat of a kitchen pass, the rush of a floor, the longer sessions of a back office. The product's brand lives in precision, not in personality. Status is the visual hero. Every screen is engineered so that the state of an order, a table, or a queue can be read at a glance — across the pass, from a cashier's terminal, from a manager's monitor. The five-stop service gradient is not decoration; it is the visual grammar of the order lifecycle, and it owns those colors exclusively. Typography is a two-family system: Urbanist carries body and any long-form text, MuseoModerno carries titles and any text that should contrast with body. Both ship as Fontsource variable-font packages (@fontsource-variable/urbanist and @fontsource-variable/museomoderno) imported in src/main.tsx — bundled by Vite, no CDN at runtime. The split is the personality — body for living in, title for landing on.",
+    "keyCharacteristics": [
+      "Two themes, both functional. Light is the day shift; dark is the night shift. Both are first-class and run by default on system preference.",
+      "Status is the only thing allowed to shout. Tilled teal for calm authority, burnt tangerine for warm urgency, a five-step service gradient that maps to the order lifecycle.",
+      "Flat by default, lifted for overlays, glowing for emphasis. Hybrid depth: content surfaces are flat, overlays carry a soft shadow, only status elements earn the brand glow.",
+      "Two type families, no role-swap. Urbanist carries the body and any long-form text. MuseoModerno carries titles and any text that should contrast with body. Both ship as Fontsource variable fonts."
+    ],
+    "rules": [
+      { "name": "The Service-Flow Rule", "section": "colors", "body": "The five service hues (Tilled Teal, Hushed Teal, Patina Aqua, Saffron Amber, Burnt Tangerine) are reserved for order status. They do not appear as decoration, marketing flourishes, or chart series. The order lifecycle owns these colors; everyone else borrows neutral or brand." },
+      { "name": "The One-Voice Rule", "section": "colors", "body": "Burnt Tangerine appears on ≤10% of any given screen. Its rarity is the point. If tangerine is everywhere, urgency is nowhere." },
+      { "name": "The No-Pure-White Rule", "section": "colors", "body": "The page background is Sage Linen, never #FFFFFF. The only true white in the system is Linen Overlay, reserved for modals and popovers. If a content surface needs to be white, it has earned the right to be a modal." },
+      { "name": "The Two-Family Rule", "section": "typography", "body": "Two typefaces, two jobs. Urbanist is for descriptions, body copy, and any long-form content. MuseoModerno is for titles and any text that should contrast with body (display, headline, title). They never swap roles. A body paragraph in MuseoModerno is a misuse; a card title in Urbanist is a downgrade." },
+      { "name": "The No-Raw-Family Rule", "section": "typography", "body": "Components do not import or reference a font family directly. They consume the font-display, font-sans, and font-mono Tailwind utilities, which resolve to the --font-display, --font-body, and --font-mono tokens. A component that hard-codes 'Urbanist' or 'MuseoModerno' in its style is a bug." },
+      { "name": "The Mono-Is-Measurement Rule", "section": "typography", "body": "Monospace is reserved for time, IDs, and numeric readouts. Body copy in mono is a costume the system does not wear." },
+      { "name": "The Flat-By-Default Rule", "section": "elevation", "body": "Content surfaces are flat at rest. Shadow appears only as a response to state (overlay, modal, focus), never as decoration on a card." },
+      { "name": "The Glow-Belongs-To-Status Rule", "section": "elevation", "body": "The brand glow is the status's voice. It is not used on buttons, icons, or marketing surfaces. A glowing button is a status pill, not a CTA." }
+    ],
+    "dos": [
+      "Do consume colors by semantic name (bg-primary, text-ink, border-border-subtle) via Tailwind utilities. Components reference tokens, not raw hex.",
+      "Do use Burnt Tangerine sparingly — on ≤10% of any given screen. Reserve it for urgency: in-progress states, Mark Ready CTAs, the ready flow gradient.",
+      "Do let the service hue gradient tell the order story. Cool gradient for received/acknowledged/preparing. Warm gradient for plating/ready.",
+      "Do layer surfaces by tone, not by shadow. Sage Linen (page) → Sage Linen High (card) → Linen Overlay (modal). One tonal step up, no shadow.",
+      "Do reach for glass effects on overlays that sit on busy backgrounds. Glass on a flat single-tone background is invisible; do not force it.",
+      "Do set body, descriptions, and long-form content in Urbanist; set titles, display, headline, and any contrasting text in MuseoModerno. The two never swap roles.",
+      "Do consume fonts via the font-display / font-sans / font-mono Tailwind utilities (which resolve to the --font-display / --font-body / --font-mono tokens).",
+      "Do import the variable webfonts once in src/main.tsx (the Fontsource wght.css files) and never re-import a font in a component file.",
+      "Do keep body measure inside 65–75ch where it can.",
+      "Do treat the five service hues as a closed set owned by order status. They do not appear in charts, illustrations, or marketing."
+    ],
+    "donts": [
+      "Don't use pure white on a content page. The page background is Sage Linen. Reserve #FFFFFF / #1C2832 for Linen Overlay — modals and popovers only.",
+      "Don't put Burnt Tangerine on a button unless the action is urgent. A tangerine CTA must earn the right to shout.",
+      "Don't use colored shadows on buttons, icons, or marketing surfaces. The brand glow is the status's voice.",
+      "Don't set body copy in MuseoModerno or titles in Urbanist. The Two-Family Rule binds the role split.",
+      "Don't introduce a third typeface. Two families is the system. A third is a different visual world, not a refinement.",
+      "Don't put a 1px+ colored border-left or border-right on cards, list items, callouts, or alerts as decoration. The only allowed colored rail is the sidebar active-item indicator.",
+      "Don't split the source of truth. If a color is in colors.X in the frontmatter, the CSS variable and the TypeScript constant point to the same value. Tokens are the contract.",
+      "Don't use style={{}} for static styling on JSX. Reach for a Tailwind utility or a class in a colocated .css file.",
+      "Don't invent a typography hierarchy outside the five-step scale. Display, Headline, Title, Body, Label — no seventh step."
+    ]
+  }
+}

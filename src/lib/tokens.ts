@@ -13,6 +13,17 @@
  * Keep this file in sync with src/index.css.
  */
 
+export const fonts = {
+  /** MuseoModerno — display, headline, title, any contrasting text. */
+  display: "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+  /** Urbanist — body, descriptions, long-form content, small UI text. */
+  body: "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+  /** System mono — timestamps, IDs, measurement readouts. */
+  mono: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+} as const;
+
+export type FontToken = keyof typeof fonts;
+
 export const colors = {
   // --- Brand ---
   primary: '#1F4254',

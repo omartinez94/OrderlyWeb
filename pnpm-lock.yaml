@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@fontsource-variable/museomoderno':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/urbanist':
+        specifier: ^5.3.0
+        version: 5.3.0
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -53,6 +59,12 @@ packages:
 
   '@emnapi/wasi-threads@1.2.2':
     resolution: {integrity: sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==}
+
+  '@fontsource-variable/museomoderno@5.3.0':
+    resolution: {integrity: sha512-K6kIsl0ygesjJQp3pVH0yCyrpsTa1ay6VUVwHrtLXUQ9od+uRjwTrVNetL+3XxIhoM/3mQUfLcYay1nThNgmQg==}
+
+  '@fontsource-variable/urbanist@5.3.0':
+    resolution: {integrity: sha512-riHbcRgoOhEdCwVw3n3R1JLEwvRD1N9GlXtBcwl/UJ2KabfyDBuryE2Yq10308QJgbXw3F/IFF+VoMuuqwVfIA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -639,6 +651,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@fontsource-variable/museomoderno@5.3.0': {}
+
+  '@fontsource-variable/urbanist@5.3.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
