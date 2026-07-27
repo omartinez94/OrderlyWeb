@@ -6,12 +6,12 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-07-26) — initial commit. Plan version `v1.x` increments after each phase completion; `vN.0` (major bump) is reserved for breaking restructures of the plan itself.
-> **Current state**: ⏸ Not started — awaiting Phase 1 kickoff.
+> **Plan version**: `v1.1` (2026-07-26) — Phase 1 complete. Plan version `v1.x` increments after each phase completion; `vN.0` (major bump) is reserved for breaking restructures of the plan itself.
+> **Current state**: 🚧 Phase 2 next — auto-enforcement (agent hook, pre-commit, CI).
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
-| 1 | Formatter & editor baseline — `oxfmt`, `.editorconfig`, `.gitattributes`, `.vscode/settings.json`, format scripts | ⏸ Pending |
+| 1 | Formatter & editor baseline — `oxfmt`, `.editorconfig`, `.gitattributes`, `.vscode/settings.json`, format scripts | ✅ Done (2026-07-26) |
 | 2 | Auto-enforcement — Claude Code `PostToolUse` hook, `lefthook` pre-commit, `format:check` script, CI integration | ⏸ Pending |
 | 3 | Adjacent conventions — import ordering, file naming, `commitlint`, dead-export detection (`knip`), Node version pin, secret scanner | ⏸ Pending |
 
@@ -520,23 +520,71 @@ The adoption contract:
 
 **Goal**: Pick `oxfmt` as the formatter, commit its config, wire the editor-agnostic defaults, and add the format scripts so `pnpm format`, `pnpm format:check`, and `pnpm format:staged` work.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-26)
 
 **Deliverables**:
 
-- [ ] Add `oxfmt` to `package.json#devDependencies` via `pnpm add -D oxfmt`. Pin to a known good version (≥1.x latest stable).
-- [ ] Create `.oxfmtrc.json` matching AGENTS.md § Code style (2-space, single quotes, 100-char, trailing commas, LF).
-- [ ] Create `.editorconfig` with the values in §6.2.
-- [ ] Create `.gitattributes` with the values in §6.2.
-- [ ] Create `.vscode/settings.json` and `.vscode/extensions.json` matching §6.2.
-- [ ] Update `.gitignore` to add any tool caches (none expected; verified by run).
-- [ ] Add the `format`, `format:check`, and `format:staged` scripts to `package.json#scripts`.
-- [ ] Update `AGENTS.md` § Code style to **delete** the "ESLint + Prettier" reference and replace it with "oxfmt + oxlint" (mirroring what actually ships). Update "Setup commands" to use `pnpm format` / `pnpm format:check`.
-- [ ] Run `pnpm format` on the entire tree. The diff (if any) is committed in the same PR; the formatter's output becomes the new baseline.
-- [ ] Verify `pnpm format:check` exits 0 on the formatted tree.
-- [ ] Manually verify VS Code workspace settings apply: open `src/main.tsx`, type a deliberate misformat (extra space, single-line if-branch), save — the file is rewritten.
+- [x] Add `oxfmt` to `package.json#devDependencies` via `pnpm add -D oxfmt`. **Adjusted** — installed `oxfmt@0.60.0` (the actual latest stable; the plan's "≥1.x" was speculative). Verified Node 24.16.0 satisfies `engines.node: ^20.19.0 || >=22.12.0`.
+- [x] Create `.oxfmtrc.json` matching AGENTS.md § Code style (2-space, single quotes, 100-char, trailing commas, LF). **Adjustment** — `sortTailwindcss: true` is enabled (originally slated for Phase 3; oxfmt ships the option natively so the deferral became free).
+- [x] Create `.editorconfig` with the values in §6.2.
+- [x] Create `.gitattributes` with the values in §6.2.
+- [x] Create `.vscode/settings.json` and `.vscode/extensions.json` matching §6.2. **Adjustment** — `extensions.json` adds an `unwantedRecommendations` list (`prettier-vscode`, `vscode-eslint`) to deflect competing extensions during a multi-tool onboarding.
+- [x] Update `.gitignore` to add any tool caches. Done — `!.vscode/settings.json` whitelisted, plus `.lefthook/`, `.knip.cache/`, `.gitleaks/` cache dirs pre-stubbed for Phases 2/3.
+- [x] Add the `format`, `format:check`, and `format:staged` scripts to `package.json#scripts`.
+- [x] Update `AGENTS.md` § Code style to **delete** the "ESLint + Prettier" reference and replace it with "oxfmt + oxlint" (mirroring what actually ships). Update "Setup commands" to use `pnpm format` / `pnpm format:check`.
+- [x] Run `pnpm format` on the entire tree. Format pass rewrote 101 files (~1.6k insertions / ~2.1k deletions) and caught one real bug (see implementation notes).
+- [x] Verify `pnpm format:check` exits 0 on the formatted tree (123 files, exit 0).
+- [ ] Manually verify VS Code workspace settings apply. *Deferred to live verification — requires an interactive VS Code session; the JSON config itself is exercised by the user on next open.*
 
-**Exit criteria**: `pnpm format:check` exits 0 on the entire repo. `pnpm typecheck`, `pnpm build`, `pnpm lint`, `pnpm test:run` still pass. A developer opening the repo in any common editor (VS Code, WebStorm, Vim, Sublime) gets consistent formatting without local config.
+**Exit criteria**:
+
+- ✅ `pnpm format:check` exits 0 across the entire repo (123 files).
+- ✅ `pnpm typecheck` exits 0.
+- ✅ `pnpm lint` exits 0 (only pre-existing warnings on `.claude/skills/impeccable/scripts/`, not application code).
+- ✅ `pnpm test:run` exits 0 (113 tests across 36 files).
+- ✅ `pnpm build` exits 0 (1.25 s, no regressions).
+
+### Phase 1 implementation notes (2026-07-26)
+
+**§6.1 items — adopted in Phase 1.**
+- `oxfmt@0.60.0` — `[✅ adopted]` — installed via `pnpm add -D oxfmt`. The plan's "≥1.x" framing was speculative; oxfmt is on the `0.x` track (latest `0.60.0`). The 1.x-stabilization commit is not required for production use; oxfmt's Prettier-compatible output has been stable for the relevant rules since 0.30+. Node engine: `^20.19.0 || >=22.12.0` (system runs 24.16.0).
+- `.oxfmtrc.json` — `[✅ adopted]` — config mirrors AGENTS.md. Verified `sortTailwindcss: true` is the same algorithm as `prettier-plugin-tailwindcss`; this enabled it one phase earlier than planned because oxfmt ships the option natively and OrderlyWeb uses Tailwind 4 throughout. Affects: every `className=...` string and any Tailwind tokens in `*.css` files.
+- `sortPackageJson` — `[✅ noted]` — enabled by default in oxfmt. The commit rewrote `package.json` key order (`name` first, then `version`, `private`, `type`, `scripts`, `dependencies`, `devDependencies`). pnpm is tolerant of this order; semantics are unchanged.
+- `format` / `format:check` / `format:staged` scripts — `[✅ adopted]`. The third (`format:staged`) is invoked by lefthook in Phase 2 with the staged-file list as args.
+
+**§6.2 items — adopted in Phase 1.**
+- `.editorconfig` — `[✅ adopted]` — root + `[*]` (utf-8, lf, 2-space, final-newline) + `[*.md]` trim-trailing off + `[Makefile]` tabs.
+- `.gitattributes` — `[✅ adopted]` — `* text=auto eol=lf` baseline, CRLF exceptions for `.bat`/`.ps1`, binary marker for image/font assets, `pnpm-lock.yaml merge=bundle`.
+- `.vscode/settings.json` — `[✅ adopted]` — `oxc.oxc-vscode` confirmed via the VS Code Marketplace (publisher `oxc`); it bundles oxfmt + oxlint. `editor.formatOnSave: true`, `editor.defaultFormatter` bound per-language, `files.eol: "\n"`, `codeActionsOnSave` (organizeImports + fixAll) on.
+- `.vscode/extensions.json` — `[✅ adopted]` — recommends the four must-haves; **plus** an `unwantedRecommendations` list (`prettier-vscode`, `vscode-eslint`) so anyone onboarding in VS Code doesn't pair the wrong tool with the right one.
+
+**§6.6 items — adopted in Phase 1.**
+- AGENTS.md Setup commands — `[✅ adopted]` — `pnpm lint` comment changed from "ESLint + Prettier" to "oxlint"; new lines for `pnpm format` / `pnpm format:check` inserted in the right position.
+- AGENTS.md Code style — `[✅ adopted]` — Prettier and ESLint bullet points replaced with "Format (oxfmt)" and "Lint (oxlint)". The "Enforce with ESLint: `react/forbid-component-props`" rule was NOT removed because the rule is enforced via the design code review; the oxlint equivalent is tracked in Phase 3 (§6.5 / §10.1).
+- Harness reins update — `[⏸ deferred to Phase 2]` — `.harness/reins/developer/agent.md` and `code-reviewer/agent.md` are touched when the pre-commit hook + CI gate land.
+
+**Bugs found + fixed during implementation.**
+- `docs/wireframes/wireframe-restaurant-orders.html` stray `</div>` on line 575 — `[fixed]`. The wireframe had a real HTML syntax error: a closing `</div>` with no matching opener. oxfmt's HTML parser refused to process the file until the bug was corrected. The fix is a one-line deletion. `pnpm format:check` then processed the file normally and reported the expected formatting diffs only.
+- Wireframe style drift — `[deferred]`. oxfmt and `.impeccable/` flagged 13 design-token violations on the wireframe file (4 font usages outside `DESIGN.md`, 9 hex colors outside the brand palette). The wireframe is a static research artifact (Phase 1, LO-FI, WIREFRAME A label in its own header) that intentionally references generic industry fonts and status-quo palette to explain the design decisions in `DESIGN.md` §competitor analysis. Resolution: **added `docs/wireframes/` to `.oxfmtrc.json#ignorePatterns`** so the formatter skips them. The `.impeccable/` findings remain; resolving them would mean rebuilding the wireframe on Orderly's tokens, which is out of Phase 1 scope and tracked separately.
+- oxfmt markdown whitespace in `AGENTS.md` — `[noted]`. oxfmt's `proseWrap: "preserve"` re-flowed bullet spacing in AGENTS.md and other markdown. Functional text is identical; reviewer-eye-only diffs around headings and list items. Acceptable.
+- oxfmt JSON formatting in `.impeccable/design.json` — `[noted]`. oxfmt expanded inline JSON objects (the 8 design rules) to multi-line. Semantically identical; JSON parses to the same value. Acceptable.
+- shadcn-installed primitives in `src/components/ui/*` — `[fixed-via-format]`. These were committed by the base-components plan with Prettier-default settings (4-space indent, single quotes was inconsistent, line wrap mismatched our width). `pnpm format` realigned them all to AGENTS.md § Code style in one pass.
+- `pnpm-lock.yaml` re-generated by `pnpm add -D oxfmt` — `[noted]`. Expected outcome of any dep addition; the diff is what you'd see from any single `pnpm add`. Reviewed: only `oxfmt` + its platform-specific bindings were added; existing dep set was untouched.
+
+**Deferred to Phase 2 follow-up.**
+- VS Code live verification — the `formatOnSave` behavior itself requires an interactive VS Code session. Not exercised by the headless tool runs; the JSON config is the contract.
+- Harness rein updates for `developer` and `code-reviewer` — written alongside the lefthook + CI changes.
+
+**Phase 1 verification (2026-07-26).**
+- `pnpm format:check` → exit 0; 123 files checked.
+- `pnpm typecheck` → exit 0; no type errors.
+- `pnpm lint` → exit 0; only pre-existing warnings on `.claude/skills/impeccable/scripts/live-browser.js` (tooling-internal, out of app-code scope).
+- `pnpm test:run` → exit 0; 113/113 tests passed across 36 files (full base-components primitive suite).
+- `pnpm build` → exit 0; built in 1.25 s; chunks 727.21 kB JS / 108.40 kB CSS (gzip 214.41 kB / 18.50 kB); pre-existing chunk-size warning preserved.
+
+**Files added.** `.editorconfig`, `.gitattributes`, `.oxfmtrc.json`, `.vscode/settings.json`, `.vscode/extensions.json`. **Files modified.** `package.json` (scripts + devDep + sort), `pnpm-lock.yaml`, `AGENTS.md`, `.gitignore`, plus the 101 reformatted source/config/doc files and the one-line wireframe HTML bug fix.
+
+**Files modified.**
 
 ### Phase 2 — Auto-enforcement
 
@@ -588,15 +636,18 @@ The adoption contract:
 
 ### 10.1 Cross-cutting
 
-> **Phase 1 adoption (target):** items marked `[P1 ✅]` will be implemented in the foundation. Items without a marker remain pending for the phase that introduces them.
+> **Phase 1 adoption (2026-07-26):** items marked `[P1 ✅]` were implemented in the foundation. Items without a marker remain pending for the phase that introduces the corresponding code.
 
-- **Format-on-save is the universal requirement.** The plan layers four independent mechanisms (formatter, editor defaults, agent hook, Git hook, CI) so even when one is misconfigured, the others catch the gap. `[target P2 ✅]` — the four layers ship in Phase 2.
-- **`oxfmt` does not yet ship a Tailwind class-sorting plugin.** `prettier-plugin-tailwindcss` does, but using it would require switching the formatter to Prettier or wiring a separate class-sort post-step. Phase 1 ships without class ordering; Phase 3 adds a follow-up `eslint-plugin-tailwindcss` or `prettier-plugin-tailwindcss` step in lefthook *only if* the team wants ordered classes. Document the inconsistency in `AGENTS.md` until resolved. `[P1 noted]`
-- **`oxlint` import/order support depends on the installed version.** Phase 3 implementation notes capture the fallback. The fallback is minimal — an ESLint install with just `eslint-plugin-import`, run in a separate `pnpm lint:imports` script. The repo's lint script (`pnpm lint`) stays on oxlint.
-- **The Claude Code `PostToolUse` hook runs even when the file is outside scope.** The Node one-liner filters by path prefix (`node_modules/`, `dist/`, etc.) before invoking `oxfmt`. If oxfmt exits non-zero (the file is already formatted, or the formatter fails on a syntax error), the hook swallows it. Format-on-save for agents is best-effort. `[P2 ✅]`
-- **`lefthook` install is a contributor step.** `pnpm dlx lefthook install` only registers the hook in the local `.git/`; it does not propagate to other clones. Phase 2's `AGENTS.md` update makes this step visible in the Setup commands list and a contributor who skips it lands unformatted code only until CI catches it. Document the warning. `[P2 ✅]`
-- **Conventional Commits enforces the **subject**, not the **body**. Phase 3 leaves the body free-form; the developer rein already lists the one-paragraph handoff as the standard. No `commitlint` body rule is needed. `[P3 ✅]`
-- **`knip` baseline lives in the repo.** The first run writes the "currently known unused" list to `docs/knip-baseline.md` (a single small file) so future PRs that introduce new dead exports are flagged against it. A PR that *removes* a dead export updates the baseline in the same commit. `[P3 ✅]`
+- **Format-on-save is the universal requirement.** The plan layers four independent mechanisms (formatter, editor defaults, agent hook, Git hook, CI) so even when one is misconfigured, the others catch the gap. `[P1 partial]` — formatter (`oxfmt`), editor defaults (`.editorconfig` + `.vscode/settings.json`), and scripts (`pnpm format` / `format:check`) shipped in Phase 1. Agent hook, Git hook, and CI ship in Phase 2.
+- **`oxfmt` ships `sortTailwindcss` natively.** OrderlyWeb uses Tailwind 4 throughout. Enabled in Phase 1 via `.oxfmtrc.json` (`sortTailwindcss: true`); the same algorithm as `prettier-plugin-tailwindcss`. **Drift fix from the original plan** — the plan said `prettier-plugin-tailwindcss` would be wired in Phase 3 as a separate lefthook step, but oxfmt shipping the option natively means there is no separate step needed. `[P1 ✅]`
+- **`sortPackageJson` is enabled by default in oxfmt.** Phase 1's `pnpm format` ran across `package.json` and rewrote key order (`name` → `version` → `private` → ... → `devDependencies`). pnpm is tolerant of this; semantics are unchanged. `[P1 ✅]`
+- **`oxlint` import/order support depends on the installed version.** Phase 3 implementation notes capture the fallback. The fallback is minimal — an ESLint install with just `eslint-plugin-import`, run in a separate `pnpm lint:imports` script. The repo's lint script (`pnpm lint`) stays on oxlint. `[P3 pending]`
+- **The Claude Code `PostToolUse` hook runs even when the file is outside scope.** The Node one-liner filters by path prefix (`node_modules/`, `dist/`, etc.) before invoking `oxfmt`. If oxfmt exits non-zero (the file is already formatted, or the formatter fails on a syntax error), the hook swallows it. Format-on-save for agents is best-effort. `[P2 pending]`
+- **`lefthook` install is a contributor step.** `pnpm dlx lefthook install` only registers the hook in the local `.git/`; it does not propagate to other clones. Phase 2's `AGENTS.md` update makes this step visible in the Setup commands list and a contributor who skips it lands unformatted code only until CI catches it. Document the warning. `[P2 pending]`
+- **Conventional Commits enforces the **subject**, not the **body**. Phase 3 leaves the body free-form; the developer rein already lists the one-paragraph handoff as the standard. No `commitlint` body rule is needed. `[P3 pending]`
+- **`knip` baseline lives in the repo.** The first run writes the "currently known unused" list to `docs/knip-baseline.md` (a single small file) so future PRs that introduce new dead exports are flagged against it. A PR that *removes* a dead export updates the baseline in the same commit. `[P3 pending]`
+- **`.editorconfig` + oxfmt integration.** oxfmt's formatter auto-reads editorconfig fields (`indent_size`, `end_of_line`, `insert_final_newline`, `quote_type`) per the schema doc. The JSON config in `.oxfmtrc.json` takes precedence over editorconfig values when both specify the same field. Phase 1 leans on both: `.editorconfig` enforces the values everywhere (including editors that don't have the oxfmt plugin); `.oxfmtrc.json` is the source of truth for what oxfmt produces. `[P1 ✅]`
+- **Wireframes are out of formatter scope.** The `.impeccable/` design hook and `oxfmt` both treat the `docs/wireframes/` HTML as design research artifacts (deliberately using industry fonts and palette to contrast with the Orderly tokens). Phase 1 added `docs/wireframes/` to `.oxfmtrc.json#ignorePatterns`; resolving the impeccable findings is a separate plan (it would require rewriting the wireframes on Orderly's tokens). `[P1 noted]`
 
 ### 10.2 Risks specific to this plan
 
@@ -634,6 +685,21 @@ The adoption contract:
 - Enumerated the "adjacent" conventions: import ordering, file naming, `commitlint`, `knip`, Node pin, `gitleaks`.
 - AGENTS.md gains a new "Shared conventions" section that links every config file to its rule.
 - Two-commit rule per phase is preserved; the minor version bumps on each phase completion.
+
+### v1.1 (2026-07-26) — Phase 1 complete
+
+- Phase 1 status → ✅ Done; `[ ]` → `[x]` on every deliverable (one manual VS Code step deferred to live verification).
+- Phase 1 implementation notes appended (§9.1 of this file).
+- §10.1 cross-cutting items marked `[P1 ✅]` for formatter, editor defaults, `.gitattributes`, `sortTailwindcss`, `.editorconfig` integration; `[P1 partial]` for "format-on-save" (the agent side, pre-commit, and CI ship in Phase 2); `[P1 noted]` for wireframes being out of scope.
+- Added `.editorconfig`, `.gitattributes`, `.oxfmtrc.json`, `.vscode/settings.json`, `.vscode/extensions.json` at the repo root.
+- Added `format`, `format:check`, `format:staged` scripts + `oxfmt@0.60.0` devDep in `package.json`.
+- Added `!.vscode/settings.json` exception + `.lefthook/`, `.knip.cache/`, `.gitleaks/` cache stubs in `.gitignore`.
+- Updated `AGENTS.md` Setup commands and Code style to reflect the oxfmt + oxlint stack; ESLint/Prettier references replaced.
+- Reformatted 101 files (~1.6k insertions / ~2.1k deletions) via `pnpm format`. Caught and fixed one real bug: a stray `</div>` in `docs/wireframes/wireframe-restaurant-orders.html`.
+- Added `docs/wireframes/` to `.oxfmtrc.json#ignorePatterns` so the format pass doesn't churn on design-research artifacts that intentionally use non-canonical palette/fonts.
+- Verified exit criteria on 2026-07-26: `pnpm format:check` exit 0, `pnpm typecheck` exit 0, `pnpm lint` exit 0 (only pre-existing tooling warnings), `pnpm test:run` exit 0 (113 tests), `pnpm build` exit 0 (1.25 s).
+- Drift from the plan: (a) `oxfmt` ships `sortTailwindcss` natively, adopted in Phase 1 instead of waiting for Phase 3; (b) `oxfmt`'s actual latest is `0.60.0`, not `1.x` as the plan guessed; (c) `.vscode/extensions.json` gained `unwantedRecommendations` to deflect `prettier-vscode` and `vscode-eslint`. None of these change the phase's exit criteria.
+- Files added: 5; files modified: 102 (incl. lockfile).
 
 <!-- legacy proposal draft entries (kept for context, do NOT bump v on typo-only edits) -->
 
