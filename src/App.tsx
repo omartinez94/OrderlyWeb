@@ -190,7 +190,7 @@ function Swatch({ entry }: { entry: PaletteEntry }) {
   return (
     <div
       className={[
-        'p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-1',
+        'p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-2',
         'transition-transform duration-150 hover:-translate-y-0.5',
         entry.twBg,
         entry.twText,
@@ -200,12 +200,18 @@ function Swatch({ entry }: { entry: PaletteEntry }) {
         .join(' ')}
     >
       <span className="text-sm font-bold tracking-wide">{entry.name}</span>
-      <span className="text-[0.7rem] font-mono opacity-85 leading-tight">
-        light {entry.light}
-      </span>
-      <span className="text-[0.7rem] font-mono opacity-85 leading-tight">
-        dark {entry.dark}
-      </span>
+      {/* The hex labels sit on a small `surface-overlay` chip so
+       *  they read against *any* swatch (light or dark, primary or
+       *  surface) without the swatch's own color fighting them.
+       *  This was the 1.0:1 contrast defect the detector caught. */}
+      <div className="bg-surface-overlay/90 rounded px-2 py-1 self-start">
+        <span className="text-[0.7rem] font-mono text-ink leading-tight block">
+          light {entry.light}
+        </span>
+        <span className="text-[0.7rem] font-mono text-ink leading-tight block">
+          dark {entry.dark}
+        </span>
+      </div>
     </div>
   );
 }
@@ -414,8 +420,21 @@ function App() {
             <Button size="sm">Small</Button>
             <Button size="default">Default</Button>
             <Button size="lg">Large</Button>
-            <Button size="icon" aria-label="Icon button">
-              <span aria-hidden="true">★</span>
+            <Button size="icon" aria-label="Settings">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
             </Button>
             <Button disabled>Disabled</Button>
           </div>
@@ -1569,6 +1588,21 @@ function FormShowcase() {
               onClick={() => form.reset()}
             >
               Reset
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                // Pre-fill invalid values and force validation so the
+                // FormMessage + danger-ring + danger-label contract is
+                // visible without the user having to type first.
+                form.setValue('customerName', 'A', { shouldValidate: false });
+                form.setValue('email', 'not-an-email', { shouldValidate: false });
+                form.setValue('notes', '', { shouldValidate: false });
+                void form.trigger();
+              }}
+            >
+              Show error state
             </Button>
             {submitted && (
               <span

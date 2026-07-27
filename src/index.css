@@ -223,10 +223,19 @@
   --color-ink-muted: #A8B2BC;
   --color-ink-subtle: #6E7984;
 
-  /* --- Neutral: surface (deep near-black) --- */
+  /* --- Neutral: surface tier rhythm ---
+   * Each tier must clear a 6–8% luminance step so the
+   * Card `default / bordered / quiet / surface` hierarchy
+   * reads in dark the same way it does in light.
+   *   surface          : page background (darkest)
+   *   surface-elevated : default card-ground (mid)
+   *   surface-overlay  : modal / popover (lightest)
+   * Previously the three tiers were within ~5% of each other,
+   * which collapsed Card hierarchy in dark. The new values
+   * restore the contrast that the Quiet Workshop rule requires. */
   --color-surface: #0E141A;
-  --color-surface-elevated: #152028;
-  --color-surface-overlay: #1C2832;
+  --color-surface-elevated: #1A2530;
+  --color-surface-overlay: #232F3D;
   --color-border-subtle: #1F2A33;
   --color-border-strong: #2F3D48;
 

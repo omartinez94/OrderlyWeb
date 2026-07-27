@@ -27,7 +27,10 @@ function Toaster(props: ToasterProps) {
   return (
     <SonnerToaster
       position="bottom-right"
-      richColors
+      // `richColors` is intentionally NOT set: Sonner ships its own
+      // palette when it is, which would override the Orderly token
+      // mapping in `toastOptions.classNames` below. The Orderly
+      // palette is the contract for this library.
       closeButton
       expand
       toastOptions={{
@@ -40,6 +43,10 @@ function Toaster(props: ToasterProps) {
           description: 'text-ink-muted',
           actionButton: 'bg-primary text-primary-foreground',
           cancelButton: 'bg-muted text-ink-muted',
+          success: 'border-success/40 text-success',
+          info: 'border-info/40 text-info',
+          warning: 'border-warning/40 text-warning',
+          error: 'border-danger/40 text-danger',
         },
       }}
       {...props}

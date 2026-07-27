@@ -34,7 +34,11 @@ import { cn } from '@/lib/utils';
  *     is owned by the consumer.
  */
 const cardVariants = cva(
-  'flex flex-col gap-6 rounded-xl py-6 text-card-foreground',
+  // `isolate` makes each Card its own stacking context so a sibling
+  // Card cannot bleed into the next (the detector caught an overlay
+  // bug in the Layout section where the AspectRatio card's centered
+  // marker was reading on top of the ScrollArea card's lines).
+  'flex flex-col gap-6 rounded-xl py-6 text-card-foreground isolate',
   {
     variants: {
       variant: {
