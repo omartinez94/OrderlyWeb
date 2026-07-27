@@ -39,6 +39,12 @@ const buttonVariants = cva(
     'aria-disabled:pointer-events-none aria-disabled:opacity-50',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
     'active:scale-[0.96] cursor-pointer',
+    // Action-state tint. The consumer sets `data-state="busy"`
+    // (pending action) or `data-state="success"` (action completed)
+    // directly; CSS does the rest. No shadow — the Flat-By-Default
+    // Rule still binds.
+    'data-[state=busy]:cursor-progress data-[state=busy]:opacity-80',
+    'data-[state=success]:bg-success data-[state=success]:text-primary-foreground data-[state=success]:hover:bg-success/90',
   ],
   {
     variants: {

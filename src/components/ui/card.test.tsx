@@ -27,7 +27,14 @@ describe('Card', () => {
   });
 
   it('renders each variant without a11y violations', async () => {
-    const variants = ['default', 'bordered', 'glass', 'muted'] as const;
+    const variants = [
+      'default',
+      'bordered',
+      'quiet',
+      'surface',
+      'glass',
+      'muted',
+    ] as const;
     for (const variant of variants) {
       const { container, unmount } = render(
         <Card variant={variant}>

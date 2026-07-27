@@ -69,4 +69,17 @@ describe('Button', () => {
       unmount();
     }
   });
+
+  it('honors data-state="busy" and data-state="success" styling', async () => {
+    const { rerender } = render(<Button>Save</Button>);
+    expect(screen.getByRole('button')).not.toHaveAttribute('data-state');
+
+    rerender(<Button data-state="busy">Saving…</Button>);
+    const busy = screen.getByRole('button');
+    expect(busy).toHaveAttribute('data-state', 'busy');
+
+    rerender(<Button data-state="success">Saved</Button>);
+    const success = screen.getByRole('button');
+    expect(success).toHaveAttribute('data-state', 'success');
+  });
 });

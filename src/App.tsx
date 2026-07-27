@@ -647,6 +647,35 @@ function App() {
               </CardContent>
             </Card>
 
+            <Card variant="quiet">
+              <CardHeader>
+                <CardTitle>Quiet card</CardTitle>
+                <CardDescription>
+                  No surface, hairline <code>border-subtle</code>.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-ink-muted m-0 text-sm leading-relaxed">
+                  Secondary info that should not compete with primary
+                  content — cheap to use in lists and groups.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card variant="surface">
+              <CardHeader>
+                <CardTitle>Surface card</CardTitle>
+                <CardDescription>
+                  Recedes to <code>bg-surface</code>.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-ink-muted m-0 text-sm leading-relaxed">
+                  Grouping matters more than any single item.
+                </p>
+              </CardContent>
+            </Card>
+
             <div className="rounded-xl bg-gradient-service-cool p-4">
               <Card variant="glass">
                 <CardHeader>
@@ -663,20 +692,6 @@ function App() {
                 </CardContent>
               </Card>
             </div>
-
-            <Card variant="muted">
-              <CardHeader>
-                <CardTitle>Muted card</CardTitle>
-                <CardDescription>
-                  Recedes to <code>bg-surface</code>.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-ink-muted m-0 text-sm leading-relaxed">
-                  For grouping related items without a visible lift.
-                </p>
-              </CardContent>
-            </Card>
           </div>
 
           <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] mb-8">

@@ -6,24 +6,29 @@ import { cn } from '@/lib/utils';
 /**
  * Card — the base library's primary content surface.
  *
- * Variants:
- *   default   Tilled Teal card-ground (`surface-elevated`), no border,
- *             no shadow — the Orderly default content surface.
- *   bordered  Adds a 1px `border-strong` ring for emphasized cards.
- *   glass     Uses the existing `.glass` utility (frosted surface
- *             for use over gradients or busy images).
- *   muted     Uses `surface` (the page background) so the card
- *             recedes — useful for grouping related items without
- *             a visible lift.
+ * Variants form a surface-tier rhythm so the KDS read at 1.5m can
+ * scan hierarchy by *tonal step*, not just by type:
+ *   default  Elevated card-ground (`bg-card`, Linen Overlay). The
+ *            hero card on the page — primary content lives here.
+ *   bordered Elevated + 1px `border-strong`. The emphasized card;
+ *            the perimeter reads as interactive even at rest.
+ *   quiet    No surface, hairline `border-subtle`. The metadata
+ *            block — secondary info that should not compete with
+ *            primary content. Cheaper than `bordered`.
+ *   surface  Recedes to `bg-surface` (the page background). Use for
+ *            groups of related items where the grouping itself
+ *            matters more than any single item.
+ *   glass    Uses the existing `.glass` utility (frosted surface
+ *            for use over gradients or busy images).
  *
  * Contract (per the Flat-By-Default Rule in DESIGN.md):
- *   - No `box-shadow` on any default variant. The brand glow is
- *     reserved for status surfaces (StatusPill, the KDS in-progress
+ *   - No `box-shadow` on any variant. The brand glow is reserved
+ *     for status surfaces (StatusPill, the KDS in-progress
  *     emphasis).
  *   - Title + description convention: `CardTitle` is `text-primary`
- *     + `font-bold`, `CardDescription` is `text-ink-muted`. These
- *     defaults match the existing `bg-surface-elevated` order cards
- *     in the design-system showcase.
+ *     + `font-extrabold` (weight 800) so the hierarchy reads at
+ *     KDS distance; `CardDescription` is `text-ink-muted` at the
+ *     standard `text-sm` body step.
  *   - The compound pieces (Header, Title, Description, Action,
  *     Content, Footer) are layout primitives; the visual hierarchy
  *     is owned by the consumer.
@@ -35,7 +40,11 @@ const cardVariants = cva(
       variant: {
         default: 'bg-card',
         bordered: 'bg-card border border-border-strong',
+        quiet: 'bg-transparent border border-border-subtle',
+        surface: 'bg-surface',
         glass: 'glass',
+        // Deprecated alias for `surface` — kept so the existing
+        // showcase and tests do not break. Prefer `surface`.
         muted: 'bg-surface',
       },
     },
@@ -83,7 +92,10 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card-title"
       className={cn(
-        'font-display text-xl font-bold leading-tight text-primary] text-primary',
+        // Weight lifted from 700 → 800 so the title-card hierarchy
+        // reads at KDS distance (≈1.5m). Stays inside the Orderly
+        // 5-step ramp; no new step added.
+        'font-display text-xl font-extrabold leading-tight text-primary',
         className
       )}
       {...props}
