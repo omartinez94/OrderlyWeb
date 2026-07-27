@@ -1,5 +1,5 @@
-import './ThemeToggle.css';
-import { useTheme } from '../../hooks/useTheme';
+import "./ThemeToggle.css";
+import { useTheme } from "../../hooks/useTheme";
 
 /**
  * ThemeToggle — flips between light and dark mode.
@@ -10,8 +10,8 @@ import { useTheme } from '../../hooks/useTheme';
  */
 export function ThemeToggle() {
   const { resolvedTheme, toggle } = useTheme();
-  const isDark = resolvedTheme === 'dark';
-  const label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+  const isDark = resolvedTheme === "dark";
+  const label = isDark ? "Switch to light theme" : "Switch to dark theme";
 
   return (
     <button

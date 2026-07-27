@@ -1,12 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { RadioGroup, RadioGroupItem } from './radio-group';
-import { Label } from './label';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { RadioGroup, RadioGroupItem } from "./radio-group";
+import { Label } from "./label";
 
-describe('RadioGroup', () => {
-  it('selects the default value', () => {
+describe("RadioGroup", () => {
+  it("selects the default value", () => {
     render(
       <RadioGroup defaultValue="a">
         <div className="flex items-center gap-2">
@@ -19,11 +19,11 @@ describe('RadioGroup', () => {
         </div>
       </RadioGroup>,
     );
-    expect(screen.getByLabelText('A')).toBeChecked();
-    expect(screen.getByLabelText('B')).not.toBeChecked();
+    expect(screen.getByLabelText("A")).toBeChecked();
+    expect(screen.getByLabelText("B")).not.toBeChecked();
   });
 
-  it('switches selection on click', async () => {
+  it("switches selection on click", async () => {
     render(
       <RadioGroup defaultValue="a">
         <div className="flex items-center gap-2">
@@ -36,12 +36,12 @@ describe('RadioGroup', () => {
         </div>
       </RadioGroup>,
     );
-    await userEvent.click(screen.getByLabelText('B'));
-    expect(screen.getByLabelText('B')).toBeChecked();
-    expect(screen.getByLabelText('A')).not.toBeChecked();
+    await userEvent.click(screen.getByLabelText("B"));
+    expect(screen.getByLabelText("B")).toBeChecked();
+    expect(screen.getByLabelText("A")).not.toBeChecked();
   });
 
-  it('moves focus with arrow keys (Radix roving tabindex)', async () => {
+  it("moves focus with arrow keys (Radix roving tabindex)", async () => {
     render(
       <RadioGroup defaultValue="a">
         <div className="flex items-center gap-2">
@@ -58,18 +58,18 @@ describe('RadioGroup', () => {
         </div>
       </RadioGroup>,
     );
-    const first = screen.getByLabelText('A');
+    const first = screen.getByLabelText("A");
     first.focus();
-    await userEvent.keyboard('{ArrowRight}');
+    await userEvent.keyboard("{ArrowRight}");
     // In Radix RadioGroup, arrow keys move focus across the roving
     // tabindex. The selection itself updates through `onValueChange`,
     // which we verify in the click-based test above. jsdom does not
     // always reproduce the focus-driven selection change deterministically,
     // so the assertion here is on focus only.
-    expect(screen.getByLabelText('B')).toHaveFocus();
+    expect(screen.getByLabelText("B")).toHaveFocus();
   });
 
-  it('passes axe in both states', async () => {
+  it("passes axe in both states", async () => {
     const { container, rerender } = render(
       <RadioGroup defaultValue="a">
         <div className="flex items-center gap-2">

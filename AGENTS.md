@@ -47,7 +47,7 @@ src/                           # App source (to be scaffolded)
   - HeadlessUI for unstyled interactive primitives.
   - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
   - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
-- Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, single quotes, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
+- Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, **double quotes**, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
 - Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
 - Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
 - When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)

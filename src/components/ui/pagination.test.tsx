@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import {
   Pagination,
   PaginationContent,
@@ -8,9 +8,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from './pagination';
+} from "./pagination";
 
-describe('Pagination', () => {
+describe("Pagination", () => {
   it('renders the nav with aria-label="pagination"', () => {
     render(
       <Pagination>
@@ -21,7 +21,7 @@ describe('Pagination', () => {
         </PaginationContent>
       </Pagination>,
     );
-    expect(screen.getByLabelText('pagination')).toBeInTheDocument();
+    expect(screen.getByLabelText("pagination")).toBeInTheDocument();
   });
 
   it('marks the current page with aria-current="page"', () => {
@@ -39,11 +39,11 @@ describe('Pagination', () => {
         </PaginationContent>
       </Pagination>,
     );
-    const link = screen.getByText('2').closest('a');
-    expect(link).toHaveAttribute('aria-current', 'page');
+    const link = screen.getByText("2").closest("a");
+    expect(link).toHaveAttribute("aria-current", "page");
   });
 
-  it('exposes aria-label on Previous/Next', () => {
+  it("exposes aria-label on Previous/Next", () => {
     render(
       <Pagination>
         <PaginationContent>
@@ -56,11 +56,11 @@ describe('Pagination', () => {
         </PaginationContent>
       </Pagination>,
     );
-    expect(screen.getByRole('link', { name: 'Go to previous page' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Go to next page' })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Go to previous page" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Go to next page" })).toBeInTheDocument();
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = render(
       <Pagination>
         <PaginationContent>

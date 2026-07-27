@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Collapsible as CollapsiblePrimitive } from 'radix-ui';
+import { Collapsible as CollapsiblePrimitive } from "radix-ui";
 
 /**
  * Collapsible — in-place show/hide content region.

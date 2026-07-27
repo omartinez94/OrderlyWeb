@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
-describe('Tabs', () => {
-  it('renders the default panel', () => {
+describe("Tabs", () => {
+  it("renders the default panel", () => {
     render(
       <Tabs defaultValue="one">
         <TabsList>
@@ -16,10 +16,10 @@ describe('Tabs', () => {
         <TabsContent value="two">Second panel</TabsContent>
       </Tabs>,
     );
-    expect(screen.getByText('First panel')).toBeVisible();
+    expect(screen.getByText("First panel")).toBeVisible();
   });
 
-  it('switches panels on click', async () => {
+  it("switches panels on click", async () => {
     render(
       <Tabs defaultValue="one">
         <TabsList>
@@ -30,11 +30,11 @@ describe('Tabs', () => {
         <TabsContent value="two">Second panel</TabsContent>
       </Tabs>,
     );
-    await userEvent.click(screen.getByRole('tab', { name: 'Two' }));
-    expect(screen.getByText('Second panel')).toBeVisible();
+    await userEvent.click(screen.getByRole("tab", { name: "Two" }));
+    expect(screen.getByText("Second panel")).toBeVisible();
   });
 
-  it('moves focus with arrow keys (roving tabindex)', async () => {
+  it("moves focus with arrow keys (roving tabindex)", async () => {
     render(
       <Tabs defaultValue="one">
         <TabsList>
@@ -47,13 +47,13 @@ describe('Tabs', () => {
         <TabsContent value="three">Third</TabsContent>
       </Tabs>,
     );
-    const first = screen.getByRole('tab', { name: 'One' });
+    const first = screen.getByRole("tab", { name: "One" });
     first.focus();
-    await userEvent.keyboard('{ArrowRight}');
-    expect(screen.getByRole('tab', { name: 'Two' })).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: "Two" })).toHaveFocus();
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = render(
       <Tabs defaultValue="one">
         <TabsList>

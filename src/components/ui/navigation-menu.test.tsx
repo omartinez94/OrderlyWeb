@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,10 +9,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from './navigation-menu';
+} from "./navigation-menu";
 
-describe('NavigationMenu', () => {
-  it('renders triggers and a static link', () => {
+describe("NavigationMenu", () => {
+  it("renders triggers and a static link", () => {
     render(
       <NavigationMenu>
         <NavigationMenuList>
@@ -28,11 +28,11 @@ describe('NavigationMenu', () => {
         </NavigationMenuList>
       </NavigationMenu>,
     );
-    expect(screen.getByRole('button', { name: /Overview/ })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Reports' })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Overview/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Reports" })).toBeInTheDocument();
   });
 
-  it('opens the content on trigger click', async () => {
+  it("opens the content on trigger click", async () => {
     const user = userEvent.setup();
     render(
       <NavigationMenu>
@@ -46,11 +46,11 @@ describe('NavigationMenu', () => {
         </NavigationMenuList>
       </NavigationMenu>,
     );
-    await user.click(screen.getByRole('button', { name: /Overview/ }));
-    expect(await screen.findByRole('link', { name: 'Today' })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /Overview/ }));
+    expect(await screen.findByRole("link", { name: "Today" })).toBeVisible();
   });
 
-  it('passes axe in closed state', async () => {
+  it("passes axe in closed state", async () => {
     const { container } = render(
       <NavigationMenu>
         <NavigationMenuList>

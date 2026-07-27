@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { HoverCard as HoverCardPrimitive } from 'radix-ui';
+import * as React from "react";
+import { HoverCard as HoverCardPrimitive } from "radix-ui";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * HoverCard — a richer tooltip alternative that supports a small
@@ -26,7 +26,7 @@ function HoverCardTrigger({ ...props }: React.ComponentProps<typeof HoverCardPri
 
 function HoverCardContent({
   className,
-  align = 'center',
+  align = "center",
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
@@ -37,9 +37,9 @@ function HoverCardContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          'z-50 w-72 rounded-lg border border-border-subtle bg-popover p-4 text-ink shadow-md outline-hidden',
-          'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
-          'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+          "z-50 w-72 rounded-lg border border-border-subtle bg-popover p-4 text-ink shadow-md outline-hidden",
+          "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           className,
         )}
         {...props}

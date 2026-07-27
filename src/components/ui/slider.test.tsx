@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Slider } from './slider';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Slider } from "./slider";
 
 /**
  * Slider tests assert the runtime contract — a thumb with the right
@@ -11,18 +11,18 @@ import { Slider } from './slider';
  * full-browser Playwright suite in Phase 8 where the `aria-label` is
  * wired through a `FormLabel` (the contract for production consumers).
  */
-describe('Slider', () => {
-  it('renders a thumb with the configured value', () => {
+describe("Slider", () => {
+  it("renders a thumb with the configured value", () => {
     render(<Slider defaultValue={[40]} aria-label="Volume" />);
-    const thumb = screen.getByRole('slider');
-    expect(thumb).toHaveAttribute('aria-valuenow', '40');
+    const thumb = screen.getByRole("slider");
+    expect(thumb).toHaveAttribute("aria-valuenow", "40");
   });
 
-  it('moves the value on arrow keys', async () => {
+  it("moves the value on arrow keys", async () => {
     render(<Slider defaultValue={[40]} step={1} aria-label="Volume" />);
-    const thumb = screen.getByRole('slider');
+    const thumb = screen.getByRole("slider");
     thumb.focus();
-    await userEvent.keyboard('{ArrowRight}');
-    expect(thumb).toHaveAttribute('aria-valuenow', '41');
+    await userEvent.keyboard("{ArrowRight}");
+    expect(thumb).toHaveAttribute("aria-valuenow", "41");
   });
 });

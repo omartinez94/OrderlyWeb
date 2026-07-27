@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import {
   Table,
   TableBody,
@@ -9,10 +9,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './table';
+} from "./table";
 
-describe('Table', () => {
-  it('renders caption, header, and rows', () => {
+describe("Table", () => {
+  it("renders caption, header, and rows", () => {
     render(
       <Table>
         <TableCaption>Order list</TableCaption>
@@ -30,12 +30,12 @@ describe('Table', () => {
         </TableBody>
       </Table>,
     );
-    expect(screen.getByText('Order list')).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'Order' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '#1284' })).toBeInTheDocument();
+    expect(screen.getByText("Order list")).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "Order" })).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "#1284" })).toBeInTheDocument();
   });
 
-  it('uses scope=col on header cells', () => {
+  it("uses scope=col on header cells", () => {
     render(
       <Table>
         <TableHeader>
@@ -45,11 +45,11 @@ describe('Table', () => {
         </TableHeader>
       </Table>,
     );
-    const th = screen.getByRole('columnheader');
-    expect(th.tagName).toBe('TH');
+    const th = screen.getByRole("columnheader");
+    expect(th.tagName).toBe("TH");
   });
 
-  it('passes axe with caption + scope', async () => {
+  it("passes axe with caption + scope", async () => {
     const { container } = render(
       <Table>
         <TableCaption>Order list</TableCaption>

@@ -1,15 +1,15 @@
-import type { Zone } from '../types';
+import type { Zone } from "../types";
 
-type Load = 'neutral' | 'amber' | 'tangerine';
+type Load = "neutral" | "amber" | "tangerine";
 
 function loadFor(count: number): Load {
-  if (count <= 5) return 'neutral';
-  if (count <= 10) return 'amber';
-  return 'tangerine';
+  if (count <= 5) return "neutral";
+  if (count <= 10) return "amber";
+  return "tangerine";
 }
 
 function copyFor(count: number, zone: Zone): string {
-  if (zone === 'kitchen') {
+  if (zone === "kitchen") {
     return `${count} in kitchen`;
   }
   return `${count} in progress`;
@@ -47,7 +47,7 @@ export function OpsBadge({ count, zone, onClick }: OpsBadgeProps) {
       aria-label={`${label}. Click to view orders.`}
     >
       <span className="ds-ops-badge__count">{count}</span>
-      <span>{zone === 'kitchen' ? 'in kitchen' : 'in progress'}</span>
+      <span>{zone === "kitchen" ? "in kitchen" : "in progress"}</span>
     </button>
   );
 }

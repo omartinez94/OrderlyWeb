@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Progress as ProgressPrimitive } from 'radix-ui';
+import * as React from "react";
+import { Progress as ProgressPrimitive } from "radix-ui";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Progress — linear progress bar.
@@ -24,16 +24,16 @@ function Progress({
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
-      data-state={isIndeterminate ? 'indeterminate' : 'determinate'}
+      data-state={isIndeterminate ? "indeterminate" : "determinate"}
       value={value ?? undefined}
-      className={cn('relative h-2 w-full overflow-hidden rounded-full bg-muted', className)}
+      className={cn("relative h-2 w-full overflow-hidden rounded-full bg-muted", className)}
       {...props}
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className={cn(
-          'h-full bg-primary transition-transform duration-300',
-          isIndeterminate && 'origin-left animate-pulse w-1/3',
+          "h-full bg-primary transition-transform duration-300",
+          isIndeterminate && "origin-left animate-pulse w-1/3",
         )}
         style={isIndeterminate ? undefined : { transform: `translateX(-${100 - (value || 0)}%)` }}
       />

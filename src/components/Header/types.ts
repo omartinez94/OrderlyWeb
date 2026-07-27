@@ -6,9 +6,9 @@
  * the wiring layer is a follow-up.
  */
 
-export type Zone = 'admin' | 'kitchen' | 'restaurant';
+export type Zone = "admin" | "kitchen" | "restaurant";
 
-export type RestaurantRole = 'Owner' | 'Manager' | 'Staff';
+export type RestaurantRole = "Owner" | "Manager" | "Staff";
 
 export interface Restaurant {
   id: string;

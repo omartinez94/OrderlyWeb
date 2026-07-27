@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from './menubar';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "./menubar";
 
-describe('Menubar', () => {
-  it('renders the trigger and the items', async () => {
+describe("Menubar", () => {
+  it("renders the trigger and the items", async () => {
     const user = userEvent.setup();
     render(
       <Menubar>
@@ -18,11 +18,11 @@ describe('Menubar', () => {
         </MenubarMenu>
       </Menubar>,
     );
-    await user.click(screen.getByRole('menubar', { name: '' }).querySelector('button')!);
-    expect(await screen.findByText('New order')).toBeInTheDocument();
+    await user.click(screen.getByRole("menubar", { name: "" }).querySelector("button")!);
+    expect(await screen.findByText("New order")).toBeInTheDocument();
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = render(
       <Menubar>
         <MenubarMenu>

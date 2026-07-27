@@ -1,11 +1,11 @@
-import { RestaurantSwitcher } from './slots/RestaurantSwitcher';
-import { Breadcrumb } from './slots/Breadcrumb';
-import { OpsBadge } from './slots/OpsBadge';
-import { NotificationsBell } from './slots/NotificationsBell';
-import { UserMenu } from './slots/UserMenu';
-import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
-import type { AppNotification, CurrentUser, Restaurant, Zone } from './types';
-import './Header.css';
+import { RestaurantSwitcher } from "./slots/RestaurantSwitcher";
+import { Breadcrumb } from "./slots/Breadcrumb";
+import { OpsBadge } from "./slots/OpsBadge";
+import { NotificationsBell } from "./slots/NotificationsBell";
+import { UserMenu } from "./slots/UserMenu";
+import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
+import type { AppNotification, CurrentUser, Restaurant, Zone } from "./types";
+import "./Header.css";
 
 /**
  * App Header — the persistent top bar consumed by all three zone
@@ -61,7 +61,7 @@ export function Header({
 }: HeaderProps) {
   const currentRestaurant = restaurants.find((r) => r.id === currentRestaurantId);
   const unreadCount = notifications.filter((n) => !n.read).length;
-  const showOpsBadge = zone !== 'admin' && opsCount != null && opsCount > 0;
+  const showOpsBadge = zone !== "admin" && opsCount != null && opsCount > 0;
 
   return (
     <header className="ds-header" role="banner">

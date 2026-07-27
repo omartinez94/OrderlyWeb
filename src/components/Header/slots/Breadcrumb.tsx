@@ -1,9 +1,9 @@
-import type { Zone } from '../types';
+import type { Zone } from "../types";
 
 const ZONE_LABEL: Record<Zone, string> = {
-  admin: 'Admin',
-  kitchen: 'Kitchen',
-  restaurant: 'Restaurant',
+  admin: "Admin",
+  kitchen: "Kitchen",
+  restaurant: "Restaurant",
 };
 
 /**
@@ -44,7 +44,7 @@ export function Breadcrumb({
         disabled={!onRestaurantClick}
         title={restaurantName}
       >
-        {restaurantName ?? 'Loading…'}
+        {restaurantName ?? "Loading…"}
       </button>
       <span className="ds-breadcrumb__separator" aria-hidden="true">
         /

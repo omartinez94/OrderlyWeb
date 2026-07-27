@@ -26,73 +26,73 @@ export type FontToken = keyof typeof fonts;
 
 export const colors = {
   // --- Brand ---
-  primary: '#1F4254',
-  primaryHover: '#16303D',
-  primaryForeground: '#FFFFFF',
+  primary: "#1F4254",
+  primaryHover: "#16303D",
+  primaryForeground: "#FFFFFF",
 
-  accent: '#F26A3A',
-  accentHover: '#D8582C',
-  accentForeground: '#FFFFFF',
+  accent: "#F26A3A",
+  accentHover: "#D8582C",
+  accentForeground: "#FFFFFF",
 
   // --- Neutral: ink ---
-  ink: '#0E141A',
-  inkMuted: '#4A5560',
-  inkSubtle: '#7A8590',
+  ink: "#0E141A",
+  inkMuted: "#4A5560",
+  inkSubtle: "#7A8590",
 
   // --- Neutral: surface (sage-tinted) ---
-  surface: '#EFF1ED',
-  surfaceElevated: '#F6F8F4',
-  surfaceOverlay: '#FFFFFF',
-  borderSubtle: '#D8DED5',
-  borderStrong: '#B8C0B2',
+  surface: "#EFF1ED",
+  surfaceElevated: "#F6F8F4",
+  surfaceOverlay: "#FFFFFF",
+  borderSubtle: "#D8DED5",
+  borderStrong: "#B8C0B2",
 
   // --- Service hues (status gradient stops) ---
-  serviceDeep: '#1F4254',
-  serviceTeal: '#4A8B98',
-  serviceAqua: '#7AB89E',
-  serviceAmber: '#E8A340',
-  serviceTangerine: '#F26A3A',
+  serviceDeep: "#1F4254",
+  serviceTeal: "#4A8B98",
+  serviceAqua: "#7AB89E",
+  serviceAmber: "#E8A340",
+  serviceTangerine: "#F26A3A",
 
   // --- Semantic states ---
-  success: '#4A8870',
-  warning: '#E8A340',
-  danger: '#C84A3A',
-  info: '#4A8B98',
+  success: "#4A8870",
+  warning: "#E8A340",
+  danger: "#C84A3A",
+  info: "#4A8B98",
 } as const;
 
 export const darkColors = {
   // --- Brand (lifted for dark contrast) ---
-  primary: '#4A8B98',
-  primaryHover: '#5FA0AE',
-  primaryForeground: '#0E141A',
+  primary: "#4A8B98",
+  primaryHover: "#5FA0AE",
+  primaryForeground: "#0E141A",
 
-  accent: '#FF8A5A',
-  accentHover: '#FFA478',
-  accentForeground: '#0E141A',
+  accent: "#FF8A5A",
+  accentHover: "#FFA478",
+  accentForeground: "#0E141A",
 
   // --- Neutral: ink (light text on dark) ---
-  ink: '#ECF0F2',
-  inkMuted: '#A8B2BC',
-  inkSubtle: '#6E7984',
+  ink: "#ECF0F2",
+  inkMuted: "#A8B2BC",
+  inkSubtle: "#6E7984",
 
   // --- Neutral: surface (deep near-black) ---
-  surface: '#0E141A',
-  surfaceElevated: '#152028',
-  surfaceOverlay: '#1C2832',
-  borderSubtle: '#1F2A33',
-  borderStrong: '#2F3D48',
+  surface: "#0E141A",
+  surfaceElevated: "#152028",
+  surfaceOverlay: "#1C2832",
+  borderSubtle: "#1F2A33",
+  borderStrong: "#2F3D48",
 
   // --- Service hues (lifted) ---
-  serviceDeep: '#4A8B98',
-  serviceTeal: '#6BA5B0',
-  serviceAqua: '#98C9B0',
-  serviceAmber: '#F0B560',
-  serviceTangerine: '#FF8A5A',
+  serviceDeep: "#4A8B98",
+  serviceTeal: "#6BA5B0",
+  serviceAqua: "#98C9B0",
+  serviceAmber: "#F0B560",
+  serviceTangerine: "#FF8A5A",
 
-  success: '#6BA88E',
-  warning: '#F0B560',
-  danger: '#E87060',
-  info: '#6BA5B0',
+  success: "#6BA88E",
+  warning: "#F0B560",
+  danger: "#E87060",
+  info: "#6BA5B0",
 } as const;
 
 export type ColorToken = keyof typeof colors;
@@ -118,31 +118,31 @@ export interface PaletteEntry {
 
 export const brandPalette: PaletteEntry[] = [
   {
-    name: 'primary',
-    twBg: 'bg-primary',
-    twText: 'text-primary-foreground',
+    name: "primary",
+    twBg: "bg-primary",
+    twText: "text-primary-foreground",
     light: colors.primary,
     dark: darkColors.primary,
   },
   {
-    name: 'accent',
-    twBg: 'bg-accent',
-    twText: 'text-accent-foreground',
+    name: "accent",
+    twBg: "bg-accent",
+    twText: "text-accent-foreground",
     light: colors.accent,
     dark: darkColors.accent,
   },
   {
-    name: 'ink',
-    twBg: 'bg-ink',
-    twText: 'text-primary-foreground',
+    name: "ink",
+    twBg: "bg-ink",
+    twText: "text-primary-foreground",
     border: true,
     light: colors.ink,
     dark: darkColors.ink,
   },
   {
-    name: 'surface',
-    twBg: 'bg-surface',
-    twText: 'text-ink',
+    name: "surface",
+    twBg: "bg-surface",
+    twText: "text-ink",
     border: true,
     light: colors.surface,
     dark: darkColors.surface,
@@ -151,37 +151,37 @@ export const brandPalette: PaletteEntry[] = [
 
 export const servicePalette: PaletteEntry[] = [
   {
-    name: 'service-deep',
-    twBg: 'bg-service-deep',
-    twText: 'text-white',
+    name: "service-deep",
+    twBg: "bg-service-deep",
+    twText: "text-white",
     light: colors.serviceDeep,
     dark: darkColors.serviceDeep,
   },
   {
-    name: 'service-teal',
-    twBg: 'bg-service-teal',
-    twText: 'text-white',
+    name: "service-teal",
+    twBg: "bg-service-teal",
+    twText: "text-white",
     light: colors.serviceTeal,
     dark: darkColors.serviceTeal,
   },
   {
-    name: 'service-aqua',
-    twBg: 'bg-service-aqua',
-    twText: 'text-white',
+    name: "service-aqua",
+    twBg: "bg-service-aqua",
+    twText: "text-white",
     light: colors.serviceAqua,
     dark: darkColors.serviceAqua,
   },
   {
-    name: 'service-amber',
-    twBg: 'bg-service-amber',
-    twText: 'text-white',
+    name: "service-amber",
+    twBg: "bg-service-amber",
+    twText: "text-white",
     light: colors.serviceAmber,
     dark: darkColors.serviceAmber,
   },
   {
-    name: 'service-tangerine',
-    twBg: 'bg-service-tangerine',
-    twText: 'text-white',
+    name: "service-tangerine",
+    twBg: "bg-service-tangerine",
+    twText: "text-white",
     light: colors.serviceTangerine,
     dark: darkColors.serviceTangerine,
   },

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Skeleton — placeholder block while data loads.
@@ -11,11 +11,11 @@ import { cn } from '@/lib/utils';
  *   - Default color is `bg-muted` (Sage Linen High) so it reads
  *     against both the page and the elevated card surface.
  */
-function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
-      className={cn('animate-pulse rounded-md bg-muted', className)}
+      className={cn("animate-pulse rounded-md bg-muted", className)}
       {...props}
     />
   );

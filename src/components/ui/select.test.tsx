@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
-import { Label } from './label';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+import { Label } from "./label";
 
 /**
  * Select tests open the menu via keyboard (Enter) rather than pointer
@@ -12,8 +12,8 @@ import { Label } from './label';
  * the keyboard path is the contract test (Space/Enter opens, Escape
  * closes, focus returns).
  */
-describe('Select', () => {
-  it('opens on Enter and lists the options', async () => {
+describe("Select", () => {
+  it("opens on Enter and lists the options", async () => {
     const user = userEvent.setup();
     render(
       <>
@@ -30,15 +30,15 @@ describe('Select', () => {
         </Select>
       </>,
     );
-    const trigger = screen.getByRole('combobox');
+    const trigger = screen.getByRole("combobox");
     trigger.focus();
-    await user.keyboard('{Enter}');
-    expect(await screen.findByRole('option', { name: 'Grill' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Sauté' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Pastry' })).toBeInTheDocument();
+    await user.keyboard("{Enter}");
+    expect(await screen.findByRole("option", { name: "Grill" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Sauté" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Pastry" })).toBeInTheDocument();
   });
 
-  it('selects an option and updates the displayed value', async () => {
+  it("selects an option and updates the displayed value", async () => {
     const user = userEvent.setup();
     render(
       <Select>
@@ -51,14 +51,14 @@ describe('Select', () => {
         </SelectContent>
       </Select>,
     );
-    const trigger = screen.getByRole('combobox');
+    const trigger = screen.getByRole("combobox");
     trigger.focus();
-    await user.keyboard('{Enter}');
-    await user.click(await screen.findByRole('option', { name: 'Sauté' }));
-    expect(screen.getByText('Sauté')).toBeInTheDocument();
+    await user.keyboard("{Enter}");
+    await user.click(await screen.findByRole("option", { name: "Sauté" }));
+    expect(screen.getByText("Sauté")).toBeInTheDocument();
   });
 
-  it('closes on Escape and returns focus to the trigger', async () => {
+  it("closes on Escape and returns focus to the trigger", async () => {
     const user = userEvent.setup();
     render(
       <Select>
@@ -70,16 +70,16 @@ describe('Select', () => {
         </SelectContent>
       </Select>,
     );
-    const trigger = screen.getByRole('combobox');
+    const trigger = screen.getByRole("combobox");
     trigger.focus();
-    await user.keyboard('{Enter}');
-    expect(await screen.findByRole('option', { name: 'A' })).toBeInTheDocument();
-    await user.keyboard('{Escape}');
-    expect(screen.queryByRole('option', { name: 'A' })).not.toBeInTheDocument();
+    await user.keyboard("{Enter}");
+    expect(await screen.findByRole("option", { name: "A" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("option", { name: "A" })).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
 
-  it('passes axe in the closed state', async () => {
+  it("passes axe in the closed state", async () => {
     const { container } = render(
       <>
         <Label htmlFor="ax-station">Station</Label>

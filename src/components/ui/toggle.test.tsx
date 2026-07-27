@@ -1,20 +1,20 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { Toggle } from './toggle';
-import { ToggleGroup, ToggleGroupItem } from './toggle-group';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { Toggle } from "./toggle";
+import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 
-describe('Toggle', () => {
-  it('toggles pressed state on click', async () => {
+describe("Toggle", () => {
+  it("toggles pressed state on click", async () => {
     render(<Toggle aria-label="Bold">B</Toggle>);
-    const t = screen.getByRole('button', { name: 'Bold' });
-    expect(t).toHaveAttribute('data-state', 'off');
+    const t = screen.getByRole("button", { name: "Bold" });
+    expect(t).toHaveAttribute("data-state", "off");
     await userEvent.click(t);
-    expect(t).toHaveAttribute('data-state', 'on');
+    expect(t).toHaveAttribute("data-state", "on");
   });
 
-  it('passes axe in both states (separate renders to avoid the controlled/uncontrolled switch)', async () => {
+  it("passes axe in both states (separate renders to avoid the controlled/uncontrolled switch)", async () => {
     const a = render(<Toggle aria-label="off">off</Toggle>);
     expect(await axe(a.container)).toHaveNoViolations();
     a.unmount();
@@ -27,8 +27,8 @@ describe('Toggle', () => {
   });
 });
 
-describe('ToggleGroup', () => {
-  it('selects one item at a time (single mode renders as radio role)', async () => {
+describe("ToggleGroup", () => {
+  it("selects one item at a time (single mode renders as radio role)", async () => {
     render(
       <ToggleGroup type="single">
         <ToggleGroupItem value="day" aria-label="Day">
@@ -39,14 +39,14 @@ describe('ToggleGroup', () => {
         </ToggleGroupItem>
       </ToggleGroup>,
     );
-    const day = screen.getByRole('radio', { name: 'Day' });
-    const week = screen.getByRole('radio', { name: 'Week' });
+    const day = screen.getByRole("radio", { name: "Day" });
+    const week = screen.getByRole("radio", { name: "Week" });
     await userEvent.click(week);
-    expect(week).toHaveAttribute('data-state', 'on');
-    expect(day).toHaveAttribute('data-state', 'off');
+    expect(week).toHaveAttribute("data-state", "on");
+    expect(day).toHaveAttribute("data-state", "off");
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = render(
       <ToggleGroup type="single">
         <ToggleGroupItem value="a">A</ToggleGroupItem>

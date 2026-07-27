@@ -1,32 +1,32 @@
-import { type ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Switch } from '@/components/ui/switch';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+} from "@/components/ui/accordion";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
@@ -42,9 +42,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+} from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +52,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,7 +63,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 import {
   Command,
   CommandEmpty,
@@ -71,8 +71,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+} from "@/components/ui/command";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import {
   Table,
   TableBody,
@@ -80,12 +80,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
-import { Toaster, toast } from '@/components/ui/sonner';
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
+import { Toaster, toast } from "@/components/ui/sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -93,7 +93,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from "@/components/ui/breadcrumb";
 import {
   Pagination,
   PaginationContent,
@@ -101,7 +101,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from "@/components/ui/pagination";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -109,14 +109,14 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
-} from '@/components/ui/menubar';
+} from "@/components/ui/menubar";
 import {
   Form,
   FormControl,
@@ -125,9 +125,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { useZodForm } from '@/lib/forms';
-import { z } from 'zod';
+} from "@/components/ui/form";
+import { useZodForm } from "@/lib/forms";
+import { z } from "zod";
 
 function Section({
   id,
@@ -152,7 +152,7 @@ function Section({
 }
 
 const orderSchema = z.object({
-  email: z.string().email('Enter a valid email.'),
+  email: z.string().email("Enter a valid email."),
 });
 
 /**
@@ -162,7 +162,7 @@ const orderSchema = z.object({
  * lean.
  */
 export default function ShowcasePage() {
-  const form = useZodForm(orderSchema, { defaultValues: { email: '' } });
+  const form = useZodForm(orderSchema, { defaultValues: { email: "" } });
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -175,7 +175,7 @@ export default function ShowcasePage() {
             <code className="mx-1 font-mono text-xs">?showcase=1</code>.
           </p>
           <nav className="text-ink-muted mt-2 flex flex-wrap gap-3 text-xs">
-            {['button', 'form', 'selection', 'layout', 'overlay', 'data', 'navigation'].map((s) => (
+            {["button", "form", "selection", "layout", "overlay", "data", "navigation"].map((s) => (
               <a key={s} href={`#${s}`} className="hover:text-ink">
                 {s}
               </a>
@@ -308,7 +308,7 @@ export default function ShowcasePage() {
                 </CardHeader>
                 <CardContent>
                   <RadioGroup defaultValue="a">
-                    {['a', 'b', 'c'].map((v) => (
+                    {["a", "b", "c"].map((v) => (
                       <div key={v} className="flex items-center gap-2">
                         <RadioGroupItem value={v} id={`r-${v}`} />
                         <Label htmlFor={`r-${v}`}>Option {v.toUpperCase()}</Label>
@@ -563,16 +563,16 @@ export default function ShowcasePage() {
             description="Table, Badge, Avatar, Skeleton, Progress, Toast."
           >
             <div className="mb-4 flex flex-wrap gap-3">
-              <Button variant="outline" onClick={() => toast.success('Success.')}>
+              <Button variant="outline" onClick={() => toast.success("Success.")}>
                 Toast: success
               </Button>
-              <Button variant="outline" onClick={() => toast.info('Info.')}>
+              <Button variant="outline" onClick={() => toast.info("Info.")}>
                 Toast: info
               </Button>
-              <Button variant="outline" onClick={() => toast.warning('Warning.')}>
+              <Button variant="outline" onClick={() => toast.warning("Warning.")}>
                 Toast: warning
               </Button>
-              <Button variant="destructive" onClick={() => toast.error('Error.')}>
+              <Button variant="destructive" onClick={() => toast.error("Error.")}>
                 Toast: error
               </Button>
             </div>

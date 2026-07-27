@@ -26,7 +26,7 @@
  * Components consume the tokens through Tailwind utilities
  * (font-display, font-sans, font-mono) — never reference a family
  * directly. */
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* Tell Tailwind our color tokens. `inline` keeps the var() reference so the
  * theme cascade (light/dark via [data-theme]) still works at runtime. */
@@ -174,9 +174,9 @@
    * Each family has a system-sans / system-mono fallback so the app
    * stays usable while the webfont is still loading. */
   --font-display:
-    'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-body: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    "MuseoModerno", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body: "Urbanist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   /* --- shadcn/ui base library aliases ---
    * These are *aliases* to the Orderly tokens above. The light/dark
@@ -204,7 +204,7 @@
   --radius: 0.5rem;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   /* --- Brand: primary (lifted blue-teal) --- */
   --color-primary: #4a8b98;
   --color-primary-hover: #5fa0ae;

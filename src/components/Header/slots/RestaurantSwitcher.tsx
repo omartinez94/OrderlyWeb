@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import type { Restaurant } from '../types';
+import { useMemo, useState } from "react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import type { Restaurant } from "../types";
 
 const TYPEAHEAD_THRESHOLD = 6;
 
@@ -21,7 +21,7 @@ export function RestaurantSwitcher({
   currentRestaurantId,
   onChange,
 }: RestaurantSwitcherProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const current = restaurants.find((r) => r.id === currentRestaurantId);
 
   const filtered = useMemo(() => {
@@ -45,7 +45,7 @@ export function RestaurantSwitcher({
   if (!current) {
     return (
       <div className="ds-switcher-button" data-single="true">
-        <span className="ds-switcher-button__name" style={{ color: 'var(--color-ink-subtle)' }}>
+        <span className="ds-switcher-button__name" style={{ color: "var(--color-ink-subtle)" }}>
           No restaurant
         </span>
       </div>
@@ -100,9 +100,9 @@ export function RestaurantSwitcher({
                   data-active={r.id === currentRestaurantId || undefined}
                   onClick={() => {
                     onChange?.(r.id);
-                    setQuery('');
+                    setQuery("");
                   }}
-                  style={focus ? { backgroundColor: 'var(--color-surface-elevated)' } : undefined}
+                  style={focus ? { backgroundColor: "var(--color-surface-elevated)" } : undefined}
                 >
                   <span className="ds-switcher-menu__item-name">{r.name}</span>
                   <span className="ds-switcher-menu__item-role">{r.role}</span>

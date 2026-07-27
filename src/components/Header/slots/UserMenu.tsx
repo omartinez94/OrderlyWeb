@@ -1,5 +1,5 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import type { CurrentUser } from '../types';
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import type { CurrentUser } from "../types";
 
 export interface UserMenuProps {
   user: CurrentUser;
@@ -24,7 +24,7 @@ export function UserMenu({ user, onProfile, onLogout }: UserMenuProps) {
               type="button"
               className="ds-user-menu__item"
               onClick={onProfile}
-              style={focus ? { backgroundColor: 'var(--color-surface-elevated)' } : undefined}
+              style={focus ? { backgroundColor: "var(--color-surface-elevated)" } : undefined}
             >
               <svg
                 width="16"
@@ -53,7 +53,7 @@ export function UserMenu({ user, onProfile, onLogout }: UserMenuProps) {
               style={
                 focus
                   ? {
-                      backgroundColor: 'color-mix(in srgb, var(--color-danger) 8%, transparent)',
+                      backgroundColor: "color-mix(in srgb, var(--color-danger) 8%, transparent)",
                     }
                   : undefined
               }

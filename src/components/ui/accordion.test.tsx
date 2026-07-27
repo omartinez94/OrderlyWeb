@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./accordion";
 
-describe('Accordion', () => {
-  it('expands a panel on click', async () => {
+describe("Accordion", () => {
+  it("expands a panel on click", async () => {
     render(
       <Accordion type="single" collapsible>
         <AccordionItem value="a">
@@ -18,14 +18,14 @@ describe('Accordion', () => {
         </AccordionItem>
       </Accordion>,
     );
-    const trigger = screen.getByRole('button', { name: 'Section A' });
-    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    const trigger = screen.getByRole("button", { name: "Section A" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
     await userEvent.click(trigger);
-    expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText('Content A')).toBeVisible();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Content A")).toBeVisible();
   });
 
-  it('passes axe in closed and open states', async () => {
+  it("passes axe in closed and open states", async () => {
     const a = render(
       <Accordion type="single" collapsible>
         <AccordionItem value="a">

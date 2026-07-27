@@ -1,36 +1,36 @@
-import { useState, Suspense, lazy, type ReactNode } from 'react';
-import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
-import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
-import { Header } from './components/Header/Header';
-import { Button } from './components/ui/button';
-import { Input } from './components/ui/input';
-import { Label } from './components/ui/label';
-import { Textarea } from './components/ui/textarea';
-import { Checkbox } from './components/ui/checkbox';
-import { Switch } from './components/ui/switch';
-import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
+import { useState, Suspense, lazy, type ReactNode } from "react";
+import { StatusPill, type OrderStatus } from "./components/StatusPill/StatusPill";
+import { ThemeToggle } from "./components/ThemeToggle/ThemeToggle";
+import { Header } from "./components/Header/Header";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Textarea } from "./components/ui/textarea";
+import { Checkbox } from "./components/ui/checkbox";
+import { Switch } from "./components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './components/ui/select';
-import { Slider } from './components/ui/slider';
-import { Toggle } from './components/ui/toggle';
-import { ToggleGroup, ToggleGroupItem } from './components/ui/toggle-group';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Separator } from './components/ui/separator';
-import { AspectRatio } from './components/ui/aspect-ratio';
-import { ScrollArea } from './components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+} from "./components/ui/select";
+import { Slider } from "./components/ui/slider";
+import { Toggle } from "./components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
+import { Separator } from "./components/ui/separator";
+import { AspectRatio } from "./components/ui/aspect-ratio";
+import { ScrollArea } from "./components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from './components/ui/accordion';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './components/ui/collapsible';
+} from "./components/ui/accordion";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './components/ui/dialog';
+} from "./components/ui/dialog";
 import {
   Sheet,
   SheetContent,
@@ -46,9 +46,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from './components/ui/sheet';
-import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
+} from "./components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "./components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,7 +56,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './components/ui/dropdown-menu';
+} from "./components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,7 +67,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './components/ui/alert-dialog';
+} from "./components/ui/alert-dialog";
 import {
   Command,
   CommandEmpty,
@@ -75,7 +75,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from './components/ui/command';
+} from "./components/ui/command";
 import {
   Table,
   TableBody,
@@ -84,12 +84,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './components/ui/table';
-import { Badge } from './components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from './components/ui/avatar';
-import { Skeleton } from './components/ui/skeleton';
-import { Progress } from './components/ui/progress';
-import { Toaster, toast } from './components/ui/sonner';
+} from "./components/ui/table";
+import { Badge } from "./components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import { Skeleton } from "./components/ui/skeleton";
+import { Progress } from "./components/ui/progress";
+import { Toaster, toast } from "./components/ui/sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -97,7 +97,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from './components/ui/breadcrumb';
+} from "./components/ui/breadcrumb";
 import {
   Pagination,
   PaginationContent,
@@ -106,7 +106,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from './components/ui/pagination';
+} from "./components/ui/pagination";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -114,7 +114,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from './components/ui/navigation-menu';
+} from "./components/ui/navigation-menu";
 import {
   Menubar,
   MenubarContent,
@@ -122,7 +122,7 @@ import {
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
-} from './components/ui/menubar';
+} from "./components/ui/menubar";
 import {
   Form,
   FormControl,
@@ -131,15 +131,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './components/ui/form';
-import { useZodForm } from './lib/forms';
-import { z } from 'zod';
+} from "./components/ui/form";
+import { useZodForm } from "./lib/forms";
+import { z } from "zod";
 import {
   MOCK_CURRENT_USER,
   MOCK_NOTIFICATIONS,
   MOCK_RESTAURANTS,
-} from './components/Header/mockData';
-import { brandPalette, servicePalette, type PaletteEntry } from './lib/tokens';
+} from "./components/Header/mockData";
+import { brandPalette, servicePalette, type PaletteEntry } from "./lib/tokens";
 
 /**
  * Orderly Design System — palette & component showcase.
@@ -151,12 +151,12 @@ import { brandPalette, servicePalette, type PaletteEntry } from './lib/tokens';
  */
 
 const ALL_STATUSES: OrderStatus[] = [
-  'new',
-  'acknowledged',
-  'preparing',
-  'plating',
-  'ready',
-  'served',
+  "new",
+  "acknowledged",
+  "preparing",
+  "plating",
+  "ready",
+  "served",
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -173,14 +173,14 @@ function Swatch({ entry }: { entry: PaletteEntry }) {
   return (
     <div
       className={[
-        'p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-2',
-        'transition-transform duration-150 hover:-translate-y-0.5',
+        "p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-2",
+        "transition-transform duration-150 hover:-translate-y-0.5",
         entry.twBg,
         entry.twText,
-        entry.border ? 'border border-border-subtle' : '',
+        entry.border ? "border border-border-subtle" : "",
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
     >
       <span className="text-sm font-bold tracking-wide">{entry.name}</span>
       {/* The hex labels sit on a small `surface-overlay` chip so
@@ -204,15 +204,15 @@ function HeaderPreview({ label, children }: { label: string; children: ReactNode
 
 // Lazy-loaded so the production bundle does not pay for the
 // showcase until `?showcase=1` is in the URL.
-const ShowcasePage = lazy(() => import('./pages/ShowcasePage'));
+const ShowcasePage = lazy(() => import("./pages/ShowcasePage"));
 
 function App() {
   // The showcase route is gated by a `?showcase=1` query flag in
   // development. Production builds never serve the route — it's
   // an internal quality surface, not a user-facing page.
   if (
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('showcase') === '1'
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("showcase") === "1"
   ) {
     return (
       <Suspense fallback={<div className="text-ink-muted p-8">Loading showcase…</div>}>
@@ -296,9 +296,9 @@ function App() {
                 currentRestaurantId="r-001"
                 restaurants={[
                   {
-                    id: 'r-001',
-                    name: 'Acme Bistro — Downtown',
-                    role: 'Owner',
+                    id: "r-001",
+                    name: "Acme Bistro — Downtown",
+                    role: "Owner",
                   },
                 ]}
                 notifications={MOCK_NOTIFICATIONS}
@@ -435,11 +435,11 @@ function App() {
           <Section title="Selection primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
               Selection controls share the same focus-visible ring, border weight, and checked-state
-              palette. Keyboard semantics are Radix-driven: arrow keys for{' '}
-              <code className="font-mono text-sm">Select</code> and{' '}
-              <code className="font-mono text-sm">RadioGroup</code>, Space/Enter for{' '}
-              <code className="font-mono text-sm">Checkbox</code>,{' '}
-              <code className="font-mono text-sm">Switch</code>, and{' '}
+              palette. Keyboard semantics are Radix-driven: arrow keys for{" "}
+              <code className="font-mono text-sm">Select</code> and{" "}
+              <code className="font-mono text-sm">RadioGroup</code>, Space/Enter for{" "}
+              <code className="font-mono text-sm">Checkbox</code>,{" "}
+              <code className="font-mono text-sm">Switch</code>, and{" "}
               <code className="font-mono text-sm">Toggle</code>.
             </p>
 
@@ -543,11 +543,11 @@ function App() {
 
           <Section title="Form primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Form primitives bind to React Hook Form + Zod through{' '}
+              Form primitives bind to React Hook Form + Zod through{" "}
               <code className="font-mono text-sm">useZodForm</code>. The
-              <code className="font-mono text-sm">FormControl</code> automatically wires{' '}
+              <code className="font-mono text-sm">FormControl</code> automatically wires{" "}
               <code className="font-mono text-sm">aria-describedby</code> to the description and
-              (when present) the error message;{' '}
+              (when present) the error message;{" "}
               <code className="font-mono text-sm">aria-invalid</code> flips on error so screen
               readers announce the broken field.
             </p>
@@ -963,7 +963,7 @@ function App() {
 
           <Section title="Data display & feedback">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Tables, badges, avatars, and progress follow the surface rules: content stays on{' '}
+              Tables, badges, avatars, and progress follow the surface rules: content stays on{" "}
               <code className="font-mono text-sm">bg-surface-overlay</code>, status colors are
               service hues, and Toast visibility is announced via Sonner's polite/assertive live
               regions.
@@ -1109,21 +1109,21 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" onClick={() => toast.success('Order marked ready.')}>
+                    <Button variant="outline" onClick={() => toast.success("Order marked ready.")}>
                       Success
                     </Button>
-                    <Button variant="outline" onClick={() => toast.info('Sync started.')}>
+                    <Button variant="outline" onClick={() => toast.info("Sync started.")}>
                       Info
                     </Button>
                     <Button
                       variant="outline"
-                      onClick={() => toast.warning('Kitchen load is high.')}
+                      onClick={() => toast.warning("Kitchen load is high.")}
                     >
                       Warning
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => toast.error('Failed to save changes.')}
+                      onClick={() => toast.error("Failed to save changes.")}
                     >
                       Error
                     </Button>
@@ -1136,7 +1136,7 @@ function App() {
           <Section title="Overlay primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
               Overlays trap focus, escape to close, and return focus to the trigger. Body scroll is
-              locked while a modal is open. Tooltip is mounted via{' '}
+              locked while a modal is open. Tooltip is mounted via{" "}
               <code className="font-mono text-sm">TooltipProvider</code> with a 200ms hover delay.
             </p>
 
@@ -1327,9 +1327,9 @@ function SelectionCard({ title, children }: { title: string; children: ReactNode
  * change plus the `aria-invalid` + `aria-describedby` wiring.
  */
 const orderSchema = z.object({
-  customerName: z.string().min(2, 'Customer name must be at least 2 characters.'),
-  email: z.string().email('Enter a valid email address.'),
-  notes: z.string().max(280, 'Keep notes under 280 characters.').optional(),
+  customerName: z.string().min(2, "Customer name must be at least 2 characters."),
+  email: z.string().email("Enter a valid email address."),
+  notes: z.string().max(280, "Keep notes under 280 characters.").optional(),
 });
 
 type OrderInput = z.infer<typeof orderSchema>;
@@ -1337,7 +1337,7 @@ type OrderInput = z.infer<typeof orderSchema>;
 function FormShowcase() {
   const [submitted, setSubmitted] = useState<OrderInput | null>(null);
   const form = useZodForm(orderSchema, {
-    defaultValues: { customerName: '', email: '', notes: '' },
+    defaultValues: { customerName: "", email: "", notes: "" },
   });
 
   function onSubmit(values: OrderInput) {
@@ -1355,7 +1355,7 @@ function FormShowcase() {
       <h3 className="text-primary m-0 mb-1 text-base font-bold">Form + FormField (RHF + Zod)</h3>
       <p className="text-ink-muted m-0 mb-4 text-sm">
         <code className="font-mono">useZodForm(orderSchema)</code> — fields are typed from the Zod
-        schema; <code className="font-mono">FormMessage</code> replaces{' '}
+        schema; <code className="font-mono">FormMessage</code> replaces{" "}
         <code className="font-mono">FormDescription</code> visually when the field is invalid.
       </p>
 
@@ -1426,11 +1426,11 @@ function FormShowcase() {
                 // Pre-fill invalid values and force validation so the
                 // FormMessage + danger-ring + danger-label contract is
                 // visible without the user having to type first.
-                form.setValue('customerName', 'A', { shouldValidate: false });
-                form.setValue('email', 'not-an-email', {
+                form.setValue("customerName", "A", { shouldValidate: false });
+                form.setValue("email", "not-an-email", {
                   shouldValidate: false,
                 });
-                form.setValue('notes', '', { shouldValidate: false });
+                form.setValue("notes", "", { shouldValidate: false });
                 void form.trigger();
               }}
             >

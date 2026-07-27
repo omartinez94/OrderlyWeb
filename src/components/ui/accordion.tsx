@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { ChevronDownIcon } from 'lucide-react';
-import { Accordion as AccordionPrimitive } from 'radix-ui';
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
+import { Accordion as AccordionPrimitive } from "radix-ui";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Accordion — collapsible content regions, one or many at a time.
@@ -36,7 +36,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn('border-b border-border-subtle last:border-b-0', className)}
+      className={cn("border-b border-border-subtle last:border-b-0", className)}
       {...props}
     />
   );
@@ -52,11 +52,11 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-colors outline-none',
-          'hover:underline',
-          'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:pointer-events-none disabled:opacity-50',
-          '[&[data-state=open]>svg]:rotate-180',
+          "flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-colors outline-none",
+          "hover:underline",
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "disabled:pointer-events-none disabled:opacity-50",
+          "[&[data-state=open]>svg]:rotate-180",
           className,
         )}
         {...props}
@@ -82,7 +82,7 @@ function AccordionContent({
       className="overflow-hidden text-sm"
       {...props}
     >
-      <div className={cn('pt-0 pb-4', className)}>{children}</div>
+      <div className={cn("pt-0 pb-4", className)}>{children}</div>
     </AccordionPrimitive.Content>
   );
 }

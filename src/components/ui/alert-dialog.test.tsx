@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,11 +12,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './alert-dialog';
-import { Button } from './button';
+} from "./alert-dialog";
+import { Button } from "./button";
 
-describe('AlertDialog', () => {
-  it('opens on trigger click', async () => {
+describe("AlertDialog", () => {
+  it("opens on trigger click", async () => {
     const user = userEvent.setup();
     render(
       <AlertDialog>
@@ -35,11 +35,11 @@ describe('AlertDialog', () => {
         </AlertDialogContent>
       </AlertDialog>,
     );
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
   });
 
-  it('closes on Escape and returns focus', async () => {
+  it("closes on Escape and returns focus", async () => {
     const user = userEvent.setup();
     render(
       <AlertDialog>
@@ -52,14 +52,14 @@ describe('AlertDialog', () => {
         </AlertDialogContent>
       </AlertDialog>,
     );
-    const trigger = screen.getByRole('button', { name: 'Cancel' });
+    const trigger = screen.getByRole("button", { name: "Cancel" });
     await user.click(trigger);
-    await user.keyboard('{Escape}');
-    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
 
-  it('passes axe when open', async () => {
+  it("passes axe when open", async () => {
     const user = userEvent.setup();
     const { container } = render(
       <AlertDialog>
@@ -76,7 +76,7 @@ describe('AlertDialog', () => {
         </AlertDialogContent>
       </AlertDialog>,
     );
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });

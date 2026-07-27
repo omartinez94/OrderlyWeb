@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Toaster as SonnerToaster, toast as sonnerToast } from 'sonner';
+import { Toaster as SonnerToaster, toast as sonnerToast } from "sonner";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Toaster — the Sonner toast portal mounted once at the app root.
@@ -33,13 +33,13 @@ function Toaster(props: ToasterProps) {
       toastOptions={{
         classNames: {
           toast: cn(
-            'group toast',
-            'bg-popover text-ink border border-border-subtle shadow-md',
-            'rounded-xl',
+            "group toast",
+            "bg-popover text-ink border border-border-subtle shadow-md",
+            "rounded-xl",
           ),
-          description: 'text-ink-muted',
-          actionButton: 'bg-primary text-primary-foreground',
-          cancelButton: 'bg-muted text-ink-muted',
+          description: "text-ink-muted",
+          actionButton: "bg-primary text-primary-foreground",
+          cancelButton: "bg-muted text-ink-muted",
         },
       }}
       {...props}
@@ -53,14 +53,14 @@ function Toaster(props: ToasterProps) {
  * use. Anything else (custom JSX, etc.) is reserved for one-off
  * feature work.
  */
-type ToastVariant = 'default' | 'success' | 'info' | 'warning' | 'destructive';
+type ToastVariant = "default" | "success" | "info" | "warning" | "destructive";
 
 const variantClassNames: Record<ToastVariant, string> = {
-  default: '',
-  success: 'border-success/40 text-success',
-  info: 'border-info/40 text-info',
-  warning: 'border-warning/40 text-warning',
-  destructive: 'border-danger/40 text-danger',
+  default: "",
+  success: "border-success/40 text-success",
+  info: "border-info/40 text-info",
+  warning: "border-warning/40 text-warning",
+  destructive: "border-danger/40 text-danger",
 };
 
 function toast(

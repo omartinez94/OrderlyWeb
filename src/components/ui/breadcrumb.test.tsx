@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,9 +8,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from './breadcrumb';
+} from "./breadcrumb";
 
-describe('Breadcrumb', () => {
+describe("Breadcrumb", () => {
   it('renders the nav with aria-label="breadcrumb"', () => {
     render(
       <Breadcrumb>
@@ -25,7 +25,7 @@ describe('Breadcrumb', () => {
         </BreadcrumbList>
       </Breadcrumb>,
     );
-    expect(screen.getByLabelText('breadcrumb')).toBeInTheDocument();
+    expect(screen.getByLabelText("breadcrumb")).toBeInTheDocument();
   });
 
   it('marks the current page with aria-current="page"', () => {
@@ -38,10 +38,10 @@ describe('Breadcrumb', () => {
         </BreadcrumbList>
       </Breadcrumb>,
     );
-    expect(screen.getByText('Order #1284')).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByText("Order #1284")).toHaveAttribute("aria-current", "page");
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = render(
       <Breadcrumb>
         <BreadcrumbList>

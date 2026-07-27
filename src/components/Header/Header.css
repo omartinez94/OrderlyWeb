@@ -86,12 +86,12 @@
   max-width: 18rem;
 }
 
-.ds-breadcrumb__segment[data-static='true'] {
+.ds-breadcrumb__segment[data-static="true"] {
   cursor: default;
   color: var(--color-ink);
 }
 
-.ds-breadcrumb__segment:hover:not([data-static='true']) {
+.ds-breadcrumb__segment:hover:not([data-static="true"]) {
   color: var(--color-primary);
 }
 
@@ -132,7 +132,7 @@
   outline-offset: 2px;
 }
 
-.ds-switcher-button[data-single='true'] {
+.ds-switcher-button[data-single="true"] {
   cursor: default;
 }
 
@@ -217,7 +217,7 @@
   transition: background-color 100ms ease;
 }
 
-.ds-switcher-menu__item[data-active='true'] {
+.ds-switcher-menu__item[data-active="true"] {
   background-color: var(--color-surface-elevated);
   color: var(--color-primary);
 }
@@ -285,17 +285,17 @@
   outline-offset: 2px;
 }
 
-.ds-ops-badge[data-load='neutral'] {
+.ds-ops-badge[data-load="neutral"] {
   color: var(--color-ink);
 }
 
-.ds-ops-badge[data-load='amber'] {
+.ds-ops-badge[data-load="amber"] {
   color: var(--color-service-amber);
   background-color: color-mix(in srgb, var(--color-service-amber) 12%, transparent);
   border-color: color-mix(in srgb, var(--color-service-amber) 28%, transparent);
 }
 
-.ds-ops-badge[data-load='tangerine'] {
+.ds-ops-badge[data-load="tangerine"] {
   color: var(--color-service-tangerine);
   background-color: color-mix(in srgb, var(--color-service-tangerine) 14%, transparent);
   border-color: color-mix(in srgb, var(--color-service-tangerine) 32%, transparent);
@@ -425,7 +425,7 @@
   background-color: var(--color-surface-elevated);
 }
 
-.ds-notifications-popover__item[data-unread='true'] {
+.ds-notifications-popover__item[data-unread="true"] {
   background-color: color-mix(in srgb, var(--color-primary) 4%, transparent);
 }
 

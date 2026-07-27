@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe } from 'jest-axe';
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import {
   Command,
   CommandEmpty,
@@ -9,7 +9,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from './command';
+} from "./command";
 
 function renderCommand() {
   return render(
@@ -26,23 +26,23 @@ function renderCommand() {
   );
 }
 
-describe('Command', () => {
-  it('shows the empty state when the query has no matches', async () => {
+describe("Command", () => {
+  it("shows the empty state when the query has no matches", async () => {
     const user = userEvent.setup();
     renderCommand();
-    await user.type(screen.getByPlaceholderText('Search…'), 'zzz-no-match');
-    expect(screen.getByText('No results found.')).toBeInTheDocument();
+    await user.type(screen.getByPlaceholderText("Search…"), "zzz-no-match");
+    expect(screen.getByText("No results found.")).toBeInTheDocument();
   });
 
-  it('filters items by typed query', async () => {
+  it("filters items by typed query", async () => {
     const user = userEvent.setup();
     renderCommand();
-    await user.type(screen.getByPlaceholderText('Search…'), '1284');
-    expect(screen.getByText('Order #1284')).toBeInTheDocument();
-    expect(screen.queryByText('Order #1285')).not.toBeInTheDocument();
+    await user.type(screen.getByPlaceholderText("Search…"), "1284");
+    expect(screen.getByText("Order #1284")).toBeInTheDocument();
+    expect(screen.queryByText("Order #1285")).not.toBeInTheDocument();
   });
 
-  it('passes axe', async () => {
+  it("passes axe", async () => {
     const { container } = renderCommand();
     const results = await axe(container);
     expect(results).toHaveNoViolations();

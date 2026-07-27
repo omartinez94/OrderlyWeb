@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * Selectable focusable elements inside a trap container. The selector
@@ -6,17 +6,17 @@ import { useEffect, useRef, type RefObject } from 'react';
  * Radix-based overlays in the base library.
  */
 const FOCUSABLE_SELECTOR = [
-  'a[href]',
-  'area[href]',
-  'button:not([disabled])',
+  "a[href]",
+  "area[href]",
+  "button:not([disabled])",
   'input:not([disabled]):not([type="hidden"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
+  "select:not([disabled])",
+  "textarea:not([disabled])",
   '[tabindex]:not([tabindex="-1"])',
-  'audio[controls]',
-  'video[controls]',
+  "audio[controls]",
+  "video[controls]",
   '[contenteditable]:not([contenteditable="false"])',
-].join(',');
+].join(",");
 
 export interface UseFocusTrapOptions {
   /** Restore focus to the previously-focused element on unmount. Default `true`. */
@@ -63,12 +63,12 @@ export function useFocusTrap<T extends HTMLElement = HTMLElement>(
 
     function getFocusable(): HTMLElement[] {
       return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-        (el) => !el.hasAttribute('aria-hidden'),
+        (el) => !el.hasAttribute("aria-hidden"),
       );
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'Tab') return;
+      if (event.key !== "Tab") return;
       const focusable = getFocusable();
       if (focusable.length === 0) {
         event.preventDefault();
@@ -96,10 +96,10 @@ export function useFocusTrap<T extends HTMLElement = HTMLElement>(
       focusable[0]?.focus();
     }
 
-    root.addEventListener('keydown', handleKeyDown);
+    root.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener("keydown", handleKeyDown);
       if (restoreFocus && previouslyFocused && document.contains(previouslyFocused)) {
         previouslyFocused.focus();
       }

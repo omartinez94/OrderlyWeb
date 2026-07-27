@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Theme management for Orderly Web.
@@ -18,32 +18,32 @@ import { useCallback, useEffect, useState } from 'react';
  *   <select onChange={(e) => setMode(e.target.value as ThemeMode)}>...    // explicit
  */
 
-export type ThemeMode = 'light' | 'dark' | 'system';
-export type ResolvedTheme = 'light' | 'dark';
+export type ThemeMode = "light" | "dark" | "system";
+export type ResolvedTheme = "light" | "dark";
 
-const STORAGE_KEY = 'orderly-theme';
+const STORAGE_KEY = "orderly-theme";
 
 function readStoredMode(): ThemeMode {
-  if (typeof window === 'undefined') return 'system';
+  if (typeof window === "undefined") return "system";
   const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (stored === 'light' || stored === 'dark' || stored === 'system') {
+  if (stored === "light" || stored === "dark" || stored === "system") {
     return stored;
   }
-  return 'system';
+  return "system";
 }
 
 function getSystemTheme(): ResolvedTheme {
-  if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function resolveMode(mode: ThemeMode): ResolvedTheme {
-  return mode === 'system' ? getSystemTheme() : mode;
+  return mode === "system" ? getSystemTheme() : mode;
 }
 
 function applyTheme(resolved: ResolvedTheme): void {
-  if (typeof document === 'undefined') return;
-  document.documentElement.setAttribute('data-theme', resolved);
+  if (typeof document === "undefined") return;
+  document.documentElement.setAttribute("data-theme", resolved);
 }
 
 export interface UseThemeResult {
@@ -68,23 +68,23 @@ export function useTheme(): UseThemeResult {
     const next = resolveMode(mode);
     setResolvedTheme(next);
     applyTheme(next);
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY, mode);
     }
   }, [mode]);
 
   // When the user is on 'system', react to OS-level changes.
   useEffect(() => {
-    if (mode !== 'system' || typeof window === 'undefined') return;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mode !== "system" || typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (): void => {
-      const next: ResolvedTheme = mq.matches ? 'dark' : 'light';
+      const next: ResolvedTheme = mq.matches ? "dark" : "light";
       setResolvedTheme(next);
       applyTheme(next);
     };
-    mq.addEventListener('change', handler);
+    mq.addEventListener("change", handler);
     return () => {
-      mq.removeEventListener('change', handler);
+      mq.removeEventListener("change", handler);
     };
   }, [mode]);
 
@@ -95,7 +95,7 @@ export function useTheme(): UseThemeResult {
   const toggle = useCallback(() => {
     setModeState((current) => {
       const resolved = resolveMode(current);
-      return resolved === 'dark' ? 'light' : 'dark';
+      return resolved === "dark" ? "light" : "dark";
     });
   }, []);
 

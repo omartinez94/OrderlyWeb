@@ -1,4 +1,4 @@
-import './StatusPill.css';
+import "./StatusPill.css";
 
 /**
  * StatusPill — a compact badge showing an order/kitchen status.
@@ -14,24 +14,24 @@ import './StatusPill.css';
  * Background uses a 10% tint of the service color so the dot/pill pair
  * reads as the same family without the pill competing with surrounding UI.
  */
-export type OrderStatus = 'new' | 'acknowledged' | 'preparing' | 'plating' | 'ready' | 'served';
+export type OrderStatus = "new" | "acknowledged" | "preparing" | "plating" | "ready" | "served";
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
-  new: 'New',
-  acknowledged: 'Acknowledged',
-  preparing: 'Preparing',
-  plating: 'Plating',
-  ready: 'Ready',
-  served: 'Served',
+  new: "New",
+  acknowledged: "Acknowledged",
+  preparing: "Preparing",
+  plating: "Plating",
+  ready: "Ready",
+  served: "Served",
 };
 
 const STATUS_TOKEN: Record<OrderStatus, string> = {
-  new: 'deep',
-  acknowledged: 'teal',
-  preparing: 'aqua',
-  plating: 'amber',
-  ready: 'tangerine',
-  served: 'muted',
+  new: "deep",
+  acknowledged: "teal",
+  preparing: "aqua",
+  plating: "amber",
+  ready: "tangerine",
+  served: "muted",
 };
 
 export interface StatusPillProps {

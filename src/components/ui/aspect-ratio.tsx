@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { AspectRatio as AspectRatioPrimitive } from 'radix-ui';
+import { AspectRatio as AspectRatioPrimitive } from "radix-ui";
 
 /**
  * AspectRatio — constrains its child to a fixed aspect ratio.
