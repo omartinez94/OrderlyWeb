@@ -18,20 +18,21 @@
 
 ## 2. Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 (latest) with TypeScript |
-| State & Data Fetching | Redux Toolkit + RTK Query |
-| Routing | React Router v6 |
-| UI Components | HeadlessUI + TailwindCSS |
-| Real-time | SignalR Client (`@microsoft/signalr`) |
-| Forms | React Hook Form |
-| Charts | Recharts |
-| Drag & Drop | React DnD |
-| Package Manager | pnpm |
-| Build Tool | Vite |
+| Layer                 | Technology                            |
+| --------------------- | ------------------------------------- |
+| Framework             | React 19 (latest) with TypeScript     |
+| State & Data Fetching | Redux Toolkit + RTK Query             |
+| Routing               | React Router v6                       |
+| UI Components         | HeadlessUI + TailwindCSS              |
+| Real-time             | SignalR Client (`@microsoft/signalr`) |
+| Forms                 | React Hook Form                       |
+| Charts                | Recharts                              |
+| Drag & Drop           | React DnD                             |
+| Package Manager       | pnpm                                  |
+| Build Tool            | Vite                                  |
 
 **Auth Tokens:**
+
 - Access token stored in memory (not localStorage) for API calls
 - Refresh token stored in httpOnly cookie
 - Auto-refresh on access token expiry
@@ -43,10 +44,10 @@
 
 ### 3.1 Phase 1 — MVP Modules
 
-| Module | Description |
-|---|---|
-| **Staff Management** | CRUD for users, role assignment, multi-restaurant access, permissions |
-| **Orders** | Create, view, modify, split bills, track status, modification approval workflow |
+| Module               | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| **Staff Management** | CRUD for users, role assignment, multi-restaurant access, permissions           |
+| **Orders**           | Create, view, modify, split bills, track status, modification approval workflow |
 
 ### 3.2 Future Modules (post-MVP)
 
@@ -62,10 +63,10 @@ The app is organized into three top-level zones, each with its own sidebar navig
 
 ```
 /login                        → Login page (no auth required)
-                            
+
 ─── /site/admin ──────────────────────────────────────────────────────────────
     Admin-level management: staff, settings, multi-restaurant oversight.
-    
+
     /site/admin                   → Admin dashboard (role summary, quick actions)
     /site/admin/staff             → Staff/user list
     /site/admin/staff/new         → Create staff member
@@ -75,9 +76,9 @@ The app is organized into three top-level zones, each with its own sidebar navig
     /site/admin/settings          → Global platform settings (SuperAdmin)
 
 ─── /site/kitchen ────────────────────────────────────────────────────────────
-    Kitchen Display System — full-screen, high-contrast, optimized for large 
+    Kitchen Display System — full-screen, high-contrast, optimized for large
     monitors and touch input in a busy kitchen environment.
-    
+
     /site/kitchen                   → KDS main board (real-time order queue)
     /site/kitchen/order/:id         → Order prep detail (mark items ready)
     /site/kitchen/settings          → KDS config (alert sounds, refresh rate)
@@ -85,7 +86,7 @@ The app is organized into three top-level zones, each with its own sidebar navig
 ─── /site/restaurant ─────────────────────────────────────────────────────────
     Restaurant-level operations: orders, tables, menu, reservations, queue,
     feedback, analytics. Accessible to anyone assigned to that restaurant.
-    
+
     /site/restaurant                → Restaurant dashboard (today's overview)
     /site/restaurant/orders         → Order list with filters
     /site/restaurant/orders/new     → Create new order
@@ -113,6 +114,7 @@ The app is organized into three top-level zones, each with its own sidebar navig
 Each zone has its own **dedicated sidebar** — the sidebar changes completely when switching zones. A **global top bar** (restaurant switcher + user menu) remains present across all zones.
 
 **Top Bar** (all zones):
+
 - Restaurant name + switcher dropdown (left)
 - Zone indicator breadcrumb
 - Notifications bell (future)
@@ -120,24 +122,24 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 
 **Zone Sidebars:**
 
-| Zone | Sidebar Items |
-|---|---|
-| `/site/admin` | Dashboard, Staff, Restaurants (SuperAdmin), Settings (SuperAdmin) |
-| `/site/kitchen` | Dashboard, Order Queue, Settings |
+| Zone               | Sidebar Items                                                             |
+| ------------------ | ------------------------------------------------------------------------- |
+| `/site/admin`      | Dashboard, Staff, Restaurants (SuperAdmin), Settings (SuperAdmin)         |
+| `/site/kitchen`    | Dashboard, Order Queue, Settings                                          |
 | `/site/restaurant` | Dashboard, Orders, Tables, Menu, Reservations, Queue, Feedback, Analytics |
 
 ### 4.3 Role-Based Zone Access
 
-| Role | `/site/admin` | `/site/kitchen` | `/site/restaurant` |
-|---|---|---|---|
-| SuperAdmin | ✅ full | — | ✅ |
-| RestaurantAdmin | ✅ full | — | ✅ |
-| Manager | — | — | ✅ |
-| KitchenManager | — | ✅ | ✅ |
-| Waiter | — | — | ✅ |
-| KitchenStaff | — | ✅ | — |
-| Host | — | — | ✅ |
-| Cashier | — | — | ✅ |
+| Role            | `/site/admin` | `/site/kitchen` | `/site/restaurant` |
+| --------------- | ------------- | --------------- | ------------------ |
+| SuperAdmin      | ✅ full       | —               | ✅                 |
+| RestaurantAdmin | ✅ full       | —               | ✅                 |
+| Manager         | —             | —               | ✅                 |
+| KitchenManager  | —             | ✅              | ✅                 |
+| Waiter          | —             | —               | ✅                 |
+| KitchenStaff    | —             | ✅              | —                  |
+| Host            | —             | —               | ✅                 |
+| Cashier         | —             | —               | ✅                 |
 
 > `/site/admin/staff` is also visible to `Manager` and `RestaurantAdmin` (view-only for Manager). See full permission naming convention in [architecture.md](./architecture/architecture.md#jwt-token-structure)
 
@@ -148,6 +150,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 ### 5.1 Authentication
 
 **Login Flow:**
+
 1. User submits email + password to `/api/auth/login` (Identity Service)
 2. Backend returns access token (JWT, 15-min TTL) + sets httpOnly refresh token cookie
 3. Frontend decodes JWT, extracts `roles`, `permissions`, `restaurantId`
@@ -156,12 +159,14 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 6. On 401 response, auto-refresh via `/api/auth/refresh`
 
 **Logout:**
+
 - Call `/api/auth/logout` (revoke refresh token)
 - Clear in-memory access token
 - Clear httpOnly cookie
 - Redirect to `/login`
 
 **Session Persistence:**
+
 - Access token lives in memory only (lost on page refresh → auto-refresh)
 - Keep user logged in as long as refresh token cookie is valid (7 days)
 
@@ -180,22 +185,26 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 ### 5.3 Staff Management Module
 
 **User List (`/staff`):**
+
 - Table with columns: Name, Email, Role, Status (Active/Inactive), Last Login
 - Filters: role, status, search by name/email
 - Pagination
 - Actions: View, Edit, Deactivate (no hard delete per business rules)
 
 **Create Staff (`/staff/new`):**
+
 - Form fields: First Name, Last Name, Email, Phone, Role (dropdown), Restaurant(s) assignment
 - Password set by admin (backend generates temp password or admin sets it)
 - Validation: email uniqueness, required fields
 
 **Edit Staff (`/staff/:id`):**
+
 - Same form as create, pre-filled
 - Role change triggers permission cache invalidation (backend publishes event)
 - Can reassign to different restaurants
 
 **Role Assignment:**
+
 - Roles from Identity Service: `SuperAdmin`, `RestaurantAdmin`, `Manager`, `KitchenManager`, `Waiter`, `KitchenStaff`, `Host`, `Cashier`
 - Permissions auto-derived from role (not manually assignable in MVP)
 - Multi-restaurant assignment for managers/admins
@@ -205,6 +214,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 ### 5.4 Orders Module
 
 **Order List (`/orders`):**
+
 - Real-time updates via SignalR (new orders, status changes)
 - Filters: status (multi-select), order type (dine-in/takeout/delivery), table, date range
 - Search by order number or customer name
@@ -213,6 +223,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 - Sortable columns
 
 **Order Detail (`/orders/:id`):**
+
 - Order header: Order #, Type, Table, Status, Timestamps (created, confirmed, prepared, etc.)
 - Order items list: item name, quantity, variations, customizations, seat number, prep status
 - Price breakdown: subtotal, tax, discount, total
@@ -224,6 +235,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
   - Delivered/Completed: No actions
 
 **Create Order (`/orders/new`):**
+
 - Step 1: Select order type (dine-in, takeout, delivery)
 - Step 2: Select table (for dine-in) or enter delivery address
 - Step 3: Add menu items from restaurant's menu (fetched from Catalog Service)
@@ -233,6 +245,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 - Basket state managed in Redux (calls Basket Service for price calculation)
 
 **Bill Splitting (`/orders/:id/split-bill`):**
+
 - Equal split: enter number of ways
 - Custom split: enter amount per person
 - Visual seat assignment: assign items to seat numbers
@@ -240,6 +253,7 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 - Payment status per bill (pending/paid/void)
 
 **Real-time Kitchen Display:**
+
 - SignalR pushes `OrderStatusChanged` events
 - Auto-refresh order list on new events
 - Sound notification (optional, browser Audio API) for new orders and overdue orders
@@ -277,24 +291,24 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 
 ### 6.4 Status Color Coding
 
-| Status | Color | Usage |
-|---|---|---|
-| ordering, pending | Blue | New / unconfirmed |
-| confirmed | Orange | Confirmed, waiting for prep |
-| preparing | Yellow | In kitchen |
-| ready | Green | Ready to serve/deliver |
-| delivered | Teal | Sent out |
-| completed | Gray | Done |
-| cancelled | Red | Cancelled |
-| on_hold | Purple | Hold |
+| Status            | Color  | Usage                       |
+| ----------------- | ------ | --------------------------- |
+| ordering, pending | Blue   | New / unconfirmed           |
+| confirmed         | Orange | Confirmed, waiting for prep |
+| preparing         | Yellow | In kitchen                  |
+| ready             | Green  | Ready to serve/deliver      |
+| delivered         | Teal   | Sent out                    |
+| completed         | Gray   | Done                        |
+| cancelled         | Red    | Cancelled                   |
+| on_hold           | Purple | Hold                        |
 
 ### 6.5 Kitchen Time Indicators
 
-| Condition | Color | Meaning |
-|---|---|---|
-| `orderAge < prepTime × 0.8` | 🟢 Green | On track |
+| Condition                              | Color     | Meaning              |
+| -------------------------------------- | --------- | -------------------- |
+| `orderAge < prepTime × 0.8`            | 🟢 Green  | On track             |
 | `prepTime × 0.8 ≤ orderAge < prepTime` | 🟡 Yellow | Approaching deadline |
-| `orderAge ≥ prepTime` | 🔴 Red | Overdue |
+| `orderAge ≥ prepTime`                  | 🔴 Red    | Overdue              |
 
 ---
 
@@ -302,20 +316,21 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 
 ### 7.1 Backend Services & Ports
 
-| Service | Port | Purpose |
-|---|---|---|
-| Identity Service | 5007 | Auth, users, roles |
-| Catalog Service | 5001 | Restaurants, menu, tables |
-| Order Service | 5004 | Orders, reservations, queue |
-| Basket Service | 5003 | Price calculation (Redis-only) |
-| Discount Service | 5002 | Promo/reward codes |
-| Kitchen Service | 5005 | KDS data aggregation |
-| Notification Service | 5006 | Notifications, feedback |
-| API Gateway | 5000 | Single entry point (Ocelot) |
+| Service              | Port | Purpose                        |
+| -------------------- | ---- | ------------------------------ |
+| Identity Service     | 5007 | Auth, users, roles             |
+| Catalog Service      | 5001 | Restaurants, menu, tables      |
+| Order Service        | 5004 | Orders, reservations, queue    |
+| Basket Service       | 5003 | Price calculation (Redis-only) |
+| Discount Service     | 5002 | Promo/reward codes             |
+| Kitchen Service      | 5005 | KDS data aggregation           |
+| Notification Service | 5006 | Notifications, feedback        |
+| API Gateway          | 5000 | Single entry point (Ocelot)    |
 
 ### 7.2 Key Endpoints for MVP
 
 #### Identity Service (Port 5007)
+
 ```
 POST   /api/auth/login                    Login
 POST   /api/auth/refresh                  Refresh token
@@ -329,6 +344,7 @@ GET    /api/roles                         List available roles
 ```
 
 #### Catalog Service (Port 5001)
+
 ```
 GET    /api/restaurants/:id               Get restaurant detail
 GET    /api/restaurants/:id/tables        List tables
@@ -337,6 +353,7 @@ GET    /api/menu/items/:id                Get menu item detail
 ```
 
 #### Order Service (Port 5004)
+
 ```
 GET    /api/orders                        List orders (filterable)
 GET    /api/orders/:id                    Get order detail
@@ -348,6 +365,7 @@ GET    /api/orders/:id/modifications      Get modification log
 ```
 
 #### Basket Service (Port 5003)
+
 ```
 GET    /api/basket/:restaurantId          Get current basket
 POST   /api/basket/items                  Add item to basket
@@ -414,7 +432,7 @@ src/
 
 ```typescript
 interface AuthState {
-  accessToken: string | null;  // In memory only — not persisted
+  accessToken: string | null; // In memory only — not persisted
   user: {
     id: string;
     email: string;

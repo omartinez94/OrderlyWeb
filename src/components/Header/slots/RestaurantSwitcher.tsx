@@ -28,8 +28,7 @@ export function RestaurantSwitcher({
     if (!query.trim()) return restaurants;
     const q = query.trim().toLowerCase();
     return restaurants.filter(
-      (r) =>
-        r.name.toLowerCase().includes(q) || r.role.toLowerCase().includes(q),
+      (r) => r.name.toLowerCase().includes(q) || r.role.toLowerCase().includes(q),
     );
   }, [restaurants, query]);
 
@@ -78,11 +77,7 @@ export function RestaurantSwitcher({
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </MenuButton>
-      <MenuItems
-        className="ds-switcher-menu"
-        anchor="bottom start"
-        transition
-      >
+      <MenuItems className="ds-switcher-menu" anchor="bottom start" transition>
         {showSearch && (
           <input
             type="search"
@@ -94,9 +89,7 @@ export function RestaurantSwitcher({
           />
         )}
         {filtered.length === 0 ? (
-          <div className="ds-switcher-menu__empty">
-            No restaurants match “{query}”
-          </div>
+          <div className="ds-switcher-menu__empty">No restaurants match “{query}”</div>
         ) : (
           filtered.map((r) => (
             <MenuItem key={r.id}>

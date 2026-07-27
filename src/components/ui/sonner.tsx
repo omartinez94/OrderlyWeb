@@ -35,11 +35,11 @@ function Toaster(props: ToasterProps) {
           toast: cn(
             'group toast',
             'bg-popover text-ink border border-border-subtle shadow-md',
-            'rounded-xl'
+            'rounded-xl',
           ),
           description: 'text-ink-muted',
           actionButton: 'bg-primary text-primary-foreground',
-          cancelButton: 'bg-muted text-ink-muted'
+          cancelButton: 'bg-muted text-ink-muted',
         },
       }}
       {...props}
@@ -65,7 +65,7 @@ const variantClassNames: Record<ToastVariant, string> = {
 
 function toast(
   message: string,
-  options?: { description?: string; duration?: number; id?: string | number }
+  options?: { description?: string; duration?: number; id?: string | number },
 ) {
   return sonnerToast(message, {
     description: options?.description,

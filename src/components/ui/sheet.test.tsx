@@ -26,7 +26,7 @@ describe('Sheet', () => {
             <SheetDescription>Drawer content.</SheetDescription>
           </SheetHeader>
         </SheetContent>
-      </Sheet>
+      </Sheet>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     const dialog = screen.getByRole('dialog');
@@ -44,7 +44,7 @@ describe('Sheet', () => {
         <SheetContent>
           <SheetTitle>Side panel</SheetTitle>
         </SheetContent>
-      </Sheet>
+      </Sheet>,
     );
     const trigger = screen.getByRole('button', { name: 'Open' });
     await user.click(trigger);
@@ -63,7 +63,7 @@ describe('Sheet', () => {
         <SheetContent>
           <SheetTitle>Side panel</SheetTitle>
         </SheetContent>
-      </Sheet>
+      </Sheet>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     const results = await axe(container);

@@ -53,12 +53,9 @@ const buttonVariants = cva(
         accent: 'bg-accent text-accent-foreground hover:bg-accent-hover',
         outline:
           'border border-border-strong bg-transparent text-ink hover:bg-surface-elevated hover:border-primary hover:text-primary',
-        ghost:
-          'bg-transparent text-ink-muted hover:bg-surface-elevated hover:text-ink',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        ghost: 'bg-transparent text-ink-muted hover:bg-surface-elevated hover:text-ink',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
@@ -72,12 +69,11 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ComponentProps<'button'>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
   /** Render as a child element (e.g. `Link`) while keeping button styles. */
   asChild?: boolean;
 }

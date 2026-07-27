@@ -2,13 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { Label } from './label';
 
 /**
@@ -34,14 +28,12 @@ describe('Select', () => {
             <SelectItem value="pastry">Pastry</SelectItem>
           </SelectContent>
         </Select>
-      </>
+      </>,
     );
     const trigger = screen.getByRole('combobox');
     trigger.focus();
     await user.keyboard('{Enter}');
-    expect(
-      await screen.findByRole('option', { name: 'Grill' })
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: 'Grill' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Sauté' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Pastry' })).toBeInTheDocument();
   });
@@ -57,7 +49,7 @@ describe('Select', () => {
           <SelectItem value="grill">Grill</SelectItem>
           <SelectItem value="saute">Sauté</SelectItem>
         </SelectContent>
-      </Select>
+      </Select>,
     );
     const trigger = screen.getByRole('combobox');
     trigger.focus();
@@ -76,7 +68,7 @@ describe('Select', () => {
         <SelectContent>
           <SelectItem value="a">A</SelectItem>
         </SelectContent>
-      </Select>
+      </Select>,
     );
     const trigger = screen.getByRole('combobox');
     trigger.focus();
@@ -100,7 +92,7 @@ describe('Select', () => {
             <SelectItem value="b">B</SelectItem>
           </SelectContent>
         </Select>
-      </>
+      </>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

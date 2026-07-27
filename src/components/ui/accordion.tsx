@@ -25,9 +25,7 @@ import { cn } from '@/lib/utils';
  *   - Open/close transition is via Tailwind animate utilities; the
  *     `prefers-reduced-motion` story is documented in Phase 8.
  */
-function Accordion({
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+function Accordion({ ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
@@ -59,13 +57,13 @@ function AccordionTrigger({
           'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           'disabled:pointer-events-none disabled:opacity-50',
           '[&[data-state=open]>svg]:rotate-180',
-          className
+          className,
         )}
         {...props}
       >
         {children}
         <ChevronDownIcon
-          className="pointer-events-none size-4 shrink-0 translate-y-0.5 text-ink-muted transition-transform duration-200"
+          className="text-ink-muted pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200"
           aria-hidden="true"
         />
       </AccordionPrimitive.Trigger>

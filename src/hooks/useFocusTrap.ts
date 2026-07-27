@@ -46,7 +46,7 @@ export interface UseFocusTrapOptions {
  *   return <div ref={ref} role="dialog" aria-modal="true">…</div>;
  */
 export function useFocusTrap<T extends HTMLElement = HTMLElement>(
-  options: UseFocusTrapOptions = {}
+  options: UseFocusTrapOptions = {},
 ): RefObject<T | null> {
   const { restoreFocus = true, paused = false, autoFocus = false } = options;
   const ref = useRef<T | null>(null);
@@ -62,9 +62,9 @@ export function useFocusTrap<T extends HTMLElement = HTMLElement>(
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
     function getFocusable(): HTMLElement[] {
-      return Array.from(
-        root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      ).filter((el) => !el.hasAttribute('aria-hidden'));
+      return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => !el.hasAttribute('aria-hidden'),
+      );
     }
 
     function handleKeyDown(event: KeyboardEvent) {

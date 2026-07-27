@@ -46,19 +46,16 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground border-transparent',
-        secondary:
-          'bg-secondary text-secondary-foreground border-transparent',
+        secondary: 'bg-secondary text-secondary-foreground border-transparent',
         destructive: 'bg-danger text-primary-foreground border-transparent',
-        outline:
-          'bg-transparent text-ink border border-border-strong',
+        outline: 'bg-transparent text-ink border border-border-strong',
         ghost: 'bg-transparent text-ink-muted border-transparent',
         link: 'bg-transparent text-primary border-transparent underline-offset-4 [&>a]:underline',
 
         // Service-hue tints — same rule as StatusPill: 12% bg, 100%
         // foreground, 30% border. The 12% tint is applied via
         // color-mix inline so the rule reads in one place.
-        'service-new':
-          'border text-service-deep bg-service-deep/[0.12] border-service-deep/30',
+        'service-new': 'border text-service-deep bg-service-deep/[0.12] border-service-deep/30',
         'service-acknowledged':
           'border text-service-teal bg-service-teal/[0.12] border-service-teal/30',
         'service-preparing':
@@ -74,22 +71,16 @@ const badgeVariants = cva(
     defaultVariants: {
       variant: 'default',
     },
-  }
+  },
 );
 
 export interface BadgeProps
-  extends React.ComponentProps<'span'>,
-    VariantProps<typeof badgeVariants> {
+  extends React.ComponentProps<'span'>, VariantProps<typeof badgeVariants> {
   /** Render as a child element (e.g. `Link`) while keeping badge styles. */
   asChild?: boolean;
 }
 
-function Badge({
-  className,
-  variant = 'default',
-  asChild = false,
-  ...props
-}: BadgeProps) {
+function Badge({ className, variant = 'default', asChild = false, ...props }: BadgeProps) {
   const Comp = asChild ? Slot.Root : 'span';
 
   return (

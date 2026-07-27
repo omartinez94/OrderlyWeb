@@ -47,9 +47,7 @@ export function OpsBadge({ count, zone, onClick }: OpsBadgeProps) {
       aria-label={`${label}. Click to view orders.`}
     >
       <span className="ds-ops-badge__count">{count}</span>
-      <span>
-        {zone === 'kitchen' ? 'in kitchen' : 'in progress'}
-      </span>
+      <span>{zone === 'kitchen' ? 'in kitchen' : 'in progress'}</span>
     </button>
   );
 }

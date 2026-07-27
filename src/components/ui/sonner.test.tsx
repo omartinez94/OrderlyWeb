@@ -9,7 +9,7 @@ describe('Sonner (Toast)', () => {
       <>
         <Toaster />
         <Button onClick={() => toast.success('Saved.')}>Save</Button>
-      </>
+      </>,
     );
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
@@ -20,10 +20,8 @@ describe('Sonner (Toast)', () => {
     render(
       <>
         <Toaster />
-        <Button onClick={() => toast.success('Order marked ready.')}>
-          Trigger
-        </Button>
-      </>
+        <Button onClick={() => toast.success('Order marked ready.')}>Trigger</Button>
+      </>,
     );
     await user.click(screen.getByRole('button', { name: 'Trigger' }));
     expect(await screen.findByText('Order marked ready.')).toBeInTheDocument();

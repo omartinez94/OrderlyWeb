@@ -19,13 +19,8 @@ describe('Badge', () => {
       'service-ready',
     ] as const;
     for (const variant of variants) {
-      const { unmount } = render(
-        <Badge variant={variant}>{variant}</Badge>
-      );
-      expect(screen.getByText(variant)).toHaveAttribute(
-        'data-variant',
-        variant
-      );
+      const { unmount } = render(<Badge variant={variant}>{variant}</Badge>);
+      expect(screen.getByText(variant)).toHaveAttribute('data-variant', variant);
       unmount();
     }
   });
@@ -46,9 +41,7 @@ describe('Badge', () => {
       'service-ready',
     ] as const;
     for (const variant of variants) {
-      const { container, unmount } = render(
-        <Badge variant={variant}>{variant}</Badge>
-      );
+      const { container, unmount } = render(<Badge variant={variant}>{variant}</Badge>);
       const results = await axe(container);
       expect(results, `variant "${variant}"`).toHaveNoViolations();
       unmount();

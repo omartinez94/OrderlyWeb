@@ -33,7 +33,7 @@ describe('AlertDialog', () => {
             <AlertDialogAction>Cancel</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>,
     );
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe('AlertDialog', () => {
           <AlertDialogTitle>Cancel order?</AlertDialogTitle>
           <AlertDialogCancel>Keep</AlertDialogCancel>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>,
     );
     const trigger = screen.getByRole('button', { name: 'Cancel' });
     await user.click(trigger);
@@ -74,7 +74,7 @@ describe('AlertDialog', () => {
             <AlertDialogAction>Cancel</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>,
     );
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     const results = await axe(container);

@@ -28,7 +28,7 @@ describe('Table', () => {
             <TableCell>Ready</TableCell>
           </TableRow>
         </TableBody>
-      </Table>
+      </Table>,
     );
     expect(screen.getByText('Order list')).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: 'Order' })).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('Table', () => {
             <TableHead scope="col">Order</TableHead>
           </TableRow>
         </TableHeader>
-      </Table>
+      </Table>,
     );
     const th = screen.getByRole('columnheader');
     expect(th.tagName).toBe('TH');
@@ -65,7 +65,7 @@ describe('Table', () => {
             <TableCell>Ready</TableCell>
           </TableRow>
         </TableBody>
-      </Table>
+      </Table>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

@@ -18,32 +18,18 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui';
  * is the semantic role and the "this requires a decision" framing.
  */
 
-function AlertDialog({
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
+function AlertDialog({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
 }
 
 function AlertDialogTrigger({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
-  return (
-    <AlertDialogPrimitive.Trigger
-      data-slot="alert-dialog-trigger"
-      {...props}
-    />
-  );
+  return <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />;
 }
 
-function AlertDialogPortal({
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
-  return (
-    <AlertDialogPrimitive.Portal
-      data-slot="alert-dialog-portal"
-      {...props}
-    />
-  );
+function AlertDialogPortal({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
+  return <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />;
 }
 
 function AlertDialogOverlay({
@@ -57,7 +43,7 @@ function AlertDialogOverlay({
         'fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
-        className
+        className,
       )}
       {...props}
     />
@@ -80,7 +66,7 @@ function AlertDialogContent({
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
           'sm:max-w-lg',
-          className
+          className,
         )}
         {...props}
       />
@@ -88,10 +74,7 @@ function AlertDialogContent({
   );
 }
 
-function AlertDialogHeader({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function AlertDialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="alert-dialog-header"
@@ -101,17 +84,11 @@ function AlertDialogHeader({
   );
 }
 
-function AlertDialogFooter({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function AlertDialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="alert-dialog-footer"
-      className={cn(
-        'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end',
-        className
-      )}
+      className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
       {...props}
     />
   );
@@ -124,10 +101,7 @@ function AlertDialogTitle({
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn(
-        'font-display text-lg font-bold leading-none text-ink',
-        className
-      )}
+      className={cn('font-display text-lg font-bold leading-none text-ink', className)}
       {...props}
     />
   );

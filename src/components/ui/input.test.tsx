@@ -10,7 +10,7 @@ describe('Input', () => {
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="you@example.com" />
-      </div>
+      </div>,
     );
     const input = screen.getByLabelText('Email');
     expect(input).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe('Input', () => {
       <>
         <Label htmlFor="bad">Email</Label>
         <Input id="bad" aria-invalid="true" />
-      </>
+      </>,
     );
     expect(screen.getByLabelText('Email')).toHaveAttribute('aria-invalid', 'true');
   });
@@ -33,7 +33,7 @@ describe('Input', () => {
       <>
         <Label htmlFor="ok">Email</Label>
         <Input id="ok" />
-      </>
+      </>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -43,13 +43,9 @@ describe('Input', () => {
     const { container } = render(
       <>
         <Label htmlFor="err">Email</Label>
-        <Input
-          id="err"
-          aria-invalid="true"
-          aria-describedby="err-msg"
-        />
+        <Input id="err" aria-invalid="true" aria-describedby="err-msg" />
         <p id="err-msg">Enter a valid email address.</p>
-      </>
+      </>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

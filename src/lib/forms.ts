@@ -33,7 +33,7 @@ import type { z } from 'zod';
  */
 export function useZodForm<T extends FieldValues>(
   schema: z.ZodType<T, T>,
-  options?: Omit<UseFormProps<T>, 'resolver'>
+  options?: Omit<UseFormProps<T>, 'resolver'>,
 ): UseFormReturn<T> {
   return useForm<T>({
     ...(options ?? {}),

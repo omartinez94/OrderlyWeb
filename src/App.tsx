@@ -1,49 +1,36 @@
-import { useState, Suspense, lazy, type ReactNode } from "react";
-import {
-  StatusPill,
-  type OrderStatus,
-} from "./components/StatusPill/StatusPill";
-import { ThemeToggle } from "./components/ThemeToggle/ThemeToggle";
-import { Header } from "./components/Header/Header";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { Label } from "./components/ui/label";
-import { Textarea } from "./components/ui/textarea";
-import { Checkbox } from "./components/ui/checkbox";
-import { Switch } from "./components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group";
+import { useState, Suspense, lazy, type ReactNode } from 'react';
+import { StatusPill, type OrderStatus } from './components/StatusPill/StatusPill';
+import { ThemeToggle } from './components/ThemeToggle/ThemeToggle';
+import { Header } from './components/Header/Header';
+import { Button } from './components/ui/button';
+import { Input } from './components/ui/input';
+import { Label } from './components/ui/label';
+import { Textarea } from './components/ui/textarea';
+import { Checkbox } from './components/ui/checkbox';
+import { Switch } from './components/ui/switch';
+import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./components/ui/select";
-import { Slider } from "./components/ui/slider";
-import { Toggle } from "./components/ui/toggle";
-import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./components/ui/card";
-import { Separator } from "./components/ui/separator";
-import { AspectRatio } from "./components/ui/aspect-ratio";
-import { ScrollArea } from "./components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+} from './components/ui/select';
+import { Slider } from './components/ui/slider';
+import { Toggle } from './components/ui/toggle';
+import { ToggleGroup, ToggleGroupItem } from './components/ui/toggle-group';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
+import { Separator } from './components/ui/separator';
+import { AspectRatio } from './components/ui/aspect-ratio';
+import { ScrollArea } from './components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "./components/ui/accordion";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./components/ui/collapsible";
+} from './components/ui/accordion';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -51,7 +38,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./components/ui/dialog";
+} from './components/ui/dialog';
 import {
   Sheet,
   SheetContent,
@@ -59,18 +46,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./components/ui/sheet";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./components/ui/tooltip";
+} from './components/ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -78,7 +56,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./components/ui/dropdown-menu";
+} from './components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -89,7 +67,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./components/ui/alert-dialog";
+} from './components/ui/alert-dialog';
 import {
   Command,
   CommandEmpty,
@@ -97,7 +75,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./components/ui/command";
+} from './components/ui/command';
 import {
   Table,
   TableBody,
@@ -106,12 +84,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./components/ui/table";
-import { Badge } from "./components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
-import { Skeleton } from "./components/ui/skeleton";
-import { Progress } from "./components/ui/progress";
-import { Toaster, toast } from "./components/ui/sonner";
+} from './components/ui/table';
+import { Badge } from './components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from './components/ui/avatar';
+import { Skeleton } from './components/ui/skeleton';
+import { Progress } from './components/ui/progress';
+import { Toaster, toast } from './components/ui/sonner';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -119,7 +97,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "./components/ui/breadcrumb";
+} from './components/ui/breadcrumb';
 import {
   Pagination,
   PaginationContent,
@@ -128,7 +106,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "./components/ui/pagination";
+} from './components/ui/pagination';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -136,7 +114,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "./components/ui/navigation-menu";
+} from './components/ui/navigation-menu';
 import {
   Menubar,
   MenubarContent,
@@ -144,7 +122,7 @@ import {
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
-} from "./components/ui/menubar";
+} from './components/ui/menubar';
 import {
   Form,
   FormControl,
@@ -153,15 +131,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./components/ui/form";
-import { useZodForm } from "./lib/forms";
-import { z } from "zod";
+} from './components/ui/form';
+import { useZodForm } from './lib/forms';
+import { z } from 'zod';
 import {
   MOCK_CURRENT_USER,
   MOCK_NOTIFICATIONS,
   MOCK_RESTAURANTS,
-} from "./components/Header/mockData";
-import { brandPalette, servicePalette, type PaletteEntry } from "./lib/tokens";
+} from './components/Header/mockData';
+import { brandPalette, servicePalette, type PaletteEntry } from './lib/tokens';
 
 /**
  * Orderly Design System — palette & component showcase.
@@ -173,21 +151,19 @@ import { brandPalette, servicePalette, type PaletteEntry } from "./lib/tokens";
  */
 
 const ALL_STATUSES: OrderStatus[] = [
-  "new",
-  "acknowledged",
-  "preparing",
-  "plating",
-  "ready",
-  "served",
+  'new',
+  'acknowledged',
+  'preparing',
+  'plating',
+  'ready',
+  'served',
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mb-16">
-      <h2 className="text-xl font-bold mb-6 text-ink tracking-tight">
-        {title}
-      </h2>
-      <hr className="border-t border-border-subtle mb-6 border-0 h-px bg-border-subtle" />
+      <h2 className="text-ink mb-6 text-xl font-bold tracking-tight">{title}</h2>
+      <hr className="border-border-subtle bg-border-subtle mb-6 h-px border-0 border-t" />
       {children}
     </section>
   );
@@ -197,65 +173,49 @@ function Swatch({ entry }: { entry: PaletteEntry }) {
   return (
     <div
       className={[
-        "p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-2",
-        "transition-transform duration-150 hover:-translate-y-0.5",
+        'p-5 rounded-xl min-h-[130px] flex flex-col justify-between gap-2',
+        'transition-transform duration-150 hover:-translate-y-0.5',
         entry.twBg,
         entry.twText,
-        entry.border ? "border border-border-subtle" : "",
+        entry.border ? 'border border-border-subtle' : '',
       ]
         .filter(Boolean)
-        .join(" ")}
+        .join(' ')}
     >
       <span className="text-sm font-bold tracking-wide">{entry.name}</span>
       {/* The hex labels sit on a small `surface-overlay` chip so
        *  they read against *any* swatch (light or dark, primary or
        *  surface) without the swatch's own color fighting them.
        *  This was the 1.0:1 contrast defect the detector caught. */}
-      <span className="text-[0.7rem] font-mono leading-tight block">
-        light {entry.light}
-      </span>
-      <span className="text-[0.7rem] font-mono leading-tight block">
-        dark {entry.dark}
-      </span>
+      <span className="block font-mono text-[0.7rem] leading-tight">light {entry.light}</span>
+      <span className="block font-mono text-[0.7rem] leading-tight">dark {entry.dark}</span>
     </div>
   );
 }
 
-function HeaderPreview({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
+function HeaderPreview({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="mb-8 last:mb-0">
-      <div className="text-xs font-mono text-ink-subtle uppercase tracking-wider mb-2">
-        {label}
-      </div>
-      <div className="rounded-xl border border-border-subtle overflow-hidden">
-        {children}
-      </div>
+      <div className="text-ink-subtle mb-2 font-mono text-xs tracking-wider uppercase">{label}</div>
+      <div className="border-border-subtle overflow-hidden rounded-xl border">{children}</div>
     </div>
   );
 }
 
 // Lazy-loaded so the production bundle does not pay for the
 // showcase until `?showcase=1` is in the URL.
-const ShowcasePage = lazy(() => import("./pages/ShowcasePage"));
+const ShowcasePage = lazy(() => import('./pages/ShowcasePage'));
 
 function App() {
   // The showcase route is gated by a `?showcase=1` query flag in
   // development. Production builds never serve the route — it's
   // an internal quality surface, not a user-facing page.
   if (
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("showcase") === "1"
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('showcase') === '1'
   ) {
     return (
-      <Suspense
-        fallback={<div className="p-8 text-ink-muted">Loading showcase…</div>}
-      >
+      <Suspense fallback={<div className="text-ink-muted p-8">Loading showcase…</div>}>
         <ShowcasePage />
       </Suspense>
     );
@@ -264,29 +224,27 @@ function App() {
   return (
     <TooltipProvider delayDuration={200}>
       <Toaster />
-      <div className="min-h-screen bg-surface text-ink font-sans antialiased py-12 px-8 transition-colors duration-200">
-        <div className="max-w-6xl mx-auto">
+      <div className="bg-surface text-ink min-h-screen px-8 py-12 font-sans antialiased transition-colors duration-200">
+        <div className="mx-auto max-w-6xl">
           <header className="mb-12">
-            <div className="flex items-start justify-between gap-6 mb-4">
-              <h1 className="text-5xl font-extrabold tracking-tight leading-tight m-0">
+            <div className="mb-4 flex items-start justify-between gap-6">
+              <h1 className="m-0 text-5xl leading-tight font-extrabold tracking-tight">
                 Orderly Design System
               </h1>
               <ThemeToggle />
             </div>
             <p className="text-ink-muted m-0 max-w-2xl leading-relaxed">
-              Blue-teal primary, tangerine accent, sage-tinted surface, service
-              gradient for status. Click the toggle in the corner to flip
-              between light and dark.
+              Blue-teal primary, tangerine accent, sage-tinted surface, service gradient for status.
+              Click the toggle in the corner to flip between light and dark.
             </p>
           </header>
 
           <Section title="App Header — the global top bar">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              The Header is consumed by all three zone layouts (admin, kitchen,
-              restaurant). Six slots, fixed at the top, flat at rest, hairline
-              Linen Edge bottom border. The ops badge appears on the floor and
-              kitchen only — the One-Voice Rule still binds; Burnt Tangerine on
-              the ops badge is a service hue carrying status, not decoration.
+              The Header is consumed by all three zone layouts (admin, kitchen, restaurant). Six
+              slots, fixed at the top, flat at rest, hairline Linen Edge bottom border. The ops
+              badge appears on the floor and kitchen only — the One-Voice Rule still binds; Burnt
+              Tangerine on the ops badge is a service hue carrying status, not decoration.
             </p>
 
             <HeaderPreview label="Admin zone — no ops badge, 3 notifications">
@@ -338,9 +296,9 @@ function App() {
                 currentRestaurantId="r-001"
                 restaurants={[
                   {
-                    id: "r-001",
-                    name: "Acme Bistro — Downtown",
-                    role: "Owner",
+                    id: 'r-001',
+                    name: 'Acme Bistro — Downtown',
+                    role: 'Owner',
                   },
                 ]}
                 notifications={MOCK_NOTIFICATIONS}
@@ -373,7 +331,7 @@ function App() {
           </Section>
 
           <Section title="Brand tokens">
-            <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] gap-4">
               {brandPalette.map((entry) => (
                 <Swatch key={entry.name} entry={entry} />
               ))}
@@ -381,37 +339,34 @@ function App() {
           </Section>
 
           <Section title="Service hues (status / order flow)">
-            <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))] gap-4">
               {servicePalette.map((entry) => (
                 <Swatch key={entry.name} entry={entry} />
               ))}
             </div>
             <div className="mt-5 grid gap-3">
-              <div className="p-8 rounded-xl min-h-[100px] flex items-end text-white font-bold text-base bg-gradient-service-cool">
+              <div className="bg-gradient-service-cool flex min-h-[100px] items-end rounded-xl p-8 text-base font-bold text-white">
                 <span className="drop-shadow">
                   gradient-service-cool — deep → teal → aqua (received flow)
                 </span>
               </div>
-              <div className="p-8 rounded-xl min-h-[100px] flex items-end text-ink font-bold text-base bg-gradient-service-warm">
-                <span>
-                  gradient-service-warm — surface → amber → tangerine (ready
-                  flow)
-                </span>
+              <div className="text-ink bg-gradient-service-warm flex min-h-[100px] items-end rounded-xl p-8 text-base font-bold">
+                <span>gradient-service-warm — surface → amber → tangerine (ready flow)</span>
               </div>
             </div>
           </Section>
 
           <Section title="Status pills (live component)">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Each status maps to one of the service-hue tokens. The background
-              is a 12% tint; the dot and text use the full color.
+              Each status maps to one of the service-hue tokens. The background is a 12% tint; the
+              dot and text use the full color.
             </p>
-            <div className="flex flex-wrap gap-2.5 items-center mb-3">
+            <div className="mb-3 flex flex-wrap items-center gap-2.5">
               {ALL_STATUSES.map((status) => (
                 <StatusPill key={status} status={status} />
               ))}
             </div>
-            <div className="flex flex-wrap gap-2.5 items-center">
+            <div className="flex flex-wrap items-center gap-2.5">
               {ALL_STATUSES.slice(0, 5).map((status) => (
                 <StatusPill key={`${status}-nodot`} status={status} hideDot />
               ))}
@@ -419,7 +374,7 @@ function App() {
           </Section>
 
           <Section title="Components">
-            <div className="flex flex-wrap gap-3 items-center mb-8">
+            <div className="mb-8 flex flex-wrap items-center gap-3">
               <Button variant="default">Primary action</Button>
               <Button variant="accent">Accent action</Button>
               <Button variant="outline">Outline</Button>
@@ -429,7 +384,7 @@ function App() {
               <Button variant="link">Link</Button>
             </div>
 
-            <div className="flex flex-wrap gap-3 items-center mb-8">
+            <div className="mb-8 flex flex-wrap items-center gap-3">
               <Button size="sm">Small</Button>
               <Button size="default">Default</Button>
               <Button size="lg">Large</Button>
@@ -452,34 +407,26 @@ function App() {
               <Button disabled>Disabled</Button>
             </div>
 
-            <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
-              <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
-                <h3 className="text-primary text-lg font-bold m-0 mb-1">
-                  Order #1284
-                </h3>
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-4">
+              <div className="bg-surface-elevated border-border-strong rounded-xl border p-6">
+                <h3 className="text-primary m-0 mb-1 text-lg font-bold">Order #1284</h3>
                 <p className="text-ink-muted m-0 mb-4 text-sm leading-relaxed">
                   Margherita Pizza, Caesar Salad, two Tiramisu. Table 7.
                 </p>
                 <div className="flex items-center justify-between gap-3">
                   <StatusPill status="preparing" />
-                  <span className="text-ink-subtle text-xs font-mono">
-                    4m elapsed
-                  </span>
+                  <span className="text-ink-subtle font-mono text-xs">4m elapsed</span>
                 </div>
               </div>
 
-              <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
-                <h3 className="text-primary text-lg font-bold m-0 mb-1">
-                  Order #1285
-                </h3>
+              <div className="bg-surface-elevated border-border-strong rounded-xl border p-6">
+                <h3 className="text-primary m-0 mb-1 text-lg font-bold">Order #1285</h3>
                 <p className="text-ink-muted m-0 mb-4 text-sm leading-relaxed">
                   Risotto ai Funghi, Bruschetta. Table 12.
                 </p>
                 <div className="flex items-center justify-between gap-3">
                   <StatusPill status="ready" />
-                  <span className="text-ink-subtle text-xs font-mono">
-                    8m elapsed
-                  </span>
+                  <span className="text-ink-subtle font-mono text-xs">8m elapsed</span>
                 </div>
               </div>
             </div>
@@ -487,24 +434,21 @@ function App() {
 
           <Section title="Selection primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Selection controls share the same focus-visible ring, border
-              weight, and checked-state palette. Keyboard semantics are
-              Radix-driven: arrow keys for{" "}
-              <code className="font-mono text-sm">Select</code> and{" "}
-              <code className="font-mono text-sm">RadioGroup</code>, Space/Enter
-              for <code className="font-mono text-sm">Checkbox</code>,{" "}
-              <code className="font-mono text-sm">Switch</code>, and{" "}
+              Selection controls share the same focus-visible ring, border weight, and checked-state
+              palette. Keyboard semantics are Radix-driven: arrow keys for{' '}
+              <code className="font-mono text-sm">Select</code> and{' '}
+              <code className="font-mono text-sm">RadioGroup</code>, Space/Enter for{' '}
+              <code className="font-mono text-sm">Checkbox</code>,{' '}
+              <code className="font-mono text-sm">Switch</code>, and{' '}
               <code className="font-mono text-sm">Toggle</code>.
             </p>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-6">
               <SelectionCard title="Checkbox">
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <Checkbox id="show-on-menu" />
-                    <Label htmlFor="show-on-menu">
-                      Show on the public menu
-                    </Label>
+                    <Label htmlFor="show-on-menu">Show on the public menu</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Checkbox id="check-default" defaultChecked />
@@ -525,9 +469,7 @@ function App() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch id="show-on-floor" defaultChecked />
-                    <Label htmlFor="show-on-floor">
-                      Show on floor (default on)
-                    </Label>
+                    <Label htmlFor="show-on-floor">Show on floor (default on)</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch id="compact-mode" size="sm" />
@@ -568,19 +510,12 @@ function App() {
               </SelectionCard>
             </div>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-6">
               <SelectionCard title="Slider">
                 <div className="grid gap-2">
                   <Label htmlFor="prep-minutes">Prep time (minutes)</Label>
-                  <Slider
-                    id="prep-minutes"
-                    defaultValue={[12]}
-                    max={45}
-                    step={1}
-                  />
-                  <p className="text-ink-subtle text-xs font-mono">
-                    Default 12
-                  </p>
+                  <Slider id="prep-minutes" defaultValue={[12]} max={45} step={1} />
+                  <p className="text-ink-subtle font-mono text-xs">Default 12</p>
                 </div>
               </SelectionCard>
 
@@ -608,35 +543,26 @@ function App() {
 
           <Section title="Form primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Form primitives bind to React Hook Form + Zod through{" "}
+              Form primitives bind to React Hook Form + Zod through{' '}
               <code className="font-mono text-sm">useZodForm</code>. The
-              <code className="font-mono text-sm">FormControl</code>{" "}
-              automatically wires{" "}
-              <code className="font-mono text-sm">aria-describedby</code> to the
-              description and (when present) the error message;{" "}
-              <code className="font-mono text-sm">aria-invalid</code> flips on
-              error so screen readers announce the broken field.
+              <code className="font-mono text-sm">FormControl</code> automatically wires{' '}
+              <code className="font-mono text-sm">aria-describedby</code> to the description and
+              (when present) the error message;{' '}
+              <code className="font-mono text-sm">aria-invalid</code> flips on error so screen
+              readers announce the broken field.
             </p>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
-              <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
-                <h3 className="text-primary text-base font-bold m-0 mb-4">
-                  Plain Input + Label
-                </h3>
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-6">
+              <div className="bg-surface-elevated border-border-strong rounded-xl border p-6">
+                <h3 className="text-primary m-0 mb-4 text-base font-bold">Plain Input + Label</h3>
                 <div className="grid gap-2">
                   <Label htmlFor="plain-email">Email</Label>
-                  <Input
-                    id="plain-email"
-                    type="email"
-                    placeholder="staff@acme.com"
-                  />
+                  <Input id="plain-email" type="email" placeholder="staff@acme.com" />
                 </div>
               </div>
 
-              <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
-                <h3 className="text-primary text-base font-bold m-0 mb-4">
-                  Textarea
-                </h3>
+              <div className="bg-surface-elevated border-border-strong rounded-xl border p-6">
+                <h3 className="text-primary m-0 mb-4 text-base font-bold">Textarea</h3>
                 <div className="grid gap-2">
                   <Label htmlFor="plain-notes">Notes</Label>
                   <Textarea
@@ -653,12 +579,12 @@ function App() {
 
           <Section title="Layout primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Layout primitives carry the tonal layering rule: content surfaces
-              are flat (Sage Linen → Sage Linen High → Linen Overlay), overlays
-              lift with shadow, and the brand glow is reserved for status.
+              Layout primitives carry the tonal layering rule: content surfaces are flat (Sage Linen
+              → Sage Linen High → Linen Overlay), overlays lift with shadow, and the brand glow is
+              reserved for status.
             </p>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Default card</CardTitle>
@@ -668,8 +594,8 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-ink-muted m-0 text-sm leading-relaxed">
-                    The standard content surface. Use the default variant for
-                    grouped content within a page.
+                    The standard content surface. Use the default variant for grouped content within
+                    a page.
                   </p>
                 </CardContent>
               </Card>
@@ -683,8 +609,7 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-ink-muted m-0 text-sm leading-relaxed">
-                    For emphasized surfaces — the perimeter reads as interactive
-                    even at rest.
+                    For emphasized surfaces — the perimeter reads as interactive even at rest.
                   </p>
                 </CardContent>
               </Card>
@@ -698,8 +623,8 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-ink-muted m-0 text-sm leading-relaxed">
-                    Secondary info that should not compete with primary content
-                    — cheap to use in lists and groups.
+                    Secondary info that should not compete with primary content — cheap to use in
+                    lists and groups.
                   </p>
                 </CardContent>
               </Card>
@@ -718,7 +643,7 @@ function App() {
                 </CardContent>
               </Card>
 
-              <div className="rounded-xl bg-gradient-service-cool p-4">
+              <div className="bg-gradient-service-cool rounded-xl p-4">
                 <Card variant="glass">
                   <CardHeader>
                     <CardTitle>Glass card</CardTitle>
@@ -728,15 +653,15 @@ function App() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-ink m-0 text-sm leading-relaxed">
-                      For use over gradients or busy images. Pair with a
-                      gradient backdrop to see the frosted effect.
+                      For use over gradients or busy images. Pair with a gradient backdrop to see
+                      the frosted effect.
                     </p>
                   </CardContent>
                 </Card>
               </div>
             </div>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Tabs</CardTitle>
@@ -752,17 +677,17 @@ function App() {
                       <TabsTrigger value="settings">Settings</TabsTrigger>
                     </TabsList>
                     <TabsContent value="overview">
-                      <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      <p className="text-ink-muted m-0 text-sm leading-relaxed">
                         Today's reservation count and order backlog.
                       </p>
                     </TabsContent>
                     <TabsContent value="staff">
-                      <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      <p className="text-ink-muted m-0 text-sm leading-relaxed">
                         On-shift staff and station assignments.
                       </p>
                     </TabsContent>
                     <TabsContent value="settings">
-                      <p className="text-ink-muted text-sm leading-relaxed m-0">
+                      <p className="text-ink-muted m-0 text-sm leading-relaxed">
                         Restaurant and zone configuration.
                       </p>
                     </TabsContent>
@@ -773,32 +698,27 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Accordion</CardTitle>
-                  <CardDescription>
-                    One or many regions. Radix handles keyboard.
-                  </CardDescription>
+                  <CardDescription>One or many regions. Radix handles keyboard.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Accordion type="single" collapsible>
                     <AccordionItem value="prep">
                       <AccordionTrigger>Prep time</AccordionTrigger>
                       <AccordionContent>
-                        Average prep time per station, broken down by menu
-                        category.
+                        Average prep time per station, broken down by menu category.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="kitchen">
                       <AccordionTrigger>Kitchen load</AccordionTrigger>
                       <AccordionContent>
-                        Live ticket count per station. Tilled Teal indicates
-                        calm; Saffron Amber approaches the deadline; Burnt
-                        Tangerine is overdue.
+                        Live ticket count per station. Tilled Teal indicates calm; Saffron Amber
+                        approaches the deadline; Burnt Tangerine is overdue.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="floor">
                       <AccordionTrigger>Floor status</AccordionTrigger>
                       <AccordionContent>
-                        Table states across the floor — open, seated, ordered,
-                        bill-out, dirty.
+                        Table states across the floor — open, seated, ordered, bill-out, dirty.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -806,18 +726,16 @@ function App() {
               </Card>
             </div>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>ScrollArea</CardTitle>
-                  <CardDescription>
-                    Custom scrollbar on a fixed-height region.
-                  </CardDescription>
+                  <CardDescription>Custom scrollbar on a fixed-height region.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ScrollArea className="h-40 w-full rounded-md border border-border-subtle p-3">
+                  <ScrollArea className="border-border-subtle h-40 w-full rounded-md border p-3">
                     {Array.from({ length: 20 }).map((_, i) => (
-                      <p key={i} className="text-ink-muted text-sm m-0 py-1">
+                      <p key={i} className="text-ink-muted m-0 py-1 text-sm">
                         Order line item {i + 1} — 2× Margherita, 1× Caesar
                       </p>
                     ))}
@@ -828,9 +746,7 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Collapsible</CardTitle>
-                  <CardDescription>
-                    In-place show/hide. Trigger is a button.
-                  </CardDescription>
+                  <CardDescription>In-place show/hide. Trigger is a button.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Collapsible>
@@ -839,9 +755,8 @@ function App() {
                         Show advanced
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2 text-sm text-ink-muted">
-                      Advanced settings: tax rate, tip policy, late-night
-                      override rules.
+                    <CollapsibleContent className="text-ink-muted mt-2 text-sm">
+                      Advanced settings: tax rate, tip policy, late-night override rules.
                     </CollapsibleContent>
                   </Collapsible>
                 </CardContent>
@@ -850,23 +765,17 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Separator + AspectRatio</CardTitle>
-                  <CardDescription>
-                    Hairline divider; constrained media frame.
-                  </CardDescription>
+                  <CardDescription>Hairline divider; constrained media frame.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <AspectRatio
-                    ratio={16 / 9}
-                    className="bg-muted rounded-md mb-3"
-                  >
-                    <div className="flex items-center justify-center h-full text-ink-subtle text-xs font-mono">
+                  <AspectRatio ratio={16 / 9} className="bg-muted mb-3 rounded-md">
+                    <div className="text-ink-subtle flex h-full items-center justify-center font-mono text-xs">
                       16:9
                     </div>
                   </AspectRatio>
                   <Separator />
-                  <p className="text-ink-muted text-sm m-0 mt-3">
-                    A card with an embedded image and a divider above the
-                    caption.
+                  <p className="text-ink-muted m-0 mt-3 text-sm">
+                    A card with an embedded image and a divider above the caption.
                   </p>
                 </CardContent>
               </Card>
@@ -875,31 +784,30 @@ function App() {
 
           <Section title="Glass effects">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Glass on a single-tone background is invisible. The panel below
-              uses the warm service gradient so you can see all four glass
-              variants on top of it.
+              Glass on a single-tone background is invisible. The panel below uses the warm service
+              gradient so you can see all four glass variants on top of it.
             </p>
-            <div className="bg-gradient-service-warm p-10 rounded-2xl grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+            <div className="bg-gradient-service-warm grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-5 rounded-2xl p-10">
               <div className="glass p-6">
-                <h3 className="text-ink font-bold m-0 mb-2">glass</h3>
+                <h3 className="text-ink m-0 mb-2 font-bold">glass</h3>
                 <p className="text-ink m-0 text-sm leading-relaxed opacity-85">
                   Default frosted surface, 24px blur, light tint.
                 </p>
               </div>
               <div className="glass-strong p-6">
-                <h3 className="text-ink font-bold m-0 mb-2">glass-strong</h3>
+                <h3 className="text-ink m-0 mb-2 font-bold">glass-strong</h3>
                 <p className="text-ink m-0 text-sm leading-relaxed opacity-85">
                   Heavier 40px blur, more opacity. Modals, command palettes.
                 </p>
               </div>
               <div className="glass-primary p-6">
-                <h3 className="text-ink font-bold m-0 mb-2">glass-primary</h3>
+                <h3 className="text-ink m-0 mb-2 font-bold">glass-primary</h3>
                 <p className="text-ink m-0 text-sm leading-relaxed opacity-85">
                   Brand-tinted. Feature cards in the primary accent zone.
                 </p>
               </div>
               <div className="glass-accent p-6">
-                <h3 className="text-ink font-bold m-0 mb-2">glass-accent</h3>
+                <h3 className="text-ink m-0 mb-2 font-bold">glass-accent</h3>
                 <p className="text-ink m-0 text-sm leading-relaxed opacity-85">
                   Tangerine-tinted. Active states, hot offers, urgent alerts.
                 </p>
@@ -909,19 +817,16 @@ function App() {
 
           <Section title="Navigation primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Navigation controls — breadcrumbs, pagination, top navigation, and
-              tool palettes. Each primitive carries the right semantic role
-              (current page, current breadcrumb, expanded submenu) so screen
-              readers can orient quickly.
+              Navigation controls — breadcrumbs, pagination, top navigation, and tool palettes. Each
+              primitive carries the right semantic role (current page, current breadcrumb, expanded
+              submenu) so screen readers can orient quickly.
             </p>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Breadcrumb</CardTitle>
-                  <CardDescription>
-                    Header slot + standalone usage.
-                  </CardDescription>
+                  <CardDescription>Header slot + standalone usage.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Breadcrumb>
@@ -978,13 +883,11 @@ function App() {
               </Card>
             </div>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>NavigationMenu</CardTitle>
-                  <CardDescription>
-                    Top-level horizontal navigation.
-                  </CardDescription>
+                  <CardDescription>Top-level horizontal navigation.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <NavigationMenu>
@@ -992,12 +895,10 @@ function App() {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger>Overview</NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <ul className="grid gap-2 p-3 w-[320px]">
+                          <ul className="grid w-[320px] gap-2 p-3">
                             <li>
                               <NavigationMenuLink href="#">
-                                <div className="font-medium text-ink">
-                                  Today
-                                </div>
+                                <div className="text-ink font-medium">Today</div>
                                 <p className="text-ink-muted text-xs">
                                   Reservations, prep load, recent orders.
                                 </p>
@@ -1005,9 +906,7 @@ function App() {
                             </li>
                             <li>
                               <NavigationMenuLink href="#">
-                                <div className="font-medium text-ink">
-                                  This week
-                                </div>
+                                <div className="text-ink font-medium">This week</div>
                                 <p className="text-ink-muted text-xs">
                                   Staff utilization, peak hours, top items.
                                 </p>
@@ -1017,18 +916,12 @@ function App() {
                         </NavigationMenuContent>
                       </NavigationMenuItem>
                       <NavigationMenuItem>
-                        <NavigationMenuLink
-                          className="px-4 py-2 text-sm font-medium"
-                          href="#"
-                        >
+                        <NavigationMenuLink className="px-4 py-2 text-sm font-medium" href="#">
                           Reports
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                       <NavigationMenuItem>
-                        <NavigationMenuLink
-                          className="px-4 py-2 text-sm font-medium"
-                          href="#"
-                        >
+                        <NavigationMenuLink className="px-4 py-2 text-sm font-medium" href="#">
                           Settings
                         </NavigationMenuLink>
                       </NavigationMenuItem>
@@ -1040,9 +933,7 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Menubar</CardTitle>
-                  <CardDescription>
-                    Horizontal tool palette for working surfaces.
-                  </CardDescription>
+                  <CardDescription>Horizontal tool palette for working surfaces.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Menubar>
@@ -1072,11 +963,10 @@ function App() {
 
           <Section title="Data display & feedback">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Tables, badges, avatars, and progress follow the surface rules:
-              content stays on{" "}
-              <code className="font-mono text-sm">bg-surface-overlay</code>,
-              status colors are service hues, and Toast visibility is announced
-              via Sonner's polite/assertive live regions.
+              Tables, badges, avatars, and progress follow the surface rules: content stays on{' '}
+              <code className="font-mono text-sm">bg-surface-overlay</code>, status colors are
+              service hues, and Toast visibility is announced via Sonner's polite/assertive live
+              regions.
             </p>
 
             <Card className="mb-6">
@@ -1108,9 +998,7 @@ function App() {
                       <TableCell>
                         <Badge variant="service-preparing">Preparing</Badge>
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-ink-muted">
-                        4m
-                      </TableCell>
+                      <TableCell className="text-ink-muted font-mono text-xs">4m</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-mono text-sm">#1285</TableCell>
@@ -1118,9 +1006,7 @@ function App() {
                       <TableCell>
                         <Badge variant="service-ready">Ready</Badge>
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-ink-muted">
-                        8m
-                      </TableCell>
+                      <TableCell className="text-ink-muted font-mono text-xs">8m</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-mono text-sm">#1286</TableCell>
@@ -1128,22 +1014,18 @@ function App() {
                       <TableCell>
                         <Badge variant="service-new">New</Badge>
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-ink-muted">
-                        1m
-                      </TableCell>
+                      <TableCell className="text-ink-muted font-mono text-xs">1m</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-6">
+            <div className="mb-6 grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Badge</CardTitle>
-                  <CardDescription>
-                    Service hues follow the StatusPill tint rule.
-                  </CardDescription>
+                  <CardDescription>Service hues follow the StatusPill tint rule.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
@@ -1153,7 +1035,7 @@ function App() {
                     <Badge variant="destructive">Destructive</Badge>
                     <Badge variant="neutral">Neutral</Badge>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <Badge variant="service-new">New</Badge>
                     <Badge variant="service-acknowledged">Acknowledged</Badge>
                     <Badge variant="service-preparing">Preparing</Badge>
@@ -1190,22 +1072,16 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Progress</CardTitle>
-                  <CardDescription>
-                    Determinate and indeterminate states.
-                  </CardDescription>
+                  <CardDescription>Determinate and indeterminate states.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-3">
                     <div>
-                      <p className="text-ink-muted text-xs mb-1">
-                        Prep progress — 64%
-                      </p>
+                      <p className="text-ink-muted mb-1 text-xs">Prep progress — 64%</p>
                       <Progress value={64} aria-label="Prep progress" />
                     </div>
                     <div>
-                      <p className="text-ink-muted text-xs mb-1">
-                        Syncing — indeterminate
-                      </p>
+                      <p className="text-ink-muted mb-1 text-xs">Syncing — indeterminate</p>
                       <Progress aria-valuetext="Loading" aria-label="Syncing" />
                     </div>
                   </div>
@@ -1229,33 +1105,25 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Toast (Sonner)</CardTitle>
-                  <CardDescription>
-                    Polite and assertive live regions.
-                  </CardDescription>
+                  <CardDescription>Polite and assertive live regions.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => toast.success("Order marked ready.")}
-                    >
+                    <Button variant="outline" onClick={() => toast.success('Order marked ready.')}>
                       Success
                     </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => toast.info("Sync started.")}
-                    >
+                    <Button variant="outline" onClick={() => toast.info('Sync started.')}>
                       Info
                     </Button>
                     <Button
                       variant="outline"
-                      onClick={() => toast.warning("Kitchen load is high.")}
+                      onClick={() => toast.warning('Kitchen load is high.')}
                     >
                       Warning
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => toast.error("Failed to save changes.")}
+                      onClick={() => toast.error('Failed to save changes.')}
                     >
                       Error
                     </Button>
@@ -1267,14 +1135,12 @@ function App() {
 
           <Section title="Overlay primitives">
             <p className="text-ink-muted m-0 mb-6 max-w-2xl leading-relaxed">
-              Overlays trap focus, escape to close, and return focus to the
-              trigger. Body scroll is locked while a modal is open. Tooltip is
-              mounted via{" "}
-              <code className="font-mono text-sm">TooltipProvider</code> with a
-              200ms hover delay.
+              Overlays trap focus, escape to close, and return focus to the trigger. Body scroll is
+              locked while a modal is open. Tooltip is mounted via{' '}
+              <code className="font-mono text-sm">TooltipProvider</code> with a 200ms hover delay.
             </p>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Tooltip</CardTitle>
@@ -1293,9 +1159,7 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>Popover</CardTitle>
-                  <CardDescription>
-                    Lightweight anchored surface.
-                  </CardDescription>
+                  <CardDescription>Lightweight anchored surface.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Popover>
@@ -1304,12 +1168,9 @@ function App() {
                     </PopoverTrigger>
                     <PopoverContent>
                       <div className="grid gap-2">
-                        <h4 className="font-medium text-ink leading-none">
-                          Station details
-                        </h4>
-                        <p className="text-sm text-ink-muted">
-                          Tilled Teal means calm; Saffron Amber approaches the
-                          deadline.
+                        <h4 className="text-ink leading-none font-medium">Station details</h4>
+                        <p className="text-ink-muted text-sm">
+                          Tilled Teal means calm; Saffron Amber approaches the deadline.
                         </p>
                       </div>
                     </PopoverContent>
@@ -1333,16 +1194,14 @@ function App() {
                       <DropdownMenuItem>Mark preparing</DropdownMenuItem>
                       <DropdownMenuItem>Mark ready</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="destructive">
-                        Cancel order
-                      </DropdownMenuItem>
+                      <DropdownMenuItem variant="destructive">Cancel order</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] mb-8">
+            <div className="mb-8 grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Dialog</CardTitle>
@@ -1356,13 +1215,10 @@ function App() {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Edit order #1284</DialogTitle>
-                        <DialogDescription>
-                          Changes are sent back to the kitchen.
-                        </DialogDescription>
+                        <DialogDescription>Changes are sent back to the kitchen.</DialogDescription>
                       </DialogHeader>
-                      <p className="text-sm text-ink-muted">
-                        The form lives inside the dialog body. The close button
-                        is in the top-right.
+                      <p className="text-ink-muted text-sm">
+                        The form lives inside the dialog body. The close button is in the top-right.
                       </p>
                     </DialogContent>
                   </Dialog>
@@ -1386,7 +1242,7 @@ function App() {
                           Use for navigation drawers and detail drill-downs.
                         </SheetDescription>
                       </SheetHeader>
-                      <p className="text-sm text-ink-muted px-4">
+                      <p className="text-ink-muted px-4 text-sm">
                         Content fills the sheet; the close button is top-right.
                       </p>
                     </SheetContent>
@@ -1397,9 +1253,7 @@ function App() {
               <Card>
                 <CardHeader>
                   <CardTitle>AlertDialog</CardTitle>
-                  <CardDescription>
-                    For destructive or irreversible actions.
-                  </CardDescription>
+                  <CardDescription>For destructive or irreversible actions.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <AlertDialog>
@@ -1410,8 +1264,8 @@ function App() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Cancel order #1284?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This cannot be undone. The kitchen will be notified
-                          and the ticket will close.
+                          This cannot be undone. The kitchen will be notified and the ticket will
+                          close.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -1430,7 +1284,7 @@ function App() {
                 <CardDescription>Fast search palette (⌘K).</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="rounded-xl border border-border-subtle overflow-hidden">
+                <div className="border-border-subtle overflow-hidden rounded-xl border">
                   <Command className="max-w-md">
                     <CommandInput placeholder="Search orders, staff, settings…" />
                     <CommandList>
@@ -1457,18 +1311,10 @@ function App() {
 
 export default App;
 
-function SelectionCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function SelectionCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="bg-surface-elevated border border-border-strong p-5 rounded-xl">
-      <h3 className="text-primary text-sm font-bold m-0 mb-4 uppercase tracking-wider">
-        {title}
-      </h3>
+    <div className="bg-surface-elevated border-border-strong rounded-xl border p-5">
+      <h3 className="text-primary m-0 mb-4 text-sm font-bold tracking-wider uppercase">{title}</h3>
       {children}
     </div>
   );
@@ -1481,11 +1327,9 @@ function SelectionCard({
  * change plus the `aria-invalid` + `aria-describedby` wiring.
  */
 const orderSchema = z.object({
-  customerName: z
-    .string()
-    .min(2, "Customer name must be at least 2 characters."),
-  email: z.string().email("Enter a valid email address."),
-  notes: z.string().max(280, "Keep notes under 280 characters.").optional(),
+  customerName: z.string().min(2, 'Customer name must be at least 2 characters.'),
+  email: z.string().email('Enter a valid email address.'),
+  notes: z.string().max(280, 'Keep notes under 280 characters.').optional(),
 });
 
 type OrderInput = z.infer<typeof orderSchema>;
@@ -1493,7 +1337,7 @@ type OrderInput = z.infer<typeof orderSchema>;
 function FormShowcase() {
   const [submitted, setSubmitted] = useState<OrderInput | null>(null);
   const form = useZodForm(orderSchema, {
-    defaultValues: { customerName: "", email: "", notes: "" },
+    defaultValues: { customerName: '', email: '', notes: '' },
   });
 
   function onSubmit(values: OrderInput) {
@@ -1507,23 +1351,16 @@ function FormShowcase() {
   }
 
   return (
-    <div className="bg-surface-elevated border border-border-strong p-6 rounded-xl">
-      <h3 className="text-primary text-base font-bold m-0 mb-1">
-        Form + FormField (RHF + Zod)
-      </h3>
-      <p className="text-ink-muted text-sm m-0 mb-4">
-        <code className="font-mono">useZodForm(orderSchema)</code> — fields are
-        typed from the Zod schema;{" "}
-        <code className="font-mono">FormMessage</code> replaces{" "}
-        <code className="font-mono">FormDescription</code> visually when the
-        field is invalid.
+    <div className="bg-surface-elevated border-border-strong rounded-xl border p-6">
+      <h3 className="text-primary m-0 mb-1 text-base font-bold">Form + FormField (RHF + Zod)</h3>
+      <p className="text-ink-muted m-0 mb-4 text-sm">
+        <code className="font-mono">useZodForm(orderSchema)</code> — fields are typed from the Zod
+        schema; <code className="font-mono">FormMessage</code> replaces{' '}
+        <code className="font-mono">FormDescription</code> visually when the field is invalid.
       </p>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
-          className="grid gap-4"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="grid gap-4">
           <FormField
             control={form.control}
             name="customerName"
@@ -1531,15 +1368,9 @@ function FormShowcase() {
               <FormItem>
                 <FormLabel>Customer name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Jane Doe"
-                    autoComplete="name"
-                    {...field}
-                  />
+                  <Input placeholder="Jane Doe" autoComplete="name" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Visible on the receipt and the KDS ticket.
-                </FormDescription>
+                <FormDescription>Visible on the receipt and the KDS ticket.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -1559,9 +1390,7 @@ function FormShowcase() {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  Used for the digital receipt only.
-                </FormDescription>
+                <FormDescription>Used for the digital receipt only.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -1597,22 +1426,18 @@ function FormShowcase() {
                 // Pre-fill invalid values and force validation so the
                 // FormMessage + danger-ring + danger-label contract is
                 // visible without the user having to type first.
-                form.setValue("customerName", "A", { shouldValidate: false });
-                form.setValue("email", "not-an-email", {
+                form.setValue('customerName', 'A', { shouldValidate: false });
+                form.setValue('email', 'not-an-email', {
                   shouldValidate: false,
                 });
-                form.setValue("notes", "", { shouldValidate: false });
+                form.setValue('notes', '', { shouldValidate: false });
                 void form.trigger();
               }}
             >
               Show error state
             </Button>
             {submitted && (
-              <span
-                className="text-success text-sm font-medium"
-                role="status"
-                aria-live="polite"
-              >
+              <span className="text-success text-sm font-medium" role="status" aria-live="polite">
                 Submitted ✓
               </span>
             )}

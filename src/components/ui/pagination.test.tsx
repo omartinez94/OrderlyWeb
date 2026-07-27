@@ -19,7 +19,7 @@ describe('Pagination', () => {
             <PaginationLink href="#">1</PaginationLink>
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination>,
     );
     expect(screen.getByLabelText('pagination')).toBeInTheDocument();
   });
@@ -37,7 +37,7 @@ describe('Pagination', () => {
             </PaginationLink>
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination>,
     );
     const link = screen.getByText('2').closest('a');
     expect(link).toHaveAttribute('aria-current', 'page');
@@ -54,14 +54,10 @@ describe('Pagination', () => {
             <PaginationNext href="#" />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination>,
     );
-    expect(
-      screen.getByRole('link', { name: 'Go to previous page' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'Go to next page' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Go to previous page' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Go to next page' })).toBeInTheDocument();
   });
 
   it('passes axe', async () => {
@@ -83,7 +79,7 @@ describe('Pagination', () => {
             <PaginationNext href="#" />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

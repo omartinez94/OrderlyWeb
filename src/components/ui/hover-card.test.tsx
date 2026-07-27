@@ -11,7 +11,7 @@ describe('HoverCard', () => {
       <HoverCard open>
         <HoverCardTrigger>Hover me</HoverCardTrigger>
         <HoverCardContent>Bio content</HoverCardContent>
-      </HoverCard>
+      </HoverCard>,
     );
     await user.hover(screen.getByText('Hover me'));
     expect(await screen.findByText('Bio content')).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('HoverCard', () => {
       <HoverCard open>
         <HoverCardTrigger>Hover me</HoverCardTrigger>
         <HoverCardContent>Bio content</HoverCardContent>
-      </HoverCard>
+      </HoverCard>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

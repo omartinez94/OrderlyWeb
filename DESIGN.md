@@ -2,112 +2,112 @@
 name: Orderly Admin Panel
 description: A staff-facing operations console for restaurant teams — real-time, role-based, three-zone.
 colors:
-  primary: "#1F4254"
-  primary-hover: "#16303D"
-  primary-foreground: "#FFFFFF"
-  accent: "#F26A3A"
-  accent-hover: "#D8582C"
-  accent-foreground: "#FFFFFF"
-  ink: "#0E141A"
-  ink-muted: "#4A5560"
-  ink-subtle: "#7A8590"
-  surface: "#EFF1ED"
-  surface-elevated: "#F6F8F4"
-  surface-overlay: "#FFFFFF"
-  border-subtle: "#D8DED5"
-  border-strong: "#B8C0B2"
-  service-deep: "#1F4254"
-  service-teal: "#4A8B98"
-  service-aqua: "#7AB89E"
-  service-amber: "#E8A340"
-  service-tangerine: "#F26A3A"
-  success: "#4A8870"
-  warning: "#E8A340"
-  danger: "#C84A3A"
-  info: "#4A8B98"
+  primary: '#1F4254'
+  primary-hover: '#16303D'
+  primary-foreground: '#FFFFFF'
+  accent: '#F26A3A'
+  accent-hover: '#D8582C'
+  accent-foreground: '#FFFFFF'
+  ink: '#0E141A'
+  ink-muted: '#4A5560'
+  ink-subtle: '#7A8590'
+  surface: '#EFF1ED'
+  surface-elevated: '#F6F8F4'
+  surface-overlay: '#FFFFFF'
+  border-subtle: '#D8DED5'
+  border-strong: '#B8C0B2'
+  service-deep: '#1F4254'
+  service-teal: '#4A8B98'
+  service-aqua: '#7AB89E'
+  service-amber: '#E8A340'
+  service-tangerine: '#F26A3A'
+  success: '#4A8870'
+  warning: '#E8A340'
+  danger: '#C84A3A'
+  info: '#4A8B98'
 typography:
   display:
     fontFamily: "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
-    fontSize: "clamp(2.5rem, 5vw, 3rem)"
+    fontSize: 'clamp(2.5rem, 5vw, 3rem)'
     fontWeight: 800
     lineHeight: 1.1
-    letterSpacing: "-0.02em"
+    letterSpacing: '-0.02em'
   headline:
     fontFamily: "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
-    fontSize: "1.5rem"
+    fontSize: '1.5rem'
     fontWeight: 700
     lineHeight: 1.2
-    letterSpacing: "-0.01em"
+    letterSpacing: '-0.01em'
   title:
     fontFamily: "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
-    fontSize: "1.125rem"
+    fontSize: '1.125rem'
     fontWeight: 700
     lineHeight: 1.3
   body:
     fontFamily: "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
-    fontSize: "0.875rem"
+    fontSize: '0.875rem'
     fontWeight: 400
     lineHeight: 1.55
   label:
     fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
-    fontSize: "0.75rem"
+    fontSize: '0.75rem'
     fontWeight: 600
     lineHeight: 1.2
-    letterSpacing: "0.04em"
+    letterSpacing: '0.04em'
 rounded:
-  control: "8px"
-  card: "12px"
-  panel: "16px"
-  pill: "999px"
+  control: '8px'
+  card: '12px'
+  panel: '16px'
+  pill: '999px'
 spacing:
-  control-y: "0.75rem"
-  control-x: "1.5rem"
-  card: "1.5rem"
-  panel: "2rem"
-  section: "2.5rem"
-  grid-gap: "1rem"
+  control-y: '0.75rem'
+  control-x: '1.5rem'
+  card: '1.5rem'
+  panel: '2rem'
+  section: '2.5rem'
+  grid-gap: '1rem'
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-foreground}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "{spacing.control-y} {spacing.control-x}"
+    backgroundColor: '{colors.primary}'
+    textColor: '{colors.primary-foreground}'
+    typography: '{typography.label}'
+    rounded: '{rounded.control}'
+    padding: '{spacing.control-y} {spacing.control-x}'
   button-accent:
-    backgroundColor: "{colors.accent}"
-    textColor: "{colors.accent-foreground}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "{spacing.control-y} {spacing.control-x}"
+    backgroundColor: '{colors.accent}'
+    textColor: '{colors.accent-foreground}'
+    typography: '{typography.label}'
+    rounded: '{rounded.control}'
+    padding: '{spacing.control-y} {spacing.control-x}'
   button-outline:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "{spacing.control-y} {spacing.control-x}"
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink}'
+    typography: '{typography.label}'
+    rounded: '{rounded.control}'
+    padding: '{spacing.control-y} {spacing.control-x}'
   button-ghost:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-muted}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "{spacing.control-y} {spacing.control-x}"
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink-muted}'
+    typography: '{typography.label}'
+    rounded: '{rounded.control}'
+    padding: '{spacing.control-y} {spacing.control-x}'
   status-pill:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "0.25rem 0.7rem"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    typography: '{typography.label}'
+    rounded: '{rounded.pill}'
+    padding: '0.25rem 0.7rem'
   card-surface:
-    backgroundColor: "{colors.surface-elevated}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.card}"
-    padding: "{spacing.card}"
+    backgroundColor: '{colors.surface-elevated}'
+    textColor: '{colors.ink}'
+    typography: '{typography.body}'
+    rounded: '{rounded.card}'
+    padding: '{spacing.card}'
   theme-toggle:
-    backgroundColor: "{colors.surface-elevated}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.control}"
-    size: "2.25rem"
+    backgroundColor: '{colors.surface-elevated}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.control}'
+    size: '2.25rem'
 ---
 
 # Design System: Orderly Admin Panel

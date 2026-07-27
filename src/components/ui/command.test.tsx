@@ -22,7 +22,7 @@ function renderCommand() {
           <CommandItem>Order #1285</CommandItem>
         </CommandGroup>
       </CommandList>
-    </Command>
+    </Command>,
   );
 }
 

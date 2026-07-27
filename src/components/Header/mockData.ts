@@ -5,11 +5,7 @@
  * wiring layer lands.
  */
 
-import type {
-  AppNotification,
-  CurrentUser,
-  Restaurant,
-} from './types';
+import type { AppNotification, CurrentUser, Restaurant } from './types';
 
 export const MOCK_CURRENT_USER: CurrentUser = {
   id: 'u-1024',

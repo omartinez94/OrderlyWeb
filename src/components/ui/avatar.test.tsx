@@ -8,7 +8,7 @@ describe('Avatar', () => {
     render(
       <Avatar>
         <AvatarFallback>JD</AvatarFallback>
-      </Avatar>
+      </Avatar>,
     );
     expect(screen.getByText('JD')).toBeInTheDocument();
   });
@@ -16,12 +16,9 @@ describe('Avatar', () => {
   it('renders the alt attribute on the image element', () => {
     render(
       <Avatar>
-        <AvatarImage
-          src="data:image/svg+xml;utf8,<svg/>"
-          alt="Jane Doe"
-        />
+        <AvatarImage src="data:image/svg+xml;utf8,<svg/>" alt="Jane Doe" />
         <AvatarFallback>JD</AvatarFallback>
-      </Avatar>
+      </Avatar>,
     );
     // Radix Avatar swaps to the Fallback until the image reports
     // `loaded`; in jsdom a data URL never resolves. We assert the
@@ -33,7 +30,7 @@ describe('Avatar', () => {
     const { container } = render(
       <Avatar aria-label="Jane Doe">
         <AvatarFallback>JD</AvatarFallback>
-      </Avatar>
+      </Avatar>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

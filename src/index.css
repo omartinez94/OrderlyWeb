@@ -107,39 +107,39 @@
 
 :root {
   /* --- Brand: primary (deep blue-teal) --- */
-  --color-primary: #1F4254;
-  --color-primary-hover: #16303D;
-  --color-primary-foreground: #FFFFFF;
+  --color-primary: #1f4254;
+  --color-primary-hover: #16303d;
+  --color-primary-foreground: #ffffff;
 
   /* --- Brand: accent (tangerine) --- */
-  --color-accent: #F26A3A;
-  --color-accent-hover: #D8582C;
-  --color-accent-foreground: #FFFFFF;
+  --color-accent: #f26a3a;
+  --color-accent-hover: #d8582c;
+  --color-accent-foreground: #ffffff;
 
   /* --- Neutral: ink (near-black text) --- */
-  --color-ink: #0E141A;
-  --color-ink-muted: #4A5560;
-  --color-ink-subtle: #7A8590;
+  --color-ink: #0e141a;
+  --color-ink-muted: #4a5560;
+  --color-ink-subtle: #7a8590;
 
   /* --- Neutral: surface (sage-tinted page bg) --- */
-  --color-surface: #EFF1ED;
-  --color-surface-elevated: #F6F8F4;
-  --color-surface-overlay: #FFFFFF;
-  --color-border-subtle: #D8DED5;
-  --color-border-strong: #B8C0B2;
+  --color-surface: #eff1ed;
+  --color-surface-elevated: #f6f8f4;
+  --color-surface-overlay: #ffffff;
+  --color-border-subtle: #d8ded5;
+  --color-border-strong: #b8c0b2;
 
   /* --- Service hues (5 stops; the gradient uses 3 of them — see below) --- */
-  --color-service-deep: #1F4254;
-  --color-service-teal: #4A8B98;
-  --color-service-aqua: #7AB89E;
-  --color-service-amber: #E8A340;
-  --color-service-tangerine: #F26A3A;
+  --color-service-deep: #1f4254;
+  --color-service-teal: #4a8b98;
+  --color-service-aqua: #7ab89e;
+  --color-service-amber: #e8a340;
+  --color-service-tangerine: #f26a3a;
 
   /* --- Semantic states --- */
-  --color-success: #4A8870;
-  --color-warning: #E8A340;
-  --color-danger: #C84A3A;
-  --color-info: #4A8B98;
+  --color-success: #4a8870;
+  --color-warning: #e8a340;
+  --color-danger: #c84a3a;
+  --color-info: #4a8b98;
 
   /* --- Gradients: 3 colors max each, two flows --- */
   /* Cool side: order received flow (deep → teal → aqua) */
@@ -157,11 +157,7 @@
     var(--color-service-tangerine) 100%
   );
   /* Brand signature gradient — primary → accent */
-  --gradient-primary: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-accent) 100%
-  );
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
 
   /* --- Glows --- */
   --shadow-glow-primary: 0 0 16px rgba(31, 66, 84, 0.25);
@@ -177,7 +173,8 @@
    *                   counters, any value that reads as measurement.
    * Each family has a system-sans / system-mono fallback so the app
    * stays usable while the webfont is still loading. */
-  --font-display: 'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display:
+    'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
@@ -209,19 +206,19 @@
 
 [data-theme='dark'] {
   /* --- Brand: primary (lifted blue-teal) --- */
-  --color-primary: #4A8B98;
-  --color-primary-hover: #5FA0AE;
-  --color-primary-foreground: #0E141A;
+  --color-primary: #4a8b98;
+  --color-primary-hover: #5fa0ae;
+  --color-primary-foreground: #0e141a;
 
   /* --- Brand: accent (lifted tangerine) --- */
-  --color-accent: #FF8A5A;
-  --color-accent-hover: #FFA478;
-  --color-accent-foreground: #0E141A;
+  --color-accent: #ff8a5a;
+  --color-accent-hover: #ffa478;
+  --color-accent-foreground: #0e141a;
 
   /* --- Neutral: ink (light text in dark) --- */
-  --color-ink: #ECF0F2;
-  --color-ink-muted: #A8B2BC;
-  --color-ink-subtle: #6E7984;
+  --color-ink: #ecf0f2;
+  --color-ink-muted: #a8b2bc;
+  --color-ink-subtle: #6e7984;
 
   /* --- Neutral: surface tier rhythm ---
    * Each tier must clear a 6–8% luminance step so the
@@ -233,24 +230,24 @@
    * Previously the three tiers were within ~5% of each other,
    * which collapsed Card hierarchy in dark. The new values
    * restore the contrast that the Quiet Workshop rule requires. */
-  --color-surface: #0E141A;
-  --color-surface-elevated: #1A2530;
-  --color-surface-overlay: #232F3D;
-  --color-border-subtle: #1F2A33;
-  --color-border-strong: #2F3D48;
+  --color-surface: #0e141a;
+  --color-surface-elevated: #1a2530;
+  --color-surface-overlay: #232f3d;
+  --color-border-subtle: #1f2a33;
+  --color-border-strong: #2f3d48;
 
   /* --- Service hues (lifted for dark contrast) --- */
-  --color-service-deep: #4A8B98;
-  --color-service-teal: #6BA5B0;
-  --color-service-aqua: #98C9B0;
-  --color-service-amber: #F0B560;
-  --color-service-tangerine: #FF8A5A;
+  --color-service-deep: #4a8b98;
+  --color-service-teal: #6ba5b0;
+  --color-service-aqua: #98c9b0;
+  --color-service-amber: #f0b560;
+  --color-service-tangerine: #ff8a5a;
 
   /* --- Semantic states --- */
-  --color-success: #6BA88E;
-  --color-warning: #F0B560;
-  --color-danger: #E87060;
-  --color-info: #6BA5B0;
+  --color-success: #6ba88e;
+  --color-warning: #f0b560;
+  --color-danger: #e87060;
+  --color-info: #6ba5b0;
 
   /* --- Glows (stronger in dark for the KDS effect) --- */
   --shadow-glow-primary: 0 0 20px rgba(74, 139, 152, 0.45);

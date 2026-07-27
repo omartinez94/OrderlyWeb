@@ -2,11 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from './collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './collapsible';
 
 describe('Collapsible', () => {
   it('reveals content on trigger click', async () => {
@@ -14,7 +10,7 @@ describe('Collapsible', () => {
       <Collapsible>
         <CollapsibleTrigger>Show</CollapsibleTrigger>
         <CollapsibleContent>Hidden body</CollapsibleContent>
-      </Collapsible>
+      </Collapsible>,
     );
     const trigger = screen.getByRole('button', { name: 'Show' });
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -28,7 +24,7 @@ describe('Collapsible', () => {
       <Collapsible>
         <CollapsibleTrigger>Show</CollapsibleTrigger>
         <CollapsibleContent>Hidden body</CollapsibleContent>
-      </Collapsible>
+      </Collapsible>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

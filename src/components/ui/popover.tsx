@@ -17,15 +17,11 @@ import { cn } from '@/lib/utils';
  * to the trigger.
  */
 
-function Popover({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
-function PopoverTrigger({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
 }
 
@@ -49,7 +45,7 @@ function PopoverContent({
           'data-[side=top]:slide-in-from-bottom-2',
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-          className
+          className,
         )}
         {...props}
       />
@@ -57,16 +53,11 @@ function PopoverContent({
   );
 }
 
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+function PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
 }
 
-function PopoverHeader({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function PopoverHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="popover-header"
@@ -76,29 +67,15 @@ function PopoverHeader({
   );
 }
 
-function PopoverTitle({
-  className,
-  ...props
-}: React.ComponentProps<'h2'>) {
+function PopoverTitle({ className, ...props }: React.ComponentProps<'h2'>) {
   return (
-    <div
-      data-slot="popover-title"
-      className={cn('font-medium text-ink', className)}
-      {...props}
-    />
+    <div data-slot="popover-title" className={cn('font-medium text-ink', className)} {...props} />
   );
 }
 
-function PopoverDescription({
-  className,
-  ...props
-}: React.ComponentProps<'p'>) {
+function PopoverDescription({ className, ...props }: React.ComponentProps<'p'>) {
   return (
-    <p
-      data-slot="popover-description"
-      className={cn('text-ink-muted', className)}
-      {...props}
-    />
+    <p data-slot="popover-description" className={cn('text-ink-muted', className)} {...props} />
   );
 }
 

@@ -14,7 +14,7 @@ describe('Popover', () => {
           <Button>Open</Button>
         </PopoverTrigger>
         <PopoverContent>Hello world</PopoverContent>
-      </Popover>
+      </Popover>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     expect(await screen.findByText('Hello world')).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('Popover', () => {
           <Button>Open</Button>
         </PopoverTrigger>
         <PopoverContent>Body</PopoverContent>
-      </Popover>
+      </Popover>,
     );
     const trigger = screen.getByRole('button', { name: 'Open' });
     await user.click(trigger);
@@ -44,7 +44,7 @@ describe('Popover', () => {
           <Button>Open</Button>
         </PopoverTrigger>
         <PopoverContent>Body</PopoverContent>
-      </Popover>
+      </Popover>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     const results = await axe(container);

@@ -11,7 +11,7 @@ describe('Switch', () => {
       <>
         <Label htmlFor="s1">Notifications</Label>
         <Switch id="s1" />
-      </>
+      </>,
     );
     const sw = screen.getByLabelText('Notifications');
     expect(sw).toHaveAttribute('data-state', 'unchecked');
@@ -24,7 +24,7 @@ describe('Switch', () => {
       <>
         <Label htmlFor="s2">Kbd</Label>
         <Switch id="s2" />
-      </>
+      </>,
     );
     const sw = screen.getByLabelText('Kbd');
     sw.focus();
@@ -37,14 +37,14 @@ describe('Switch', () => {
       <>
         <Label htmlFor="sa1">A</Label>
         <Switch id="sa1" />
-      </>
+      </>,
     );
     expect(await axe(container)).toHaveNoViolations();
     rerender(
       <>
         <Label htmlFor="sa1">A</Label>
         <Switch id="sa1" defaultChecked />
-      </>
+      </>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

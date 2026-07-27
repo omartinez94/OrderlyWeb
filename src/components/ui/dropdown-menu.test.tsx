@@ -25,7 +25,7 @@ describe('DropdownMenu', () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem>Mark ready</DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     expect(await screen.findByText('Mark ready')).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('DropdownMenu', () => {
         <DropdownMenuContent>
           <DropdownMenuItem>Mark ready</DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu>,
     );
     const trigger = screen.getByRole('button', { name: 'Open' });
     await user.click(trigger);
@@ -59,7 +59,7 @@ describe('DropdownMenu', () => {
         <DropdownMenuContent>
           <DropdownMenuItem>Mark ready</DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu>,
     );
     await user.click(screen.getByRole('button', { name: 'Open' }));
     const results = await axe(container);

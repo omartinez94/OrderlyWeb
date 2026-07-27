@@ -2,12 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from './accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion';
 
 describe('Accordion', () => {
   it('expands a panel on click', async () => {
@@ -21,7 +16,7 @@ describe('Accordion', () => {
           <AccordionTrigger>Section B</AccordionTrigger>
           <AccordionContent>Content B</AccordionContent>
         </AccordionItem>
-      </Accordion>
+      </Accordion>,
     );
     const trigger = screen.getByRole('button', { name: 'Section A' });
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -37,7 +32,7 @@ describe('Accordion', () => {
           <AccordionTrigger>Section A</AccordionTrigger>
           <AccordionContent>Content A</AccordionContent>
         </AccordionItem>
-      </Accordion>
+      </Accordion>,
     );
     expect(await axe(a.container)).toHaveNoViolations();
     a.unmount();
@@ -47,7 +42,7 @@ describe('Accordion', () => {
           <AccordionTrigger>Section A</AccordionTrigger>
           <AccordionContent>Content A</AccordionContent>
         </AccordionItem>
-      </Accordion>
+      </Accordion>,
     );
     expect(await axe(b.container)).toHaveNoViolations();
   });

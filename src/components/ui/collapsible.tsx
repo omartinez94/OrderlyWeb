@@ -13,32 +13,20 @@ import { Collapsible as CollapsiblePrimitive } from 'radix-ui';
  *   - Space/Enter on the trigger toggles the content.
  *   - `aria-expanded` is owned by Radix.
  */
-function Collapsible({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
+function Collapsible({ ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
   return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />;
 }
 
 function CollapsibleTrigger({
   ...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
-  return (
-    <CollapsiblePrimitive.CollapsibleTrigger
-      data-slot="collapsible-trigger"
-      {...props}
-    />
-  );
+  return <CollapsiblePrimitive.CollapsibleTrigger data-slot="collapsible-trigger" {...props} />;
 }
 
 function CollapsibleContent({
   ...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
-  return (
-    <CollapsiblePrimitive.CollapsibleContent
-      data-slot="collapsible-content"
-      {...props}
-    />
-  );
+  return <CollapsiblePrimitive.CollapsibleContent data-slot="collapsible-content" {...props} />;
 }
 
 export { Collapsible, CollapsibleTrigger, CollapsibleContent };

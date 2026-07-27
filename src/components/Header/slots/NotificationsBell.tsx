@@ -41,9 +41,7 @@ export function NotificationsBell({
       <PopoverButton
         className="ds-bell"
         aria-label={
-          unreadCount === 0
-            ? 'Notifications, none unread'
-            : `Notifications, ${unreadCount} unread`
+          unreadCount === 0 ? 'Notifications, none unread' : `Notifications, ${unreadCount} unread`
         }
       >
         <svg
@@ -66,11 +64,7 @@ export function NotificationsBell({
           </span>
         )}
       </PopoverButton>
-      <PopoverPanel
-        className="ds-notifications-popover"
-        anchor="bottom end"
-        transition
-      >
+      <PopoverPanel className="ds-notifications-popover" anchor="bottom end" transition>
         <div className="ds-notifications-popover__header">
           <span>Notifications</span>
           {unreadCount > 0 && (
@@ -122,9 +116,7 @@ export function NotificationsBell({
                   )}
                   <span>{n.title}</span>
                 </div>
-                <div className="ds-notifications-popover__item-body">
-                  {n.body}
-                </div>
+                <div className="ds-notifications-popover__item-body">{n.body}</div>
                 <div className="ds-notifications-popover__item-time">
                   {relativeTime(n.timestamp)}
                 </div>

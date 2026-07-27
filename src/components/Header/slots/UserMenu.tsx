@@ -10,10 +10,7 @@ export interface UserMenuProps {
 export function UserMenu({ user, onProfile, onLogout }: UserMenuProps) {
   return (
     <Menu>
-      <MenuButton
-        className="ds-user-button"
-        aria-label={`Account menu for ${user.name}`}
-      >
+      <MenuButton className="ds-user-button" aria-label={`Account menu for ${user.name}`}>
         <span className="ds-user-avatar">{user.initials}</span>
       </MenuButton>
       <MenuItems className="ds-user-menu" anchor="bottom end" transition>
@@ -56,8 +53,7 @@ export function UserMenu({ user, onProfile, onLogout }: UserMenuProps) {
               style={
                 focus
                   ? {
-                      backgroundColor:
-                        'color-mix(in srgb, var(--color-danger) 8%, transparent)',
+                      backgroundColor: 'color-mix(in srgb, var(--color-danger) 8%, transparent)',
                     }
                   : undefined
               }

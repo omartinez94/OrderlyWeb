@@ -18,7 +18,7 @@ describe('Tooltip', () => {
           <Button>Hover</Button>
         </TooltipTrigger>
         <TooltipContent>Helpful text</TooltipContent>
-      </Tooltip>
+      </Tooltip>,
     );
     await user.hover(screen.getByRole('button', { name: 'Hover' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Helpful text');
@@ -34,7 +34,7 @@ describe('Tooltip', () => {
         <TooltipContent>
           <button type="button">Inner button</button>
         </TooltipContent>
-      </Tooltip>
+      </Tooltip>,
     );
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
@@ -47,7 +47,7 @@ describe('Tooltip', () => {
           <Button>Trigger</Button>
         </TooltipTrigger>
         <TooltipContent>Helpful text</TooltipContent>
-      </Tooltip>
+      </Tooltip>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

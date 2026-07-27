@@ -16,21 +16,12 @@ import { cn } from '@/lib/utils';
  * 200ms hover delay; Esc closes; focus is NOT trapped.
  */
 
-function HoverCard({
-  ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
+function HoverCard({ ...props }: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
   return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />;
 }
 
-function HoverCardTrigger({
-  ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) {
-  return (
-    <HoverCardPrimitive.Trigger
-      data-slot="hover-card-trigger"
-      {...props}
-    />
-  );
+function HoverCardTrigger({ ...props }: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) {
+  return <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />;
 }
 
 function HoverCardContent({
@@ -49,7 +40,7 @@ function HoverCardContent({
           'z-50 w-72 rounded-lg border border-border-subtle bg-popover p-4 text-ink shadow-md outline-hidden',
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-          className
+          className,
         )}
         {...props}
       />

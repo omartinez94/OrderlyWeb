@@ -33,27 +33,15 @@ function TooltipProvider({
   );
 }
 
-function Tooltip({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
 
-function TooltipTrigger({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
-const INTERACTIVE_TAGS = new Set([
-  'a',
-  'button',
-  'input',
-  'select',
-  'textarea',
-  'audio',
-  'video',
-]);
+const INTERACTIVE_TAGS = new Set(['a', 'button', 'input', 'select', 'textarea', 'audio', 'video']);
 
 function TooltipContent({
   className,
@@ -74,7 +62,7 @@ function TooltipContent({
       if (tag && INTERACTIVE_TAGS.has(tag)) {
         // eslint-disable-next-line no-console
         console.warn(
-          '[Tooltip] interactive child detected. Tooltip content must be plain text — use Popover for interactive content.'
+          '[Tooltip] interactive child detected. Tooltip content must be plain text — use Popover for interactive content.',
         );
       }
     });
@@ -94,12 +82,12 @@ function TooltipContent({
           'data-[side=top]:slide-in-from-bottom-2',
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-          className
+          className,
         )}
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-ink fill-ink" />
+        <TooltipPrimitive.Arrow className="bg-ink fill-ink z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

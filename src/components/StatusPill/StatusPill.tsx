@@ -14,13 +14,7 @@ import './StatusPill.css';
  * Background uses a 10% tint of the service color so the dot/pill pair
  * reads as the same family without the pill competing with surrounding UI.
  */
-export type OrderStatus =
-  | 'new'
-  | 'acknowledged'
-  | 'preparing'
-  | 'plating'
-  | 'ready'
-  | 'served';
+export type OrderStatus = 'new' | 'acknowledged' | 'preparing' | 'plating' | 'ready' | 'served';
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
   new: 'New',

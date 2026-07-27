@@ -8,6 +8,7 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
 ## Site font
+
 [Fontsource - MuseoModerno](https://fontsource.org/fonts/museomoderno)
 For titles and any text that should contrast with body (display, headline, title).
 [Fontsource - Urbanist](https://fontsource.org/fonts/urbanist)

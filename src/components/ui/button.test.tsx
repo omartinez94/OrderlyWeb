@@ -19,7 +19,7 @@ describe('Button', () => {
     render(
       <form>
         <Button>Submit</Button>
-      </form>
+      </form>,
     );
     expect(screen.getByRole('button')).toHaveAttribute('type', 'button');
   });
@@ -62,7 +62,7 @@ describe('Button', () => {
       const { container, unmount } = render(
         <Button size={size} aria-label={size === 'icon' ? 'Icon' : undefined}>
           {size === 'icon' ? '★' : size}
-        </Button>
+        </Button>,
       );
       const results = await axe(container);
       expect(results, `size "${size}" should have no a11y violations`).toHaveNoViolations();

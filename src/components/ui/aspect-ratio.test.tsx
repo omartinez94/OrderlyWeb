@@ -7,7 +7,7 @@ describe('AspectRatio', () => {
     render(
       <AspectRatio ratio={16 / 9} data-testid="ar">
         <img alt="cover" src="data:image/svg+xml;utf8,<svg/>" />
-      </AspectRatio>
+      </AspectRatio>,
     );
     expect(screen.getByAltText('cover')).toBeInTheDocument();
   });

@@ -31,11 +31,7 @@ export function Breadcrumb({
 }: BreadcrumbProps) {
   return (
     <nav className="ds-breadcrumb" aria-label="Breadcrumb">
-      <button
-        type="button"
-        className="ds-breadcrumb__brand"
-        onClick={onBrandClick}
-      >
+      <button type="button" className="ds-breadcrumb__brand" onClick={onBrandClick}>
         Orderly
       </button>
       <span className="ds-breadcrumb__separator" aria-hidden="true">

@@ -15,7 +15,17 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
+
+# Lefthook cache (Phase 2)
+.lefthook/
+
+# Knip cache (Phase 3)
+.knip.cache/
+
+# gitleaks scan output (Phase 3)
+.gitleaks/
 .DS_Store
 *.suo
 *.ntvs*

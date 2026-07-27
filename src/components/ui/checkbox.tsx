@@ -18,10 +18,7 @@ import { cn } from '@/lib/utils';
  *   - `aria-invalid` rings danger; the same flag drives the
  *     `aria-describedby` wiring in `FormControl`.
  */
-function Checkbox({
-  className,
-  ...props
-}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
@@ -32,7 +29,7 @@ function Checkbox({
         'disabled:cursor-not-allowed disabled:opacity-50',
         'aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/30',
         'data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
-        className
+        className,
       )}
       {...props}
     >

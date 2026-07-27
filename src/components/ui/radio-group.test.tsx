@@ -17,7 +17,7 @@ describe('RadioGroup', () => {
           <RadioGroupItem value="b" id="r-b" />
           <Label htmlFor="r-b">B</Label>
         </div>
-      </RadioGroup>
+      </RadioGroup>,
     );
     expect(screen.getByLabelText('A')).toBeChecked();
     expect(screen.getByLabelText('B')).not.toBeChecked();
@@ -34,7 +34,7 @@ describe('RadioGroup', () => {
           <RadioGroupItem value="b" id="r2-b" />
           <Label htmlFor="r2-b">B</Label>
         </div>
-      </RadioGroup>
+      </RadioGroup>,
     );
     await userEvent.click(screen.getByLabelText('B'));
     expect(screen.getByLabelText('B')).toBeChecked();
@@ -56,7 +56,7 @@ describe('RadioGroup', () => {
           <RadioGroupItem value="c" id="r3-c" />
           <Label htmlFor="r3-c">C</Label>
         </div>
-      </RadioGroup>
+      </RadioGroup>,
     );
     const first = screen.getByLabelText('A');
     first.focus();
@@ -80,7 +80,7 @@ describe('RadioGroup', () => {
           <RadioGroupItem value="b" id="r4-b" />
           <Label htmlFor="r4-b">B</Label>
         </div>
-      </RadioGroup>
+      </RadioGroup>,
     );
     expect(await axe(container)).toHaveNoViolations();
     rerender(
@@ -93,7 +93,7 @@ describe('RadioGroup', () => {
           <RadioGroupItem value="b" id="r4-b" />
           <Label htmlFor="r4-b">B</Label>
         </div>
-      </RadioGroup>
+      </RadioGroup>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

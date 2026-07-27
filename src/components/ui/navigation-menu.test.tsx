@@ -26,11 +26,9 @@ describe('NavigationMenu', () => {
             <NavigationMenuLink href="#">Reports</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu>,
     );
-    expect(
-      screen.getByRole('button', { name: /Overview/ })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Overview/ })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Reports' })).toBeInTheDocument();
   });
 
@@ -46,7 +44,7 @@ describe('NavigationMenu', () => {
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu>,
     );
     await user.click(screen.getByRole('button', { name: /Overview/ }));
     expect(await screen.findByRole('link', { name: 'Today' })).toBeVisible();
@@ -60,7 +58,7 @@ describe('NavigationMenu', () => {
             <NavigationMenuLink href="#">Reports</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

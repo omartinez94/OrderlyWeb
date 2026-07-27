@@ -55,6 +55,7 @@
 **What stays untouched:** the rest of the navigation system. Zone sidebars are a separate component. The top bar does not own the zone sidebar.
 
 **Anti-goals:**
+
 - No marketing — the header is a tool, not a brand surface. The `bg-gradient-primary` brand signature does not appear here.
 - No tangerine CTA — the One-Voice Rule still binds. Tangerine earns its place only on the ops badge under load.
 - No notifications management (mark-as-read, filters) in MVP — the bell opens a placeholder popover. Wiring the full inbox is post-MVP.
@@ -62,12 +63,14 @@
 ## 5. States and ranges
 
 ### Restaurant switcher
+
 - **Single restaurant:** static label, no chevron, no dropdown. The control is not a button — it is a text label.
 - **Multi-restaurant (1–5):** dropdown, no search. Restaurant names + a small role tag (`Owner`, `Manager`, `Staff`).
 - **Multi-restaurant (6+):** dropdown with a typeahead input at the top. Same row layout, search filters the list live.
 - **Switching:** click selects, dropdown closes, restaurant ID is written to Redux + `?restaurantId=` URL param, RTK Query cache invalidates for the new context, all dependent queries refetch. While the switch is in flight, the switcher is disabled and shows a small inline spinner (Tilled Teal, 14px).
 
 ### Breadcrumb
+
 - Always three segments when restaurant is set, two segments when restaurant is not yet resolved (loading).
 - Restaurant segment text wraps at one line, truncated with ellipsis if the name is long.
 - "Orderly" segment is a link to `/` (the role's default zone).
@@ -75,6 +78,7 @@
 - Zone segment is a static label — the user is already there; clicking it would be noise.
 
 ### Notifications bell
+
 - **0 unread:** bell icon only, no badge. Hover lifts the ground to Sage Linen High.
 - **1–99 unread:** Tilled Teal circle (20px) anchored to the bell's top-right, white label with the count, semibold.
 - **99+ unread:** same circle, label "99+".
@@ -84,6 +88,7 @@
 - **Error state:** Smoked Brick border-left (1px) + Carbon Ink body + retry button. Recovery-first copy.
 
 ### Ops badge (floor and kitchen only)
+
 - **0 in-progress:** hidden entirely — empty state is no badge, not "0".
 - **1–5 in-progress:** neutral — Carbon Ink label, "1 in progress" / "12 in progress". Sage Linen High pill.
 - **6–10 in-progress:** Saffron Amber pill (12% tint, full-amber label, 28% amber border). Same copy.
@@ -93,11 +98,13 @@
 - **Floor variant:** on `/site/restaurant`, the badge counts acknowledged + preparing + plating across all tables. The floor cares about all open work, not just one section.
 
 ### User menu
+
 - **Logged in:** avatar circle with initials, dropdown on click — Profile, Logout.
 - **Loading user:** avatar circle is a 36px Sage Linen High skeleton, no dropdown.
 - **Error:** no avatar (hidden), the theme toggle shifts right; user can sign out via a recovery link in the global error boundary.
 
 ### Theme toggle
+
 - Unchanged from the existing `ThemeToggle` component. Sun in dark mode, moon in light mode.
 
 ## 6. Interaction and layout
@@ -105,6 +112,7 @@
 **Container:** fixed top, full width, 64px tall, z-index above zone sidebars and content. Sage Linen ground. Hairline Linen Edge bottom border (1px solid). On scroll, the bar stays put — no shadow appears until content scrolls underneath.
 
 **Topology:**
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │  [Restaurant] / [Orderly] / [Zone]   [Ops Badge]   [Bell] [Theme] [Av] │
@@ -114,7 +122,7 @@
 **Slots (left → right):**
 
 1. **Restaurant switcher / label** — leftmost. Min-width 200px, max-width 280px. Tilled Teal label (MuseoModerno, 600, 0.875rem) on rest, deepens on hover.
-2. **Breadcrumb** — center-left. Muted Ink separator (` / `), Carbon Ink segment labels. The "Orderly" segment uses MuseoModerno (the brand word). Restaurant and zone segments use Urbanist. This is the one place a breadcrumb segment carries contrasting weight.
+2. **Breadcrumb** — center-left. Muted Ink separator (`/`), Carbon Ink segment labels. The "Orderly" segment uses MuseoModerno (the brand word). Restaurant and zone segments use Urbanist. This is the one place a breadcrumb segment carries contrasting weight.
 3. **Ops badge** — floor / kitchen only. Hidden on admin. Right of breadcrumb, with a 16px gap.
 4. **Spacer** — `flex: 1` between ops badge and the right cluster.
 5. **Notifications bell** — 36px square button, Sage Linen High ground, Linen Edge border. Badge anchored top-right at -4px / -4px.
@@ -122,6 +130,7 @@
 7. **User menu** — 36px avatar circle. Initials in Carbon Ink on Sage Linen High. Linen Edge Strong border on hover.
 
 **Typography:**
+
 - Restaurant name: MuseoModerno 600, 0.875rem. Titles and contrasting text.
 - Breadcrumb: "Orderly" in MuseoModerno 600; restaurant and zone in Urbanist 500, 0.875rem. Per the Two-Family Rule.
 - Ops badge label: Urbanist 600, 0.75rem, mono sub-variant for the count itself.
@@ -129,17 +138,20 @@
 - User menu items: Urbanist 500, 0.875rem.
 
 **Responsiveness:**
+
 - ≥ 1024px: full layout as drawn.
 - 768–1023px: breadcrumb drops the restaurant segment ("Orderly / Zone"), switcher still on the left.
 - < 768px: switcher becomes an icon (utensils-style glyph), user menu becomes icon-only, ops badge remains visible. Breadcrumb becomes a back button + zone label. No hamburger — the zone sidebar already handles mobile navigation.
 
 **Motion:**
+
 - Dropdown open: HeadlessUI default (no override).
 - Bell popover: 150ms ease-out, opacity + 4px translateY.
 - Ops badge color transitions (e.g. neutral → amber when count crosses 5): 300ms ease.
 - No motion on the bar itself — it is fixed and present.
 
 **Feedback:**
+
 - Every button has hover (ground lift), active (scale 0.96), and focus-visible (2px Tilled Teal outline, 2px offset).
 - The active restaurant in the switcher carries a Tilled Teal label + a left rail.
 - A toast appears on restaurant switch ("Switched to {name} — loading orders…").
@@ -158,6 +170,7 @@
 - Hybrid elevation: the header is flat (tonal layering) — no shadow, no glass.
 
 **Reusable components to lean on:**
+
 - `ThemeToggle` (existing) — slot 6.
 - `StatusPill` (existing) — for the ops badge, refactored into a 12% / 28% tint over a non-status-color ground. Or a new component if StatusPill's color rules don't bend.
 - `HeadlessUI Menu` for the restaurant switcher and the user menu.

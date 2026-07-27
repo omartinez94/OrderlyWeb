@@ -4,12 +4,7 @@ import { OpsBadge } from './slots/OpsBadge';
 import { NotificationsBell } from './slots/NotificationsBell';
 import { UserMenu } from './slots/UserMenu';
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
-import type {
-  AppNotification,
-  CurrentUser,
-  Restaurant,
-  Zone,
-} from './types';
+import type { AppNotification, CurrentUser, Restaurant, Zone } from './types';
 import './Header.css';
 
 /**
@@ -76,16 +71,11 @@ export function Header({
           currentRestaurantId={currentRestaurantId}
           onChange={onRestaurantChange}
         />
-        <Breadcrumb
-          zone={zone}
-          restaurantName={currentRestaurant?.name}
-        />
+        <Breadcrumb zone={zone} restaurantName={currentRestaurant?.name} />
       </div>
 
       <div className="ds-header__right">
-        {showOpsBadge && (
-          <OpsBadge count={opsCount as number} zone={zone} />
-        )}
+        {showOpsBadge && <OpsBadge count={opsCount as number} zone={zone} />}
         <NotificationsBell
           notifications={notifications}
           unreadCount={unreadCount}
@@ -93,11 +83,7 @@ export function Header({
           onMarkAllRead={onMarkAllRead}
         />
         <ThemeToggle />
-        <UserMenu
-          user={user}
-          onProfile={onProfile}
-          onLogout={onLogout}
-        />
+        <UserMenu user={user} onProfile={onProfile} onLogout={onLogout} />
       </div>
     </header>
   );

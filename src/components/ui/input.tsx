@@ -33,7 +33,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         'aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/30',
         'md:text-sm',
-        className
+        className,
       )}
       {...props}
     />

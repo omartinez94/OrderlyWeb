@@ -30,7 +30,7 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="size-full rounded-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="focus-visible:ring-ring size-full rounded-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
@@ -51,17 +51,15 @@ function ScrollBar({
       orientation={orientation}
       className={cn(
         'flex touch-none p-px select-none',
-        orientation === 'vertical' &&
-          'h-full w-2.5 border-l border-l-transparent',
-        orientation === 'horizontal' &&
-          'h-2.5 flex-col border-t border-t-transparent',
-        className
+        orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent',
+        orientation === 'horizontal' && 'h-2.5 flex-col border-t border-t-transparent',
+        className,
       )}
       {...props}
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-area-thumb"
-        className="relative flex-1 rounded-full bg-border-strong"
+        className="bg-border-strong relative flex-1 rounded-full"
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   );

@@ -34,17 +34,14 @@ function Avatar({
         'data-[size=default]:size-8',
         'data-[size=sm]:size-6',
         'data-[size=lg]:size-10',
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function AvatarImage({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
@@ -66,66 +63,50 @@ function AvatarFallback({
         'group-data-[size=sm]/avatar:text-[0.65rem]',
         'group-data-[size=default]/avatar:text-xs',
         'group-data-[size=lg]/avatar:text-sm',
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function AvatarBadge({
-  className,
-  ...props
-}: React.ComponentProps<'span'>) {
+function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="avatar-badge"
       className={cn(
         'absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-surface-overlay select-none',
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function AvatarGroup({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="avatar-group"
       className={cn(
         'group/avatar-group flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-surface-overlay',
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-function AvatarGroupCount({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function AvatarGroupCount({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="avatar-group-count"
       className={cn(
         'relative flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-elevated text-xs font-medium text-ink-muted ring-2 ring-surface-overlay',
-        className
+        className,
       )}
       {...props}
     />
   );
 }
 
-export {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-  AvatarBadge,
-  AvatarGroup,
-  AvatarGroupCount,
-};
+export { Avatar, AvatarImage, AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount };

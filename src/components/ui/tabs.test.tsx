@@ -14,7 +14,7 @@ describe('Tabs', () => {
         </TabsList>
         <TabsContent value="one">First panel</TabsContent>
         <TabsContent value="two">Second panel</TabsContent>
-      </Tabs>
+      </Tabs>,
     );
     expect(screen.getByText('First panel')).toBeVisible();
   });
@@ -28,7 +28,7 @@ describe('Tabs', () => {
         </TabsList>
         <TabsContent value="one">First panel</TabsContent>
         <TabsContent value="two">Second panel</TabsContent>
-      </Tabs>
+      </Tabs>,
     );
     await userEvent.click(screen.getByRole('tab', { name: 'Two' }));
     expect(screen.getByText('Second panel')).toBeVisible();
@@ -45,7 +45,7 @@ describe('Tabs', () => {
         <TabsContent value="one">First</TabsContent>
         <TabsContent value="two">Second</TabsContent>
         <TabsContent value="three">Third</TabsContent>
-      </Tabs>
+      </Tabs>,
     );
     const first = screen.getByRole('tab', { name: 'One' });
     first.focus();
@@ -62,7 +62,7 @@ describe('Tabs', () => {
         </TabsList>
         <TabsContent value="one">First panel</TabsContent>
         <TabsContent value="two">Second panel</TabsContent>
-      </Tabs>
+      </Tabs>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

@@ -9,7 +9,7 @@ describe('ScrollArea', () => {
       <ScrollArea>
         <p>Line 1</p>
         <p>Line 2</p>
-      </ScrollArea>
+      </ScrollArea>,
     );
     expect(screen.getByText('Line 1')).toBeInTheDocument();
     expect(screen.getByText('Line 2')).toBeInTheDocument();
@@ -19,7 +19,7 @@ describe('ScrollArea', () => {
     const { container } = render(
       <ScrollArea>
         <p>Content</p>
-      </ScrollArea>
+      </ScrollArea>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

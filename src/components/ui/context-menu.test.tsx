@@ -19,7 +19,7 @@ describe('ContextMenu', () => {
           <ContextMenuItem>Cut</ContextMenuItem>
           <ContextMenuItem>Copy</ContextMenuItem>
         </ContextMenuContent>
-      </ContextMenu>
+      </ContextMenu>,
     );
     const trigger = screen.getByText('Right-click me');
     await user.pointer({ keys: '[MouseRight>]', target: trigger });
@@ -33,7 +33,7 @@ describe('ContextMenu', () => {
         <ContextMenuContent>
           <ContextMenuItem>Action</ContextMenuItem>
         </ContextMenuContent>
-      </ContextMenu>
+      </ContextMenu>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

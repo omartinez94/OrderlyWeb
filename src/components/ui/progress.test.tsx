@@ -12,20 +12,14 @@ describe('Progress', () => {
 
   it('renders indeterminate progress with aria-valuetext', () => {
     render(
-      <Progress
-        aria-label="Syncing"
-        aria-valuetext="Loading"
-        value={null as unknown as number}
-      />
+      <Progress aria-label="Syncing" aria-valuetext="Loading" value={null as unknown as number} />,
     );
     const bar = screen.getByRole('progressbar', { name: 'Syncing' });
     expect(bar).toHaveAttribute('data-state', 'indeterminate');
   });
 
   it('passes axe', async () => {
-    const { container } = render(
-      <Progress value={64} aria-label="Prep" />
-    );
+    const { container } = render(<Progress value={64} aria-label="Prep" />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });

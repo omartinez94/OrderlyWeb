@@ -21,7 +21,7 @@ describe('Toggle', () => {
     const b = render(
       <Toggle aria-label="on" pressed>
         on
-      </Toggle>
+      </Toggle>,
     );
     expect(await axe(b.container)).toHaveNoViolations();
   });
@@ -37,7 +37,7 @@ describe('ToggleGroup', () => {
         <ToggleGroupItem value="week" aria-label="Week">
           Week
         </ToggleGroupItem>
-      </ToggleGroup>
+      </ToggleGroup>,
     );
     const day = screen.getByRole('radio', { name: 'Day' });
     const week = screen.getByRole('radio', { name: 'Week' });
@@ -51,7 +51,7 @@ describe('ToggleGroup', () => {
       <ToggleGroup type="single">
         <ToggleGroupItem value="a">A</ToggleGroupItem>
         <ToggleGroupItem value="b">B</ToggleGroupItem>
-      </ToggleGroup>
+      </ToggleGroup>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

@@ -32,12 +32,7 @@ function EmailForm({ onSubmit }: { onSubmit?: (v: { email: string }) => void }) 
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  {...field}
-                />
+                <Input type="email" placeholder="you@example.com" autoComplete="email" {...field} />
               </FormControl>
               <FormDescription>Used for the receipt.</FormDescription>
               <FormMessage />
@@ -67,9 +62,7 @@ describe('Form', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
     const input = screen.getByLabelText('Email');
     expect(input).toHaveAttribute('aria-invalid', 'true');
-    expect(
-      screen.getByText('Enter a valid email address.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Enter a valid email address.')).toBeInTheDocument();
   });
 
   it('wires the error message into `aria-describedby` on the input', async () => {

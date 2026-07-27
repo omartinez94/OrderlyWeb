@@ -34,48 +34,36 @@ test.describe('Showcase a11y', () => {
     'data',
     'navigation',
   ]) {
-    test(`${section} section has no serious/critical a11y violations`, async ({
-      page,
-    }) => {
-      const results = await new AxeBuilder({ page })
-        .include(`#${section}`)
-        .analyze();
+    test(`${section} section has no serious/critical a11y violations`, async ({ page }) => {
+      const results = await new AxeBuilder({ page }).include(`#${section}`).analyze();
       const serious = results.violations.filter(
-        (v) => v.impact === 'serious' || v.impact === 'critical'
+        (v) => v.impact === 'serious' || v.impact === 'critical',
       );
       expect(
         serious,
         `serious/critical violations in #${section}: ${JSON.stringify(
           serious.map((v) => ({ id: v.id, nodes: v.nodes.length })),
           null,
-          2
-        )}`
+          2,
+        )}`,
       ).toEqual([]);
     });
   }
 
-  test('Tab order visits interactive controls in document order', async ({
-    page,
-  }) => {
+  test('Tab order visits interactive controls in document order', async ({ page }) => {
     await page.locator('#button').scrollIntoViewIfNeeded();
     await page.keyboard.press('Tab');
-    const focused = await page.evaluate(
-      () => document.activeElement?.tagName ?? ''
-    );
+    const focused = await page.evaluate(() => document.activeElement?.tagName ?? '');
     expect(['BUTTON', 'A', 'INPUT']).toContain(focused);
   });
 
-  test('Escape closes the open Dialog and returns focus to the trigger', async ({
-    page,
-  }) => {
+  test('Escape closes the open Dialog and returns focus to the trigger', async ({ page }) => {
     await page.locator('#overlay').scrollIntoViewIfNeeded();
     await page.getByRole('button', { name: 'Open Dialog' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden();
-    await expect(
-      page.getByRole('button', { name: 'Open Dialog' })
-    ).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Open Dialog' })).toBeFocused();
   });
 
   test('Arrow keys navigate the RadioGroup', async ({ page }) => {
@@ -90,16 +78,12 @@ test.describe('Showcase a11y', () => {
 test.describe('Reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
 
-  test('showcase renders and toast trigger still works under reduced motion', async ({
-    page,
-  }) => {
+  test('showcase renders and toast trigger still works under reduced motion', async ({ page }) => {
     await page.goto('/?showcase=1');
     await page.waitForSelector('h1:has-text("Base Component Library")');
     // Toast button still surfaces a toast — animations are just
     // disabled by the media query.
     await page.getByRole('button', { name: 'Toast: success' }).click();
-    await expect(
-      page.getByText('Success.', { exact: true })
-    ).toBeVisible();
+    await expect(page.getByText('Success.', { exact: true })).toBeVisible();
   });
 });

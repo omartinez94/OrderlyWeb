@@ -37,7 +37,7 @@ function Switch({
         'data-[size=sm]:h-4 data-[size=sm]:w-7',
         'data-[state=checked]:bg-primary',
         'data-[state=unchecked]:bg-input',
-        className
+        className,
       )}
       {...props}
     >
@@ -48,7 +48,7 @@ function Switch({
           'group-data-[size=default]/switch:size-4',
           'group-data-[size=sm]/switch:size-3',
           'data-[state=checked]:translate-x-[calc(100%)]',
-          'data-[state=unchecked]:translate-x-0.5'
+          'data-[state=unchecked]:translate-x-0.5',
         )}
       />
     </SwitchPrimitive.Root>

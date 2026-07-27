@@ -324,14 +324,46 @@
       "Two type families, no role-swap. Urbanist carries the body and any long-form text. MuseoModerno carries titles and any text that should contrast with body. Both ship as Fontsource variable fonts."
     ],
     "rules": [
-      { "name": "The Service-Flow Rule", "section": "colors", "body": "The five service hues (Tilled Teal, Hushed Teal, Patina Aqua, Saffron Amber, Burnt Tangerine) are reserved for order status. They do not appear as decoration, marketing flourishes, or chart series. The order lifecycle owns these colors; everyone else borrows neutral or brand." },
-      { "name": "The One-Voice Rule", "section": "colors", "body": "Burnt Tangerine appears on ≤10% of any given screen. Its rarity is the point. If tangerine is everywhere, urgency is nowhere." },
-      { "name": "The No-Pure-White Rule", "section": "colors", "body": "The page background is Sage Linen, never #FFFFFF. The only true white in the system is Linen Overlay, reserved for modals and popovers. If a content surface needs to be white, it has earned the right to be a modal." },
-      { "name": "The Two-Family Rule", "section": "typography", "body": "Two typefaces, two jobs. Urbanist is for descriptions, body copy, and any long-form content. MuseoModerno is for titles and any text that should contrast with body (display, headline, title). They never swap roles. A body paragraph in MuseoModerno is a misuse; a card title in Urbanist is a downgrade." },
-      { "name": "The No-Raw-Family Rule", "section": "typography", "body": "Components do not import or reference a font family directly. They consume the font-display, font-sans, and font-mono Tailwind utilities, which resolve to the --font-display, --font-body, and --font-mono tokens. A component that hard-codes 'Urbanist' or 'MuseoModerno' in its style is a bug." },
-      { "name": "The Mono-Is-Measurement Rule", "section": "typography", "body": "Monospace is reserved for time, IDs, and numeric readouts. Body copy in mono is a costume the system does not wear." },
-      { "name": "The Flat-By-Default Rule", "section": "elevation", "body": "Content surfaces are flat at rest. Shadow appears only as a response to state (overlay, modal, focus), never as decoration on a card." },
-      { "name": "The Glow-Belongs-To-Status Rule", "section": "elevation", "body": "The brand glow is the status's voice. It is not used on buttons, icons, or marketing surfaces. A glowing button is a status pill, not a CTA." }
+      {
+        "name": "The Service-Flow Rule",
+        "section": "colors",
+        "body": "The five service hues (Tilled Teal, Hushed Teal, Patina Aqua, Saffron Amber, Burnt Tangerine) are reserved for order status. They do not appear as decoration, marketing flourishes, or chart series. The order lifecycle owns these colors; everyone else borrows neutral or brand."
+      },
+      {
+        "name": "The One-Voice Rule",
+        "section": "colors",
+        "body": "Burnt Tangerine appears on ≤10% of any given screen. Its rarity is the point. If tangerine is everywhere, urgency is nowhere."
+      },
+      {
+        "name": "The No-Pure-White Rule",
+        "section": "colors",
+        "body": "The page background is Sage Linen, never #FFFFFF. The only true white in the system is Linen Overlay, reserved for modals and popovers. If a content surface needs to be white, it has earned the right to be a modal."
+      },
+      {
+        "name": "The Two-Family Rule",
+        "section": "typography",
+        "body": "Two typefaces, two jobs. Urbanist is for descriptions, body copy, and any long-form content. MuseoModerno is for titles and any text that should contrast with body (display, headline, title). They never swap roles. A body paragraph in MuseoModerno is a misuse; a card title in Urbanist is a downgrade."
+      },
+      {
+        "name": "The No-Raw-Family Rule",
+        "section": "typography",
+        "body": "Components do not import or reference a font family directly. They consume the font-display, font-sans, and font-mono Tailwind utilities, which resolve to the --font-display, --font-body, and --font-mono tokens. A component that hard-codes 'Urbanist' or 'MuseoModerno' in its style is a bug."
+      },
+      {
+        "name": "The Mono-Is-Measurement Rule",
+        "section": "typography",
+        "body": "Monospace is reserved for time, IDs, and numeric readouts. Body copy in mono is a costume the system does not wear."
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "section": "elevation",
+        "body": "Content surfaces are flat at rest. Shadow appears only as a response to state (overlay, modal, focus), never as decoration on a card."
+      },
+      {
+        "name": "The Glow-Belongs-To-Status Rule",
+        "section": "elevation",
+        "body": "The brand glow is the status's voice. It is not used on buttons, icons, or marketing surfaces. A glowing button is a status pill, not a CTA."
+      }
     ],
     "dos": [
       "Do consume colors by semantic name (bg-primary, text-ink, border-border-subtle) via Tailwind utilities. Components reference tokens, not raw hex.",

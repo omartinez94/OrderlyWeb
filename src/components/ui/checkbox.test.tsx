@@ -11,7 +11,7 @@ describe('Checkbox', () => {
       <>
         <Label htmlFor="tos">Accept terms</Label>
         <Checkbox id="tos" />
-      </>
+      </>,
     );
     expect(screen.getByLabelText('Accept terms')).toBeInTheDocument();
   });
@@ -21,7 +21,7 @@ describe('Checkbox', () => {
       <>
         <Label htmlFor="news">Subscribe</Label>
         <Checkbox id="news" />
-      </>
+      </>,
     );
     const cb = screen.getByLabelText('Subscribe');
     expect(cb).not.toBeChecked();
@@ -36,7 +36,7 @@ describe('Checkbox', () => {
       <>
         <Label htmlFor="kbd">Kbd</Label>
         <Checkbox id="kbd" />
-      </>
+      </>,
     );
     const cb = screen.getByLabelText('Kbd');
     cb.focus();
@@ -50,14 +50,14 @@ describe('Checkbox', () => {
       <>
         <Label htmlFor="a1">A1</Label>
         <Checkbox id="a1" />
-      </>
+      </>,
     );
     expect(await axe(container)).toHaveNoViolations();
     rerender(
       <>
         <Label htmlFor="a1">A1</Label>
         <Checkbox id="a1" defaultChecked />
-      </>
+      </>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

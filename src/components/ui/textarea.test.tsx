@@ -11,7 +11,7 @@ describe('Textarea', () => {
       <>
         <Label htmlFor="notes">Notes</Label>
         <Textarea id="notes" placeholder="Anything else?" />
-      </>
+      </>,
     );
     expect(screen.getByLabelText('Notes').tagName).toBe('TEXTAREA');
   });
@@ -21,7 +21,7 @@ describe('Textarea', () => {
       <>
         <Label htmlFor="t2">Notes</Label>
         <Textarea id="t2" />
-      </>
+      </>,
     );
     const ta = screen.getByLabelText('Notes');
     await userEvent.type(ta, 'No allergies');
@@ -33,7 +33,7 @@ describe('Textarea', () => {
       <>
         <Label htmlFor="ok">Notes</Label>
         <Textarea id="ok" />
-      </>
+      </>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

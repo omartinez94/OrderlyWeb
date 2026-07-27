@@ -15,12 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -31,11 +26,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -53,12 +44,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,11 +72,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import {
   Table,
   TableBody,
@@ -160,13 +142,9 @@ function Section({
 }) {
   return (
     <section id={id} className="mb-12 scroll-mt-20">
-      <h2 className="text-2xl font-bold mb-2 text-ink tracking-tight">
-        {title}
-      </h2>
+      <h2 className="text-ink mb-2 text-2xl font-bold tracking-tight">{title}</h2>
       {description && (
-        <p className="text-ink-muted mb-6 max-w-3xl leading-relaxed">
-          {description}
-        </p>
+        <p className="text-ink-muted mb-6 max-w-3xl leading-relaxed">{description}</p>
       )}
       {children}
     </section>
@@ -189,25 +167,15 @@ export default function ShowcasePage() {
   return (
     <TooltipProvider delayDuration={150}>
       <Toaster />
-      <div className="min-h-screen bg-surface text-ink font-sans antialiased">
-        <header className="bg-surface-elevated border-b border-border-subtle py-4 px-8 sticky top-0 z-30">
-          <h1 className="text-xl font-bold text-ink">
-            Base Component Library — Showcase
-          </h1>
+      <div className="bg-surface text-ink min-h-screen font-sans antialiased">
+        <header className="bg-surface-elevated border-border-subtle sticky top-0 z-30 border-b px-8 py-4">
+          <h1 className="text-ink text-xl font-bold">Base Component Library — Showcase</h1>
           <p className="text-ink-muted text-sm">
             Every primitive in every variant. Lazy-loaded behind
-            <code className="font-mono text-xs mx-1">?showcase=1</code>.
+            <code className="mx-1 font-mono text-xs">?showcase=1</code>.
           </p>
-          <nav className="flex flex-wrap gap-3 mt-2 text-xs text-ink-muted">
-            {[
-              'button',
-              'form',
-              'selection',
-              'layout',
-              'overlay',
-              'data',
-              'navigation',
-            ].map((s) => (
+          <nav className="text-ink-muted mt-2 flex flex-wrap gap-3 text-xs">
+            {['button', 'form', 'selection', 'layout', 'overlay', 'data', 'navigation'].map((s) => (
               <a key={s} href={`#${s}`} className="hover:text-ink">
                 {s}
               </a>
@@ -215,13 +183,13 @@ export default function ShowcasePage() {
           </nav>
         </header>
 
-        <main className="max-w-6xl mx-auto px-8 py-12">
+        <main className="mx-auto max-w-6xl px-8 py-12">
           <Section
             id="button"
             title="Button"
             description="Variants and sizes. Burnt Tangerine is reserved for urgent CTAs only."
           >
-            <div className="flex flex-wrap gap-3 mb-4">
+            <div className="mb-4 flex flex-wrap gap-3">
               <Button variant="default">Primary</Button>
               <Button variant="accent">Accent</Button>
               <Button variant="outline">Outline</Button>
@@ -230,7 +198,7 @@ export default function ShowcasePage() {
               <Button variant="destructive">Destructive</Button>
               <Button variant="link">Link</Button>
             </div>
-            <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex flex-wrap items-center gap-3">
               <Button size="sm">Small</Button>
               <Button size="default">Default</Button>
               <Button size="lg">Large</Button>
@@ -259,7 +227,7 @@ export default function ShowcasePage() {
             title="Form"
             description="React Hook Form + Zod. FormControl wires aria-describedby automatically."
           >
-            <div className="grid gap-4 sm:grid-cols-2 mb-6">
+            <div className="mb-6 grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="plain">Email</Label>
                 <Input id="plain" type="email" placeholder="staff@acme.com" />
@@ -270,10 +238,7 @@ export default function ShowcasePage() {
               </div>
             </div>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(() => undefined)}
-                className="grid gap-4 max-w-sm"
-              >
+              <form onSubmit={form.handleSubmit(() => undefined)} className="grid max-w-sm gap-4">
                 <FormField
                   control={form.control}
                   name="email"
@@ -283,9 +248,7 @@ export default function ShowcasePage() {
                       <FormControl>
                         <Input type="email" autoComplete="email" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Used for the digital receipt.
-                      </FormDescription>
+                      <FormDescription>Used for the digital receipt.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -399,7 +362,7 @@ export default function ShowcasePage() {
             title="Layout"
             description="Card variants, Tabs, Accordion, ScrollArea, Separator."
           >
-            <div className="grid gap-6 sm:grid-cols-2 mb-6">
+            <div className="mb-6 grid gap-6 sm:grid-cols-2">
               <Card>
                 <CardHeader>
                   <CardTitle>Default</CardTitle>
@@ -460,9 +423,9 @@ export default function ShowcasePage() {
                   <CardTitle>ScrollArea</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ScrollArea className="h-32 w-full rounded-md border border-border-subtle p-3">
+                  <ScrollArea className="border-border-subtle h-32 w-full rounded-md border p-3">
                     {Array.from({ length: 10 }).map((_, i) => (
-                      <p key={i} className="text-ink-muted text-sm py-1">
+                      <p key={i} className="text-ink-muted py-1 text-sm">
                         Line {i + 1}
                       </p>
                     ))}
@@ -480,7 +443,7 @@ export default function ShowcasePage() {
                         Show advanced
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2 text-sm text-ink-muted">
+                    <CollapsibleContent className="text-ink-muted mt-2 text-sm">
                       Advanced settings live here.
                     </CollapsibleContent>
                   </Collapsible>
@@ -491,11 +454,8 @@ export default function ShowcasePage() {
                   <CardTitle>AspectRatio</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <AspectRatio
-                    ratio={16 / 9}
-                    className="bg-muted rounded-md"
-                  >
-                    <div className="flex items-center justify-center h-full text-ink-subtle text-xs font-mono">
+                  <AspectRatio ratio={16 / 9} className="bg-muted rounded-md">
+                    <div className="text-ink-subtle flex h-full items-center justify-center font-mono text-xs">
                       16:9
                     </div>
                   </AspectRatio>
@@ -509,7 +469,7 @@ export default function ShowcasePage() {
             title="Overlay"
             description="Focus-safe overlays: Dialog, Sheet, Popover, Tooltip, DropdownMenu, AlertDialog, Command, HoverCard."
           >
-            <div className="flex flex-wrap gap-3 mb-6">
+            <div className="mb-6 flex flex-wrap gap-3">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button>Open Dialog</Button>
@@ -517,9 +477,7 @@ export default function ShowcasePage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Dialog</DialogTitle>
-                    <DialogDescription>
-                      Modal confirmation.
-                    </DialogDescription>
+                    <DialogDescription>Modal confirmation.</DialogDescription>
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
@@ -563,9 +521,7 @@ export default function ShowcasePage() {
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Confirm</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Cannot be undone.
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Cannot be undone.</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -585,7 +541,7 @@ export default function ShowcasePage() {
                 <CardTitle>Command</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="rounded-xl border border-border-subtle overflow-hidden">
+                <div className="border-border-subtle overflow-hidden rounded-xl border">
                   <Command className="max-w-md">
                     <CommandInput placeholder="Search…" />
                     <CommandList>
@@ -606,32 +562,23 @@ export default function ShowcasePage() {
             title="Data display & feedback"
             description="Table, Badge, Avatar, Skeleton, Progress, Toast."
           >
-            <div className="flex flex-wrap gap-3 mb-4">
-              <Button
-                variant="outline"
-                onClick={() => toast.success('Success.')}
-              >
+            <div className="mb-4 flex flex-wrap gap-3">
+              <Button variant="outline" onClick={() => toast.success('Success.')}>
                 Toast: success
               </Button>
               <Button variant="outline" onClick={() => toast.info('Info.')}>
                 Toast: info
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => toast.warning('Warning.')}
-              >
+              <Button variant="outline" onClick={() => toast.warning('Warning.')}>
                 Toast: warning
               </Button>
-              <Button
-                variant="destructive"
-                onClick={() => toast.error('Error.')}
-              >
+              <Button variant="destructive" onClick={() => toast.error('Error.')}>
                 Toast: error
               </Button>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 mb-6">
+            <div className="mb-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="text-sm font-semibold text-ink-muted uppercase tracking-wider mb-2">
+                <h3 className="text-ink-muted mb-2 text-sm font-semibold tracking-wider uppercase">
                   Badge
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -641,7 +588,7 @@ export default function ShowcasePage() {
                   <Badge variant="destructive">Destructive</Badge>
                   <Badge variant="neutral">Neutral</Badge>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <Badge variant="service-new">New</Badge>
                   <Badge variant="service-acknowledged">Acknowledged</Badge>
                   <Badge variant="service-preparing">Preparing</Badge>
@@ -650,15 +597,12 @@ export default function ShowcasePage() {
                 </div>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-ink-muted uppercase tracking-wider mb-2">
+                <h3 className="text-ink-muted mb-2 text-sm font-semibold tracking-wider uppercase">
                   Avatar
                 </h3>
                 <div className="flex items-center gap-3">
                   <Avatar size="lg">
-                    <AvatarImage
-                      src="data:image/svg+xml;utf8,<svg/>"
-                      alt="JD"
-                    />
+                    <AvatarImage src="data:image/svg+xml;utf8,<svg/>" alt="JD" />
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
                   <Avatar>
@@ -670,15 +614,15 @@ export default function ShowcasePage() {
                 </div>
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 mb-6">
+            <div className="mb-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="text-sm font-semibold text-ink-muted uppercase tracking-wider mb-2">
+                <h3 className="text-ink-muted mb-2 text-sm font-semibold tracking-wider uppercase">
                   Progress (determinate)
                 </h3>
                 <Progress value={64} aria-label="Prep" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-ink-muted uppercase tracking-wider mb-2">
+                <h3 className="text-ink-muted mb-2 text-sm font-semibold tracking-wider uppercase">
                   Progress (indeterminate)
                 </h3>
                 <Progress
@@ -689,7 +633,7 @@ export default function ShowcasePage() {
               </div>
             </div>
             <div className="mb-6">
-              <h3 className="text-sm font-semibold text-ink-muted uppercase tracking-wider mb-2">
+              <h3 className="text-ink-muted mb-2 text-sm font-semibold tracking-wider uppercase">
                 Skeleton
               </h3>
               <div className="space-y-2">
@@ -764,15 +708,11 @@ export default function ShowcasePage() {
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger>
-                          Overview
-                        </NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Overview</NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <ul className="grid gap-2 p-3 w-[280px]">
+                          <ul className="grid w-[280px] gap-2 p-3">
                             <li>
-                              <NavigationMenuLink href="#">
-                                Today
-                              </NavigationMenuLink>
+                              <NavigationMenuLink href="#">Today</NavigationMenuLink>
                             </li>
                           </ul>
                         </NavigationMenuContent>

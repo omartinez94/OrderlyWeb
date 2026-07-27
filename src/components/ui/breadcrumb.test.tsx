@@ -23,7 +23,7 @@ describe('Breadcrumb', () => {
             <BreadcrumbPage>Current</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb>,
     );
     expect(screen.getByLabelText('breadcrumb')).toBeInTheDocument();
   });
@@ -36,12 +36,9 @@ describe('Breadcrumb', () => {
             <BreadcrumbPage>Order #1284</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb>,
     );
-    expect(screen.getByText('Order #1284')).toHaveAttribute(
-      'aria-current',
-      'page'
-    );
+    expect(screen.getByText('Order #1284')).toHaveAttribute('aria-current', 'page');
   });
 
   it('passes axe', async () => {
@@ -56,7 +53,7 @@ describe('Breadcrumb', () => {
             <BreadcrumbPage>Current</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

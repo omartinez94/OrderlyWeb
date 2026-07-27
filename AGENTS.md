@@ -7,15 +7,15 @@ Orderly Admin Panel — staff-facing web app for restaurant operators (admin, ki
 ## Setup commands
 
 - Install deps: `pnpm install`
-- Start dev:    `pnpm dev`               # Vite dev server (default port 5173)
-- Build:        `pnpm build`             # Vite production build → `dist/`
-- Preview:      `pnpm preview`
-- Test:         `pnpm test`              # Vitest (unit/component)
-- E2E test:     `pnpm test:e2e`          # Playwright
-- Lint:         `pnpm lint`              # ESLint + Prettier
-- Typecheck:    `pnpm typecheck`         # `tsc --noEmit`
-
-> Scripts above are the **target** layout once `package.json` is scaffolded. Until then, bootstrap per the spec in `docs/website-spec.md` §11.
+- Start dev: `pnpm dev` # Vite dev server (default port 5173)
+- Build: `pnpm build` # Vite production build → `dist/`
+- Preview: `pnpm preview`
+- Test: `pnpm test` # Vitest (unit/component)
+- E2E test: `pnpm test:e2e` # Playwright
+- Lint: `pnpm lint` # oxlint
+- Format: `pnpm format` # oxfmt --write
+- Format check: `pnpm format:check` # oxfmt --check (CI + pre-commit)
+- Typecheck: `pnpm typecheck` # `tsc --noEmit`
 
 ## Project layout
 
@@ -47,9 +47,9 @@ src/                           # App source (to be scaffolded)
   - HeadlessUI for unstyled interactive primitives.
   - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
   - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
-- Prettier: 2-space indent, single quotes, 100-char width, trailing commas
-- ESLint: `@typescript-eslint`, `react-hooks`, `jsx-a11y` rules enabled
-- Run `pnpm lint --fix` before committing
+- Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, single quotes, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
+- Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
+- Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
 - When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)
 
 ## Base component library (mandatory)
@@ -72,36 +72,36 @@ The visual system is locked in. Two themes, one source of truth in `src/index.cs
 
 ### Brand tokens
 
-| Token | Light | Dark | Purpose |
-|---|---|---|---|
-| `primary` | `#1F4254` | `#4A8B98` | Deep blue-teal — primary CTAs, active nav, links |
-| `accent` | `#F26A3A` | `#FF8A5A` | Tangerine — in-progress states, urgent CTAs |
-| `ink` | `#0E141A` | `#ECF0F2` | Body text |
-| `surface` | `#EFF1ED` | `#0E141A` | Page background — **sage-tinted in light** (the only off-white surface color; no pure white anywhere in the system) |
-| `surface-elevated` | `#F6F8F4` | `#152028` | Card backgrounds |
-| `surface-overlay` | `#FFFFFF` | `#1C2832` | Modals, popovers |
-| `border-subtle` | `#D8DED5` | `#1F2A33` | Hairline borders |
-| `border-strong` | `#B8C0B2` | `#2F3D48` | Emphasized borders |
+| Token              | Light     | Dark      | Purpose                                                                                                             |
+| ------------------ | --------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `primary`          | `#1F4254` | `#4A8B98` | Deep blue-teal — primary CTAs, active nav, links                                                                    |
+| `accent`           | `#F26A3A` | `#FF8A5A` | Tangerine — in-progress states, urgent CTAs                                                                         |
+| `ink`              | `#0E141A` | `#ECF0F2` | Body text                                                                                                           |
+| `surface`          | `#EFF1ED` | `#0E141A` | Page background — **sage-tinted in light** (the only off-white surface color; no pure white anywhere in the system) |
+| `surface-elevated` | `#F6F8F4` | `#152028` | Card backgrounds                                                                                                    |
+| `surface-overlay`  | `#FFFFFF` | `#1C2832` | Modals, popovers                                                                                                    |
+| `border-subtle`    | `#D8DED5` | `#1F2A33` | Hairline borders                                                                                                    |
+| `border-strong`    | `#B8C0B2` | `#2F3D48` | Emphasized borders                                                                                                  |
 
 ### Service hues (status / order flow)
 
 5 stops. Each maps to one of the order statuses in the `StatusPill` component, and the two gradients below are subsets of these.
 
-| Token | Light | Dark | StatusPill label |
-|---|---|---|---|
-| `service-deep` | `#1F4254` | `#4A8B98` | `new` |
-| `service-teal` | `#4A8B98` | `#6BA5B0` | `acknowledged` |
-| `service-aqua` | `#7AB89E` | `#98C9B0` | `preparing` |
-| `service-amber` | `#E8A340` | `#F0B560` | `plating` |
-| `service-tangerine` | `#F26A3A` | `#FF8A5A` | `ready` |
+| Token               | Light     | Dark      | StatusPill label |
+| ------------------- | --------- | --------- | ---------------- |
+| `service-deep`      | `#1F4254` | `#4A8B98` | `new`            |
+| `service-teal`      | `#4A8B98` | `#6BA5B0` | `acknowledged`   |
+| `service-aqua`      | `#7AB89E` | `#98C9B0` | `preparing`      |
+| `service-amber`     | `#E8A340` | `#F0B560` | `plating`        |
+| `service-tangerine` | `#F26A3A` | `#FF8A5A` | `ready`          |
 
 ### Gradients (max 3 colors each)
 
-| Utility | Stops | Use case |
-|---|---|---|
-| `bg-gradient-service-cool` | `deep → teal → aqua` | Received/acknowledged/preparing flow (KDS calm state) |
+| Utility                    | Stops                         | Use case                                                         |
+| -------------------------- | ----------------------------- | ---------------------------------------------------------------- |
+| `bg-gradient-service-cool` | `deep → teal → aqua`          | Received/acknowledged/preparing flow (KDS calm state)            |
 | `bg-gradient-service-warm` | `surface → amber → tangerine` | Plating/ready flow (KDS urgent state, "your food is on its way") |
-| `bg-gradient-primary` | `primary → accent` | Brand signature, hero sections |
+| `bg-gradient-primary`      | `primary → accent`            | Brand signature, hero sections                                   |
 
 ### Theme switching
 
@@ -116,26 +116,26 @@ The visual system is locked in. Two themes, one source of truth in `src/index.cs
 
 The app is split into three top-level zones, each with its own sidebar:
 
-| Zone | Path prefix | Audience | MVP scope |
-|---|---|---|---|
-| `/site/admin` | Admin-level | SuperAdmin, RestaurantAdmin, Manager | Staff Management |
-| `/site/kitchen` | KDS | KitchenManager, KitchenStaff | Order queue + prep status |
-| `/site/restaurant` | Operations | Manager, Waiter, Cashier, Host | Orders (list, detail, create, split-bill) |
+| Zone               | Path prefix | Audience                             | MVP scope                                 |
+| ------------------ | ----------- | ------------------------------------ | ----------------------------------------- |
+| `/site/admin`      | Admin-level | SuperAdmin, RestaurantAdmin, Manager | Staff Management                          |
+| `/site/kitchen`    | KDS         | KitchenManager, KitchenStaff         | Order queue + prep status                 |
+| `/site/restaurant` | Operations  | Manager, Waiter, Cashier, Host       | Orders (list, detail, create, split-bill) |
 
 Root `/` redirects authenticated users to their default zone by role. Role-based route guards live in `src/components/Layout/`. See `docs/website-spec.md` §4 and §4.3 for the full access matrix.
 
 ## Backend integration
 
-| Service | Port | Frontend responsibility |
-|---|---|---|
-| API Gateway (Ocelot) | 5000 | Single base URL — all RTK Query hits this |
-| Identity | 5007 | Auth (login, refresh, logout, users, roles) |
-| Catalog | 5001 | Restaurants, tables, menu (categories, items) |
-| Order | 5004 | Orders, reservations, queue, modifications |
-| Basket | 5003 | Price calc (Redis-backed) |
-| Discount | 5002 | Promo/reward codes |
-| Kitchen | 5005 | KDS aggregation |
-| Notification | 5006 | Push notifications, feedback |
+| Service              | Port | Frontend responsibility                       |
+| -------------------- | ---- | --------------------------------------------- |
+| API Gateway (Ocelot) | 5000 | Single base URL — all RTK Query hits this     |
+| Identity             | 5007 | Auth (login, refresh, logout, users, roles)   |
+| Catalog              | 5001 | Restaurants, tables, menu (categories, items) |
+| Order                | 5004 | Orders, reservations, queue, modifications    |
+| Basket               | 5003 | Price calc (Redis-backed)                     |
+| Discount             | 5002 | Promo/reward codes                            |
+| Kitchen              | 5005 | KDS aggregation                               |
+| Notification         | 5006 | Push notifications, feedback                  |
 
 - Base URL: `VITE_API_BASE_URL` (default `http://localhost:5000`)
 - SignalR hubs: `/hubs/orders`, `/hubs/notifications` (URL: `VITE_SIGNALR_URL`)

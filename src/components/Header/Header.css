@@ -291,30 +291,14 @@
 
 .ds-ops-badge[data-load='amber'] {
   color: var(--color-service-amber);
-  background-color: color-mix(
-    in srgb,
-    var(--color-service-amber) 12%,
-    transparent
-  );
-  border-color: color-mix(
-    in srgb,
-    var(--color-service-amber) 28%,
-    transparent
-  );
+  background-color: color-mix(in srgb, var(--color-service-amber) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-service-amber) 28%, transparent);
 }
 
 .ds-ops-badge[data-load='tangerine'] {
   color: var(--color-service-tangerine);
-  background-color: color-mix(
-    in srgb,
-    var(--color-service-tangerine) 14%,
-    transparent
-  );
-  border-color: color-mix(
-    in srgb,
-    var(--color-service-tangerine) 32%,
-    transparent
-  );
+  background-color: color-mix(in srgb, var(--color-service-tangerine) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-service-tangerine) 32%, transparent);
 }
 
 .ds-ops-badge__count {
@@ -442,11 +426,7 @@
 }
 
 .ds-notifications-popover__item[data-unread='true'] {
-  background-color: color-mix(
-    in srgb,
-    var(--color-primary) 4%,
-    transparent
-  );
+  background-color: color-mix(in srgb, var(--color-primary) 4%, transparent);
 }
 
 .ds-notifications-popover__item-title {
@@ -598,9 +578,5 @@
 }
 
 .ds-user-menu__item--danger:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--color-danger) 8%,
-    transparent
-  );
+  background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
 }
