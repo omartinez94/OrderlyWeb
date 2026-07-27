@@ -6,7 +6,7 @@
 
 ## Status
 
-> **Plan version**: `v1.1` (2026-07-26) — Phase 1 complete. Plan version `v1.x` increments after each phase completion; `vN.0` (major bump) is reserved for breaking restructures of the plan itself.
+> **Plan version**: `v1.2` (2026-07-26) — quote-convention flip after Phase 1. Plan version `v1.x` increments after each phase completion; `vN.0` (major bump) is reserved for breaking restructures of the plan itself.
 > **Current state**: 🚧 Phase 2 next — auto-enforcement (agent hook, pre-commit, CI).
 
 | Phase | Name | Status |
@@ -44,7 +44,7 @@ Read these documents before each phase and update this plan if implementation re
 ### 0.3 Code-quality guardrails
 
 - Repository uses the **oxc family** (`oxlint` already installed, `pnpm lint` script). The formatter **must be `oxfmt`** (same family, Prettier-compatible rules, single toolchain, no Node-format dependency).
-- Format spec (matches AGENTS.md § Code style): **2-space indent, single quotes, 100-char line width, trailing commas (ES5), semicolons**. No `prettier-plugin-tailwindcss` — `oxfmt` does not yet ship a Tailwind class-sorter plugin; manual class ordering is accepted in Phase 1, deferred to Phase 3.
+- Format spec (matches AGENTS.md § Code style): **2-space indent, double quotes, 100-char line width, trailing commas (ES5), semicolons**. **`singleQuote: false` (project owner directive, post-Phase 1 — see v1.2 Changelog).** No `prettier-plugin-tailwindcss` — `oxfmt` does not yet ship a Tailwind class-sorting plugin... wait, actually it does (`sortTailwindcss`, adopted in Phase 1; see §10.1). Manual class ordering is no longer needed.
 - File scope: `src/**/*.{ts,tsx,js,jsx,mjs,cjs,css,html,json,md}` plus config files at the root. Generated files in `node_modules/`, `dist/`, `pnpm-lock.yaml`, `coverage/`, `.harness/`, `.agents/`, `.claude/skills/` are excluded.
 - Strict TypeScript settings from `tsconfig.app.json` stay untouched.
 - No new top-level runtime dependency. `oxfmt` is a **devDependency** (so `pnpm format` works in CI and pre-commit), or invoked via `pnpm dlx oxfmt` if the team prefers zero-install.
@@ -53,7 +53,7 @@ Read these documents before each phase and update this plan if implementation re
 
 ## 1. Context
 
-`AGENTS.md` declares `pnpm lint` as the canonical format/lint pass and asserts an ESLint + Prettier stack with 2-space indent, single quotes, 100-char line width, and trailing commas. Neither tool is installed: the only linter today is `oxlint`, declared in `package.json: devDependencies` and run by `pnpm lint`. There is no `.editorconfig`, no `.gitattributes`, no Node version pin, no Git hooks manager, no CI workflow, no commit-message linter, and no `.vscode/settings.json` — every developer's editor and shell environment is free to disagree.
+`AGENTS.md` declares `pnpm lint` as the canonical format/lint pass and asserts an ESLint + Prettier stack with 2-space indent, ~~single~~ **double** quotes (project-owner directive flipped post-Phase 1 — see v1.2 Changelog), 100-char line width, and trailing commas. Neither tool is installed: the only linter today is `oxlint`, declared in `package.json: devDependencies` and run by `pnpm lint`. There is no `.editorconfig`, no `.gitattributes`, no Node version pin, no Git hooks manager, no CI workflow, no commit-message linter, and no `.vscode/settings.json` — every developer's editor and shell environment is free to disagree.
 
 This causes three concrete problems today:
 
@@ -164,7 +164,7 @@ The `scripts/format-staged.mjs` is **only added if** `oxfmt --check <staged-file
     "tabWidth": 2,
     "useTabs": false,
     "semi": true,
-    "singleQuote": true,
+    "singleQuote": false,
     "trailingComma": "all",
     "bracketSpacing": true,
     "arrowParens": "always",
@@ -430,7 +430,7 @@ The `scripts/format-staged.mjs` is **only added if** `oxfmt --check <staged-file
   `lefthook.yml`, and `.claude/settings.json`; this section is the *contract*,
   the configs are the *implementation*.
 
-  - **Formatting**: `oxfmt` with 2-space indent, single quotes, 100-char width,
+  - **Formatting**: `oxfmt` with 2-space indent, **double quotes**, 100-char width,
     trailing commas, LF line endings. Run `pnpm format` to apply,
     `pnpm format:check` to verify.
   - **Editor defaults**: `.editorconfig` enforces the rule even outside VS Code.
@@ -525,7 +525,7 @@ The adoption contract:
 **Deliverables**:
 
 - [x] Add `oxfmt` to `package.json#devDependencies` via `pnpm add -D oxfmt`. **Adjusted** — installed `oxfmt@0.60.0` (the actual latest stable; the plan's "≥1.x" was speculative). Verified Node 24.16.0 satisfies `engines.node: ^20.19.0 || >=22.12.0`.
-- [x] Create `.oxfmtrc.json` matching AGENTS.md § Code style (2-space, single quotes, 100-char, trailing commas, LF). **Adjustment** — `sortTailwindcss: true` is enabled (originally slated for Phase 3; oxfmt ships the option natively so the deferral became free).
+- [x] Create `.oxfmtrc.json` matching AGENTS.md § Code style (2-space, ~~single~~ **double** quotes, 100-char, trailing commas, LF). **Adjustment** — `sortTailwindcss: true` is enabled (originally slated for Phase 3; oxfmt ships the option natively so the deferral became free). **Post-Phase-1 flip** — `singleQuote` was set to `true` when this file shipped; flipped to `false` per project-owner directive (see v1.2 Changelog).
 - [x] Create `.editorconfig` with the values in §6.2.
 - [x] Create `.gitattributes` with the values in §6.2.
 - [x] Create `.vscode/settings.json` and `.vscode/extensions.json` matching §6.2. **Adjustment** — `extensions.json` adds an `unwantedRecommendations` list (`prettier-vscode`, `vscode-eslint`) to deflect competing extensions during a multi-tool onboarding.
@@ -568,7 +568,7 @@ The adoption contract:
 - Wireframe style drift — `[deferred]`. oxfmt and `.impeccable/` flagged 13 design-token violations on the wireframe file (4 font usages outside `DESIGN.md`, 9 hex colors outside the brand palette). The wireframe is a static research artifact (Phase 1, LO-FI, WIREFRAME A label in its own header) that intentionally references generic industry fonts and status-quo palette to explain the design decisions in `DESIGN.md` §competitor analysis. Resolution: **added `docs/wireframes/` to `.oxfmtrc.json#ignorePatterns`** so the formatter skips them. The `.impeccable/` findings remain; resolving them would mean rebuilding the wireframe on Orderly's tokens, which is out of Phase 1 scope and tracked separately.
 - oxfmt markdown whitespace in `AGENTS.md` — `[noted]`. oxfmt's `proseWrap: "preserve"` re-flowed bullet spacing in AGENTS.md and other markdown. Functional text is identical; reviewer-eye-only diffs around headings and list items. Acceptable.
 - oxfmt JSON formatting in `.impeccable/design.json` — `[noted]`. oxfmt expanded inline JSON objects (the 8 design rules) to multi-line. Semantically identical; JSON parses to the same value. Acceptable.
-- shadcn-installed primitives in `src/components/ui/*` — `[fixed-via-format]`. These were committed by the base-components plan with Prettier-default settings (4-space indent, single quotes was inconsistent, line wrap mismatched our width). `pnpm format` realigned them all to AGENTS.md § Code style in one pass.
+- shadcn-installed primitives in `src/components/ui/*` — `[fixed-via-format]`. These were committed by the base-components plan with Prettier-default settings (4-space indent, single quotes was inconsistent, line wrap mismatched our width). `pnpm format` realigned them all to AGENTS.md § Code style in one pass. **Then re-aligned again** when the project switched to double quotes (see v1.2 Changelog).
 - `pnpm-lock.yaml` re-generated by `pnpm add -D oxfmt` — `[noted]`. Expected outcome of any dep addition; the diff is what you'd see from any single `pnpm add`. Reviewed: only `oxfmt` + its platform-specific bindings were added; existing dep set was untouched.
 
 **Deferred to Phase 2 follow-up.**
@@ -700,6 +700,17 @@ The adoption contract:
 - Verified exit criteria on 2026-07-26: `pnpm format:check` exit 0, `pnpm typecheck` exit 0, `pnpm lint` exit 0 (only pre-existing tooling warnings), `pnpm test:run` exit 0 (113 tests), `pnpm build` exit 0 (1.25 s).
 - Drift from the plan: (a) `oxfmt` ships `sortTailwindcss` natively, adopted in Phase 1 instead of waiting for Phase 3; (b) `oxfmt`'s actual latest is `0.60.0`, not `1.x` as the plan guessed; (c) `.vscode/extensions.json` gained `unwantedRecommendations` to deflect `prettier-vscode` and `vscode-eslint`. None of these change the phase's exit criteria.
 - Files added: 5; files modified: 102 (incl. lockfile).
+
+### v1.2 (2026-07-26) — quote-convention flip (single → double)
+
+- **Drift from §6.1 spec**, requested by project owner post-Phase 1.
+- `.oxfmtrc.json`: `singleQuote: true → false`.
+- `AGENTS.md` § Code style: "single quotes" → "double quotes".
+- `pnpm format` re-ran; 103 files reformatted. Diff is **exactly symmetric** (`1751 insertions / 1751 deletions`) — every line that had a single-quoted literal now has the same literal with double quotes. Semantics identical.
+- Compatibility with the `.vscode/settings.json` `[typescriptreact] → "esbenp.prettier-vscode"` binding: Prettier's default `singleQuote` is `false` (double quotes), so both formatters now agree. Settings file unchanged in this commit (the binding was set in the previous commit and is preserved verbatim).
+- Plan §0.3, §1, §6.1, §6.6 example block, §9.1 Phase 1 deliverables note, and §9.1 implementation notes updated to reflect the actual state (`singleQuote: false`, "double quotes").
+- Verified exit criteria on 2026-07-26: `pnpm format:check`, `pnpm typecheck`, `pnpm lint`, `pnpm test:run`, `pnpm build` — all exit 0. 113 tests pass; build in ~1.3 s.
+- Files modified: 102 (config + 101 reformatted).
 
 <!-- legacy proposal draft entries (kept for context, do NOT bump v on typo-only edits) -->
 
