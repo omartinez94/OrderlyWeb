@@ -6,7 +6,7 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Plan version**: `v1.1` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
 > **Current state**: ⏸ Not started
 
 | Phase | Name | Status |
@@ -79,8 +79,8 @@ This plan closes both clusters before the feature modules (Staff, Orders, KDS) s
 | :--- | :--- | :--- |
 | Server state | Redux Toolkit + RTK Query | Mandated by `AGENTS.md` §Code style; gives request dedup, cache invalidation, `keepUnusedDataFor`, and the ability to share auth state in the same store. |
 | Auth state | Redux slice (`session`), selectors via `useAppSelector` | Same store as server state; `useAuthPredicate` consumes a memoized selector with shallow equality. |
-| API base URL | `VITE_API_BASE_URL` (default `http://localhost:5000`) | `AGENTS.md` §Backend integration — single base URL, all RTK Query hits go through the Ocelot gateway. |
-| SignalR URL | `VITE_SIGNALR_URL` (default `http://localhost:5000`) | Hubs `/hubs/orders` and `/hubs/notifications` are gateway-fronted; identical host keeps CORS simple. |
+| API base URL | `VITE_API_BASE_URL` (default `http://localhost:6004`) | `AGENTS.md` §Backend integration — single base URL, all RTK Query hits go through the YARP gateway. |
+| SignalR URL | `VITE_SIGNALR_URL` (default `http://localhost:6004/kitchen-api`) | Hub `/hubs/kitchen` is gateway-fronted; identical host keeps CORS simple. |
 | HTTP client | Native `fetch` via RTK Query's `fetchBaseQuery` | No extra dependency; works in browsers and Vitest. |
 | SignalR transport | `@microsoft/signalr` v8 | Official client; integrates cleanly with auto-reconnect and JSON Hub Protocol. |
 | JWT storage | In-memory only (access token, in `sessionSlice`) + httpOnly refresh cookie | `AGENTS.md` §Security — never `localStorage`, never `sessionStorage`, never URL param. |
@@ -103,7 +103,7 @@ src/
     hooks.ts                    # useAppDispatch, useAppSelector (typed)
     api/
       base.ts                   # fetchBaseQuery with auth header + 401 refresh
-      identity.ts               # RTK Query slice — login, refresh, logout, currentUser, staff
+      identity.ts               # RTK Query slice — login, refresh, logout, currentUser, userRestaurants, staff
       catalog.ts                # Restaurants, tables, menu (read endpoints)
       orders.ts                 # Order CRUD + status mutations + split-bill
       kitchen.ts                # KDS aggregation
@@ -112,8 +112,8 @@ src/
       sessionSlice.ts           # Authenticated user, roles, permissions, access token (memory)
       sessionSelectors.ts       # selectPredicate, selectDefaultZone, …
   lib/
-    apiClient.ts                # Shared fetch wrapper used by SignalR negotiation
-    signalr.ts                  # HubConnection factory + auto-reconnect policy
+    apiClient.ts                # Shared fetch wrapper + unified single-flight refresh helper
+    signalr.ts                  # HubConnection factory (kitchen hub) + auto-reconnect policy
     env.ts                      # Typed accessor for VITE_* variables
   hooks/
     useTheme.ts                 # Refactored — useMemo for resolvedTheme, module-level cache for storage
@@ -139,7 +139,7 @@ src/
       SignInDialogHost.tsx      # Unchanged
       # HomePage no longer mounts its own dialog (removed in Phase 1)
     SignalRBoot/
-      SignalRBoot.tsx           # NEW — subscribes to /hubs/orders and /hubs/notifications on auth
+      SignalRBoot.tsx           # NEW — subscribes to kitchen hub (/kitchen-api/hubs/kitchen) on auth
   routes/
     HomePage.tsx                # Remove local dialog; rely on SignInDialogHost
     ProfilePage.tsx             # NEW — extracted from inline component in router.tsx
@@ -190,9 +190,9 @@ src/router/zones/*.tsx          # Modified — use GuardedPage; nested errorElem
 *   **`apiClient`** — A thin wrapper around `fetch` that:
     *   Reads the access token from the Redux store via `store.getState().session.accessToken` (singleton accessor, no `useSelector` in a non-hook context).
     *   Adds `Authorization: Bearer <token>` when present.
-    *   On 401, attempts one refresh roundtrip; if the refresh fails, dispatches `session/logout`.
+    *   On 401, coordinates with a unified single-flight refresh helper to prevent token-rotation race conditions with concurrent RTK Query calls; if the refresh fails, dispatches `session/logout`.
     *   Returns the `Response` (or throws on non-2xx).
-    *   Used by both RTK Query's `fetchBaseQuery` (via `prepareHeaders`) and the SignalR negotiation call.
+    *   Used by both RTK Query's `fetchBaseQuery` (via a shared refresh mechanism) and the SignalR negotiation call.
 *   **`store`** — `configureStore({ reducer: { session, [identityApi.reducerPath]: identityApi, … }, middleware: (gdm) => gdm().concat(sessionMiddleware, identityApi.middleware, …) })`. Exports `RootState`, `AppDispatch`, the store instance.
 *   **`hooks`** — `export const useAppDispatch = useDispatch.withTypes<AppDispatch>()`, `export const useAppSelector = useSelector.withTypes<RootState>()`. Typed at the slice level.
 *   **`sessionSlice`** — State shape: `{ status: 'idle' | 'authenticating' | 'authenticated' | 'expired', accessToken: string | null, user: { id, name, email, initials } | null, roles: Role[], permissions: Permission[], expiresAt: number | null }`. Reducers: `setCredentials`, `clearCredentials`, `setStatus`. No async thunks — RTK Query's mutation hooks handle the API calls.
@@ -202,17 +202,17 @@ src/router/zones/*.tsx          # Modified — use GuardedPage; nested errorElem
     *   `selectUser`, `selectRoles`, `selectPermissions`
     *   `selectPredicate` — `{ isAuthenticated, roles, permissions }` (consumed by `useAuthPredicate`)
     *   `selectDefaultZone` — uses existing `defaultZoneForRoles(roles)` from `src/lib/defaultZone.ts`
-*   **`api/identity`** — Endpoints: `login`, `logout`, `refresh`, `getCurrentUser`, `listStaff`, `getStaff`, `createStaff`, `updateStaff`, `deactivateStaff`. Each `login`/`refresh` calls a `transformResponse` that dispatches `setCredentials`. `logout` calls `clearCredentials`.
+*   **`api/identity`** — Endpoints: `login`, `logout`, `refresh`, `getCurrentUser`, `getUserRestaurants`, `listStaff`, `getStaff`, `createStaff`, `updateStaff`, `deactivateStaff`. Each `login`/`refresh` calls a `transformResponse` that dispatches `setCredentials`. `logout` calls `clearCredentials`.
 *   **`api/catalog`** — Endpoints: `getRestaurants`, `getRestaurant(id)`, `getTables(restaurantId)`, `getMenu(restaurantId)`.
 *   **`api/orders`** — Endpoints: `getOrders(filters)`, `getOrder(id)`, `createOrder`, `updateOrderStatus`, `proposeModification`, `approveModification`, `splitBill`. Tag the cache by `restaurantId` so the restaurant switcher can invalidate.
 *   **`api/kitchen`** — Endpoints: `getKitchenQueue(restaurantId)`, `bumpOrder(id)`.
 *   **`api/notifications`** — Endpoints: `getNotifications`, `markRead(id)`, `markAllRead`.
-*   **`signalr.ts`** — Exports `createOrdersHub()` and `createNotificationsHub()` factories. Each returns a `HubConnection` with auto-reconnect (1s, 2s, 5s, 10s, 30s, then stop). Consumers subscribe to typed events (`orderStatusChanged`, `notificationReceived`); exposes `invoke` for client→server methods.
-*   **`env.ts`** — Typed accessor: `export const env = { apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000', signalrUrl: import.meta.env.VITE_SIGNALR_URL ?? 'http://localhost:5000' as const }`. Fails fast in dev if `import.meta.env.DEV && !import.meta.env.VITE_API_BASE_URL` (warns to console).
+*   **`signalr.ts`** — Exports `createKitchenHub()` factory. Returns a `HubConnection` with auto-reconnect (1s, 2s, 5s, 10s, 30s, then stop). The hub URL is `${env.signalrUrl}/hubs/kitchen` (e.g. `http://localhost:6004/kitchen-api/hubs/kitchen`) — `VITE_SIGNALR_URL` already includes the upstream path prefix (`/kitchen-api`), so the factory appends only `/hubs/kitchen`. Consumers subscribe to typed kitchen events (e.g. `OrderReceived`, `ItemStateChanged`, `OrderReady`); exposes `invoke` for client→server methods.
+*   **`env.ts`** — Typed accessor: `export const env = { apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:6004', signalrUrl: import.meta.env.VITE_SIGNALR_URL ?? 'http://localhost:6004/kitchen-api' as const }`. The `signalrUrl` default carries the upstream path prefix (`/kitchen-api`) so hub construction is `signalrUrl + '/hubs/kitchen'` — no double-prefix. Fails fast in dev if `import.meta.env.DEV && !import.meta.env.VITE_API_BASE_URL` (warns to console).
 *   **`.env.example`** — Documented values for `VITE_API_BASE_URL`, `VITE_SIGNALR_URL`, `VITE_NODE_ENV`. Per `AGENTS.md` §Security, no secrets.
 *   **MSW handlers** — One file per service (`handlers/identity.ts`, `handlers/orders.ts`, …). Boot in `src/test/server.ts` for Vitest; configure Playwright via the same handlers in `e2e/mocks/`.
-*   **`StorefrontProvider`** — New wrapper mounted inside `RouterProvider` in `main.tsx`: `<Provider store={store}>{children}</Provider>`. Wraps `RootLayout`'s tree.
-*   **`SignalRBoot`** — A component mounted under `StorefrontProvider` that, once authenticated, opens the SignalR hubs and dispatches their events into the RTK Query cache (via `api.util.updateQueryData`).
+*   **`StorefrontProvider`** — New wrapper mounted inside `RouterProvider` in `main.tsx`: `<Provider store={store}>{children}</Provider>`. Wraps the `RootLayout` tree.
+*   **`SignalRBoot`** — A component mounted under `StorefrontProvider` that, once authenticated, opens the kitchen SignalR hub and dispatches events into the RTK Query cache (via `api.util.updateQueryData` to update orders/kitchen status).
 
 ### 6.3 Auth slice (Phase 3)
 
@@ -241,8 +241,8 @@ src/router/zones/*.tsx          # Modified — use GuardedPage; nested errorElem
 *   **`NotificationsBell`** — Replace `notifications` + `unreadCount` with selectors. `onNotificationClick` triggers a deep-link. `onMarkAllRead` calls the mutation.
 *   **`ThemeToggle`** — Unchanged; already consumes `useTheme()`.
 *   **`UserMenu`** — Replace `user` with the selector. `onLogout` flows from the store.
-*   **SignalR boot** — `<SignalRBoot />` mounted inside `StorefrontProvider` subscribes to `/hubs/orders` and `/hubs/notifications` once authenticated; unsubscribes on logout.
-*   **Optimistic ops badge** — `opsCount` derives from the orders cache. On a `orderStatusChanged` SignalR event, the cache updates; the badge re-renders via `useTransition` to keep input responsive.
+*   **SignalR boot** — `<SignalRBoot />` mounted inside `StorefrontProvider` subscribes to the kitchen SignalR hub once authenticated; unsubscribes on logout.
+*   **Optimistic ops badge** — `opsCount` derives from the orders cache. On a `ItemStateChanged` or `OrderReceived` SignalR event, the cache updates; the badge re-renders via `useTransition` to keep input responsive.
 
 ### 6.5 Feature module — Staff (Phase 5, sketched)
 
@@ -258,7 +258,7 @@ The Staff module's detailed implementation plan lives in a sibling document. Thi
 
 ## 7. Cross-repo / integration
 
-The frontend talks to the **Orderly Microservices** sibling repo via the Ocelot API Gateway on port 5000. The hub URLs (`/hubs/orders`, `/hubs/notifications`) are gateway-fronted — no direct service-to-frontend connections. Per `AGENTS.md` §Security, all auth flows route through the gateway; the frontend never calls Identity Service (5007) directly. JWT claims are documented in `docs/backend-architecture/architecture.md` and must match `src/types/auth.ts`.
+The frontend talks to the **Orderly Microservices** sibling repo via the YARP API Gateway on port 6004. The kitchen hub URL `/kitchen-api/hubs/kitchen` is gateway-fronted — no direct service-to-frontend connections. Per `AGENTS.md` §Security, all auth flows route through the gateway; the frontend never calls Identity Service (6007) directly. Upstream calls route through path prefixes (e.g. `/identity-api/`, `/catalog-api/`). JWT claims are documented in `docs/backend-architecture/architecture.md` and must match `src/types/auth.ts`.
 
 This plan introduces two new runtime dependencies: `@reduxjs/toolkit` and `@microsoft/signalr`, plus one devDependency: `msw`. No backend changes are required; the Hub Protocol contract is whatever the existing gateway exposes.
 
@@ -338,13 +338,14 @@ This plan introduces two new runtime dependencies: `@reduxjs/toolkit` and `@micr
 - [ ] `src/app/store.ts`, `src/app/hooks.ts` (typed `useAppDispatch`, `useAppSelector`).
 - [ ] `src/lib/apiClient.ts` with `getState`-aware auth header + single-flight 401 refresh.
 - [ ] `src/app/api/{base,identity,catalog,orders,kitchen,notifications}.ts` — RTK Query slices.
-- [ ] `src/lib/signalr.ts` — `createOrdersHub`, `createNotificationsHub` factories with typed events.
+- [ ] `src/lib/signalr.ts` — `createKitchenHub` factory with typed events.
 - [ ] `src/lib/env.ts` — typed `env` accessor.
 - [ ] `.env.example` — documents the variables.
 - [ ] `src/test/server.ts` + `src/test/handlers/*` — MSW setup for Vitest.
 - [ ] `StorefrontProvider` in `main.tsx` mounts `<Provider store={store}>` before `<RouterProvider>`.
-- [ ] `SignalRBoot` subscribes to `/hubs/orders` + `/hubs/notifications` once authenticated.
+- [ ] `SignalRBoot` subscribes to `/kitchen-api/hubs/kitchen` once authenticated.
 - [ ] One passing end-to-end RTK Query call (e.g. `getRestaurants`) hooked to a fake MSW handler, demonstrated via a temporary `/profile` debug route (removed before commit).
+- [ ] Update `AGENTS.md` §Backend integration to reflect the YARP gateway (port `6004`), the kitchen hub (`/kitchen-api/hubs/kitchen`), the upstream path prefixes (`/identity-api/`, `/catalog-api/`, …), and the Identity Service port (`6007`).
 
 **Exit criteria**: `pnpm test:run` runs an RTK Query endpoint through MSW and asserts the response shape. `pnpm dev` boots; the catalog query fires on app start; `pnpm build` produces a bundle that includes `@microsoft/signalr` and `@reduxjs/toolkit`.
 
@@ -383,8 +384,8 @@ This plan introduces two new runtime dependencies: `@reduxjs/toolkit` and `@micr
 - [ ] `onNotificationClick` deep-links to the related order (or marks read).
 - [ ] `onMarkAllRead` dispatches `notificationsApi.markAllRead`.
 - [ ] `onProfile` navigates to `PATH.PROFILE` via `useNavigateWithTransition`.
-- [ ] `onLogout` dispatches `session/clearCredentials`, disconnects SignalR hubs, navigates to `PATH.HOME`.
-- [ ] `SignalRBoot` subscribes to `/hubs/orders` and `/hubs/notifications` once authenticated; unsubscribes on logout.
+- [ ] `onLogout` dispatches `session/clearCredentials`, disconnects the kitchen SignalR hub, navigates to `PATH.HOME`.
+- [ ] `SignalRBoot` subscribes to `/kitchen-api/hubs/kitchen` once authenticated; unsubscribes on logout.
 - [ ] `OpsBadge` derives from a `selectOpsCountForZone` selector.
 - [ ] MSW handlers cover `getRestaurants`, `getNotifications`, `getOrders` for the test suite.
 
@@ -473,3 +474,22 @@ Both commits are required before the phase is "done".
 - Created plan with 5 phases.
 - Sections 0–10 drafted.
 - §10 cross-cutting items derived from the full-codebase audit against `/vercel-react-best-practices`.
+
+### v1.1 (2026-07-28) — backend integration synced + copy-edit fixes
+
+**Backend integration corrections** (driven by the Orderly Microservices sibling repo, which now fronts the frontend through YARP instead of Ocelot):
+- §4 Tech decisions: gateway is **YARP** on port **`6004`** (was Ocelot / 5000). Identity Service moved to port **`6007`**.
+- §4 / §6.2 / §6.4: SignalR surface collapsed to a single **`/kitchen-api/hubs/kitchen`** hub (was two hubs — `/hubs/orders` and `/hubs/notifications`). Hub events renamed to the .NET PascalCase wire format: `OrderReceived`, `ItemStateChanged`, `OrderReady`.
+- §5 / §6.2: `signalr.ts` now exports `createKitchenHub()` only (was `createOrdersHub` + `createNotificationsHub`).
+- §6.2 `api/identity`: added **`getUserRestaurants`** endpoint (user-scoped, distinct from `catalog.getRestaurants`).
+- §6.2 `apiClient`: 401 handling now specifies a **unified single-flight refresh helper** to prevent token-rotation races with concurrent RTK Query calls.
+- §6.2 `signalr.ts` / `env.ts`: clarified that `VITE_SIGNALR_URL` already carries the upstream `/kitchen-api` prefix; the hub URL is `${signalrUrl}/hubs/kitchen` (no double-prefix).
+- §7: added upstream path-prefix convention (`/identity-api/`, `/catalog-api/`, etc.).
+
+**Copy-edit fixes**:
+- §6.2 StorefrontProvider: fixed `RootLayout's` typo → `Wraps the RootLayout tree.`
+- Phase 2 deliverables: added an explicit `AGENTS.md` sync deliverable ("Update `AGENTS.md` §Backend integration to reflect the YARP gateway, the kitchen hub, the upstream path prefixes, and the Identity Service port.").
+
+**Docs sync (sibling commit)**:
+- `AGENTS.md` §Backend integration rewritten to match the new model: gateway / port / path-prefix table, single kitchen hub, single-flight 401 refresh, and an explicit "live push delivery is not part of the foundation" note for notifications.
+- `AGENTS.md` §Security gateway URL updated from `http://localhost:5000` → `http://localhost:6004`.
