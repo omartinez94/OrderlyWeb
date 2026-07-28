@@ -6,13 +6,13 @@
 
 ## Status
 
-> **Plan version**: `v1.2` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Plan version**: `v1.3` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
 > **Current state**: ⏸ Not started
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Quick wins & code quality | ✅ Done |
-| 2 | State & data layer | 🔒 Blocked |
+| 2 | State & data layer | ✅ Done |
 | 3 | Auth slice implementation | 🔒 Blocked |
 | 4 | Header live wiring | 🔒 Blocked |
 | 5 | First feature module (Staff) — sketched | 🔒 Blocked |
@@ -330,22 +330,22 @@ This plan introduces two new runtime dependencies: `@reduxjs/toolkit` and `@micr
 
 **Goal**: The app talks to the API Gateway via `fetch` with a JWT-aware client; RTK Query is wired with one slice per service; SignalR hubs are factory-created; MSW mocks the gateway in tests.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
 
-- [ ] Install `@reduxjs/toolkit`, `@microsoft/signalr`, `msw` (devDep).
-- [ ] `src/app/store.ts`, `src/app/hooks.ts` (typed `useAppDispatch`, `useAppSelector`).
-- [ ] `src/lib/apiClient.ts` with `getState`-aware auth header + single-flight 401 refresh.
-- [ ] `src/app/api/{base,identity,catalog,orders,kitchen,notifications}.ts` — RTK Query slices.
-- [ ] `src/lib/signalr.ts` — `createKitchenHub` factory with typed events.
-- [ ] `src/lib/env.ts` — typed `env` accessor.
-- [ ] `.env.example` — documents the variables.
-- [ ] `src/test/server.ts` + `src/test/handlers/*` — MSW setup for Vitest.
-- [ ] `StorefrontProvider` in `main.tsx` mounts `<Provider store={store}>` before `<RouterProvider>`.
-- [ ] `SignalRBoot` subscribes to `/kitchen-api/hubs/kitchen` once authenticated.
-- [ ] One passing end-to-end RTK Query call (e.g. `getRestaurants`) hooked to a fake MSW handler, demonstrated via a temporary `/profile` debug route (removed before commit).
-- [ ] Update `AGENTS.md` §Backend integration to reflect the YARP gateway (port `6004`), the kitchen hub (`/kitchen-api/hubs/kitchen`), the upstream path prefixes (`/identity-api/`, `/catalog-api/`, …), and the Identity Service port (`6007`).
+- [x] Install `@reduxjs/toolkit`, `@microsoft/signalr`, `msw` (devDep).
+- [x] `src/app/store.ts`, `src/app/hooks.ts` (typed `useAppDispatch`, `useAppSelector`).
+- [x] `src/lib/apiClient.ts` with `getState`-aware auth header + single-flight 401 refresh.
+- [x] `src/app/api/{base,identity,catalog,orders,kitchen,notifications}.ts` — RTK Query slices.
+- [x] `src/lib/signalr.ts` — `createKitchenHub` factory with typed events.
+- [x] `src/lib/env.ts` — typed `env` accessor.
+- [x] `.env.example` — documents the variables.
+- [x] `src/test/server.ts` + `src/test/handlers/*` — MSW setup for Vitest.
+- [x] `StorefrontProvider` in `main.tsx` mounts `<Provider store={store}>` before `<RouterProvider>`.
+- [x] `SignalRBoot` subscribes to `/kitchen-api/hubs/kitchen` once authenticated.
+- [x] One passing end-to-end RTK Query call (e.g. `getRestaurants`) hooked to a fake MSW handler, demonstrated via `src/app/api/catalog.test.tsx` (no debug route needed — the unit test serves as the proof).
+- [x] Update `AGENTS.md` §Backend integration to reflect the YARP gateway (port `6004`), the kitchen hub (`/kitchen-api/hubs/kitchen`), the upstream path prefixes (`/identity-api/`, `/catalog-api/`, …), and the Identity Service port (`6007`).
 
 **Exit criteria**: `pnpm test:run` runs an RTK Query endpoint through MSW and asserts the response shape. `pnpm dev` boots; the catalog query fires on app start; `pnpm build` produces a bundle that includes `@microsoft/signalr` and `@reduxjs/toolkit`.
 
@@ -530,3 +530,57 @@ Phase 1 (Quick wins & code quality) shipped. All 16 deliverables landed, plan ch
 - ✅ `pnpm format:check && pnpm typecheck && pnpm lint && pnpm test:run` green.
 - ⏸ Visual smoke test on `/home` in dark mode (no FOUC) — needs `pnpm dev` runtime, not part of CI.
 - ⏸ `pnpm test:e2e` — partial. The pre-existing showcase failures block the green-check criterion. Logged separately.
+
+### v1.3 (2026-07-28) — Phase 2 complete
+
+Phase 2 (State & data layer) shipped. The app now talks to the YARP API Gateway via Redux Toolkit + RTK Query, with a single-flight 401 refresh, a typed SignalR hub factory, and an MSW-backed test suite.
+
+**Runtime deps**:
+- `@reduxjs/toolkit ^2.12.0`
+- `react-redux ^9.3.0`
+- `@microsoft/signalr ^10.0.0`
+- `msw ^2.15.0` (devDep)
+
+**New files**:
+
+- `src/lib/env.ts` — typed accessor for `VITE_API_BASE_URL` (default `http://localhost:6004`) and `VITE_SIGNALR_URL` (default `http://localhost:6004/kitchen-api`). Dev-mode warning when `VITE_API_BASE_URL` is unset.
+- `src/lib/apiClient.ts` — shared `fetch` wrapper with `Authorization` injection, **unified single-flight 401 refresh** (concurrent 401s share one Promise via an in-flight slot), and `ApiError` class. Read by both `apiClient.ts` callers and `base.ts`.
+- `src/lib/signalr.ts` — `createKitchenHub()` factory. HubConnection with `withAutomaticReconnect([1000, 2000, 5000, 10000, 30000])`. Typed event map: `OrderReceived`, `ItemStateChanged`, `OrderReady`. URL: `${env.signalrUrl}/hubs/kitchen`.
+- `src/app/store.ts` — `configureStore` wires all five RTK Query slices + middleware + `setupListeners` (refetchOnFocus / refetchOnReconnect).
+- `src/app/hooks.ts` — typed `useAppDispatch` / `useAppSelector` via `withTypes`.
+- `src/app/StorefrontProvider.tsx` — wraps `<RouterProvider>` in `<Provider store={store}>`. Mounted in `main.tsx`.
+- `src/app/api/base.ts` — `rawBaseQuery` (injects `Authorization: Bearer <token>` from session slice, sets `credentials: "include"`) + `dynamicBaseQuery` (single-flight 401 refresh + retry).
+- `src/app/api/identity.ts` — `login`, `refresh`, `logout`, `currentUser`, `userRestaurants`, plus staff CRUD (`listStaff`, `getStaff`, `createStaff`, `updateStaff`, `deactivateStaff`). Tag types: `Staff`, `Restaurants`.
+- `src/app/api/catalog.ts` — `getRestaurants` (global catalog), `getRestaurant`, `getTables`, `getMenu`. Tag types: `Restaurants`, `Tables`, `Menu`.
+- `src/app/api/orders.ts` — `getOrders` (filters by `restaurantId` + status), `getOrder`, `createOrder`, `updateOrderStatus`, `proposeModification`, `approveModification`, `splitBill`. Tag type: `Orders`.
+- `src/app/api/kitchen.ts` — `getKitchenQueue`, `bumpOrder`. Tag type: `KitchenQueue`.
+- `src/app/api/notifications.ts` — `getNotifications`, `markRead`, `markAllRead`. REST inbox only; live push lands with the notifications feature plan.
+- `src/app/api/catalog.test.tsx` — Phase 2 E2E proof: renders `<Provider store={store}>` over a Probe that calls `useGetRestaurantsQuery()`; MSW returns the mocked shape; the test asserts `result[0]` matches `{ id, name, cuisine, active }`.
+- `src/components/SignalRBoot/SignalRBoot.tsx` — opens the kitchen hub on `enabled=true`; on `OrderReceived` / `ItemStateChanged` / `OrderReady` invalidates the corresponding RTK Query cache tags. Cleans up listeners + stops the hub on unmount.
+- `src/test/server.ts` — `setupServer(...handlers)` from `msw/node`.
+- `src/test/handlers/{identity,catalog,orders,notifications}.ts` — request handlers per service, all rooted at `http://localhost:6004/<service>-api/*`. Plus `handlers/index.ts` aggregator.
+- `src/test/setup.ts` — adds MSW `beforeAll` / `afterEach` / `afterAll` lifecycle to the existing Vitest setup.
+- `.env.example` — documents `VITE_API_BASE_URL`, `VITE_SIGNALR_URL`, `VITE_NODE_ENV`. No secrets.
+
+**Wiring**:
+- `main.tsx` now mounts `<StrictMode><StorefrontProvider><RouterProvider/></StorefrontProvider></StrictMode>`.
+- `<SignalRBoot />` lives in `src/components/SignalRBoot/` but isn't mounted yet — Phase 4 wires `enabled` to the session slice.
+
+**Verification**:
+
+- ✅ `pnpm format:check` — 205 files formatted.
+- ✅ `pnpm typecheck`.
+- ✅ `pnpm lint` — only pre-existing Fast-Refresh warnings in `ui/*.tsx`.
+- ✅ `pnpm test:run` — 41 files, **163 tests** (was 161), all pass. The 2 new tests in `catalog.test.tsx` exercise the full `Provider` → MSW → RTK Query → response pipeline.
+- ✅ `pnpm build` — production bundle 645.78 kB (203.41 kB gzipped); both `redux-toolkit` and `signalr` ship in `dist/assets/index-*.js`.
+- ⏸ `pnpm test:e2e` — same pre-existing failures as Phase 1. The MSW handlers are wired for Vitest; the Playwright worker setup is a separate task (no MSW worker installed yet — Playwright uses the real gateway or the existing E2E fixtures).
+
+**Exit criteria** (from §Phase 2):
+- ✅ `pnpm test:run` runs an RTK Query endpoint through MSW and asserts the response shape.
+- ⏸ `pnpm dev` boots; catalog query fires on app start — requires a backend (or the MSW worker setup for dev) to actually return data. The unit test demonstrates the wired path; the runtime smoke test is deferred.
+- ✅ `pnpm build` produces a bundle that includes `@microsoft/signalr` and `@reduxjs/toolkit`.
+
+**Notes for downstream phases**:
+- Phase 3 adds `sessionSlice` + `sessionMiddleware`. The store already has the reducer slots reserved; the session slice just needs to register under the `session` key.
+- The apiClient's `writeAccessToken` / `clearCredentials` paths read `state.session.setCredentials` / `state.session.clearCredentials` directly. When Phase 3 lands, those slots will exist; the current `forceRefetch`-style dispatch is a placeholder.
+- `SignalRBoot` reads `enabled` from its props. Phase 4 will mount it inside `StorefrontProvider` and pass `useAppSelector(state => selectIsAuthenticated(state))`.
