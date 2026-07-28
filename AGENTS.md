@@ -126,21 +126,24 @@ Root `/` redirects authenticated users to their default zone by role. Role-based
 
 ## Backend integration
 
-| Service              | Port | Frontend responsibility                       |
-| -------------------- | ---- | --------------------------------------------- |
-| API Gateway (Ocelot) | 5000 | Single base URL — all RTK Query hits this     |
-| Identity             | 5007 | Auth (login, refresh, logout, users, roles)   |
-| Catalog              | 5001 | Restaurants, tables, menu (categories, items) |
-| Order                | 5004 | Orders, reservations, queue, modifications    |
-| Basket               | 5003 | Price calc (Redis-backed)                     |
-| Discount             | 5002 | Promo/reward codes                            |
-| Kitchen              | 5005 | KDS aggregation                               |
-| Notification         | 5006 | Push notifications, feedback                  |
+| Service              | Gateway path prefix | Upstream port | Frontend responsibility                                                            |
+| -------------------- | ------------------- | ------------- | ---------------------------------------------------------------------------------- |
+| API Gateway (YARP)   | —                   | 6004          | Single base URL — all RTK Query hits this                                          |
+| Identity             | `/identity-api/`    | 6007          | Auth (login, refresh, logout, users, roles, `getUserRestaurants`)                  |
+| Catalog              | `/catalog-api/`     | 5001          | Restaurants, tables, menu (categories, items)                                      |
+| Order                | `/order-api/`       | 5004          | Orders, reservations, queue, modifications                                         |
+| Basket               | `/basket-api/`      | 5003          | Price calc (Redis-backed)                                                          |
+| Discount             | `/discount-api/`    | 5002          | Promo/reward codes                                                                 |
+| Kitchen              | `/kitchen-api/`     | 5005          | KDS aggregation + SignalR hub (`/kitchen-api/hubs/kitchen`)                        |
+| Notification         | `/notification-api/`| 5006          | Notifications inbox (REST). Live push delivery is **not** part of the foundation.  |
 
-- Base URL: `VITE_API_BASE_URL` (default `http://localhost:5000`)
-- SignalR hubs: `/hubs/orders`, `/hubs/notifications` (URL: `VITE_SIGNALR_URL`)
+Upstream ports (the third column) are **gateway-internal**: the frontend never reaches them directly. YARP strips the path prefix (e.g. `/identity-api/`) and forwards to the matching upstream. Only the gateway port (`6004`) appears in frontend code, via `VITE_API_BASE_URL`.
+
+- Base URL: `VITE_API_BASE_URL` (default `http://localhost:6004`) — every RTK Query slice appends its service path prefix (e.g. `fetchBaseQuery({ baseUrl: env.apiBaseUrl + '/identity-api' })`).
+- SignalR hub: `${VITE_SIGNALR_URL}/hubs/kitchen` (URL: `VITE_SIGNALR_URL`, default `http://localhost:6004/kitchen-api`). `VITE_SIGNALR_URL` already includes the upstream prefix; the frontend appends only `/hubs/kitchen`.
+- Hub events (typed in `src/lib/signalr.ts`): `OrderReceived`, `ItemStateChanged`, `OrderReady`. Auto-reconnect policy: 1s, 2s, 5s, 10s, 30s, then stop.
 - Auth: JWT access token (15-min TTL, **memory only**) + httpOnly refresh cookie (7-day)
-- Auto-refresh on 401 via `src/lib/apiClient.ts` interceptor
+- Auto-refresh on 401 via `src/lib/apiClient.ts` interceptor with **single-flight refresh** (one in-flight refresh roundtrip shared by all concurrent RTK Query calls; avoids token-rotation races).
 
 For endpoint contracts and JWT claims shape, see `docs/backend-architecture/architecture.md`. For status enum, modification approval flow, and KDS time-color logic, see `docs/website-spec.md` §5.4, §6.4, §6.5.
 
@@ -163,6 +166,6 @@ For endpoint contracts and JWT claims shape, see `docs/backend-architecture/arch
 
 - Never commit secrets — `.env*` is gitignored; only `.env.example` ships
 - JWT access token lives in Redux memory only — never localStorage / sessionStorage
-- All auth flows route through the API Gateway (`http://localhost:5000`) — never call Identity Service directly
+- All auth flows route through the API Gateway (`http://localhost:6004`) — never call Identity Service directly
 - User-input that lands in URLs passes through `encodeURIComponent`; nothing user-controlled hits the DOM as HTML
 - CORS is the backend's problem; frontend trusts `VITE_API_BASE_URL` blindly in dev
