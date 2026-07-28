@@ -8,7 +8,7 @@
 
 import { useState } from "react";
 import { useParams } from "react-router";
-import { useDeactivateStaffMutation, useGetStaffQuery } from "./api";
+import { useDeactivateStaffMutation, useGetStaffQuery, useReactivateStaffMutation } from "./api";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { toast } from "../../components/ui/sonner";
@@ -19,6 +19,7 @@ export function StaffDetail() {
   const { id = "" } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useGetStaffQuery(id, { skip: !id });
   const [deactivateStaff, { isLoading: isDeactivating }] = useDeactivateStaffMutation();
+  const [reactivateStaff, { isLoading: isReactivating }] = useReactivateStaffMutation();
   const [editing, setEditing] = useState(false);
   const grantableRoles = useGrantableRoles();
   const canEdit = grantableRoles.length > 0;
@@ -47,6 +48,17 @@ export function StaffDetail() {
       const message =
         (err as { data?: { message?: string } }).data?.message ?? "Deactivation failed.";
       toast.error("Could not deactivate staff", { description: message });
+    }
+  };
+
+  const onReactivate = async (): Promise<void> => {
+    try {
+      await reactivateStaff(data.id).unwrap();
+      toast.success("Staff member reactivated.");
+    } catch (err) {
+      const message =
+        (err as { data?: { message?: string } }).data?.message ?? "Reactivation failed.";
+      toast.error("Could not reactivate staff", { description: message });
     }
   };
 
@@ -89,6 +101,16 @@ export function StaffDetail() {
               disabled={isDeactivating}
             >
               {isDeactivating ? "Deactivating…" : "Deactivate"}
+            </Button>
+          )}
+          {!data.active && canEdit && (
+            <Button
+              type="button"
+              variant="default"
+              onClick={onReactivate}
+              disabled={isReactivating}
+            >
+              {isReactivating ? "Reactivating…" : "Reactivate"}
             </Button>
           )}
         </div>

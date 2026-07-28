@@ -149,4 +149,17 @@ export const identityHandlers = [
       },
     ]);
   }),
+
+  // Phase 3: reactivate flips active back to true. The handler
+  // returns the staff member with the original roles + restaurants.
+  http.post(`${BASE}/staff/:id/reactivate`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: true,
+    }),
+  ),
 ];

@@ -18,6 +18,7 @@ export {
   useUpdateStaffMutation,
   useDeactivateStaffMutation,
   useStaffGrantsForQuery,
+  useReactivateStaffMutation,
 } from "../../app/api/identity";
 
 export type { StaffMember, StaffRoleGrant } from "../../app/api/identity";

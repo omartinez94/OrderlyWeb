@@ -160,6 +160,13 @@ export const identityApi = createApi({
       query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/grants`,
       providesTags: (_r, _e, id) => [{ type: "Staff", id: `GRANTS-${id}` }],
     }),
+    reactivateStaff: build.mutation<StaffMember, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/reactivate`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, id) => [{ type: "Staff", id }],
+    }),
   }),
   tagTypes: ["Staff", "Restaurants"],
 });
@@ -176,4 +183,5 @@ export const {
   useUpdateStaffMutation,
   useDeactivateStaffMutation,
   useStaffGrantsForQuery,
+  useReactivateStaffMutation,
 } = identityApi;
