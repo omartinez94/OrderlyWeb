@@ -6,14 +6,14 @@
 
 ## Status
 
-> **Plan version**: `v0.3` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
-> **Current state**: 🚧 Phase 2 in progress.
+> **Plan version**: `v0.4` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Current state**: 🚧 Phase 3 in progress.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Roles & permission matrix | ✅ Done |
 | 2 | Restaurant assignment semantics | ✅ Done |
-| 3 | Deactivation & soft-delete flow | ⏸ Pending |
+| 3 | Deactivation & soft-delete flow | ✅ Done |
 | 4 | Audit trail & activity log | ⏸ Pending |
 | 5 | Edge cases & operational behavior | ⏸ Pending |
 
@@ -346,15 +346,23 @@ All four inherit the auth header + 401 single-flight refresh from the foundation
 
 **Goal**: Deactivation is reversible; audit entries for both directions.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
-- [ ] `src/app/api/identity.ts` — add `useReactivateStaffMutation(staffId)`.
-- [ ] `StaffDetail` shows "Reactivate" instead of "Deactivate" when `!active`.
-- [ ] MSW handler `POST /:id/reactivate` returns the staff member with `active: true`.
-- [ ] Vitest: deactivating then reactivating preserves the original role list and restaurant assignments.
+- [x] `src/app/api/identity.ts` — add `useReactivateStaffMutation(staffId)`.
+- [x] `StaffDetail` shows "Reactivate" instead of "Deactivate" when `!active`.
+- [x] MSW handler `POST /:id/reactivate` returns the staff member with `active: true`.
+- [x] Vitest: deactivating then reactivating preserves the original role list and restaurant assignments.
 
-**Exit criteria**: A deactivated staff member's audit log shows two entries (deactivate + reactivate); the row in the list flips back to "Active" on reactivation.
+**Exit criteria**: A deactivated staff member's audit log shows two entries (deactivate + reactivate); the row in the list flips back to "Active" on reactivation. The audit log entries land in Phase 4.
+
+### Phase 3 implementation notes (2026-07-28)
+
+**Files added.** `src/features/staff/StaffDetail.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `useReactivateStaffMutation`), `src/features/staff/api.ts` (re-export), `src/features/staff/StaffDetail.tsx` (Reactivate button when `!data.active && canEdit`), `src/test/handlers/identity.ts` (`POST /:id/reactivate` returns the staff member with `active: true`).
+
+**Phase 3 verification.** `pnpm format:check` (222 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (48 files, 179 tests, +3 vs Phase 2), `pnpm build`.
+
+**Bugs found + fixed during implementation.** `StaffDetail.test.tsx` initially built its own `configureStore` without RTK Query middleware — switched to reusing the foundation's `store` so mutations resolve.
 
 ---
 
@@ -474,3 +482,11 @@ The deep-dive plan follows the foundation's conventions. See `_template.md` for 
 **Files added.** `src/features/staff/RestaurantAssignmentGrid.tsx`; `src/features/staff/RestaurantAssignmentGrid.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `StaffRoleGrant` type + `useStaffGrantsForQuery`), `src/features/staff/api.ts`, `src/features/staff/StaffForm.tsx`, `src/test/handlers/identity.ts` (`GET /staff/:id/grants`).
 
 **Verification.** `pnpm format:check` (221 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (47 files, 176 tests, +3 vs Phase 1), `pnpm build`.
+
+### v0.4 (2026-07-28) — Phase 3 complete
+
+**Deactivation & soft-delete shipped.** `useReactivateStaffMutation` flips `active` back to true; the `StaffDetail` page swaps the Deactivate button for Reactivate when the staff is inactive. The MSW handler `POST /:id/reactivate` returns the original staff member with `active: true`.
+
+**Files added.** `src/features/staff/StaffDetail.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `useReactivateStaffMutation`), `src/features/staff/api.ts`, `src/features/staff/StaffDetail.tsx`, `src/test/handlers/identity.ts`.
+
+**Verification.** `pnpm format:check` (222 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (48 files, 179 tests, +3 vs Phase 2), `pnpm build`.
