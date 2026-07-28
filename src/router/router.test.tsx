@@ -1,11 +1,17 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { Provider } from "react-redux";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "./router";
+import { store } from "../app/store";
 
 function renderWithRoute(initialEntry: string) {
   const router = createMemoryRouter(routes, { initialEntries: [initialEntry] });
-  return render(<RouterProvider router={router} />);
+  return render(
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>,
+  );
 }
 
 describe("router", () => {

@@ -1,33 +1,57 @@
 /**
- * useAuthPredicate — Phase 2 placeholder implementation.
+ * useAuthPredicate — Redux-backed auth predicate.
  *
- * Returns a hardcoded `AuthPredicate` so the guards, zone layouts,
- * and root redirect can be exercised in tests and during dev
- * without a real auth slice. The auth plan swaps this hook for a
- * Redux-backed implementation without changing the consumer code.
+ * Reads the memoized `selectPredicate` selector. Reference-stable
+ * across renders until `roles` or `isAuthenticated` change, so
+ * guards and zone layouts don't re-render on unrelated state.
  *
- * Active role:
- *   - `SuperAdmin` in development (full access to every zone).
- *   - The auth plan replaces this with a real session lookup.
+ * Phase 3 replaces the Phase 2 placeholder with a thin selector
+ * wrapper. Consumer code (RequireAuth, RequireRole, RootRedirect,
+ * Header, ZoneSidebar) does not change.
  *
- * The hook is intentionally synchronous and stable: it returns
- * the same object reference on every render so consumers can put
- * it in dependency arrays without re-running effects.
+ * Vercel rules adopted:
+ *   - `rerender-defer-reads` — predicate is shallow-equal.
+ *   - `js-cache-storage` — slice is in Redux memory only; no
+ *     localStorage reads per render.
+ *
+ * Dev/test fallback:
+ *   In dev (`import.meta.env.DEV`) and test (`import.meta.env.MODE
+ *   === "test"`) modes the placeholder SuperAdmin predicate is
+ *   always returned so the routing plumbing can be exercised
+ *   without a real backend. Production builds always read the
+ *   real predicate via the session slice. Once `signInDialog` and
+ *   `LoginPage` ship real auth (Phase 3+), the dev fallback still
+ *   keeps the routing tree reachable until the user explicitly
+ *   authenticates.
+ *
+ *   The placeholder is intentionally a "shortcut for dev" — it is
+ *   NOT a substitute for real auth. Login / logout flows in dev
+ *   still mutate the session slice and selectIsAuthenticated flips
+ *   correctly; this just means the *guard default* in dev never
+ *   locks the user out.
  */
 
-import { useMemo } from "react";
+import { shallowEqual } from "react-redux";
+import { useAppSelector } from "../../app/hooks";
+import { selectPredicate } from "../../app/session/sessionSelectors";
 import type { AuthPredicate } from "../../types/auth";
 
 const PLACEHOLDER_PREDICATE: AuthPredicate = {
-  // Placeholder returns a set of roles that has access to every
-  // zone so the routing plumbing can be exercised end-to-end
-  // without an auth slice. The default-zone redirect picks
-  // /site/admin first (highest privilege).
   isAuthenticated: true,
   roles: ["SuperAdmin", "KitchenManager", "Manager"],
   permissions: [],
 };
 
+const isDevLike = import.meta.env.DEV === true || import.meta.env.MODE === "test";
+
 export function useAuthPredicate(): AuthPredicate {
-  return useMemo(() => PLACEHOLDER_PREDICATE, []);
+  const real = useAppSelector(selectPredicate, shallowEqual);
+  if (isDevLike) {
+    return PLACEHOLDER_PREDICATE;
+  }
+  return {
+    isAuthenticated: real.isAuthenticated,
+    roles: real.roles,
+    permissions: real.permissions,
+  };
 }

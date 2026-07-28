@@ -41,14 +41,15 @@
 
 import { env } from "./env";
 import { store } from "../app/store";
-import { identityApi } from "../app/api/identity";
+import {
+  setCredentials as setSessionCredentials,
+  clearCredentials as clearSessionCredentials,
+} from "../app/session/sessionSlice";
 import type { Role } from "../types/auth";
 import type { Permission } from "../types/auth";
 
 /**
- * Access token shape stored in the session slice (Phase 3).
- * Defined here as a structural type so the API client compiles
- * before the session slice lands.
+ * Access token shape stored in the session slice.
  */
 export interface AccessToken {
   token: string;
@@ -74,48 +75,30 @@ export interface RefreshResponse {
  * through React. Returns `null` when the user is unauthenticated.
  */
 function readAccessToken(): string | null {
-  // The session slice lands in Phase 3; until then we read the
-  // placeholder slice if present, else return null.
-  // The store type is intentionally permissive — adding a real
-  // `session` reducer in Phase 3 will narrow this without a
-  // breaking change at this call site.
-  const state = store.getState() as {
-    session?: { accessToken: string | null };
-  };
-  return state.session?.accessToken ?? null;
+  return store.getState().session.accessToken;
 }
 
 /**
- * Writes a new access token to the session slice. Implemented as
- * a dispatch on the `identityApi.endpoints.refresh` mutation; the
- * mutation's `onQueryStarted` populates the slice (Phase 3 wires
- * the listener; for now it falls through silently if the slice
- * isn't mounted).
+ * Writes a new access token to the session slice. Direct dispatch;
+ * no `useSelector` here (this lives outside React).
  */
 function writeAccessToken(next: RefreshResponse): void {
-  // Phase 3 will dispatch `session/setCredentials` from the
-  // identity slice's `onQueryStarted` listener. For now we just
-  // poke the refresh mutation to trigger the cache update; the
-  // session slice will pick it up once it lands.
-  void store.dispatch(identityApi.endpoints.refresh.initiate());
-  // The above call is best-effort — Phase 3 adds the listener that
-  // captures the response into the slice. If the slice is missing,
-  // the dispatch is a no-op for now.
-  // Direct write fallback (until Phase 3 lands):
-  const direct = store.getState() as {
-    session?: { setCredentials?: (payload: RefreshResponse) => void };
-  };
-  direct.session?.setCredentials?.(next);
+  store.dispatch(
+    setSessionCredentials({
+      accessToken: next.accessToken,
+      expiresAt: next.expiresAt,
+      user: next.user,
+      roles: next.roles,
+      permissions: next.permissions,
+    }),
+  );
 }
 
 /**
  * Clears credentials on terminal auth failure.
  */
 function clearCredentials(): void {
-  const state = store.getState() as {
-    session?: { clearCredentials?: () => void };
-  };
-  state.session?.clearCredentials?.();
+  store.dispatch(clearSessionCredentials());
 }
 
 /**

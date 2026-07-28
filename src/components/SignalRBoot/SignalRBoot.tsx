@@ -63,7 +63,7 @@ function dispatchOrderReady(
   );
 }
 
-export function SignalRBoot({ enabled }: SignalRBootProps): null {
+export function SignalRBoot({ enabled }: SignalRBootProps): React.ReactElement | null {
   const dispatch = useAppDispatch();
   const hubRef = useRef<HubConnection | null>(null);
 

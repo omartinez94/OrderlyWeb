@@ -24,6 +24,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { dynamicBaseQuery } from "./base";
 import { env } from "../../lib/env";
+import { setCredentials, clearCredentials } from "../session/sessionSlice";
 
 export interface LoginRequest {
   email: string;
@@ -63,18 +64,43 @@ export const identityApi = createApi({
         method: "POST",
         body,
       }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data));
+        } catch {
+          // Login failed — leave session state untouched. The
+          // mutation's `error` field surfaces the message to the
+          // form.
+        }
+      },
     }),
     refresh: build.mutation<AuthResponse, void>({
       query: () => ({
         url: `${env.apiBaseUrl}/identity-api/auth/refresh`,
         method: "POST",
       }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data));
+        } catch {
+          // Refresh failed — session is dead. The apiClient's 401
+          // interceptor dispatches clearCredentials on terminal
+          // failure.
+          dispatch(clearCredentials());
+        }
+      },
     }),
     logout: build.mutation<void, void>({
       query: () => ({
         url: `${env.apiBaseUrl}/identity-api/auth/logout`,
         method: "POST",
       }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        await queryFulfilled;
+        dispatch(clearCredentials());
+      },
     }),
     currentUser: build.query<AuthResponse["user"], void>({
       query: () => `${env.apiBaseUrl}/identity-api/users/me`,

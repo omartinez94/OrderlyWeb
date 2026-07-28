@@ -26,16 +26,20 @@
 import { fetchBaseQuery, type FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import type { BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
 import { env } from "../../lib/env";
-import { store } from "../store";
 
 /**
  * Per-slice fetchBaseQuery configuration. Each slice appends its
  * own prefix via `baseUrl: env.apiBaseUrl + '/identity-api'` etc.
+ *
+ * The auth header is sourced from RTK Query's built-in `getState`
+ * accessor rather than a direct store import. This breaks the
+ * `store.ts → api/identity.ts → api/base.ts → store.ts` cycle that
+ * would otherwise leave `store` undefined at module evaluation time.
  */
 export const rawBaseQuery = fetchBaseQuery({
   baseUrl: env.apiBaseUrl,
-  prepareHeaders: (headers) => {
-    const state = store.getState() as { session?: { accessToken: string | null } };
+  prepareHeaders: (headers, { getState }) => {
+    const state = getState() as { session?: { accessToken: string | null } };
     const token = state.session?.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);
     return headers;

@@ -20,9 +20,11 @@ import { catalogApi } from "./api/catalog";
 import { ordersApi } from "./api/orders";
 import { kitchenApi } from "./api/kitchen";
 import { notificationsApi } from "./api/notifications";
+import sessionReducer from "./session/sessionSlice";
 
 export const store = configureStore({
   reducer: {
+    session: sessionReducer,
     [identityApi.reducerPath]: identityApi.reducer,
     [catalogApi.reducerPath]: catalogApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,

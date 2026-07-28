@@ -1,22 +1,25 @@
 /**
  * SignInDialog — the modal sign-in surface.
  *
- * Lifted from the marketing HomePage so the same dialog can be opened
- * from any surface (footer CTAs, "Locked" pages, etc.) without
- * duplicating the dialog state. Mounted once by `SignInDialogHost`,
- * which lives inside `RootLayout` so it's available across the app.
+ * Mounted once by `SignInDialogHost` (which sits inside RootLayout).
+ * On submit, calls `useLoginMutation()` from `identityApi`. The
+ * mutation's `onQueryStarted` listener populates the session slice;
+ * the dialog closes via `onOpenChange(false)` and the host's
+ * mounted tree re-renders against the new auth state.
  *
- * Visual contract: blue-teal primary, glass-strong backdrop, single
- * form, SSO row at the bottom for Google / Microsoft providers. The
- * auth plan replaces this with the real form when the Identity
- * Service is wired.
+ * Phase 3 wires the real form. SSO buttons (Google / Microsoft) are
+ * placeholders for the OAuth flow that lands with the identity
+ * feature plan.
  */
 
+import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { useLoginMutation } from "../../app/api/identity";
+import { toast } from "../ui/sonner";
 
 export interface SignInDialogProps {
   open: boolean;
@@ -24,6 +27,22 @@ export interface SignInDialogProps {
 }
 
 export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [login, { isLoading }] = useLoginMutation();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    if (!email || !password) return;
+    try {
+      await login({ email, password }).unwrap();
+      onOpenChange(false);
+    } catch (err) {
+      const message = (err as { data?: { message?: string } }).data?.message ?? "Sign-in failed";
+      toast.error("Could not sign in", { description: message });
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="border-border-subtle glass-strong sm:max-w-md">
@@ -36,13 +55,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          className="grid gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onOpenChange(false);
-          }}
-        >
+        <form className="grid gap-4" onSubmit={onSubmit}>
           <div className="grid gap-2">
             <Label htmlFor="signin-email">Work email</Label>
             <Input
@@ -50,6 +63,9 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
               type="email"
               placeholder="staff@acme.com"
               autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="grid gap-2">
@@ -59,10 +75,13 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
               type="password"
               placeholder="••••••••"
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
-          <Button type="submit" size="lg">
-            Continue
+          <Button type="submit" size="lg" disabled={isLoading}>
+            {isLoading ? "Signing in…" : "Continue"}
           </Button>
         </form>
 
@@ -73,10 +92,10 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
         </div>
 
         <div className="grid gap-2">
-          <Button variant="outline" type="button">
+          <Button variant="outline" type="button" disabled>
             Continue with Google
           </Button>
-          <Button variant="outline" type="button">
+          <Button variant="outline" type="button" disabled>
             Continue with Microsoft
           </Button>
         </div>
