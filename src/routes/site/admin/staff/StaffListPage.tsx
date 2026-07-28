@@ -1,16 +1,10 @@
 /**
- * StaffListPage — `/site/admin/staff`. Placeholder until the
- * Staff Management module ships.
+ * StaffListPage — `/site/admin/staff`. The Staff Management module
+ * lives in `src/features/staff/`; this file is just the route glue.
  */
 
-import { ZoneSplash } from "../../../../components/Layout/ZoneSplash";
+import { StaffList } from "../../../../features/staff/StaffList";
 
 export function StaffListPage() {
-  return (
-    <ZoneSplash
-      zone="admin"
-      title="Staff"
-      subtitle="List, search, and filter every staff member across the restaurants you manage."
-    />
-  );
+  return <StaffList />;
 }

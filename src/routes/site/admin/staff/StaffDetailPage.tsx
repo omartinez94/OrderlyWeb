@@ -1,16 +1,10 @@
 /**
- * StaffDetailPage — `/site/admin/staff/:id`. Placeholder until
- * the Staff Management module ships.
+ * StaffDetailPage — `/site/admin/staff/:id`. Delegates to the
+ * `StaffDetail` feature component.
  */
 
-import { ZoneSplash } from "../../../../components/Layout/ZoneSplash";
+import { StaffDetail } from "../../../../features/staff/StaffDetail";
 
 export function StaffDetailPage() {
-  return (
-    <ZoneSplash
-      zone="admin"
-      title="Staff detail"
-      subtitle="Role, restaurant assignment, activity, and audit trail."
-    />
-  );
+  return <StaffDetail />;
 }

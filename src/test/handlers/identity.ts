@@ -63,4 +63,53 @@ export const identityHandlers = [
       { id: "r-002", name: "Acme Bistro — Marina", role: "Manager" },
     ]),
   ),
+
+  http.post(`${BASE}/staff`, async ({ request }) => {
+    const body = (await request.json()) as Partial<{
+      name: string;
+      email: string;
+      roles: string[];
+      restaurantIds: string[];
+    }>;
+    return HttpResponse.json({
+      id: "staff-new",
+      name: body.name ?? "",
+      email: body.email ?? "",
+      roles: body.roles ?? [],
+      restaurantIds: body.restaurantIds ?? [],
+      active: true,
+    });
+  }),
+
+  http.get(`${BASE}/staff`, () =>
+    HttpResponse.json([
+      {
+        id: "s-001",
+        name: "Maya Okafor",
+        email: "maya@acme.co",
+        roles: ["Manager"],
+        restaurantIds: ["r-001"],
+        active: true,
+      },
+      {
+        id: "s-002",
+        name: "Diego Castro",
+        email: "diego@acme.co",
+        roles: ["Waiter"],
+        restaurantIds: ["r-001"],
+        active: true,
+      },
+    ]),
+  ),
+
+  http.get(`${BASE}/staff/:id`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: true,
+    }),
+  ),
 ];
