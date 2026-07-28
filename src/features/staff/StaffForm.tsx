@@ -8,7 +8,7 @@
  * while the mutation is in flight; on success, `onCreated` fires.
  */
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { useCreateStaffMutation, useUpdateStaffMutation } from "./api";
 import { useRestaurantContext } from "../../components/RestaurantContext/useRestaurantContext";
@@ -20,6 +20,7 @@ import { PATH } from "../../router/pathNames";
 import type { Role } from "../../types/auth";
 import type { StaffMember } from "./api";
 import { useGrantableRoles } from "./useGrantableRoles";
+import { RestaurantAssignmentGrid } from "./RestaurantAssignmentGrid";
 
 const ALL_RESTAURANTS = [
   { id: "r-001", label: "Acme Bistro — Downtown" },
@@ -43,8 +44,21 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
   const [name, setName] = useState(initial?.name ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [roles, setRoles] = useState<readonly Role[]>(initial?.roles ?? []);
-  const [restaurantIds, setRestaurantIds] = useState<readonly string[]>(
-    initial?.restaurantIds ?? (contextRestaurantId ? [contextRestaurantId] : []),
+  // Per-restaurant grants (Phase 2). Initial state: every listed
+  // restaurant starts with the union of `initial.roles` granted.
+  const initialGrants = useMemo<ReadonlyMap<string, ReadonlySet<Role>>>(() => {
+    const map = new Map<string, Set<Role>>();
+    const ids = initial?.restaurantIds ?? (contextRestaurantId ? [contextRestaurantId] : []);
+    for (const id of ids) {
+      map.set(id, new Set(initial?.roles ?? []));
+    }
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [grants, setGrants] = useState(initialGrants);
+  const restaurantIds = useMemo(
+    () => Array.from(grants.keys()).filter((id) => (grants.get(id)?.size ?? 0) > 0),
+    [grants],
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -65,10 +79,17 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
       current.includes(role) ? current.filter((r) => r !== role) : [...current, role],
     );
   };
-  const toggleRestaurant = (id: string) => {
-    setRestaurantIds((current) =>
-      current.includes(id) ? current.filter((r) => r !== id) : [...current, id],
-    );
+
+  const toggleGrant = (restaurantId: string, role: Role) => {
+    setGrants((current) => {
+      const next = new Map(current);
+      const existing = new Set(next.get(restaurantId) ?? []);
+      if (existing.has(role)) existing.delete(role);
+      else existing.add(role);
+      if (existing.size === 0) next.delete(restaurantId);
+      else next.set(restaurantId, existing);
+      return next;
+    });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -169,19 +190,17 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
       </fieldset>
 
       <fieldset className="grid gap-2" aria-invalid={Boolean(errors.restaurantIds)}>
-        <legend className="text-ink font-sans text-sm font-medium">Restaurants</legend>
-        <div className="flex flex-wrap gap-2">
-          {ALL_RESTAURANTS.map((r) => (
-            <label key={r.id} className="flex items-center gap-2 font-sans text-sm">
-              <input
-                type="checkbox"
-                checked={restaurantIds.includes(r.id)}
-                onChange={() => toggleRestaurant(r.id)}
-              />
-              {r.label}
-            </label>
-          ))}
-        </div>
+        <legend className="text-ink font-sans text-sm font-medium">Restaurant assignment</legend>
+        <p className="text-ink-muted font-sans text-xs" role="note">
+          Pick a role at each restaurant. A staff member can hold different roles at different
+          restaurants.
+        </p>
+        <RestaurantAssignmentGrid
+          restaurants={ALL_RESTAURANTS}
+          grantableRoles={grantableRoles}
+          grants={grants}
+          onToggle={toggleGrant}
+        />
         {errors.restaurantIds && (
           <p role="alert" className="text-danger font-sans text-xs">
             {errors.restaurantIds}

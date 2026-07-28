@@ -65,7 +65,11 @@ describe("StaffForm", () => {
     await user.type(screen.getByLabelText(/full name/i), "Maya Okafor");
     await user.type(screen.getByLabelText(/work email/i), "maya@acme.co");
     await user.click(screen.getByLabelText("Manager"));
-    await user.click(screen.getByLabelText("Acme Bistro — Downtown"));
+    await user.click(
+      screen.getByRole("checkbox", {
+        name: `Manager at ${"Acme Bistro — Downtown"}`,
+      }),
+    );
     await user.click(screen.getByRole("button", { name: /invite/i }));
 
     await waitFor(() => {

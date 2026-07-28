@@ -54,6 +54,14 @@ export interface StaffMember {
   active: boolean;
 }
 
+export interface StaffRoleGrant {
+  staffId: string;
+  restaurantId: string;
+  role: import("../../types/auth").Role;
+  grantedAt: string;
+  grantedBy: string;
+}
+
 export const identityApi = createApi({
   reducerPath: "identityApi",
   baseQuery: dynamicBaseQuery,
@@ -148,6 +156,10 @@ export const identityApi = createApi({
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Staff", id }],
     }),
+    staffGrantsFor: build.query<StaffRoleGrant[], string>({
+      query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/grants`,
+      providesTags: (_r, _e, id) => [{ type: "Staff", id: `GRANTS-${id}` }],
+    }),
   }),
   tagTypes: ["Staff", "Restaurants"],
 });
@@ -163,4 +175,5 @@ export const {
   useCreateStaffMutation,
   useUpdateStaffMutation,
   useDeactivateStaffMutation,
+  useStaffGrantsForQuery,
 } = identityApi;

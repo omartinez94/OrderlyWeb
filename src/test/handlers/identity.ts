@@ -126,4 +126,27 @@ export const identityHandlers = [
       active: true,
     }),
   ),
+
+  // Phase 2: per-restaurant role grants. The demo staff member
+  // holds Manager at Downtown and Waiter at Marina — exercising
+  // the "different roles at different restaurants" path.
+  http.get(`${BASE}/staff/:id/grants`, ({ params }) => {
+    const id = String(params.id);
+    return HttpResponse.json([
+      {
+        staffId: id,
+        restaurantId: "r-001",
+        role: "Manager",
+        grantedAt: "2026-06-01T00:00:00Z",
+        grantedBy: "u-admin",
+      },
+      {
+        staffId: id,
+        restaurantId: "r-002",
+        role: "Waiter",
+        grantedAt: "2026-06-01T00:00:00Z",
+        grantedBy: "u-admin",
+      },
+    ]);
+  }),
 ];
