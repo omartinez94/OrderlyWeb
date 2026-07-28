@@ -84,11 +84,19 @@ export type KitchenHubEventName = keyof KitchenHubEventMap;
  */
 const RECONNECT_DELAYS_MS: ReadonlyArray<number> = [1000, 2000, 5000, 10000, 30000];
 
-function buildHttpOptions(): IHttpConnectionOptions {
+/**
+ * Optional access token supplier. The SignalR client calls this on
+ * every (re)negotiation; the closure is captured by the
+ * HubConnectionBuilder so we don't need to rebuild the connection
+ * when the session token rotates.
+ */
+export type AccessTokenSupplier = () => string | null;
+
+export function buildHttpOptions(
+  accessTokenSupplier?: AccessTokenSupplier,
+): IHttpConnectionOptions {
   return {
-    // Phase 4 supplies an accessTokenFactory here. Until then, the
-    // hub runs anonymously (the gateway-side policy decides what
-    // events an anonymous client may see).
+    accessTokenFactory: () => Promise.resolve(accessTokenSupplier?.() ?? ""),
     logger: import.meta.env.DEV
       ? new (class {
           // Minimal console-backed ILogger so we don't pull in
@@ -108,11 +116,15 @@ function buildHttpOptions(): IHttpConnectionOptions {
  * createKitchenHub — factory that returns a configured HubConnection.
  * The connection is *not* started; consumers call `.start()` when
  * ready (typically after authentication).
+ *
+ * When `accessTokenSupplier` is provided, the connection supplies
+ * the JWT bearer token on every negotiation. The supplier is called
+ * fresh on each renegotiation, so token rotation is automatic.
  */
-export function createKitchenHub(): HubConnection {
+export function createKitchenHub(accessTokenSupplier?: AccessTokenSupplier): HubConnection {
   const url = `${env.signalrUrl}/hubs/kitchen`;
   return new HubConnectionBuilder()
-    .withUrl(url, buildHttpOptions())
+    .withUrl(url, buildHttpOptions(accessTokenSupplier))
     .withAutomaticReconnect([...RECONNECT_DELAYS_MS])
     .build();
 }

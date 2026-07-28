@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { RestaurantSwitcher } from "./slots/RestaurantSwitcher";
 import { Breadcrumb } from "./slots/Breadcrumb";
 import { OpsBadge } from "./slots/OpsBadge";
@@ -59,8 +60,14 @@ export function Header({
   onProfile,
   onLogout,
 }: HeaderProps) {
-  const currentRestaurant = restaurants.find((r) => r.id === currentRestaurantId);
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  // Memoize the derived values so the Header doesn't recompute on
+  // every render. Both are cheap, but under SignalR traffic they
+  // would compound. (Vercel `rerender-memo`.)
+  const currentRestaurant = useMemo(
+    () => restaurants.find((r) => r.id === currentRestaurantId),
+    [restaurants, currentRestaurantId],
+  );
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
   const showOpsBadge = zone !== "admin" && opsCount != null && opsCount > 0;
 
   return (

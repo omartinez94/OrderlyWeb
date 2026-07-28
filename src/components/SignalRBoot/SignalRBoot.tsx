@@ -17,7 +17,8 @@ import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 import { createKitchenHub, type KitchenHubEventMap } from "../../lib/signalr";
 import { ordersApi } from "../../app/api/orders";
 import { kitchenApi } from "../../app/api/kitchen";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectAccessToken } from "../../app/session/sessionSelectors";
 
 export interface SignalRBootProps {
   /** Set true once the session slice reports `authenticated`. */
@@ -65,13 +66,18 @@ function dispatchOrderReady(
 
 export function SignalRBoot({ enabled }: SignalRBootProps): React.ReactElement | null {
   const dispatch = useAppDispatch();
+  const accessToken = useAppSelector(selectAccessToken);
   const hubRef = useRef<HubConnection | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
     if (hubRef.current) return; // already running
 
-    const hub = createKitchenHub();
+    // Capture the token supplier so token rotation during the
+    // connection's lifetime is picked up on renegotiation.
+    const tokenSupplier = (): string | null => accessToken;
+
+    const hub = createKitchenHub(tokenSupplier);
     hubRef.current = hub;
 
     const onOrderReceived = (e: KitchenHubEventMap["OrderReceived"]): void =>
@@ -99,7 +105,7 @@ export function SignalRBoot({ enabled }: SignalRBootProps): React.ReactElement |
       }
       hubRef.current = null;
     };
-  }, [enabled, dispatch]);
+  }, [enabled, dispatch, accessToken]);
 
   return null;
 }

@@ -30,6 +30,8 @@ export interface AppNotification {
   /** ISO timestamp. Rendered in mono as a measurement. */
   timestamp: string;
   read: boolean;
+  /** Optional deep-link target — when present, the bell click navigates. */
+  link?: string;
 }
 
 /** Count of orders in progress, scoped by zone.
