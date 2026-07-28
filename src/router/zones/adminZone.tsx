@@ -3,9 +3,16 @@
  * exports a `RouteObject` that the parent `lazy:` resolves into
  * the router tree.
  *
+ * Phase 1 cleanup: the entire zone is wrapped in a single
+ * `<GuardedPage allow="admin">` at the layout level instead of
+ * wrapping each leaf in an inline
+ * `Component: () => (<RequireRole>...</RequireRole>)`. This removes
+ * the React DevTools "inline component re-mount" warning that fires
+ * when guards re-evaluate.
+ *
  * Phase 3 wires every leaf route from `docs/website-spec.md` §4.1
- * to a `<ZoneSplash />` placeholder. The zone layout is
- * role-guarded via `RequireRole allow="admin"`.
+ * to a `<ZoneSplash />` placeholder. Each leaf still renders its
+ * own page; the role check happens once at the layout boundary.
  */
 
 import type { RouteObject } from "react-router";
@@ -18,26 +25,19 @@ import { StaffDetailPage } from "../../routes/site/admin/staff/StaffDetailPage";
 import { RestaurantListPage } from "../../routes/site/admin/restaurants/RestaurantListPage";
 import { RestaurantDetailPage } from "../../routes/site/admin/restaurants/RestaurantDetailPage";
 import { AdminSettingsPage } from "../../routes/site/admin/AdminSettingsPage";
-import { RequireRole } from "../../components/RouteGuards/RequireRole";
+import { GuardedPage } from "../../components/RouteGuards/GuardedPage";
 
 const adminZone: RouteObject = {
-  Component: AdminZoneLayout,
+  Component: () => (
+    <GuardedPage allow="admin">
+      <AdminZoneLayout />
+    </GuardedPage>
+  ),
   children: [
-    {
-      index: true,
-      Component: () => (
-        <RequireRole allow="admin">
-          <AdminDashboardPage />
-        </RequireRole>
-      ),
-    },
+    { index: true, Component: AdminDashboardPage },
     {
       path: "staff",
-      Component: () => (
-        <RequireRole allow="admin">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [
         { index: true, Component: StaffListPage },
         { path: "new", Component: StaffNewPage },
@@ -46,11 +46,7 @@ const adminZone: RouteObject = {
     },
     {
       path: "restaurants",
-      Component: () => (
-        <RequireRole allow="admin">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [
         { index: true, Component: RestaurantListPage },
         { path: ":id", Component: RestaurantDetailPage },
@@ -58,11 +54,7 @@ const adminZone: RouteObject = {
     },
     {
       path: "settings",
-      Component: () => (
-        <RequireRole allow="admin">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: AdminSettingsPage }],
     },
   ],

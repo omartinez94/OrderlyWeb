@@ -28,7 +28,9 @@ function isZoneAllow(allow: ZoneAllow | readonly Role[]): allow is ZoneAllow {
 
 export function RequireRole({ allow, children }: RequireRoleProps): React.ReactNode {
   const predicate = useAuthPredicate();
-  const allowed = isZoneAllow(allow) ? canAccessZone(allow, predicate.roles) : allow.some((r) => predicate.roles.includes(r));
+  const allowed = isZoneAllow(allow)
+    ? canAccessZone(allow, predicate.roles)
+    : allow.some((r) => predicate.roles.includes(r));
 
   if (!allowed) return <ForbiddenPage />;
   return <>{children}</>;

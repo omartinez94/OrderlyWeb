@@ -44,9 +44,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function HeaderPreview({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="mb-8 last:mb-0">
-      <div className="text-ink-subtle mb-2 font-mono text-xs tracking-wider uppercase">
-        {label}
-      </div>
+      <div className="text-ink-subtle mb-2 font-mono text-xs tracking-wider uppercase">{label}</div>
       <div className="border-border-subtle overflow-hidden rounded-xl border">{children}</div>
     </div>
   );

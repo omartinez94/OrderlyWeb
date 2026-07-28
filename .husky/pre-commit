@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# Pre-commit hook — runs the formatter and the linter on staged
+# changes. Sourced from the agreed workflow in `AGENTS.md` §PR &
+# commit conventions ("Run `pnpm format` and `pnpm lint` before
+# committing"). The corresponding `prepare` script in `package.json`
+# wires this hook automatically once `pnpm install` runs.
+#
+# Bypass with `--no-verify` only when explicitly authorized.
+pnpm format:staged && pnpm lint

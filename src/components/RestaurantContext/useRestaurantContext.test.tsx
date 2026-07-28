@@ -28,10 +28,9 @@ function Probe() {
 }
 
 function Harness({ initial }: { initial: string }) {
-  const router = createMemoryRouter(
-    [{ path: "/", element: <Probe /> }],
-    { initialEntries: [initial] },
-  );
+  const router = createMemoryRouter([{ path: "/", element: <Probe /> }], {
+    initialEntries: [initial],
+  });
   return <RouterProvider router={router} />;
 }
 
@@ -68,10 +67,9 @@ describe("useRestaurantContext", () => {
       return null;
     }
     function R() {
-      const router = createMemoryRouter(
-        [{ path: "/", element: <WriteProbe /> }],
-        { initialEntries: ["/"] },
-      );
+      const router = createMemoryRouter([{ path: "/", element: <WriteProbe /> }], {
+        initialEntries: ["/"],
+      });
       return <RouterProvider router={router} />;
     }
     render(<R />);

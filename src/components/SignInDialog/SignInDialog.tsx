@@ -12,13 +12,7 @@
  * Service is wired.
  */
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -51,7 +45,12 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
         >
           <div className="grid gap-2">
             <Label htmlFor="signin-email">Work email</Label>
-            <Input id="signin-email" type="email" placeholder="staff@acme.com" autoComplete="email" />
+            <Input
+              id="signin-email"
+              type="email"
+              placeholder="staff@acme.com"
+              autoComplete="email"
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="signin-password">Password</Label>

@@ -222,8 +222,13 @@
   color: var(--color-primary);
 }
 
-.ds-switcher-menu__item:hover {
+.ds-switcher-menu__item:hover,
+.ds-switcher-menu__item[data-focus="true"] {
   background-color: var(--color-surface-elevated);
+}
+
+.ds-switcher-button__name[data-no-restaurant="true"] {
+  color: var(--color-ink-subtle);
 }
 
 .ds-switcher-menu__item-name {
@@ -564,7 +569,8 @@
   transition: background-color 100ms ease;
 }
 
-.ds-user-menu__item:hover {
+.ds-user-menu__item:hover,
+.ds-user-menu__item[data-focus="true"] {
   background-color: var(--color-surface-elevated);
 }
 
@@ -577,6 +583,7 @@
   color: var(--color-danger);
 }
 
-.ds-user-menu__item--danger:hover {
+.ds-user-menu__item--danger:hover,
+.ds-user-menu__item--danger[data-focus="true"] {
   background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
 }

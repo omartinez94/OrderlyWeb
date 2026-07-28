@@ -1,6 +1,10 @@
 /**
  * kitchenZone — the lazy route module for `/site/kitchen`.
- * Role-guarded via `RequireRole allow="kitchen"`.
+ *
+ * Phase 1 cleanup: the entire zone is wrapped in a single
+ * `<GuardedPage allow="kitchen">` at the layout level. Replaces
+ * the per-leaf `<RequireRole>` wrappers that triggered the
+ * "inline component re-mount" warning.
  */
 
 import type { RouteObject } from "react-router";
@@ -8,35 +12,18 @@ import { KitchenZoneLayout } from "../../routes/site/kitchen/KitchenZoneLayout";
 import { KitchenDashboardPage } from "../../routes/site/kitchen/KitchenDashboardPage";
 import { KitchenOrderDetailPage } from "../../routes/site/kitchen/order/KitchenOrderDetailPage";
 import { KitchenSettingsPage } from "../../routes/site/kitchen/KitchenSettingsPage";
-import { RequireRole } from "../../components/RouteGuards/RequireRole";
+import { GuardedPage } from "../../components/RouteGuards/GuardedPage";
 
 const kitchenZone: RouteObject = {
-  Component: KitchenZoneLayout,
+  Component: () => (
+    <GuardedPage allow="kitchen">
+      <KitchenZoneLayout />
+    </GuardedPage>
+  ),
   children: [
-    {
-      index: true,
-      Component: () => (
-        <RequireRole allow="kitchen">
-          <KitchenDashboardPage />
-        </RequireRole>
-      ),
-    },
-    {
-      path: "order/:id",
-      Component: () => (
-        <RequireRole allow="kitchen">
-          <KitchenOrderDetailPage />
-        </RequireRole>
-      ),
-    },
-    {
-      path: "settings",
-      Component: () => (
-        <RequireRole allow="kitchen">
-          <KitchenSettingsPage />
-        </RequireRole>
-      ),
-    },
+    { index: true, Component: KitchenDashboardPage },
+    { path: "order/:id", Component: KitchenOrderDetailPage },
+    { path: "settings", Component: KitchenSettingsPage },
   ],
 };
 

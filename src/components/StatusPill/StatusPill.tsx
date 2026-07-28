@@ -1,4 +1,5 @@
 import "./StatusPill.css";
+import type { OrderStatus } from "../../types/order";
 
 /**
  * StatusPill — a compact badge showing an order/kitchen status.
@@ -13,8 +14,12 @@ import "./StatusPill.css";
  *
  * Background uses a 10% tint of the service color so the dot/pill pair
  * reads as the same family without the pill competing with surrounding UI.
+ *
+ * `OrderStatus` is hoisted to `src/types/order.ts` (Phase 1 P1.12) but
+ * re-exported here for backward compatibility with existing consumers
+ * that import it from this module.
  */
-export type OrderStatus = "new" | "acknowledged" | "preparing" | "plating" | "ready" | "served";
+export type { OrderStatus } from "../../types/order";
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
   new: "New",

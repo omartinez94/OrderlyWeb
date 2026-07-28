@@ -1,6 +1,8 @@
 /**
  * restaurantZone — the lazy route module for `/site/restaurant`.
- * Role-guarded via `RequireRole allow="restaurant"`.
+ *
+ * Phase 1 cleanup: the entire zone is wrapped in a single
+ * `<GuardedPage allow="restaurant">` at the layout level.
  */
 
 import type { RouteObject } from "react-router";
@@ -17,26 +19,19 @@ import { ReservationsPage } from "../../routes/site/restaurant/reservations/Rese
 import { QueuePage } from "../../routes/site/restaurant/queue/QueuePage";
 import { FeedbackPage } from "../../routes/site/restaurant/feedback/FeedbackPage";
 import { AnalyticsPage } from "../../routes/site/restaurant/analytics/AnalyticsPage";
-import { RequireRole } from "../../components/RouteGuards/RequireRole";
+import { GuardedPage } from "../../components/RouteGuards/GuardedPage";
 
 const restaurantZone: RouteObject = {
-  Component: RestaurantZoneLayout,
+  Component: () => (
+    <GuardedPage allow="restaurant">
+      <RestaurantZoneLayout />
+    </GuardedPage>
+  ),
   children: [
-    {
-      index: true,
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <RestaurantDashboardPage />
-        </RequireRole>
-      ),
-    },
+    { index: true, Component: RestaurantDashboardPage },
     {
       path: "orders",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [
         { index: true, Component: OrderListPage },
         { path: "new", Component: OrderNewPage },
@@ -46,56 +41,28 @@ const restaurantZone: RouteObject = {
     },
     {
       path: "tables",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: TablesPage }],
     },
-    {
-      path: "menu",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
-      children: [{ index: true, Component: MenuPage }],
-    },
+    { path: "menu", Component: () => <Outlet />, children: [{ index: true, Component: MenuPage }] },
     {
       path: "reservations",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: ReservationsPage }],
     },
     {
       path: "queue",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: QueuePage }],
     },
     {
       path: "feedback",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: FeedbackPage }],
     },
     {
       path: "analytics",
-      Component: () => (
-        <RequireRole allow="restaurant">
-          <Outlet />
-        </RequireRole>
-      ),
+      Component: () => <Outlet />,
       children: [{ index: true, Component: AnalyticsPage }],
     },
   ],

@@ -12,11 +12,7 @@
  */
 
 import { Header } from "../Header/Header";
-import {
-  MOCK_CURRENT_USER,
-  MOCK_NOTIFICATIONS,
-  MOCK_RESTAURANTS,
-} from "../Header/mockData";
+import { MOCK_CURRENT_USER, MOCK_NOTIFICATIONS, MOCK_RESTAURANTS } from "../Header/mockData";
 import { toast } from "../ui/sonner";
 import { SignInDialog } from "../SignInDialog/SignInDialog";
 import { useState } from "react";

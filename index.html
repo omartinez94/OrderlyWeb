@@ -5,6 +5,36 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>orderlyweb</title>
+    <!--
+      Pre-hydration theme script. Runs before the module bundle paints so
+      the dark-mode-first user never sees a light-mode flash. Mirrors
+      the logic in `src/hooks/useTheme.ts`:
+        1. Read `localStorage["orderly-theme"]` (light/dark/system).
+        2. If unset or 'system', fall back to `matchMedia('(prefers-color-scheme: dark)')`.
+        3. Set `data-theme` on <html> synchronously.
+      Keep this script INLINE (no external request) and run BEFORE the
+      module script below. The values here must stay in sync with
+      `src/hooks/useTheme.ts`.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = window.localStorage.getItem("orderly-theme");
+          var resolved;
+          if (stored === "light" || stored === "dark") {
+            resolved = stored;
+          } else if (stored === "system" || stored === null || stored === undefined) {
+            var mq = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+            resolved = mq && mq.matches ? "dark" : "light";
+          } else {
+            resolved = "light";
+          }
+          document.documentElement.setAttribute("data-theme", resolved);
+        } catch (_e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

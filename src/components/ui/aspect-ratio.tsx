@@ -1,6 +1,6 @@
 "use client";
 
-import { AspectRatio as AspectRatioPrimitive } from "radix-ui";
+import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio";
 
 /**
  * AspectRatio — constrains its child to a fixed aspect ratio.

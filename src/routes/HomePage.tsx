@@ -9,9 +9,13 @@
  *   - A small "Design system" link in the footer routes to
  *     `/showcase` so the design-system showcase is reachable from
  *     the marketing surface and back (browser back works).
+ *   - The dialog itself lives in `SignInDialogHost`. This page
+ *     fires `orderly:open-signin` events via `SignInBridgeTrigger`
+ *     to open it; `HomeHeader` no longer mounts its own dialog
+ *     (Phase 1 cleanup — the duplicate caused the dialog to open
+ *     twice in some flows).
  */
 
-import { useState } from "react";
 import { Link } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
@@ -32,9 +36,8 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/ui/tooltip";
-import { SignInDialog } from "../components/SignInDialog/SignInDialog";
 import { SignInBridgeTrigger } from "../components/SignInDialog/SignInBridgeTrigger";
-import { useDialogBridge } from "../components/SignInDialog/useDialogBridge";
+import { openSignIn } from "../components/SignInDialog/useDialogBridge";
 import { PATH } from "../router/pathNames";
 
 const FAQ_ITEMS = [
@@ -76,32 +79,29 @@ export function HomePage() {
 }
 
 function HomeHeader() {
-  const [signInOpen, setSignInOpen] = useState(false);
-  const openSignIn = (): void => setSignInOpen(true);
-  useDialogBridge(openSignIn);
-
   return (
-    <>
-      <Header
-        {...GUEST_HEADER_PROPS}
-        onRestaurantChange={() => {
-          toast.info("Restaurant switching lands with the auth slice.", {
-            description: "Sign in to choose a restaurant.",
-          });
-        }}
-        onNotificationClick={() => openSignIn()}
-        onMarkAllRead={() => openSignIn()}
-        onProfile={openSignIn}
-        onLogout={openSignIn}
-      />
-      <SignInDialog open={signInOpen} onOpenChange={setSignInOpen} />
-    </>
+    <Header
+      {...GUEST_HEADER_PROPS}
+      onRestaurantChange={() => {
+        toast.info("Restaurant switching lands with the auth slice.", {
+          description: "Sign in to choose a restaurant.",
+        });
+      }}
+      onNotificationClick={openSignIn}
+      onMarkAllRead={openSignIn}
+      onProfile={openSignIn}
+      onLogout={openSignIn}
+    />
   );
 }
 
 function HeroSection() {
   return (
-    <section id="why" aria-labelledby="hero-heading" className="bg-surface relative overflow-hidden">
+    <section
+      id="why"
+      aria-labelledby="hero-heading"
+      className="bg-surface relative overflow-hidden"
+    >
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-16 lg:px-8 lg:pt-32 lg:pb-32">
         <div className="lg:col-span-7">
           <Badge variant="secondary" className="mb-6 inline-flex">
@@ -138,7 +138,9 @@ function HeroPreview() {
       <Card className="border-border-subtle bg-surface-elevated">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="text-primary font-display text-base font-bold">Order #1284</CardTitle>
+            <CardTitle className="text-primary font-display text-base font-bold">
+              Order #1284
+            </CardTitle>
             <StatusPill status="preparing" />
           </div>
           <CardDescription className="font-sans">Table 7 · 4 minutes elapsed</CardDescription>
@@ -236,7 +238,11 @@ function SignInSection() {
 
 function FaqSection() {
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="bg-surface border-border-subtle border-t">
+    <section
+      id="faq"
+      aria-labelledby="faq-heading"
+      className="bg-surface border-border-subtle border-t"
+    >
       <div className="mx-auto w-full max-w-3xl px-5 py-20 sm:py-24 lg:px-8">
         <h2
           id="faq-heading"

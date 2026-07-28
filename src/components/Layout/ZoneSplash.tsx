@@ -32,10 +32,7 @@ const ZONE_LABEL: Record<Zone, string> = {
 export function ZoneSplash({ zone, title, subtitle }: ZoneSplashProps): React.ReactNode {
   return (
     <div className="bg-surface text-ink min-h-[calc(100vh-64px)] font-sans antialiased">
-      <main
-        id="main"
-        className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-16 sm:py-24"
-      >
+      <main id="main" className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-16 sm:py-24">
         <p className="text-ink-subtle font-mono text-xs tracking-widest uppercase">
           {ZONE_LABEL[zone]}
         </p>
@@ -44,7 +41,7 @@ export function ZoneSplash({ zone, title, subtitle }: ZoneSplashProps): React.Re
           <p className="text-ink-muted max-w-xl font-sans text-base leading-relaxed">{subtitle}</p>
         )}
 
-        <Card className="bg-surface-elevated mt-4 border-border-subtle">
+        <Card className="bg-surface-elevated border-border-subtle mt-4">
           <CardHeader>
             <CardTitle className="text-primary font-display text-lg">Coming soon</CardTitle>
             <CardDescription>

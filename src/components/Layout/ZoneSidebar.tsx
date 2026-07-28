@@ -6,6 +6,12 @@
  * The active route is highlighted via `aria-current="page"` for
  * assistive tech. The visual highlight uses the `text-primary`
  * token, no decorative shape.
+ *
+ * Performance note: the role lookup builds a `Set<Role>` once per
+ * render so `item.roles.some((r) => roleSet.has(r))` is O(1) per
+ * role rather than O(roles.length). Sidebar items are short lists
+ * so this is a small win, but the pattern compounds if zones grow.
+ * (Vercel rule `js-set-map-lookups`.)
  */
 
 import { NavLink } from "react-router";
@@ -23,9 +29,8 @@ export interface SidebarItem {
 
 export function ZoneSidebar({ items }: { items: readonly SidebarItem[] }) {
   const predicate = useAuthPredicate();
-  const visible = items.filter(
-    (item) => !item.roles || item.roles.some((r) => predicate.roles.includes(r)),
-  );
+  const roleSet = new Set<Role>(predicate.roles);
+  const visible = items.filter((item) => !item.roles || item.roles.some((r) => roleSet.has(r)));
 
   return (
     <nav aria-label="Zone navigation" className="bg-surface border-border-subtle border-r">

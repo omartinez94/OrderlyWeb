@@ -38,8 +38,8 @@ import { RootRedirect } from "../components/Layout/RootRedirect";
 import { RouteLoadingShell } from "../components/Layout/RouteLoadingShell";
 import { HomePage } from "../routes/HomePage";
 import { NotFoundPage } from "../routes/NotFoundPage";
-import { ForbiddenPage } from "../routes/ForbiddenPage";
 import { LoginPage } from "../routes/LoginPage";
+import { ProfilePage } from "../routes/ProfilePage";
 import { PATH } from "./pathNames";
 import adminZone from "./zones/adminZone";
 import kitchenZone from "./zones/kitchenZone";
@@ -68,21 +68,7 @@ export const routes = [
       },
       {
         path: PATH.PROFILE,
-        Component: () => (
-          <main className="bg-surface text-ink min-h-screen font-sans antialiased">
-            <div className="mx-auto max-w-3xl px-5 py-24">
-              <p className="text-ink-subtle font-mono text-xs tracking-widest uppercase">
-                Profile
-              </p>
-              <h1 className="text-primary font-display text-4xl font-bold tracking-tight">
-                Read-only profile
-              </h1>
-              <p className="text-ink-muted mt-4 font-sans text-base leading-relaxed">
-                The full profile view ships with the auth slice.
-              </p>
-            </div>
-          </main>
-        ),
+        Component: ProfilePage,
       },
       {
         path: PATH.SHOWCASE,
@@ -100,6 +86,4 @@ export const routes = [
   },
 ];
 
-void ForbiddenPage;
-
-export const router = createBrowserRouter(routes as Parameters<typeof createBrowserRouter>[0]);
+export const router = createBrowserRouter(routes);

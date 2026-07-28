@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import type { Restaurant } from "../types";
+import { ChevronIcon } from "../icons";
 
 const TYPEAHEAD_THRESHOLD = 6;
 
@@ -45,7 +46,7 @@ export function RestaurantSwitcher({
   if (!current) {
     return (
       <div className="ds-switcher-button" data-single="true">
-        <span className="ds-switcher-button__name" style={{ color: "var(--color-ink-subtle)" }}>
+        <span className="ds-switcher-button__name" data-no-restaurant="true">
           No restaurant
         </span>
       </div>
@@ -62,20 +63,7 @@ export function RestaurantSwitcher({
       >
         <span className="ds-switcher-button__name">{current.name}</span>
         <span className="ds-switcher-button__role">{current.role}</span>
-        <svg
-          className="ds-switcher-button__chevron"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+        <ChevronIcon className="ds-switcher-button__chevron" />
       </MenuButton>
       <MenuItems className="ds-switcher-menu" anchor="bottom start" transition>
         {showSearch && (
@@ -98,11 +86,11 @@ export function RestaurantSwitcher({
                   type="button"
                   className="ds-switcher-menu__item"
                   data-active={r.id === currentRestaurantId || undefined}
+                  data-focus={focus || undefined}
                   onClick={() => {
                     onChange?.(r.id);
                     setQuery("");
                   }}
-                  style={focus ? { backgroundColor: "var(--color-surface-elevated)" } : undefined}
                 >
                   <span className="ds-switcher-menu__item-name">{r.name}</span>
                   <span className="ds-switcher-menu__item-role">{r.role}</span>

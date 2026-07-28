@@ -1,5 +1,6 @@
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import type { AppNotification } from "../types";
+import { BellIcon, CheckIcon } from "../icons";
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -44,20 +45,7 @@ export function NotificationsBell({
           unreadCount === 0 ? "Notifications, none unread" : `Notifications, ${unreadCount} unread`
         }
       >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-        </svg>
+        <BellIcon />
         {unreadCount > 0 && (
           <span className="ds-bell__badge" aria-hidden="true">
             {badgeLabel}
@@ -80,21 +68,11 @@ export function NotificationsBell({
 
         {notifications.length === 0 ? (
           <div className="ds-notifications-popover__empty">
-            <svg
+            <CheckIcon
               className="ds-notifications-popover__empty-icon"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
+              size={32}
+              strokeWidth={1.5}
+            />
             <span>You're all caught up</span>
           </div>
         ) : (

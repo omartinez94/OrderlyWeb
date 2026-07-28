@@ -16,9 +16,15 @@
  *     shadow it and create divergence.
  *   - Tests can drive the hook through `useSearchParams` directly
  *     without wrapping in a provider.
+ *
+ * Phase 1 cleanup: the warning toast is fired inside a `useEffect`
+ * keyed on `raw` so it does not toast during every render. Without
+ * the effect the toast would fire each time the consuming component
+ * re-rendered (which happens on every keystroke inside the
+ * restaurant switcher's search input, for example).
  */
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { toast } from "../ui/sonner";
 import { QUERY_PARAM } from "../../router/pathNames";
@@ -53,13 +59,15 @@ export function useRestaurantContext(): RestaurantContextValue {
     [setSearchParams],
   );
 
-  // If the URL had an invalid value, warn once per render. In practice
-  // this fires only when the URL was authored by hand with bad input.
-  if (raw && !restaurantId) {
-    toast.warning("Invalid restaurantId in URL — cleared.", {
-      description: "Restaurant context must be a short identifier.",
-    });
-  }
+  // If the URL had an invalid value, warn once when the bad value
+  // appears (not on every render).
+  useEffect(() => {
+    if (raw && !restaurantId) {
+      toast.warning("Invalid restaurantId in URL — cleared.", {
+        description: "Restaurant context must be a short identifier.",
+      });
+    }
+  }, [raw, restaurantId]);
 
   return { restaurantId, setRestaurantId };
 }

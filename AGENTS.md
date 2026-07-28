@@ -47,6 +47,7 @@ src/                           # App source (to be scaffolded)
   - HeadlessUI for unstyled interactive primitives.
   - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
   - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
+- **Navigation** — Always use `useNavigateWithTransition()` from `src/hooks/useNavigateWithTransition.ts` instead of `useNavigate()` from `react-router` for _user-initiated, non-urgent_ navigation (brand click, restaurant switch, breadcrumb segment click). The hook wraps `navigate()` in `startTransition` so navigation does not block the next user interaction. Use plain `useNavigate()` only for imperative redirects that must complete before the next render (e.g. login → default-zone redirect).
 - Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, **double quotes**, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
 - Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
 - Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
@@ -126,16 +127,16 @@ Root `/` redirects authenticated users to their default zone by role. Role-based
 
 ## Backend integration
 
-| Service              | Gateway path prefix | Upstream port | Frontend responsibility                                                            |
-| -------------------- | ------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| API Gateway (YARP)   | —                   | 6004          | Single base URL — all RTK Query hits this                                          |
-| Identity             | `/identity-api/`    | 6007          | Auth (login, refresh, logout, users, roles, `getUserRestaurants`)                  |
-| Catalog              | `/catalog-api/`     | 5001          | Restaurants, tables, menu (categories, items)                                      |
-| Order                | `/order-api/`       | 5004          | Orders, reservations, queue, modifications                                         |
-| Basket               | `/basket-api/`      | 5003          | Price calc (Redis-backed)                                                          |
-| Discount             | `/discount-api/`    | 5002          | Promo/reward codes                                                                 |
-| Kitchen              | `/kitchen-api/`     | 5005          | KDS aggregation + SignalR hub (`/kitchen-api/hubs/kitchen`)                        |
-| Notification         | `/notification-api/`| 5006          | Notifications inbox (REST). Live push delivery is **not** part of the foundation.  |
+| Service            | Gateway path prefix  | Upstream port | Frontend responsibility                                                           |
+| ------------------ | -------------------- | ------------- | --------------------------------------------------------------------------------- |
+| API Gateway (YARP) | —                    | 6004          | Single base URL — all RTK Query hits this                                         |
+| Identity           | `/identity-api/`     | 6007          | Auth (login, refresh, logout, users, roles, `getUserRestaurants`)                 |
+| Catalog            | `/catalog-api/`      | 5001          | Restaurants, tables, menu (categories, items)                                     |
+| Order              | `/order-api/`        | 5004          | Orders, reservations, queue, modifications                                        |
+| Basket             | `/basket-api/`       | 5003          | Price calc (Redis-backed)                                                         |
+| Discount           | `/discount-api/`     | 5002          | Promo/reward codes                                                                |
+| Kitchen            | `/kitchen-api/`      | 5005          | KDS aggregation + SignalR hub (`/kitchen-api/hubs/kitchen`)                       |
+| Notification       | `/notification-api/` | 5006          | Notifications inbox (REST). Live push delivery is **not** part of the foundation. |
 
 Upstream ports (the third column) are **gateway-internal**: the frontend never reaches them directly. YARP strips the path prefix (e.g. `/identity-api/`) and forwards to the matching upstream. Only the gateway port (`6004`) appears in frontend code, via `VITE_API_BASE_URL`.
 
