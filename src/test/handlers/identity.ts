@@ -71,6 +71,20 @@ export const identityHandlers = [
       roles: string[];
       restaurantIds: string[];
     }>;
+    // Phase 1: server-side authorization check (per the
+    // staff-management plan §6.2). A non-SuperAdmin trying to
+    // grant SuperAdmin gets 403. In dev/test the actor's roles
+    // come from the X-Test-Actor-Roles header (MSW-only); when
+    // absent we treat it as SuperAdmin so the default Vitest flow
+    // succeeds.
+    const actorRolesHeader = request.headers.get("x-test-actor-roles") ?? "SuperAdmin";
+    const actorRoles = actorRolesHeader.split(",").map((r) => r.trim());
+    if (body.roles?.includes("SuperAdmin") && !actorRoles.includes("SuperAdmin")) {
+      return HttpResponse.json(
+        { code: "STAFF_GRANT_FORBIDDEN", message: "Only SuperAdmin can grant SuperAdmin." },
+        { status: 403 },
+      );
+    }
     return HttpResponse.json({
       id: "staff-new",
       name: body.name ?? "",

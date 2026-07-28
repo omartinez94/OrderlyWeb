@@ -13,12 +13,15 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { toast } from "../../components/ui/sonner";
 import { StaffForm } from "./StaffForm";
+import { useGrantableRoles } from "./useGrantableRoles";
 
 export function StaffDetail() {
   const { id = "" } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useGetStaffQuery(id, { skip: !id });
   const [deactivateStaff, { isLoading: isDeactivating }] = useDeactivateStaffMutation();
   const [editing, setEditing] = useState(false);
+  const grantableRoles = useGrantableRoles();
+  const canEdit = grantableRoles.length > 0;
 
   if (isLoading) {
     return (
@@ -69,10 +72,16 @@ export function StaffDetail() {
         </header>
 
         <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={() => setEditing((current) => !current)}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setEditing((current) => !current)}
+            disabled={!canEdit}
+            title={canEdit ? undefined : "Your role cannot edit staff."}
+          >
             {editing ? "Cancel edit" : "Edit"}
           </Button>
-          {data.active && (
+          {data.active && canEdit && (
             <Button
               type="button"
               variant="destructive"

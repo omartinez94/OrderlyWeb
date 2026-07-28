@@ -1,5 +1,8 @@
 /**
  * StaffForm tests — validation, submit, and a11y.
+ *
+ * Seeds the session with SuperAdmin so `useGrantableRoles` exposes
+ * every role checkbox.
  */
 
 import { describe, expect, it } from "vitest";
@@ -8,10 +11,26 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router";
 import { axe } from "jest-axe";
-import { store } from "../../app/store";
+import { configureStore } from "@reduxjs/toolkit";
+import sessionReducer, { setCredentials } from "../../app/session/sessionSlice";
 import { StaffForm } from "./StaffForm";
 
+function makeStore() {
+  const store = configureStore({ reducer: { session: sessionReducer } });
+  store.dispatch(
+    setCredentials({
+      accessToken: "test-token",
+      expiresAt: Date.now() + 60_000,
+      user: { id: "u-1", name: "Admin", email: "admin@acme.co", initials: "AD" },
+      roles: ["SuperAdmin"],
+      permissions: [],
+    }),
+  );
+  return store;
+}
+
 function renderForm() {
+  const store = makeStore();
   return render(
     <Provider store={store}>
       <MemoryRouter>
@@ -49,9 +68,6 @@ describe("StaffForm", () => {
     await user.click(screen.getByLabelText("Acme Bistro — Downtown"));
     await user.click(screen.getByRole("button", { name: /invite/i }));
 
-    // The createStaff mutation fires MSW (which the Phase 2 handler
-    // doesn't cover for POST /identity-api/staff), so we just verify
-    // the validation gate passed — no inline alerts remain.
     await waitFor(() => {
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     });

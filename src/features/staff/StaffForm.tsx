@@ -19,17 +19,7 @@ import { toast } from "../../components/ui/sonner";
 import { PATH } from "../../router/pathNames";
 import type { Role } from "../../types/auth";
 import type { StaffMember } from "./api";
-
-const ALL_ROLES: readonly Role[] = [
-  "SuperAdmin",
-  "RestaurantAdmin",
-  "Manager",
-  "KitchenManager",
-  "KitchenStaff",
-  "Waiter",
-  "Cashier",
-  "Host",
-];
+import { useGrantableRoles } from "./useGrantableRoles";
 
 const ALL_RESTAURANTS = [
   { id: "r-001", label: "Acme Bistro — Downtown" },
@@ -47,6 +37,8 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
   const contextRestaurantId = useRestaurantContext().restaurantId;
   const [createStaff, { isLoading: isCreating }] = useCreateStaffMutation();
   const [updateStaff, { isLoading: isUpdating }] = useUpdateStaffMutation();
+  const grantableRoles = useGrantableRoles();
+  const canGrantAny = grantableRoles.length > 0;
 
   const [name, setName] = useState(initial?.name ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
@@ -150,18 +142,25 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
 
       <fieldset className="grid gap-2" aria-invalid={Boolean(errors.roles)}>
         <legend className="text-ink font-sans text-sm font-medium">Roles</legend>
-        <div className="flex flex-wrap gap-2">
-          {ALL_ROLES.map((role) => (
-            <label key={role} className="flex items-center gap-2 font-sans text-sm">
-              <input
-                type="checkbox"
-                checked={roles.includes(role)}
-                onChange={() => toggleRole(role)}
-              />
-              {role}
-            </label>
-          ))}
-        </div>
+        {!canGrantAny ? (
+          <p className="text-ink-muted font-sans text-xs" role="note">
+            Your role does not include grant authority. Only SuperAdmin and RestaurantAdmin can
+            manage staff.
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {grantableRoles.map((role) => (
+              <label key={role} className="flex items-center gap-2 font-sans text-sm">
+                <input
+                  type="checkbox"
+                  checked={roles.includes(role)}
+                  onChange={() => toggleRole(role)}
+                />
+                {role}
+              </label>
+            ))}
+          </div>
+        )}
         {errors.roles && (
           <p role="alert" className="text-danger font-sans text-xs">
             {errors.roles}

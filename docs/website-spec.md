@@ -143,6 +143,18 @@ Each zone has its own **dedicated sidebar** — the sidebar changes completely w
 
 > `/site/admin/staff` is also visible to `Manager` and `RestaurantAdmin` (view-only for Manager). See full permission naming convention in [architecture.md](./architecture/architecture.md#jwt-token-structure)
 
+### 4.3.1 Staff grant authority
+
+The Staff Management form (`/site/admin/staff`) hides role checkboxes the current actor cannot grant. The matrix is enforced client-side as a UX nicety; the Identity Service is the source of truth and re-checks authorization on every mutation (returns 403 `STAFF_GRANT_FORBIDDEN` if a non-SuperAdmin tries to grant `SuperAdmin`).
+
+| Actor role                                                               | Roles the actor can grant                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `SuperAdmin`                                                             | Every role (8)                                                           |
+| `RestaurantAdmin`                                                        | `Manager`, `KitchenManager`, `KitchenStaff`, `Waiter`, `Cashier`, `Host` |
+| `Manager`, `KitchenManager`, `KitchenStaff`, `Waiter`, `Cashier`, `Host` | None (read-only)                                                         |
+
+The frontend hook is `useGrantableRoles()` in `src/features/staff/useGrantableRoles.ts`; the matching server rules live in the Identity Service. See the [Staff Management plan](./../.agents/plans/app-foundation-completion/staff-management.md) for the full rules and edge cases.
+
 ---
 
 ## 5. Module Specifications
