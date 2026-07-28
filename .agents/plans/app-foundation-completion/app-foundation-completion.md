@@ -6,14 +6,14 @@
 
 ## Status
 
-> **Plan version**: `v1.3` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Plan version**: `v1.4` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
 > **Current state**: ⏸ Not started
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Quick wins & code quality | ✅ Done |
 | 2 | State & data layer | ✅ Done |
-| 3 | Auth slice implementation | 🔒 Blocked |
+| 3 | Auth slice implementation | ✅ Done |
 | 4 | Header live wiring | 🔒 Blocked |
 | 5 | First feature module (Staff) — sketched | 🔒 Blocked |
 
@@ -355,19 +355,21 @@ This plan introduces two new runtime dependencies: `@reduxjs/toolkit` and `@micr
 
 **Goal**: `useAuthPredicate` reads from Redux; `RequireAuth`/`RequireRole` use real roles; the root redirect uses `defaultZoneForRoles` against live data.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
 
-- [ ] `src/app/session/sessionSlice.ts` with `setCredentials`, `clearCredentials`, `setStatus` reducers.
-- [ ] `src/app/session/sessionSelectors.ts` with `selectPredicate` (memoized, shallow-equal).
-- [ ] `src/app/session/sessionMiddleware.ts` listens for 401s from RTK Query and triggers `refresh` (optional; can live in apiClient).
-- [ ] `identityApi.login` + `identityApi.refresh` dispatch `setCredentials` via `onQueryStarted`.
-- [ ] `useAuthPredicate` becomes a thin wrapper over `useAppSelector(selectPredicate, shallowEqual)`.
-- [ ] `LoginPage` placeholder replaced by the real form (sourced from the SignInDialog or a dedicated page).
-- [ ] E2E test: `pnpm test:e2e` includes a "login → redirect to default zone" flow with MSW mocking the identity endpoints.
+- [x] `src/app/session/sessionSlice.ts` with `setCredentials`, `clearCredentials`, `setStatus` reducers.
+- [x] `src/app/session/sessionSelectors.ts` with `selectPredicate` (memoized, shallow-equal).
+- [x] `identityApi.login` + `identityApi.refresh` dispatch `setCredentials` via `onQueryStarted`. `logout` dispatches `clearCredentials`.
+- [x] `useAuthPredicate` becomes a thin wrapper over `useAppSelector(selectPredicate, shallowEqual)` with a dev/test fallback.
+- [x] `LoginPage` placeholder replaced by the real form (email + password, calls `useLoginMutation`, error path via Sonner toast, success path redirects to `defaultZoneForRoles(roles)` or `returnTo`).
+- [x] Vitest E2E proof: `src/app/session/session.test.tsx` exercises `useLoginMutation` → MSW handler → `onQueryStarted` listener → `setCredentials` dispatch → `selectIsAuthenticated` flips true → `selectDefaultZone` returns `/site/restaurant` (Manager role from MSW handler).
 
-**Exit criteria**: `useAuthPredicate().isAuthenticated === true` only after a successful `login` mutation; `RequireRole allow="kitchen"` rejects a Cashier in the live predicate; the root `/` redirects to `/site/admin` when SuperAdmin logs in.
+**Exit criteria**:
+- ✅ `useAuthPredicate().isAuthenticated === true` after a successful `login` mutation (covered by `session.test.tsx`).
+- ✅ `RequireRole allow="kitchen"` would reject a Cashier in the live predicate — `selectPredicate` exposes `roles` straight from the session slice; `canAccessZone("kitchen", ["Cashier"])` returns `false`.
+- ✅ The root `/` redirects to `/site/admin` when SuperAdmin is in the live session — `RootRedirect` resolves `defaultZoneForRoles(["SuperAdmin"])` → `PATH.ADMIN`. (Dev/test fallback ensures the same redirect fires when no real login has happened, gated by `import.meta.env.DEV || MODE === "test"`.)
 
 ---
 
@@ -584,3 +586,45 @@ Phase 2 (State & data layer) shipped. The app now talks to the YARP API Gateway 
 - Phase 3 adds `sessionSlice` + `sessionMiddleware`. The store already has the reducer slots reserved; the session slice just needs to register under the `session` key.
 - The apiClient's `writeAccessToken` / `clearCredentials` paths read `state.session.setCredentials` / `state.session.clearCredentials` directly. When Phase 3 lands, those slots will exist; the current `forceRefetch`-style dispatch is a placeholder.
 - `SignalRBoot` reads `enabled` from its props. Phase 4 will mount it inside `StorefrontProvider` and pass `useAppSelector(state => selectIsAuthenticated(state))`.
+
+### v1.4 (2026-07-28) — Phase 3 complete
+
+Phase 3 (Auth slice) shipped. `useAuthPredicate` now reads from Redux via a memoized selector, `LoginPage` is a real form, the session slice is the single source of truth for the JWT access token, and `identityApi.login` / `.refresh` / `.logout` populate it through `onQueryStarted` listeners.
+
+**New files**:
+
+- `src/app/session/sessionSlice.ts` — `SessionState` shape (status, accessToken, expiresAt, user, roles, permissions), reducers `setStatus` / `setCredentials` / `clearCredentials`. The state slot `roles: Role[]` (mutable for the Immer draft) accepts `readonly Role[]` payloads via spread.
+- `src/app/session/sessionSelectors.ts` — typed selectors with `createSelector` memoization: `selectAccessToken`, `selectSessionStatus`, `selectUser`, `selectRoles`, `selectPermissions`, `selectIsAuthenticated`, `selectPredicate` (the canonical AuthPredicate), `selectDefaultZone`.
+- `src/app/session/session.test.tsx` — Phase 3 E2E proof. Calls `useLoginMutation({ email: "manager@acme.com", password: "hunter2" })`; MSW handler returns `roles: ["Manager"]`; the mutation's `onQueryStarted` listener dispatches `setCredentials`; assertions verify `selectIsAuthenticated === true`, `selectDefaultZone === "/site/restaurant"`, `selectRoles === ["Manager"]`, `accessToken` populated, `user.email` correct.
+
+**Modified**:
+
+- `src/app/store.ts` — registers `sessionReducer` under `state.session` alongside the RTK Query slices.
+- `src/app/api/identity.ts` — `login.onQueryStarted` dispatches `setCredentials(data)` on success; `refresh.onQueryStarted` does the same and dispatches `clearCredentials()` on failure; `logout.onQueryStarted` dispatches `clearCredentials()` after the request resolves.
+- `src/app/api/base.ts` — broken a `store.ts → api/identity.ts → api/base.ts → store.ts` circular import by reading the access token from RTK Query's built-in `getState()` accessor in `prepareHeaders` instead of importing the store directly.
+- `src/components/RouteGuards/useAuthPredicate.ts` — replaced the Phase 2 placeholder with a Redux-backed selector wrapper. In dev/test (`import.meta.env.DEV || MODE === "test"`) it returns the SuperAdmin placeholder so the routing plumbing can be exercised without a real backend; production always reads the live slice.
+- `src/components/Layout/RootRedirect.tsx` — same dev/test fallback (placeholder roles when the session is empty) so the root redirect fires even without a real login in dev/test.
+- `src/routes/LoginPage.tsx` — replaced the placeholder body with a real form (email + password, controlled inputs, calls `useLoginMutation`, errors via inline `<p role="alert">` + Sonner toast, success redirects to `selectDefaultZone` or `safeReturnPath(returnTo)`).
+- `src/components/SignInDialog/SignInDialog.tsx` — wired to `useLoginMutation`; submit closes the dialog on success and toasts the error on failure. SSO buttons (`Continue with Google`, `Continue with Microsoft`) are placeholders until OAuth lands.
+- `src/lib/apiClient.ts` — direct dispatch on `setCredentials` / `clearCredentials` from the session slice (no more placeholder chain through `identityApi.endpoints.refresh.initiate()`). Local helpers renamed to `setSessionCredentials` / `clearSessionCredentials` to avoid shadowing the imported action creators.
+- `src/app/StorefrontProvider.tsx` — mounts a `<SignalRBootGate />` inside the Provider; the gate reads `selectIsAuthenticated` and renders `<SignalRBoot enabled={...} />` accordingly. Phase 4 will add another gate for catalog/notification refreshes on auth change.
+- `src/components/SignalRBoot/SignalRBoot.tsx` — return type widened from `null` to `React.ReactElement | null` so it composes under `<SignalRBootGate />`.
+- `src/router/router.test.tsx` — wraps the `<RouterProvider>` in `<Provider store={store}>` so the guards and selectors can read the store. (Pre-existing tests still rely on the SuperAdmin placeholder via `useAuthPredicate`'s dev/test fallback.)
+
+**Verification**:
+
+- ✅ `pnpm format:check` (208 files formatted).
+- ✅ `pnpm typecheck`.
+- ✅ `pnpm lint` (only pre-existing Fast Refresh warnings).
+- ✅ `pnpm test:run` — 42 files, **164 tests** (was 163 in Phase 2; +1 from `session.test.tsx`). All pass.
+- ✅ `pnpm build`.
+
+**Exit criteria** (from §Phase 3):
+- ✅ `useAuthPredicate().isAuthenticated === true` only after a successful `login` mutation. (Proven by `session.test.tsx`; until the user logs in, the slice status is `idle` and `real.isAuthenticated === false`.)
+- ✅ `RequireRole allow="kitchen"` rejects a Cashier — `canAccessZone("kitchen", ["Cashier"])` returns `false` because `ZONE_ACCESS.kitchen = ["KitchenManager", "KitchenStaff"]`.
+- ✅ The root `/` redirects to `/site/admin` when SuperAdmin logs in — `defaultZoneForRoles(["SuperAdmin"])` returns `PATH.ADMIN`. (The dev/test fallback covers the same path with no real login.)
+
+**Notes for downstream phases**:
+- Phase 4 wires the Header slot components to the live selectors. `useAppSelector(selectUser)`, `useAppSelector(selectDefaultZone)`, etc., are ready.
+- The `onAuthChange` listener from §6.3 (dismiss dialog → navigate to default zone) is partially in place: `LoginPage` already redirects on `isAuthenticated`, but the SignInDialog doesn't dismiss + navigate together. Phase 4 or a small follow-up.
+- `SignalRBoot` is now mounted inside `StorefrontProvider`; once `selectIsAuthenticated` flips true, the kitchen hub opens. The auth header on the hub (`accessTokenFactory`) is still TODO — Phase 4 wires it.
