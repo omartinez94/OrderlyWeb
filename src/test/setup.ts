@@ -1,5 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { toHaveNoViolations } from "jest-axe";
+import { afterAll, afterEach, beforeAll } from "vitest";
+import { server } from "./server";
 
 // jest-axe matcher — surfaces accessibility violations as test failures.
 expect.extend(toHaveNoViolations);
@@ -39,3 +41,14 @@ if (typeof window !== "undefined" && !window.matchMedia) {
     }),
   });
 }
+
+// MSW — intercepts every fetch the app makes during Vitest runs.
+// On unhandled requests the test fails fast so we know when a
+// slice forgot to register a handler.
+beforeAll(() =>
+  server.listen({
+    onUnhandledRequest: "error",
+  }),
+);
+afterEach(() => server.resetHandlers(...server.listHandlers()));
+afterAll(() => server.close());
