@@ -6,13 +6,13 @@
 
 ## Status
 
-> **Plan version**: `v0.2` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
-> **Current state**: 🚧 Phase 1 in progress.
+> **Plan version**: `v0.3` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Current state**: 🚧 Phase 2 in progress.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Roles & permission matrix | ✅ Done |
-| 2 | Restaurant assignment semantics | ⏸ Pending |
+| 2 | Restaurant assignment semantics | ✅ Done |
 | 3 | Deactivation & soft-delete flow | ⏸ Pending |
 | 4 | Audit trail & activity log | ⏸ Pending |
 | 5 | Edge cases & operational behavior | ⏸ Pending |
@@ -323,16 +323,22 @@ All four inherit the auth header + 401 single-flight refresh from the foundation
 
 **Goal**: A staff member can hold different roles at different restaurants; the form supports it.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
-- [ ] `src/app/api/identity.ts` — add `useStaffGrantsForQuery(staffId)` returning `StaffRoleGrant[]`.
-- [ ] `src/features/staff/RestaurantAssignmentGrid.tsx` — table-style UI: rows = restaurants, columns = grantable roles, checkboxes = the grant.
-- [ ] `StaffForm` swaps the "Restaurants" fieldset for `RestaurantAssignmentGrid` when the backend exposes per-restaurant grants.
-- [ ] Vitest: a Manager with two restaurants can be assigned `Manager` at one and `Waiter` at the other.
-- [ ] MSW handler returns the per-restaurant grants for the demo staff member.
+- [x] `src/app/api/identity.ts` — add `useStaffGrantsForQuery(staffId)` returning `StaffRoleGrant[]`.
+- [x] `src/features/staff/RestaurantAssignmentGrid.tsx` — table-style UI: rows = restaurants, columns = grantable roles, checkboxes = the grant.
+- [x] `StaffForm` swaps the "Restaurants" fieldset for `RestaurantAssignmentGrid` when the backend exposes per-restaurant grants.
+- [x] Vitest: a Manager with two restaurants can be assigned `Manager` at one and `Waiter` at the other.
+- [x] MSW handler returns the per-restaurant grants for the demo staff member.
 
 **Exit criteria**: The form's "Restaurants + Roles" surface is a grid, not a flat list. Saving persists the per-restaurant grants.
+
+### Phase 2 implementation notes (2026-07-28)
+
+**Files added.** `src/features/staff/RestaurantAssignmentGrid.tsx`; `src/features/staff/RestaurantAssignmentGrid.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `useStaffGrantsForQuery` + `StaffRoleGrant` type), `src/features/staff/api.ts` (re-exports the new hook + type), `src/features/staff/StaffForm.tsx` (per-restaurant grant state via `Map<restaurantId, Set<Role>>`; swaps the flat restaurants fieldset for the grid; `restaurantIds` derived from the map keys), `src/test/handlers/identity.ts` (`GET /identity-api/staff/:id/grants` returns two demo grants: Manager @ Downtown, Waiter @ Marina).
+
+**Phase 2 verification.** `pnpm format:check` (221 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (47 files, 176 tests, +3 vs Phase 1), `pnpm build`. The 3 new tests in `RestaurantAssignmentGrid.test.tsx` cover rendering, initial-grant reflection, and onToggle dispatch.
 
 ---
 
@@ -460,3 +466,11 @@ The deep-dive plan follows the foundation's conventions. See `_template.md` for 
 **Files added.** `src/features/staff/useGrantableRoles.ts`; `src/features/staff/useGrantableRoles.test.tsx`. **Files modified:** `src/features/staff/StaffForm.tsx`, `src/features/staff/StaffDetail.tsx`, `src/test/handlers/identity.ts`, `docs/website-spec.md`.
 
 **Verification.** `pnpm format:check` (219 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (46 files, 173 tests, +4 vs Phase 5), `pnpm build`.
+
+### v0.3 (2026-07-28) — Phase 2 complete
+
+**Restaurant assignment semantics shipped.** The Staff form's flat "Restaurants + Roles" fieldsets are now a single `RestaurantAssignmentGrid`: rows = restaurants, columns = grantable roles, checkboxes per cell. `useStaffGrantsForQuery` exposes the per-restaurant grants via RTK Query; the form owns the `Map<restaurantId, Set<Role>>` state and a `toggleGrant` callback. The demo staff member holds Manager @ Downtown and Waiter @ Marina.
+
+**Files added.** `src/features/staff/RestaurantAssignmentGrid.tsx`; `src/features/staff/RestaurantAssignmentGrid.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `StaffRoleGrant` type + `useStaffGrantsForQuery`), `src/features/staff/api.ts`, `src/features/staff/StaffForm.tsx`, `src/test/handlers/identity.ts` (`GET /staff/:id/grants`).
+
+**Verification.** `pnpm format:check` (221 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (47 files, 176 tests, +3 vs Phase 1), `pnpm build`.
