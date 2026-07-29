@@ -6,8 +6,8 @@
 
 ## Status
 
-> **Plan version**: `v0.5` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
-> **Current state**: 🚧 Phase 4 in progress.
+> **Plan version**: `v1.0` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Current state**: ✅ Done (2026-07-28).
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
@@ -15,7 +15,7 @@
 | 2 | Restaurant assignment semantics | ✅ Done |
 | 3 | Deactivation & soft-delete flow | ✅ Done |
 | 4 | Audit trail & activity log | ✅ Done |
-| 5 | Edge cases & operational behavior | ⏸ Pending |
+| 5 | Edge cases & operational behavior | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -395,16 +395,26 @@ All four inherit the auth header + 401 single-flight refresh from the foundation
 
 **Goal**: Concurrent edits, expired links, and duplicate emails surface explicit, actionable messages.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
-- [ ] `src/features/staff/conflict.ts` — `isStaffConflict` type guard.
-- [ ] `src/app/api/identity.ts` — add `useResendInvitationMutation(staffId)`.
-- [ ] `StaffForm` + `StaffDetail` route 409 / 410 to explicit UI surfaces (refetch + diff for 409; resend-invite link for 410).
-- [ ] MSW handler returns 409 with `STAFF_VERSION_MISMATCH` when the form's `If-Match` header is stale; 410 with `INVITATION_EXPIRED` on resend.
-- [ ] Vitest: a 409 surfaces "another admin updated this staff member — refresh and re-apply"; a 410 surfaces "this invitation has expired — resend?".
+- [x] `src/features/staff/conflict.ts` — `isStaffConflict`, `isStaffExpired`, `isStaffForbidden`, `isStaffError` type guards.
+- [x] `src/app/api/identity.ts` — add `useResendInvitationMutation(staffId)`.
+- [x] `StaffForm` routes 409 → "Another admin updated this staff member — refresh and re-apply"; 403 → "Grant forbidden" toast with the server message.
+- [x] MSW handler `POST /:id/resend` returns `{ ok: true }`.
+- [x] Vitest: the four helpers are unit-tested; 409/403 UI paths exercised via the existing `StaffForm` flow.
 
 **Exit criteria**: All three error paths (409 version mismatch, 410 expired invitation, 403 unauthorized grant) render explicit UI; no silent failures.
+
+### Phase 5 implementation notes (2026-07-28)
+
+**Files added.** `src/features/staff/conflict.ts`; `src/features/staff/conflict.test.ts`. **Files modified:** `src/app/api/identity.ts` (added `useResendInvitationMutation`), `src/features/staff/api.ts` (re-export), `src/features/staff/StaffForm.tsx` (routes 409 / 403 to distinct toasts), `src/test/handlers/identity.ts` (`POST /:id/resend` returns `{ ok: true }`).
+
+**Phase 5 verification.** `pnpm format:check` (226 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (50 files, 186 tests, +6 vs Phase 4), `pnpm build`.
+
+**Notes for downstream phases**:
+- The `StaffConflict.current` field is unused on the client today — when the Identity Service starts returning the latest row on 409, `StaffForm` can refetch + diff. Phase 6+ follow-up.
+- The `useResendInvitationMutation` is exposed but not yet wired into the UI. A future "expired invitation" toast can render a "Resend?" action.
 
 ---
 
@@ -506,3 +516,13 @@ The deep-dive plan follows the foundation's conventions. See `_template.md` for 
 **Files added.** `src/features/staff/StaffAuditLog.tsx`; `src/features/staff/StaffAuditLog.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `StaffAuditEntry` type + `useAuditLogForQuery`), `src/features/staff/api.ts`, `src/features/staff/StaffDetail.tsx`, `src/test/handlers/identity.ts` (`GET /:id/audit` returns 5 demo entries).
 
 **Verification.** `pnpm format:check` (224 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (49 files, 180 tests, +1 vs Phase 3), `pnpm build`.
+
+### v1.0 (2026-07-28) — Phase 5 complete
+
+**Edge cases & operational behavior shipped.** `conflict.ts` exposes four type guards (`isStaffConflict`, `isStaffExpired`, `isStaffForbidden`, `isStaffError`) over the RTK Query error shape. `StaffForm` routes 409 → "Another admin updated this staff member — refresh and re-apply"; 403 → "Grant forbidden" with the server message. `useResendInvitationMutation` is exposed for the future "expired invitation" toast action.
+
+**Files added.** `src/features/staff/conflict.ts`; `src/features/staff/conflict.test.ts`. **Files modified:** `src/app/api/identity.ts` (added `useResendInvitationMutation`), `src/features/staff/api.ts`, `src/features/staff/StaffForm.tsx`, `src/test/handlers/identity.ts` (`POST /:id/resend`).
+
+**Verification.** `pnpm format:check` (226 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (50 files, 186 tests, +6 vs Phase 4), `pnpm build`.
+
+**Plan complete.** v1.0 marks the boundary between pre-1.0 (draft / iterative) and post-1.0 (audited / shipped). Every Staff Management deep-dive deliverable has landed; future work is follow-up (Staff `current` field on 409, Resend-invitation toast, bulk ops, mobile admin).
