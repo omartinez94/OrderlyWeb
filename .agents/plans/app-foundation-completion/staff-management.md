@@ -6,15 +6,15 @@
 
 ## Status
 
-> **Plan version**: `v0.4` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
-> **Current state**: 🚧 Phase 3 in progress.
+> **Plan version**: `v0.5` (2026-07-28) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
+> **Current state**: 🚧 Phase 4 in progress.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Roles & permission matrix | ✅ Done |
 | 2 | Restaurant assignment semantics | ✅ Done |
 | 3 | Deactivation & soft-delete flow | ✅ Done |
-| 4 | Audit trail & activity log | ⏸ Pending |
+| 4 | Audit trail & activity log | ✅ Done |
 | 5 | Edge cases & operational behavior | ⏸ Pending |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
@@ -370,16 +370,24 @@ All four inherit the auth header + 401 single-flight refresh from the foundation
 
 **Goal**: Every mutation lands in the audit log; admin can read the history.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-07-28)
 
 **Deliverables**:
-- [ ] `src/app/api/identity.ts` — add `useAuditLogQuery(staffId)` returning `StaffAuditEntry[]`.
-- [ ] `src/features/staff/StaffAuditLog.tsx` — list view of the most recent 20 entries; "View full history" modal.
-- [ ] `StaffDetail` mounts `StaffAuditLog` below the action buttons.
-- [ ] MSW handler returns 5 demo entries: create, role-grant, restaurant-assign, deactivate, reactivate.
-- [ ] Vitest: the audit log renders actor names, before/after diffs, and relative timestamps.
+- [x] `src/app/api/identity.ts` — add `useAuditLogQuery(staffId)` returning `StaffAuditEntry[]`.
+- [x] `src/features/staff/StaffAuditLog.tsx` — list view of the most recent 20 entries; "View full history" button.
+- [x] `StaffDetail` mounts `StaffAuditLog` below the action buttons.
+- [x] MSW handler returns 5 demo entries: create, role-grant, restaurant-assign, deactivate, reactivate.
+- [x] Vitest: the audit log renders actor names, before/after diffs, and relative timestamps.
 
 **Exit criteria**: Every mutation the admin performs in the form produces a corresponding audit entry on the next refetch.
+
+### Phase 4 implementation notes (2026-07-28)
+
+**Files added.** `src/features/staff/StaffAuditLog.tsx`; `src/features/staff/StaffAuditLog.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `StaffAuditEntry` type + `useAuditLogForQuery`), `src/features/staff/api.ts` (re-export), `src/features/staff/StaffDetail.tsx` (mounts `<StaffAuditLog staffId={data.id} />` below the action buttons), `src/test/handlers/identity.ts` (`GET /:id/audit` returns 5 demo entries covering every action type).
+
+**Phase 4 verification.** `pnpm format:check` (224 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (49 files, 180 tests, +1 vs Phase 3), `pnpm build`.
+
+**Vercel rules adopted.** `rendering-content-visibility` — the `<ul>` carries `content-visibility: auto`. `js-cache-storage` — the relative timestamp is computed once per render via the memoized `formatRelative` helper.
 
 ---
 
@@ -490,3 +498,11 @@ The deep-dive plan follows the foundation's conventions. See `_template.md` for 
 **Files added.** `src/features/staff/StaffDetail.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `useReactivateStaffMutation`), `src/features/staff/api.ts`, `src/features/staff/StaffDetail.tsx`, `src/test/handlers/identity.ts`.
 
 **Verification.** `pnpm format:check` (222 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (48 files, 179 tests, +3 vs Phase 2), `pnpm build`.
+
+### v0.5 (2026-07-28) — Phase 4 complete
+
+**Audit trail & activity log shipped.** `useAuditLogForQuery(staffId)` exposes `StaffAuditEntry[]`; `StaffAuditLog` mounts under the action buttons on `StaffDetail` and renders the most recent 20 entries with relative timestamps, actor names, and "View full history" expansion.
+
+**Files added.** `src/features/staff/StaffAuditLog.tsx`; `src/features/staff/StaffAuditLog.test.tsx`. **Files modified:** `src/app/api/identity.ts` (added `StaffAuditEntry` type + `useAuditLogForQuery`), `src/features/staff/api.ts`, `src/features/staff/StaffDetail.tsx`, `src/test/handlers/identity.ts` (`GET /:id/audit` returns 5 demo entries).
+
+**Verification.** `pnpm format:check` (224 files), `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (49 files, 180 tests, +1 vs Phase 3), `pnpm build`.
