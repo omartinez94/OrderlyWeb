@@ -21,6 +21,7 @@ import type { Role } from "../../types/auth";
 import type { StaffMember } from "./api";
 import { useGrantableRoles } from "./useGrantableRoles";
 import { RestaurantAssignmentGrid } from "./RestaurantAssignmentGrid";
+import { isStaffConflict, isStaffForbidden } from "./conflict";
 
 const ALL_RESTAURANTS = [
   { id: "r-001", label: "Acme Bistro — Downtown" },
@@ -121,6 +122,18 @@ export function StaffForm({ initial, onSuccess }: StaffFormProps) {
         navigate(PATH.ADMIN_STAFF);
       }
     } catch (err) {
+      if (isStaffConflict(err)) {
+        toast.error("Another admin updated this staff member", {
+          description: "Refresh and re-apply your changes.",
+        });
+        return;
+      }
+      if (isStaffForbidden(err)) {
+        toast.error("Grant forbidden", {
+          description: err.message,
+        });
+        return;
+      }
       const message = (err as { data?: { message?: string } }).data?.message ?? "Save failed.";
       toast.error("Could not save staff", { description: message });
     }

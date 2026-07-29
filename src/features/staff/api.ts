@@ -20,6 +20,7 @@ export {
   useStaffGrantsForQuery,
   useReactivateStaffMutation,
   useAuditLogForQuery,
+  useResendInvitationMutation,
 } from "../../app/api/identity";
 
 export type { StaffMember, StaffRoleGrant, StaffAuditEntry } from "../../app/api/identity";

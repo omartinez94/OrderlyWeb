@@ -191,6 +191,12 @@ export const identityApi = createApi({
       query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/audit`,
       providesTags: (_r, _e, id) => [{ type: "Staff", id: `AUDIT-${id}` }],
     }),
+    resendInvitation: build.mutation<{ ok: true }, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/identity-api/staff/invitations/${encodeURIComponent(id)}/resend`,
+        method: "POST",
+      }),
+    }),
   }),
   tagTypes: ["Staff", "Restaurants"],
 });
@@ -209,4 +215,5 @@ export const {
   useStaffGrantsForQuery,
   useReactivateStaffMutation,
   useAuditLogForQuery,
+  useResendInvitationMutation,
 } = identityApi;

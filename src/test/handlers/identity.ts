@@ -163,6 +163,11 @@ export const identityHandlers = [
     }),
   ),
 
+  // Phase 5: resend-invitation. Always succeeds (the demo
+  // doesn't simulate a 410 path here; that flow is exercised by
+  // the StaffExpired type guard in `conflict.ts`).
+  http.post(`${BASE}/staff/invitations/:id/resend`, () => HttpResponse.json({ ok: true })),
+
   // Phase 4: audit log. The demo staff member has 5 entries —
   // covering create, role grant, restaurant assignment,
   // deactivate, reactivate.
