@@ -162,4 +162,64 @@ export const identityHandlers = [
       active: true,
     }),
   ),
+
+  // Phase 4: audit log. The demo staff member has 5 entries —
+  // covering create, role grant, restaurant assignment,
+  // deactivate, reactivate.
+  http.get(`${BASE}/staff/:id/audit`, ({ params }) => {
+    const id = String(params.id);
+    const now = Date.now();
+    return HttpResponse.json([
+      {
+        id: "audit-5",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "reactivate",
+        before: { active: false },
+        after: { active: true },
+        timestamp: new Date(now - 60_000).toISOString(),
+      },
+      {
+        id: "audit-4",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "deactivate",
+        before: { active: true },
+        after: { active: false },
+        timestamp: new Date(now - 2 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-3",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "restaurant-assign",
+        before: { restaurantIds: ["r-001"] },
+        after: { restaurantIds: ["r-001", "r-002"] },
+        timestamp: new Date(now - 24 * 60 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-2",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "role-grant",
+        before: { roles: [] },
+        after: { roles: ["Manager"] },
+        timestamp: new Date(now - 2 * 24 * 60 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-1",
+        staffId: id,
+        actorId: "u-system",
+        actorName: "System",
+        action: "create",
+        before: null,
+        after: { name: "Maya Okafor", roles: ["Manager"] },
+        timestamp: new Date(now - 7 * 24 * 60 * 60_000).toISOString(),
+      },
+    ]);
+  }),
 ];

@@ -62,6 +62,26 @@ export interface StaffRoleGrant {
   grantedBy: string;
 }
 
+export interface StaffAuditEntry {
+  id: string;
+  staffId: string;
+  actorId: string;
+  actorName: string;
+  action:
+    | "create"
+    | "update"
+    | "deactivate"
+    | "reactivate"
+    | "role-grant"
+    | "role-revoke"
+    | "restaurant-assign"
+    | "restaurant-unassign";
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  timestamp: string;
+  reason?: string;
+}
+
 export const identityApi = createApi({
   reducerPath: "identityApi",
   baseQuery: dynamicBaseQuery,
@@ -167,6 +187,10 @@ export const identityApi = createApi({
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Staff", id }],
     }),
+    auditLogFor: build.query<StaffAuditEntry[], string>({
+      query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/audit`,
+      providesTags: (_r, _e, id) => [{ type: "Staff", id: `AUDIT-${id}` }],
+    }),
   }),
   tagTypes: ["Staff", "Restaurants"],
 });
@@ -184,4 +208,5 @@ export const {
   useDeactivateStaffMutation,
   useStaffGrantsForQuery,
   useReactivateStaffMutation,
+  useAuditLogForQuery,
 } = identityApi;

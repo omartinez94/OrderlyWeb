@@ -44,7 +44,7 @@ describe("StaffDetail", () => {
   it("renders the deactivate button when the staff is active", async () => {
     renderAt("/site/admin/staff/s-001");
     await waitFor(() => {
-      expect(screen.getByText(/Maya Okafor/)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /Maya Okafor/ })).toBeInTheDocument();
     });
     expect(screen.getByRole("button", { name: /deactivate/i })).toBeInTheDocument();
   });
@@ -52,7 +52,7 @@ describe("StaffDetail", () => {
   it("does not show the reactivate button while the staff is active", async () => {
     renderAt("/site/admin/staff/s-001");
     await waitFor(() => {
-      expect(screen.getByText(/Maya Okafor/)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /deactivate/i })).toBeInTheDocument();
     });
     expect(screen.queryByRole("button", { name: /reactivate/i })).not.toBeInTheDocument();
   });
@@ -67,7 +67,7 @@ describe("StaffDetail", () => {
     await user.click(screen.getByRole("button", { name: /deactivate/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Maya Okafor/)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /Maya Okafor/ })).toBeInTheDocument();
     });
   });
 });

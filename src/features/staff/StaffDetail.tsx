@@ -13,6 +13,7 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { toast } from "../../components/ui/sonner";
 import { StaffForm } from "./StaffForm";
+import { StaffAuditLog } from "./StaffAuditLog";
 import { useGrantableRoles } from "./useGrantableRoles";
 
 export function StaffDetail() {
@@ -116,6 +117,8 @@ export function StaffDetail() {
         </div>
 
         {editing ? <StaffForm initial={data} onSuccess={() => setEditing(false)} /> : null}
+
+        <StaffAuditLog staffId={data.id} />
       </main>
     </div>
   );
