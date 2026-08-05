@@ -6,4 +6,4 @@
 # wires this hook automatically once `pnpm install` runs.
 #
 # Bypass with `--no-verify` only when explicitly authorized.
-pnpm format:staged && pnpm lint
+node scripts/check-secrets.js && pnpm format:staged && pnpm lint
