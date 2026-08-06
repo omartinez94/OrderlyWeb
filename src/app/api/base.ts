@@ -26,6 +26,8 @@
 import { fetchBaseQuery, type FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import type { BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
 import { env } from "../../lib/env";
+import { refreshAccessToken } from "../../lib/authRefresh";
+import { clearCredentials, setCredentials } from "../session/sessionSlice";
 
 /**
  * Per-slice fetchBaseQuery configuration. Each slice appends its
@@ -47,28 +49,6 @@ export const rawBaseQuery = fetchBaseQuery({
   credentials: "include",
 });
 
-let inFlightRefresh: Promise<string | null> | null = null;
-
-async function refreshAccessToken(): Promise<string | null> {
-  if (inFlightRefresh) return inFlightRefresh;
-  const promise = (async () => {
-    const res = await fetch(`${env.apiBaseUrl}/identity-api/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { accessToken?: string };
-    return json.accessToken ?? null;
-  })();
-  inFlightRefresh = promise;
-  try {
-    return await promise;
-  } finally {
-    inFlightRefresh = null;
-  }
-}
-
 /**
  * `dynamicBaseQuery` — wraps `rawBaseQuery` with a single-flight
  * 401 refresh + retry. The first 401 kicks off a refresh; concurrent
@@ -83,9 +63,12 @@ export const dynamicBaseQuery: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
-    const newToken = await refreshAccessToken();
-    if (newToken) {
+    try {
+      const json = await refreshAccessToken();
+      api.dispatch(setCredentials(json));
       result = await rawBaseQuery(args, api, extraOptions);
+    } catch {
+      api.dispatch(clearCredentials());
     }
   }
   return result;

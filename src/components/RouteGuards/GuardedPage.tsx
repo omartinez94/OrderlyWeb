@@ -26,6 +26,7 @@
 import type { ReactNode } from "react";
 import type { Role, ZoneAllow } from "../../types/auth";
 import { RequireRole } from "./RequireRole";
+import { RequireAuth } from "./RequireAuth";
 
 export interface GuardedPageProps {
   allow: ZoneAllow | readonly Role[];
@@ -33,5 +34,9 @@ export interface GuardedPageProps {
 }
 
 export function GuardedPage({ allow, children }: GuardedPageProps): ReactNode {
-  return <RequireRole allow={allow}>{children}</RequireRole>;
+  return (
+    <RequireAuth>
+      <RequireRole allow={allow}>{children}</RequireRole>
+    </RequireAuth>
+  );
 }

@@ -36,19 +36,10 @@ import { useAppSelector } from "../../app/hooks";
 import { selectPredicate } from "../../app/session/sessionSelectors";
 import type { AuthPredicate } from "../../types/auth";
 
-const PLACEHOLDER_PREDICATE: AuthPredicate = {
-  isAuthenticated: true,
-  roles: ["SuperAdmin", "KitchenManager", "Manager"],
-  permissions: [],
-};
 
-const isDevLike = import.meta.env.DEV === true || import.meta.env.MODE === "test";
 
 export function useAuthPredicate(): AuthPredicate {
   const real = useAppSelector(selectPredicate, shallowEqual);
-  if (isDevLike) {
-    return PLACEHOLDER_PREDICATE;
-  }
   return {
     isAuthenticated: real.isAuthenticated,
     roles: real.roles,

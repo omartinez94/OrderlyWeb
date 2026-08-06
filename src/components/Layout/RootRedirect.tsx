@@ -29,16 +29,15 @@ import { selectRoles } from "../../app/session/sessionSelectors";
 import { PATH, QUERY_PARAM } from "../../router/pathNames";
 import { defaultZoneForRoles } from "../../lib/defaultZone";
 import type { Role } from "../../types/auth";
+import { HomePage } from "../../routes/HomePage";
 
-const PLACEHOLDER_ROLES: readonly Role[] = ["SuperAdmin", "KitchenManager", "Manager"];
-const isDevLike = import.meta.env.DEV === true || import.meta.env.MODE === "test";
 
-export function RootRedirect(): null {
+
+export function RootRedirect(): React.ReactElement | null {
   const liveRoles = useAppSelector(selectRoles, shallowEqual);
   const navigate = useNavigate();
 
-  const roles: readonly Role[] =
-    isDevLike && liveRoles.length === 0 ? PLACEHOLDER_ROLES : liveRoles;
+  const roles: readonly Role[] = liveRoles;
   const isAuthenticated = roles.length > 0;
 
   useEffect(() => {
@@ -55,6 +54,10 @@ export function RootRedirect(): null {
     const target = defaultZoneForRoles(roles);
     if (target) navigate(target, { replace: true });
   }, [isAuthenticated, roles, navigate]);
+
+  if (!isAuthenticated) {
+    return <HomePage />;
+  }
 
   return null;
 }

@@ -59,16 +59,7 @@ export interface AccessToken {
   permissions: readonly Permission[];
 }
 
-/**
- * Refresh response from `POST /identity-api/auth/refresh`.
- */
-export interface RefreshResponse {
-  accessToken: string;
-  expiresAt: number;
-  user: { id: string; name: string; email: string; initials: string };
-  roles: readonly Role[];
-  permissions: readonly Permission[];
-}
+import { refreshAccessToken, type RefreshResponse } from "./authRefresh";
 
 /**
  * Reads the current access token from the store without going
@@ -99,39 +90,6 @@ function writeAccessToken(next: RefreshResponse): void {
  */
 function clearCredentials(): void {
   store.dispatch(clearSessionCredentials());
-}
-
-/**
- * Single-flight refresh promise. When a refresh is in progress, every
- * concurrent caller awaits the same Promise. After resolution (success
- * or failure), the slot is cleared so the next 401 can start a new
- * round-trip.
- */
-let inFlightRefresh: Promise<RefreshResponse> | null = null;
-
-async function refreshAccessToken(): Promise<RefreshResponse> {
-  if (inFlightRefresh) return inFlightRefresh;
-
-  const promise = (async () => {
-    const res = await fetch(`${env.apiBaseUrl}/identity-api/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) {
-      throw new ApiError(res.status, "Refresh failed");
-    }
-    const json = (await res.json()) as RefreshResponse;
-    writeAccessToken(json);
-    return json;
-  })();
-
-  inFlightRefresh = promise;
-  try {
-    return await promise;
-  } finally {
-    inFlightRefresh = null;
-  }
 }
 
 export class ApiError extends Error {
@@ -186,7 +144,8 @@ export async function apiFetch<T = unknown>(
   // 401 → single-flight refresh + retry.
   if (res.status === 401 && !_refreshAttempted && !skipAuth) {
     try {
-      await refreshAccessToken();
+      const json = await refreshAccessToken();
+      writeAccessToken(json);
     } catch {
       clearCredentials();
       throw new ApiError(401, "Unauthorized");

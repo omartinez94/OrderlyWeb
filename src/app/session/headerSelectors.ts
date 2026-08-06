@@ -35,24 +35,19 @@ interface NotificationsCache {
   queries: Record<string, QueryState | undefined>;
 }
 
-function getNotificationsList(state: RootState): AppNotification[] {
-  // RTK Query's slice name isn't part of the public type, so we
-  // reach in via a structural cast on the whole state object.
-  const cache = (state as unknown as { notificationsApi?: NotificationsCache }).notificationsApi;
-  if (!cache) return [];
-  // First cache entry that holds an array wins. We don't key on the
-  // exact endpoint string to avoid coupling this selector to the
-  // RTK Query hash format.
-  for (const q of Object.values(cache.queries)) {
-    const data = q?.data;
-    if (Array.isArray(data)) return data;
-  }
-  return [];
-}
+const selectNotificationsQueries = (state: RootState) =>
+  (state as unknown as { notificationsApi?: NotificationsCache }).notificationsApi?.queries;
 
 export const selectNotifications = createSelector(
-  [getNotificationsList],
-  (notifications) => notifications,
+  [selectNotificationsQueries],
+  (queries): AppNotification[] => {
+    if (!queries) return [];
+    for (const q of Object.values(queries)) {
+      const data = q?.data;
+      if (Array.isArray(data)) return data;
+    }
+    return [];
+  },
 );
 
 export const selectUnreadCount = createSelector(
@@ -74,21 +69,21 @@ interface UserRestaurantsCache {
   queries: Record<string, RestaurantQueryState | undefined>;
 }
 
-function getAccessibleRestaurants(state: RootState): Restaurant[] {
-  const cache = (state as unknown as { identityApi?: UserRestaurantsCache }).identityApi;
-  if (!cache) return [];
-  for (const q of Object.values(cache.queries)) {
-    const data = q?.data;
-    if (Array.isArray(data)) {
-      return data.map((r) => ({ id: r.id, name: r.name, role: r.role }));
-    }
-  }
-  return [];
-}
+const selectIdentityQueries = (state: RootState) =>
+  (state as unknown as { identityApi?: UserRestaurantsCache }).identityApi?.queries;
 
 export const selectAccessibleRestaurants = createSelector(
-  [getAccessibleRestaurants],
-  (restaurants) => restaurants,
+  [selectIdentityQueries],
+  (queries): Restaurant[] => {
+    if (!queries) return [];
+    for (const q of Object.values(queries)) {
+      const data = q?.data;
+      if (Array.isArray(data)) {
+        return data.map((r) => ({ id: r.id, name: r.name, role: r.role }));
+      }
+    }
+    return [];
+  },
 );
 
 /**
