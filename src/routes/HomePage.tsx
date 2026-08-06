@@ -4,7 +4,7 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { SignInBridgeTrigger } from "../components/SignInDialog/SignInBridgeTrigger";
-import { HeroCarousel } from "../components/HeroCarousel";
+import { ParallaxHero } from "../components/ParallaxHero";
 import { ThemeToggle } from "../components/ThemeToggle/ThemeToggle";
 import { PATH } from "../router/pathNames";
 import {
@@ -107,8 +107,8 @@ export function HomePage() {
     <div className="bg-surface text-ink selection:bg-primary/20 selection:text-primary min-h-screen font-sans antialiased">
       <MarketingHeader />
       <main id="main">
-        {/* Big Picture Hero Jumbotron with Carousel */}
-        <HeroCarousel />
+        {/* Big Picture Hero Parallax */}
+        <ParallaxHero />
 
         {/* Stats & Trust Banner */}
         <StatsBanner />

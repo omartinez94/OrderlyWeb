@@ -95,12 +95,13 @@ export function HeroCarousel() {
   }, [api]);
 
   return (
-    <div className="relative w-full overflow-hidden bg-surface pb-12 pt-6 lg:pb-20 lg:pt-10">
+    <div className="bg-surface relative w-full overflow-hidden pt-6 pb-12 lg:pt-10 lg:pb-20">
       {/* Background ambient lighting glow */}
-      <div 
+      <div
         className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
         style={{
-          background: "radial-gradient(circle, var(--color-primary, #1F4254) 0%, var(--color-accent, #F26A3A) 100%)",
+          background:
+            "radial-gradient(circle, var(--color-primary, #1F4254) 0%, var(--color-accent, #F26A3A) 100%)",
         }}
       />
 
@@ -111,33 +112,33 @@ export function HeroCarousel() {
               const Icon = slide.icon;
               return (
                 <CarouselItem key={slide.id} className="w-full">
-                  <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12 py-4">
+                  <div className="grid grid-cols-1 items-center gap-8 py-4 lg:grid-cols-12 lg:gap-12">
                     {/* Text Column */}
-                    <div className="flex flex-col justify-center lg:col-span-6 text-left space-y-6">
+                    <div className="flex flex-col justify-center space-y-6 text-left lg:col-span-6">
                       <div>
                         <Badge
                           variant="outline"
-                          className="inline-flex items-center gap-2 border-border-strong bg-surface-elevated px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary shadow-xs"
+                          className="border-border-strong bg-surface-elevated text-primary inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wider uppercase shadow-xs"
                         >
-                          <Icon className="h-3.5 w-3.5 text-accent" />
+                          <Icon className="text-accent h-3.5 w-3.5" />
                           {slide.badge}
                         </Badge>
                       </div>
 
-                      <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl leading-[1.08]">
+                      <h1 className="font-display text-ink text-4xl leading-[1.08] font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                         {slide.title}
                       </h1>
 
-                      <p className="max-w-2xl font-sans text-lg leading-relaxed text-ink-muted sm:text-xl">
+                      <p className="text-ink-muted max-w-2xl font-sans text-lg leading-relaxed sm:text-xl">
                         {slide.description}
                       </p>
 
                       {/* Highlight pill */}
-                      <div className="flex items-center gap-3 rounded-lg border border-border-subtle bg-surface-elevated/70 p-3 backdrop-blur-sm w-fit">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <div className="border-border-subtle bg-surface-elevated/70 flex w-fit items-center gap-3 rounded-lg border p-3 backdrop-blur-sm">
+                        <div className="bg-primary/10 text-primary flex h-7 w-7 items-center justify-center rounded-full">
                           <Zap className="h-4 w-4" />
                         </div>
-                        <span className="font-sans text-sm font-medium text-ink">
+                        <span className="text-ink font-sans text-sm font-medium">
                           {slide.highlight}
                         </span>
                       </div>
@@ -145,14 +146,21 @@ export function HeroCarousel() {
                       {/* CTAs */}
                       <div className="flex flex-wrap items-center gap-4 pt-2">
                         <SignInBridgeTrigger>
-                          <Button size="lg" className="h-12 px-8 text-base font-semibold shadow-md transition-all hover:scale-[1.02]">
+                          <Button
+                            size="lg"
+                            className="h-12 px-8 text-base font-semibold shadow-md transition-all hover:scale-[1.02]"
+                          >
                             Sign in to Platform
                             <ChevronRight className="ml-2 h-4 w-4" />
                           </Button>
                         </SignInBridgeTrigger>
-                        
+
                         <a href="#features">
-                          <Button variant="outline" size="lg" className="h-12 border-border-strong text-base font-medium hover:bg-surface-elevated">
+                          <Button
+                            variant="outline"
+                            size="lg"
+                            className="border-border-strong hover:bg-surface-elevated h-12 text-base font-medium"
+                          >
                             Explore Capabilities
                           </Button>
                         </a>
@@ -161,17 +169,17 @@ export function HeroCarousel() {
 
                     {/* Image / Jumbotron Preview Column */}
                     <div className="relative lg:col-span-6">
-                      <div className="group relative overflow-hidden rounded-2xl border border-border-strong bg-surface-elevated shadow-2xl transition-all hover:shadow-3xl">
+                      <div className="group border-border-strong bg-surface-elevated hover:shadow-3xl relative overflow-hidden rounded-2xl border shadow-2xl transition-all">
                         <img
                           src={slide.image}
                           alt={slide.title}
-                          className="h-[360px] sm:h-[450px] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="h-[360px] w-full object-cover transition-transform duration-700 group-hover:scale-105 sm:h-[450px]"
                         />
                         {/* Gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
-                        
+                        <div className="from-ink/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+
                         {/* Slide Caption Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <div className="absolute right-0 bottom-0 left-0 p-6 text-white">
                           <p className="font-display text-lg font-bold text-white shadow-sm">
                             {slide.badge}
                           </p>
@@ -188,7 +196,7 @@ export function HeroCarousel() {
           </CarouselContent>
 
           {/* Controls & Pagination */}
-          <div className="mt-6 flex items-center justify-between border-t border-border-subtle pt-6">
+          <div className="border-border-subtle mt-6 flex items-center justify-between border-t pt-6">
             {/* Custom Dot Indicators */}
             <div className="flex items-center gap-2">
               {Array.from({ length: count }).map((_, index) => (
@@ -197,8 +205,8 @@ export function HeroCarousel() {
                   onClick={() => api?.scrollTo(index)}
                   className={`h-2.5 rounded-full transition-all duration-300 ${
                     current === index
-                      ? "w-8 bg-primary"
-                      : "w-2.5 bg-border-strong hover:bg-ink-subtle"
+                      ? "bg-primary w-8"
+                      : "bg-border-strong hover:bg-ink-subtle w-2.5"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
@@ -207,8 +215,8 @@ export function HeroCarousel() {
 
             {/* Prev / Next buttons */}
             <div className="relative flex items-center gap-2">
-              <CarouselPrevious className="static translate-y-0 h-9 w-9 border-border-strong hover:bg-surface-elevated" />
-              <CarouselNext className="static translate-y-0 h-9 w-9 border-border-strong hover:bg-surface-elevated" />
+              <CarouselPrevious className="border-border-strong hover:bg-surface-elevated static h-9 w-9 translate-y-0" />
+              <CarouselNext className="border-border-strong hover:bg-surface-elevated static h-9 w-9 translate-y-0" />
             </div>
           </div>
         </Carousel>
