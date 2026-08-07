@@ -1,0 +1,39 @@
+{
+  "languageToggle": {
+    "label": "Idioma",
+    "en": "Inglés",
+    "es": "Español",
+    "changedTo": "Idioma cambiado a {{lang}}"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "retry": "Reintentar"
+  },
+  "status": {
+    "loading": "Cargando…",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "error": "Algo salió mal",
+    "empty": "Aún no hay nada aquí"
+  },
+  "navigation": {
+    "admin": "Administración",
+    "kitchen": "Cocina",
+    "restaurant": "Restaurante",
+    "home": "Inicio"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intente de nuevo.",
+    "network": "Error de red. Verifique su conexión.",
+    "forbidden": "No tiene permiso para hacer eso.",
+    "notFound": "No pudimos encontrar lo que buscaba."
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "list": {
+    "title": "Orders",
+    "subtitle": "{{count}} order today",
+    "subtitle_one": "{{count}} order today",
+    "subtitle_other": "{{count}} orders today",
+    "filterAll": "All",
+    "filterOpen": "Open",
+    "filterReady": "Ready",
+    "filterClosed": "Closed"
+  },
+  "status": {
+    "open": "Open",
+    "ready": "Ready",
+    "closed": "Closed",
+    "cancelled": "Cancelled"
+  },
+  "create": {
+    "title": "New order",
+    "table": "Table",
+    "guests": "Guests",
+    "addItem": "Add item",
+    "submit": "Create order",
+    "submitting": "Creating…"
+  },
+  "detail": {
+    "items": "Items",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "tip": "Tip",
+    "total": "Total",
+    "splitBill": "Split bill"
+  },
+  "split": {
+    "title": "Split bill",
+    "evenly": "Split evenly",
+    "byItem": "Split by item",
+    "guests_one": "{{count}} guest",
+    "guests_other": "{{count}} guests"
+  }
+}

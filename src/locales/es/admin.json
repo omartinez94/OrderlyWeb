@@ -1,0 +1,32 @@
+{
+  "staff": {
+    "title": "Gestión de personal",
+    "subtitle_one": "{{count}} miembro",
+    "subtitle_other": "{{count}} miembros",
+    "invite": "Invitar miembro",
+    "inviteEmail": "Correo electrónico",
+    "inviteRole": "Rol",
+    "inviteSubmit": "Enviar invitación",
+    "inviteSuccess": "Invitación enviada"
+  },
+  "roles": {
+    "superAdmin": "Super Administrador",
+    "restaurantAdmin": "Administrador de restaurante",
+    "manager": "Gerente",
+    "kitchenManager": "Gerente de cocina",
+    "kitchenStaff": "Personal de cocina",
+    "waiter": "Mesero",
+    "cashier": "Cajero",
+    "host": "Anfitrión"
+  },
+  "auditLog": {
+    "title": "Registro de auditoría",
+    "empty": "Aún no hay actividad"
+  },
+  "tabs": {
+    "members": "Miembros",
+    "roles": "Roles",
+    "audit": "Registro",
+    "settings": "Ajustes"
+  }
+}

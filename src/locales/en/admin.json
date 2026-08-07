@@ -1,0 +1,33 @@
+{
+  "staff": {
+    "title": "Staff management",
+    "subtitle": "{{count}} member",
+    "subtitle_one": "{{count}} member",
+    "subtitle_other": "{{count}} members",
+    "invite": "Invite member",
+    "inviteEmail": "Email",
+    "inviteRole": "Role",
+    "inviteSubmit": "Send invite",
+    "inviteSuccess": "Invite sent"
+  },
+  "roles": {
+    "superAdmin": "Super Admin",
+    "restaurantAdmin": "Restaurant Admin",
+    "manager": "Manager",
+    "kitchenManager": "Kitchen Manager",
+    "kitchenStaff": "Kitchen Staff",
+    "waiter": "Waiter",
+    "cashier": "Cashier",
+    "host": "Host"
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "empty": "No activity yet"
+  },
+  "tabs": {
+    "members": "Members",
+    "roles": "Roles",
+    "audit": "Audit log",
+    "settings": "Settings"
+  }
+}

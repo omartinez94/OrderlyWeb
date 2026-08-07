@@ -1,0 +1,36 @@
+{
+  "queue": {
+    "title": "Kitchen display",
+    "subtitle": "{{count}} active order",
+    "subtitle_one": "{{count}} active order",
+    "subtitle_other": "{{count}} active orders",
+    "empty": "No active orders. Great work!"
+  },
+  "orderStatus": {
+    "new": "New",
+    "acknowledged": "Acknowledged",
+    "preparing": "Preparing",
+    "plating": "Plating",
+    "ready": "Ready",
+    "served": "Served",
+    "cancelled": "Cancelled"
+  },
+  "actions": {
+    "acknowledge": "Acknowledge",
+    "startPreparing": "Start preparing",
+    "markPlating": "Mark plating",
+    "markReady": "Mark ready",
+    "markServed": "Mark served"
+  },
+  "timer": {
+    "elapsed": "Elapsed",
+    "sinceReceived": "since received",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
+  },
+  "orderCard": {
+    "table": "Table {{number}}",
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items"
+  }
+}

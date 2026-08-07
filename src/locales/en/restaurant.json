@@ -1,0 +1,25 @@
+{
+  "tables": {
+    "title": "Tables",
+    "subtitle": "{{count}} table",
+    "subtitle_one": "{{count}} table",
+    "subtitle_other": "{{count}} tables",
+    "status": {
+      "available": "Available",
+      "occupied": "Occupied",
+      "reserved": "Reserved",
+      "cleaning": "Cleaning"
+    },
+    "seats": "Seats",
+    "guests_one": "{{count}} guest",
+    "guests_other": "{{count}} guests"
+  },
+  "reservations": {
+    "title": "Reservations",
+    "new": "New reservation",
+    "name": "Guest name",
+    "party": "Party size",
+    "time": "Time",
+    "submit": "Create reservation"
+  }
+}

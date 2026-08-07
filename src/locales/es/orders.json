@@ -1,0 +1,40 @@
+{
+  "list": {
+    "title": "Pedidos",
+    "subtitle_one": "{{count}} pedido hoy",
+    "subtitle_other": "{{count}} pedidos hoy",
+    "filterAll": "Todos",
+    "filterOpen": "Abiertos",
+    "filterReady": "Listos",
+    "filterClosed": "Cerrados"
+  },
+  "status": {
+    "open": "Abierto",
+    "ready": "Listo",
+    "closed": "Cerrado",
+    "cancelled": "Cancelado"
+  },
+  "create": {
+    "title": "Nuevo pedido",
+    "table": "Mesa",
+    "guests": "Comensales",
+    "addItem": "Agregar artículo",
+    "submit": "Crear pedido",
+    "submitting": "Creando…"
+  },
+  "detail": {
+    "items": "Artículos",
+    "subtotal": "Subtotal",
+    "tax": "Impuesto",
+    "tip": "Propina",
+    "total": "Total",
+    "splitBill": "Dividir cuenta"
+  },
+  "split": {
+    "title": "Dividir cuenta",
+    "evenly": "Dividir en partes iguales",
+    "byItem": "Dividir por artículo",
+    "guests_one": "{{count}} comensal",
+    "guests_other": "{{count}} comensales"
+  }
+}

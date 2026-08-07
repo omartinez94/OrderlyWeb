@@ -1,0 +1,24 @@
+{
+  "tables": {
+    "title": "Mesas",
+    "subtitle_one": "{{count}} mesa",
+    "subtitle_other": "{{count}} mesas",
+    "status": {
+      "available": "Disponible",
+      "occupied": "Ocupada",
+      "reserved": "Reservada",
+      "cleaning": "Limpiando"
+    },
+    "seats": "Asientos",
+    "guests_one": "{{count}} comensal",
+    "guests_other": "{{count}} comensales"
+  },
+  "reservations": {
+    "title": "Reservas",
+    "new": "Nueva reserva",
+    "name": "Nombre del comensal",
+    "party": "Tamaño del grupo",
+    "time": "Hora",
+    "submit": "Crear reserva"
+  }
+}

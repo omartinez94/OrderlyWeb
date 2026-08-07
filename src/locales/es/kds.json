@@ -1,0 +1,35 @@
+{
+  "queue": {
+    "title": "Pantalla de cocina",
+    "subtitle_one": "{{count}} pedido activo",
+    "subtitle_other": "{{count}} pedidos activos",
+    "empty": "No hay pedidos activos. ¡Buen trabajo!"
+  },
+  "orderStatus": {
+    "new": "Nuevo",
+    "acknowledged": "Recibido",
+    "preparing": "En preparación",
+    "plating": "Emplatando",
+    "ready": "Listo",
+    "served": "Servido",
+    "cancelled": "Cancelado"
+  },
+  "actions": {
+    "acknowledge": "Recibir",
+    "startPreparing": "Comenzar preparación",
+    "markPlating": "Marcar emplatando",
+    "markReady": "Marcar listo",
+    "markServed": "Marcar servido"
+  },
+  "timer": {
+    "elapsed": "Transcurrido",
+    "sinceReceived": "desde recibido",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos"
+  },
+  "orderCard": {
+    "table": "Mesa {{number}}",
+    "items_one": "{{count}} artículo",
+    "items_other": "{{count}} artículos"
+  }
+}

@@ -35,6 +35,41 @@
         }
       })();
     </script>
+    <!--
+      Pre-hydration language script. Runs synchronously before the
+      React bundle paints so the page never flashes the wrong language.
+      Mirrors the detector logic in `src/lib/i18n.ts`:
+        1. Read `localStorage["orderly-language"]` ("en" | "es").
+        2. If unset, fall back to `navigator.languages[0]` /
+           `navigator.language` and reduce to the base subtag
+           ("es-MX" → "es").
+        3. Validate against the supported allowlist; any other value
+           falls back to "en".
+        4. Set `lang` on <html> synchronously.
+      Keep this script INLINE (no external request) and run BEFORE the
+      module script below. The values here MUST stay in sync with
+      `src/lib/i18n.ts` and `SUPPORTED_LANGUAGES`.
+    -->
+    <script>
+      (function () {
+        try {
+          var supported = ["en", "es"];
+          var stored = window.localStorage.getItem("orderly-language");
+          var nav = (window.navigator && (window.navigator.languages && window.navigator.languages[0])) ||
+            (window.navigator && window.navigator.language) ||
+            "";
+          var navLang = nav.split("-")[0].toLowerCase();
+          var resolved = supported.indexOf(stored) >= 0
+            ? stored
+            : supported.indexOf(navLang) >= 0
+              ? navLang
+              : "en";
+          document.documentElement.setAttribute("lang", resolved);
+        } catch (_e) {
+          document.documentElement.setAttribute("lang", "en");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

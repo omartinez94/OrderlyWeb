@@ -1,0 +1,39 @@
+{
+  "languageToggle": {
+    "label": "Language",
+    "en": "English",
+    "es": "Spanish",
+    "changedTo": "Language changed to {{lang}}"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "retry": "Retry"
+  },
+  "status": {
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "error": "Something went wrong",
+    "empty": "Nothing here yet"
+  },
+  "navigation": {
+    "admin": "Admin",
+    "kitchen": "Kitchen",
+    "restaurant": "Restaurant",
+    "home": "Home"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your connection.",
+    "forbidden": "You do not have permission to do that.",
+    "notFound": "We could not find what you were looking for."
+  }
+}
