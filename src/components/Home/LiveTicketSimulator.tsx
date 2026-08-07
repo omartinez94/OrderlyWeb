@@ -1,19 +1,11 @@
 import { useState, useEffect } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { StatusPill } from "../StatusPill/StatusPill";
-import { ChefHat, Clock, Play, RotateCcw, Sparkles, CheckCircle2 } from "lucide-react";
+import { TicketCard, type TicketData } from "../../features/kitchen/components/TicketCard";
+import { Play, RotateCcw, Sparkles } from "lucide-react";
+import { type OrderStatus } from "../StatusPill/StatusPill";
 
-interface Ticket {
-  id: string;
-  table: string;
-  items: string[];
-  status: "new" | "acknowledged" | "preparing" | "plating" | "ready";
-  elapsed: number;
-  station: string;
-}
-
-const INITIAL_TICKETS: Ticket[] = [
+const INITIAL_TICKETS: TicketData[] = [
   {
     id: "#ORD-402",
     table: "Table 04",
@@ -40,16 +32,17 @@ const INITIAL_TICKETS: Ticket[] = [
   },
 ];
 
-const NEXT_STATUS: Record<Ticket["status"], Ticket["status"]> = {
+const NEXT_STATUS: Record<OrderStatus, OrderStatus> = {
   new: "acknowledged",
   acknowledged: "preparing",
   preparing: "plating",
   plating: "ready",
-  ready: "new",
+  ready: "served",
+  served: "new",
 };
 
 export function LiveTicketSimulator() {
-  const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
+  const [tickets, setTickets] = useState<TicketData[]>(INITIAL_TICKETS);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState<boolean>(true);
   const [activeTicketId, setActiveTicketId] = useState<string>("#ORD-402");
 
@@ -106,12 +99,6 @@ export function LiveTicketSimulator() {
     );
   };
 
-  const formatElapsed = (sec: number) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}:${s < 10 ? "0" : ""}${s}`;
-  };
-
   return (
     <section className="bg-surface relative overflow-hidden py-16 lg:py-24 border-b border-border-subtle">
       {/* Background ambient lighting */}
@@ -148,69 +135,15 @@ export function LiveTicketSimulator() {
 
         {/* Live Interactive Tickets Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {tickets.map((t) => {
-            const isSelected = t.id === activeTicketId;
-            return (
-              <div
-                key={t.id}
-                onClick={() => setActiveTicketId(t.id)}
-                className={`group relative flex flex-col justify-between rounded-2xl border p-6 transition-all duration-300 cursor-pointer ${
-                  isSelected
-                    ? "border-primary bg-surface-elevated shadow-xl scale-[1.02] ring-2 ring-primary/20"
-                    : "border-border-subtle bg-surface-elevated/70 hover:border-border-strong hover:bg-surface-elevated hover:shadow-md"
-                }`}
-              >
-                {/* Status bar top indicator */}
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ChefHat className="h-4 w-4 text-primary" />
-                    <span className="font-mono text-sm font-bold text-ink">{t.id}</span>
-                  </div>
-                  <StatusPill status={t.status} />
-                </div>
-
-                {/* Ticket Details */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-lg font-bold text-ink">{t.table}</span>
-                    <Badge variant="secondary" className="font-mono text-[11px] text-ink-muted">
-                      {t.station}
-                    </Badge>
-                  </div>
-
-                  <ul className="space-y-1.5 border-t border-border-subtle pt-3 text-sm text-ink-muted">
-                    {t.items.map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
-                        <span className="font-medium text-ink">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Footer Controls & Live Counter */}
-                <div className="mt-6 flex items-center justify-between border-t border-border-subtle pt-4">
-                  <div className="flex items-center gap-1.5 font-mono text-xs text-ink-muted">
-                    <Clock className="h-3.5 w-3.5 text-accent animate-pulse" />
-                    <span>{formatElapsed(t.elapsed)}</span>
-                  </div>
-
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      advanceTicket(t.id);
-                    }}
-                    className="h-8 gap-1 px-3 text-xs font-semibold transition-transform active:scale-95 hover:bg-primary hover:text-white"
-                  >
-                    Advance
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          {tickets.map((t) => (
+            <TicketCard
+              key={t.id}
+              ticket={t}
+              isSelected={t.id === activeTicketId}
+              onSelect={() => setActiveTicketId(t.id)}
+              onAdvance={() => advanceTicket(t.id)}
+            />
+          ))}
         </div>
       </div>
     </section>
