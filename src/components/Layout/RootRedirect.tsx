@@ -31,8 +31,6 @@ import { defaultZoneForRoles } from "../../lib/defaultZone";
 import type { Role } from "../../types/auth";
 import { HomePage } from "../../routes/HomePage";
 
-
-
 export function RootRedirect(): React.ReactElement | null {
   const liveRoles = useAppSelector(selectRoles, shallowEqual);
   const navigate = useNavigate();

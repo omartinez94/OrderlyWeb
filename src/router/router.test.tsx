@@ -22,7 +22,7 @@ describe("router", () => {
       renderWithRoute("/home");
       await waitFor(() => {
         expect(
-          screen.getByRole("heading", { name: /One tool for the kitchen/i }),
+          screen.getByRole("heading", { name: /One unified OS/i }),
         ).toBeInTheDocument();
       });
     });

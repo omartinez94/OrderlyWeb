@@ -36,8 +36,6 @@ import { useAppSelector } from "../../app/hooks";
 import { selectPredicate } from "../../app/session/sessionSelectors";
 import type { AuthPredicate } from "../../types/auth";
 
-
-
 export function useAuthPredicate(): AuthPredicate {
   const real = useAppSelector(selectPredicate, shallowEqual);
   return {

@@ -5,6 +5,8 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { SignInBridgeTrigger } from "../components/SignInDialog/SignInBridgeTrigger";
 import { ParallaxHero } from "../components/ParallaxHero";
+import { LiveTicketSimulator } from "../components/Home/LiveTicketSimulator";
+import { ScrollReveal } from "../components/Motion/ScrollReveal";
 import { ThemeToggle } from "../components/ThemeToggle/ThemeToggle";
 import { PATH } from "../router/pathNames";
 import {
@@ -25,6 +27,7 @@ import {
   CheckCircle2,
   Lock,
 } from "lucide-react";
+import { HeroCarousel } from "../components/HeroCarousel";
 
 const STATS = [
   { label: "Real-time Latency", value: "< 50ms", detail: "SignalR web sockets" },
@@ -111,7 +114,19 @@ export function HomePage() {
         <ParallaxHero />
 
         {/* Stats & Trust Banner */}
-        <StatsBanner />
+        <ScrollReveal direction="up">
+          <StatsBanner />
+        </ScrollReveal>
+
+        {/* Live KDS Ticket Simulation Widget */}
+        <ScrollReveal direction="up" delay={100}>
+          <LiveTicketSimulator />
+        </ScrollReveal>
+
+        {/* Big Picture Hero Jumbotron with Carousel */}
+        <ScrollReveal direction="up">
+          <HeroCarousel />
+        </ScrollReveal>
 
         {/* Architecture & Microservices Highlight */}
         <ArchitectureSection />
@@ -120,13 +135,19 @@ export function HomePage() {
         <ZoneShowcaseSection activeZone={activeZone} setActiveZone={setActiveZone} />
 
         {/* Vibe / Atmosphere Hero Highlight */}
-        <AtmosphereSection />
+        <ScrollReveal direction="up">
+          <AtmosphereSection />
+        </ScrollReveal>
 
         {/* Call to Action Jumbotron */}
-        <CtaJumbotron />
+        <ScrollReveal direction="up">
+          <CtaJumbotron />
+        </ScrollReveal>
 
         {/* FAQ Section */}
-        <FaqSection />
+        <ScrollReveal direction="up">
+          <FaqSection />
+        </ScrollReveal>
       </main>
 
       <SiteFooter />
@@ -141,7 +162,7 @@ function MarketingHeader() {
         {/* Brand */}
         <div className="flex items-center gap-8">
           <Link to="/" className="group flex items-center gap-2">
-            <div className="bg-gradient-primary flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-md transition-transform group-hover:scale-105">
+            <div className="bg-gradient-primary flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-md transition-transform duration-300 group-hover:scale-110">
               <Zap className="h-5 w-5" />
             </div>
             <span className="font-display text-primary text-2xl font-bold tracking-tight">
@@ -173,7 +194,7 @@ function MarketingHeader() {
           </div>
 
           <SignInBridgeTrigger>
-            <Button size="sm" className="font-semibold shadow-xs">
+            <Button size="sm" className="font-semibold shadow-xs transition-transform hover:scale-105">
               Sign in
             </Button>
           </SignInBridgeTrigger>
@@ -187,13 +208,16 @@ function StatsBanner() {
   return (
     <section
       aria-label="Key Performance Indicators"
-      className="border-border-subtle bg-surface-elevated/60 border-y py-10"
+      className="border-border-subtle bg-surface-elevated/60 mt-16 border-y py-12"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {STATS.map((stat, idx) => (
-            <div key={idx} className="border-primary/30 flex flex-col border-l-2 pl-4 sm:pl-6">
-              <span className="text-primary font-mono text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <div
+              key={idx}
+              className="group border-primary/30 flex flex-col border-l-2 pl-4 sm:pl-6 transition-all duration-300 hover:border-primary hover:translate-x-1"
+            >
+              <span className="text-primary font-mono text-3xl font-extrabold tracking-tight sm:text-4xl transition-transform group-hover:scale-105">
                 {stat.value}
               </span>
               <span className="font-display text-ink mt-1 text-sm font-bold">{stat.label}</span>
@@ -210,112 +234,120 @@ function ArchitectureSection() {
   return (
     <section id="architecture" className="bg-surface border-border-subtle border-b py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-16 max-w-3xl text-center">
-          <Badge
-            variant="outline"
-            className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
-          >
-            Enterprise Architecture
-          </Badge>
-          <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-            Engineered for zero downtime & maximum throughput
-          </h2>
-          <p className="text-ink-muted mt-4 font-sans text-lg leading-relaxed">
-            Orderly decouples frontend delivery from backend domain services via YARP Gateway,
-            delivering sub-second real-time state across every device.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            <Badge
+              variant="outline"
+              className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
+            >
+              Enterprise Architecture
+            </Badge>
+            <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              Engineered for zero downtime & maximum throughput
+            </h2>
+            <p className="text-ink-muted mt-4 font-sans text-lg leading-relaxed">
+              Orderly decouples frontend delivery from backend domain services via YARP Gateway,
+              delivering sub-second real-time state across every device.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <Card className="border-border-subtle bg-surface-elevated shadow-sm transition-shadow hover:shadow-md">
-            <CardHeader>
-              <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
-                <Server className="h-6 w-6" />
-              </div>
-              <CardTitle className="font-display text-xl font-bold">Microservice Mesh</CardTitle>
-              <CardDescription className="text-ink-muted">
-                Independent backend services for Identity, Catalog, Order, Kitchen, Basket &
-                Notification.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-ink-muted space-y-2.5 text-sm">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>YARP API Gateway (Port 6004)</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>Redis-backed Basket calculation</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>Single flight JWT refresh flow</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+          <ScrollReveal direction="up" delay={100}>
+            <Card className="border-border-subtle bg-surface-elevated transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:border-primary/40 group">
+              <CardHeader>
+                <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                  <Server className="h-6 w-6" />
+                </div>
+                <CardTitle className="font-display text-xl font-bold">Microservice Mesh</CardTitle>
+                <CardDescription className="text-ink-muted">
+                  Independent backend services for Identity, Catalog, Order, Kitchen, Basket &
+                  Notification.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-ink-muted space-y-2.5 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>YARP API Gateway (Port 6004)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>Redis-backed Basket calculation</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>Single flight JWT refresh flow</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </ScrollReveal>
 
-          <Card className="border-border-subtle bg-surface-elevated shadow-sm transition-shadow hover:shadow-md">
-            <CardHeader>
-              <div className="bg-accent/10 text-accent mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
-                <Activity className="h-6 w-6" />
-              </div>
-              <CardTitle className="font-display text-xl font-bold">
-                Live SignalR Pipeline
-              </CardTitle>
-              <CardDescription className="text-ink-muted">
-                Instant WebSocket dispatch ensures tickets update without polling or manual
-                refreshes.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-ink-muted space-y-2.5 text-sm">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
-                  <span>OrderReceived & OrderReady hubs</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
-                  <span>5-stage auto-reconnect policy</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
-                  <span>ItemStateChanged live dispatch</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+          <ScrollReveal direction="up" delay={200}>
+            <Card className="border-border-subtle bg-surface-elevated transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:border-accent/40 group">
+              <CardHeader>
+                <div className="bg-accent/10 text-accent mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-white">
+                  <Activity className="h-6 w-6" />
+                </div>
+                <CardTitle className="font-display text-xl font-bold">
+                  Live SignalR Pipeline
+                </CardTitle>
+                <CardDescription className="text-ink-muted">
+                  Instant WebSocket dispatch ensures tickets update without polling or manual
+                  refreshes.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-ink-muted space-y-2.5 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
+                    <span>OrderReceived & OrderReady hubs</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
+                    <span>5-stage auto-reconnect policy</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-accent h-4 w-4 shrink-0" />
+                    <span>ItemStateChanged live dispatch</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </ScrollReveal>
 
-          <Card className="border-border-subtle bg-surface-elevated shadow-sm transition-shadow hover:shadow-md">
-            <CardHeader>
-              <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
-                <Lock className="h-6 w-6" />
-              </div>
-              <CardTitle className="font-display text-xl font-bold">Role-Based Security</CardTitle>
-              <CardDescription className="text-ink-muted">
-                Role-aware interface routing keeps staff focused on their specific operational
-                domain.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-ink-muted space-y-2.5 text-sm">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>In-memory JWT access token</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>Layout-level GuardedPage wrapper</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
-                  <span>8 roles across 3 top-level zones</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+          <ScrollReveal direction="up" delay={300}>
+            <Card className="border-border-subtle bg-surface-elevated transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:border-primary/40 group">
+              <CardHeader>
+                <div className="bg-primary/10 text-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                  <Lock className="h-6 w-6" />
+                </div>
+                <CardTitle className="font-display text-xl font-bold">Role-Based Security</CardTitle>
+                <CardDescription className="text-ink-muted">
+                  Role-aware interface routing keeps staff focused on their specific operational
+                  domain.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-ink-muted space-y-2.5 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>In-memory JWT access token</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>Layout-level GuardedPage wrapper</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="text-primary h-4 w-4 shrink-0" />
+                    <span>8 roles across 3 top-level zones</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -335,97 +367,103 @@ function ZoneShowcaseSection({
   return (
     <section
       id="zones"
-      className="bg-surface-elevated/40 border-border-subtle border-b py-20 lg:py-28"
+      className="bg-surface-elevated/40 border-border-subtle border-b py-20 lg:py-28 relative"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <Badge
-            variant="outline"
-            className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
-          >
-            Three Operational Zones
-          </Badge>
-          <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-            Tailored interfaces for every restaurant shift
-          </h2>
-          <p className="text-ink-muted mt-4 font-sans text-lg">
-            Click a zone below to preview the dedicated workspace.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="mx-auto mb-12 max-w-3xl text-center">
+            <Badge
+              variant="outline"
+              className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
+            >
+              Three Operational Zones
+            </Badge>
+            <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              Tailored interfaces for every restaurant shift
+            </h2>
+            <p className="text-ink-muted mt-4 font-sans text-lg">
+              Click a zone below to preview the dedicated workspace.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Zone Selector Buttons */}
-        <div className="mb-12 flex flex-wrap justify-center gap-3">
-          {ZONES.map((zone) => {
-            const ZIcon = zone.icon;
-            const isSelected = zone.id === activeZone;
-            return (
-              <button
-                key={zone.id}
-                onClick={() => setActiveZone(zone.id)}
-                className={`font-display flex items-center gap-3 rounded-xl border px-5 py-3 text-base font-bold transition-all ${
-                  isSelected
-                    ? "border-primary bg-primary scale-[1.02] text-white shadow-md"
-                    : "border-border-strong bg-surface text-ink hover:bg-surface-elevated"
-                }`}
-              >
-                <ZIcon className={`h-5 w-5 ${isSelected ? "text-white" : "text-primary"}`} />
-                {zone.name}
-              </button>
-            );
-          })}
-        </div>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="mb-12 flex flex-wrap justify-center gap-3">
+            {ZONES.map((zone) => {
+              const ZIcon = zone.icon;
+              const isSelected = zone.id === activeZone;
+              return (
+                <button
+                  key={zone.id}
+                  onClick={() => setActiveZone(zone.id)}
+                  className={`font-display flex items-center gap-3 rounded-xl border px-6 py-3.5 text-base font-bold transition-all duration-300 ${
+                    isSelected
+                      ? "border-primary bg-primary scale-[1.03] text-white shadow-xl ring-4 ring-primary/20"
+                      : "border-border-strong bg-surface text-ink hover:bg-surface-elevated hover:scale-105"
+                  }`}
+                >
+                  <ZIcon className={`h-5 w-5 ${isSelected ? "text-white" : "text-primary"}`} />
+                  {zone.name}
+                </button>
+              );
+            })}
+          </div>
+        </ScrollReveal>
 
         {/* Active Zone Display Card */}
-        <div className="border-border-strong bg-surface grid grid-cols-1 items-center gap-8 rounded-2xl border p-8 shadow-xl lg:grid-cols-12">
-          <div className="space-y-6 lg:col-span-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-xl">
-                <Icon className="h-5 w-5" />
+        <ScrollReveal direction="up" delay={200}>
+          <div className="border-border-strong bg-surface grid grid-cols-1 items-center gap-8 rounded-2xl border p-8 shadow-2xl transition-all duration-500 lg:grid-cols-12">
+            <div className="space-y-6 lg:col-span-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-xl">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <Badge variant="secondary" className="text-primary font-mono text-xs">
+                  {current.badge}
+                </Badge>
               </div>
-              <Badge variant="secondary" className="text-primary font-mono text-xs">
-                {current.badge}
-              </Badge>
+
+              <h3 className="font-display text-ink text-3xl font-bold tracking-tight transition-all">
+                {current.name}
+              </h3>
+
+              <p className="text-ink-muted font-sans text-lg leading-relaxed">
+                {current.description}
+              </p>
+
+              <ul className="text-ink space-y-3 font-sans text-sm">
+                {current.points.map((pt, idx) => (
+                  <li key={idx} className="flex items-center gap-3">
+                    <div className="bg-primary/10 text-primary flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    </div>
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-2">
+                <SignInBridgeTrigger>
+                  <Button className="font-semibold shadow-md transition-all hover:scale-105">
+                    Access {current.name}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </SignInBridgeTrigger>
+              </div>
             </div>
 
-            <h3 className="font-display text-ink text-3xl font-bold tracking-tight">
-              {current.name}
-            </h3>
-
-            <p className="text-ink-muted font-sans text-lg leading-relaxed">
-              {current.description}
-            </p>
-
-            <ul className="text-ink space-y-3 font-sans text-sm">
-              {current.points.map((pt, idx) => (
-                <li key={idx} className="flex items-center gap-3">
-                  <div className="bg-primary/10 text-primary flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  </div>
-                  <span>{pt}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="pt-2">
-              <SignInBridgeTrigger>
-                <Button className="font-semibold shadow-xs">
-                  Access {current.name}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </SignInBridgeTrigger>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <div className="border-border-subtle relative overflow-hidden rounded-xl border shadow-lg">
-              <img
-                src={current.image}
-                alt={current.name}
-                className="h-[360px] w-full object-cover"
-              />
+            <div className="lg:col-span-6">
+              <div className="border-border-subtle relative overflow-hidden rounded-xl border shadow-xl group">
+                <img
+                  src={current.image}
+                  alt={current.name}
+                  className="h-[360px] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -438,15 +476,15 @@ function AtmosphereSection() {
         <img
           src="/images/06-ingredients.jpg"
           alt="Fresh restaurant ingredients"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover filter brightness-75 scale-105"
         />
-        <div className="from-surface via-surface/80 to-surface absolute inset-0 bg-gradient-to-t" />
+        <div className="from-surface via-surface/85 to-surface absolute inset-0 bg-gradient-to-t" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
         <Badge
           variant="outline"
-          className="text-primary border-border-strong bg-surface/80 mb-4 text-xs tracking-wider uppercase"
+          className="text-primary border-border-strong bg-surface/80 mb-4 text-xs tracking-wider uppercase backdrop-blur-md"
         >
           Chef & Guest Experience
         </Badge>
@@ -462,7 +500,7 @@ function AtmosphereSection() {
           <img
             src="/images/05-staff-avatar-set.jpg"
             alt="Orderly Staff Team"
-            className="border-primary h-14 w-14 rounded-full border-2 object-cover shadow-md"
+            className="border-primary h-14 w-14 rounded-full border-2 object-cover shadow-lg transition-transform hover:scale-110"
           />
           <div className="text-left">
             <p className="font-display text-ink text-base font-bold">Executive Chef & Operations</p>
@@ -479,8 +517,8 @@ function CtaJumbotron() {
     <section className="bg-surface py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-primary relative overflow-hidden rounded-3xl p-8 text-white shadow-2xl sm:p-12 lg:p-16">
-          {/* Subtle background decoration */}
-          <div className="pointer-events-none absolute -right-20 -bottom-20 h-80 w-80 rounded-full bg-white/10 blur-2xl" />
+          {/* Background decoration */}
+          <div className="pointer-events-none absolute -right-20 -bottom-20 h-96 w-96 rounded-full bg-white/10 blur-3xl animate-pulse duration-5000" />
 
           <div className="relative z-10 max-w-3xl">
             <Badge
@@ -502,7 +540,7 @@ function CtaJumbotron() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="text-primary h-12 px-8 font-bold shadow-lg hover:bg-white"
+                  className="text-primary h-12 px-8 font-bold shadow-lg transition-transform hover:scale-105 hover:bg-white"
                 >
                   Open Sign-In Dialog
                 </Button>
@@ -512,7 +550,7 @@ function CtaJumbotron() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="h-12 border-white/40 font-medium text-white hover:bg-white/10"
+                  className="h-12 border-white/40 font-medium text-white backdrop-blur-sm transition-transform hover:scale-105 hover:bg-white/10"
                 >
                   View Component Showcase
                 </Button>
@@ -546,7 +584,7 @@ function FaqSection() {
             <AccordionItem
               key={i}
               value={`faq-${i}`}
-              className="border-border-subtle bg-surface-elevated rounded-xl border px-6 transition-colors"
+              className="border-border-subtle bg-surface-elevated rounded-xl border px-6 transition-all hover:border-primary/40"
             >
               <AccordionTrigger className="text-ink hover:text-primary py-4 font-sans text-base font-semibold hover:no-underline">
                 {item.q}
