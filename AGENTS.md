@@ -53,6 +53,10 @@ src/                           # App source (to be scaffolded)
 - Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
 - Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
 - When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)
+- **Icons**:
+  - All icons **must** come from `lucide-react` — the project's icon library, declared in `package.json`. Import named exports (e.g. `import { ChevronRight } from "lucide-react"`) and size/color them via `className` (e.g. `className="h-4 w-4 text-ink"`).
+  - **Do not** hand-roll SVG icons, inline `<svg>` markup, or substitute emojis for icons in user-facing UI.
+  - The only exception is an explicit request in a plan or the current prompt — otherwise, find the closest match in lucide and surface the gap if none exists.
 
 ## Base component library (mandatory)
 
