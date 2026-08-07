@@ -6,15 +6,15 @@
 
 ## Status
 
-> **Plan version**: `v1.1` (2026-08-06)
-> **Current state**: ⏸ Pending
+> **Plan version**: `v1.2` (2026-08-06)
+> **Current state**: ✅ Done (Phases 1–4)
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
-| 1 | Core i18n Infrastructure & LocalStorage Sync | ⏸ Pending |
-| 2 | Number / Currency / Date Formatting Layer | ⏸ Pending |
-| 3 | Translation Files, Namespaces & Language Switcher UI | ⏸ Pending |
-| 4 | Agent Rules, Testing Mandate & CI Enforcement | ⏸ Pending |
+| 1 | Core i18n Infrastructure & LocalStorage Sync | ✅ Done |
+| 2 | Number / Currency / Date Formatting Layer | ✅ Done |
+| 3 | Translation Files, Namespaces & Language Switcher UI | ✅ Done |
+| 4 | Agent Rules, Testing Mandate & CI Enforcement | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -490,3 +490,9 @@ export function renderWithI18n(ui: ReactElement, lang: "en" | "es" = "en") {
 - Added §11 Technical Considerations: currency locale tag precision, KDS re-render cost, missing key strategy.
 - Expanded Phase 2 to cover `currency.ts` and Phase 4 to cover lint enforcement.
 - Renamed `restaurant.json` namespace added to folder layout.
+
+### v1.2 (2026-08-06) — Phases 1–4 shipped
+- **Phase 1**: Installed `i18next`, `react-i18next`, `i18next-browser-languagedetector`. Added `src/lib/i18n.ts` (detector wired to `orderly-language` localStorage key, typed `CustomTypeOptions`), `src/hooks/useLanguage.ts`, pre-hydration inline `<script>` in `index.html`, and `<I18nextProvider>` mount in `src/main.tsx`. Scaffolded the 6 namespaces × 2 locales (en/es) under `src/locales/`.
+- **Phase 2**: Added `src/utils/currency.ts` (`formatCurrency`, `formatNumber`, `getCurrencyFormatter` with a module-level cache). Extended `src/utils/date.ts` with `getDateFnsLocale()` and an optional `locale` parameter on `formatDate` / `formatRelativeTime`. Injected `Accept-Language` into both `src/lib/apiClient.ts` and `src/app/api/base.ts` (RTK Query `prepareHeaders`).
+- **Phase 3**: Built `<LanguageToggle />` in `src/components/LanguageToggle/` (Radix `ToggleGroup`, `aria-live` announcement, Vitest coverage). Added the toggle to the shared Header so all three zone top-bars render it. Wired `labelKey` translation keys into `ZoneSidebar` and the three zone layouts (`Admin`, `Kitchen`, `Restaurant`). Plural forms baked into the locale files via i18next `count` interpolation.
+- **Phase 4**: Added `src/test/i18n-wrapper.tsx` (`renderWithI18n`, `setI18nLanguage`), `e2e/fixtures/withLocale.ts` (Playwright `withLocale` fixture that injects the localStorage key before navigation), and `e2e/locale.spec.ts` (smoke tests for `<html lang>` sync). Extended `currency.test.ts` and `date.test.ts` with Spanish coverage. Updated `AGENTS.md` testing-instructions section with the i18n testing contract.
