@@ -48,6 +48,7 @@ src/                           # App source (to be scaffolded)
   - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
   - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
 - **Navigation** — Always use `useNavigateWithTransition()` from `src/hooks/useNavigateWithTransition.ts` instead of `useNavigate()` from `react-router` for _user-initiated, non-urgent_ navigation (brand click, restaurant switch, breadcrumb segment click). The hook wraps `navigate()` in `startTransition` so navigation does not block the next user interaction. Use plain `useNavigate()` only for imperative redirects that must complete before the next render (e.g. login → default-zone redirect).
+- **Date & Time Formatting** — Always use `date-fns` via the central utility file [`src/utils/date.ts`](file:///C:/Users/omar_/Source/Repos/kalaa/orderly/OrderlyWeb/src/utils/date.ts) (`formatRelativeTime`, `formatDate`). **Do not** hand-roll custom date/time difference calculations or bring in third-party date packages like `moment` or `dayjs`.
 - Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, **double quotes**, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
 - Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
 - Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
@@ -112,6 +113,19 @@ The visual system is locked in. Two themes, one source of truth in `src/index.cs
 - Applies via `data-theme` attribute on `<html>` — every Tailwind utility that references a token repaints with zero JS re-render
 - When `mode === 'system'`, listens to `prefers-color-scheme` via `matchMedia` and re-applies on OS-level change
 - `<ThemeToggle />` component (`src/components/ThemeToggle/`) is a sun/moon button for manual flip
+
+### Internationalization (i18n) & Language switching
+
+- **Mandate for Agents & Developers**: All user-facing UI text must be localized in both English (`en`) and Spanish (`es`) using `react-i18next`. **No hardcoded text strings in JSX/TSX**.
+- **Plan reference**: `.agents/plans/i18n-localization.md`
+- Key persistence: `orderly-language` in `localStorage` (`en` / `es`).
+- Auto-detection: Checks `orderly-language` first, falls back to `navigator.language`, then default `'en'`.
+- Dynamic DOM attribute: Syncs `<html lang="...">` synchronously via pre-hydration script in `index.html` and at runtime.
+- Backend API propagation: `Accept-Language` header automatically attached to RTK Query requests (`src/lib/apiClient.ts`).
+- **Currency & numbers**: All monetary values (prices, totals, tips, split-bill amounts) must be formatted via `formatCurrency(amount, currency, locale)` from `src/utils/currency.ts`, which wraps `Intl.NumberFormat`. **Never** concatenate `"$"` or any currency symbol manually. The currency code (ISO 4217, e.g. `"USD"`, `"MXN"`) comes from the restaurant's Catalog API record in Redux — never hardcoded.
+- **Plural forms**: Any string wrapping a count (items, orders, guests) must use i18next `count` interpolation so the correct plural form is selected per locale.
+- Testing: Component unit tests and Playwright E2E tests must verify key UI flows operate cleanly under both `en` and `es` locales.
+
 
 ## Three-zone architecture
 

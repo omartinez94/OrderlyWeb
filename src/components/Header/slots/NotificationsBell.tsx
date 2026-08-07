@@ -2,16 +2,8 @@ import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import type { AppNotification } from "../types";
 import { BellIcon, CheckIcon } from "../icons";
 
-function relativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
+import { formatRelativeTime } from "../../../utils/date";
+
 
 /**
  * Notifications bell + popover inbox.
@@ -96,7 +88,7 @@ export function NotificationsBell({
                 </div>
                 <div className="ds-notifications-popover__item-body">{n.body}</div>
                 <div className="ds-notifications-popover__item-time">
-                  {relativeTime(n.timestamp)}
+                  {formatRelativeTime(n.timestamp)}
                 </div>
               </button>
             ))}
