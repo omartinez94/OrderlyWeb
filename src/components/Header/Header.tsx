@@ -5,6 +5,7 @@ import { OpsBadge } from "./slots/OpsBadge";
 import { NotificationsBell } from "./slots/NotificationsBell";
 import { UserMenu } from "./slots/UserMenu";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
+import { LanguageToggle } from "../LanguageToggle/LanguageToggle";
 import type { AppNotification, CurrentUser, Restaurant, Zone } from "./types";
 import "./Header.css";
 
@@ -89,6 +90,7 @@ export function Header({
           onNotificationClick={onNotificationClick}
           onMarkAllRead={onMarkAllRead}
         />
+        <LanguageToggle />
         <ThemeToggle />
         <UserMenu user={user} onProfile={onProfile} onLogout={onLogout} />
       </div>

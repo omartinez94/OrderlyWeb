@@ -1,0 +1,24 @@
+/*
+ * LanguageToggle — segmented EN | ES control rendered in the top bar.
+ * Inherits its visual structure from the `toggle-group` primitive; the
+ * only override here is the segmented join between the two items so
+ * they read as one control rather than two separate buttons.
+ */
+
+.language-toggle {
+  /* The toggle-group primitive ships with rounded corners and a
+   * border on each item; collapsing them into one segmented control
+   * is a presentation concern, so it lives here next to the toggle
+   * rather than in the primitive's defaults. */
+}
+
+.language-toggle [data-slot="toggle-group-item"]:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.language-toggle [data-slot="toggle-group-item"]:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 0;
+}

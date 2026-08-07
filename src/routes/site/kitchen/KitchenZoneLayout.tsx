@@ -12,7 +12,7 @@ import { ZoneShell } from "../../../components/Layout/ZoneShell";
 import type { SidebarItem } from "../../../components/Layout/ZoneSidebar";
 
 export const KITCHEN_SIDEBAR_ITEMS: readonly SidebarItem[] = [
-  { to: "/site/kitchen", label: "Order queue" },
+  { to: "/site/kitchen", label: "Order queue", labelKey: "kds:queue.title" },
   { to: "/site/kitchen/settings", label: "Settings" },
 ];
 
