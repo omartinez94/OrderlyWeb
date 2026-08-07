@@ -17,7 +17,7 @@
 
 import { useCallback, useMemo, useTransition } from "react";
 import { Header } from "../Header/Header";
-import { openSignIn } from "../SignInDialog/useDialogBridge";
+import { openSignIn } from "../SignInDialog";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { clearCredentials } from "../../app/session/sessionSlice";
 import {

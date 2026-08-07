@@ -1,6 +1,5 @@
 import { ChefHat, Clock, CheckCircle2 } from "lucide-react";
-import { Badge } from "../../../components/ui/badge";
-import { Button } from "../../../components/ui/button";
+import { Badge, Button } from "../../../components/ui";
 import { StatusPill, type OrderStatus } from "../../../components/StatusPill/StatusPill";
 
 export interface TicketData {

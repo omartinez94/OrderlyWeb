@@ -43,7 +43,9 @@ src/                           # App source (to be scaffolded)
 - React 19 functional components only; no class components
 - Redux Toolkit slices + RTK Query for all server state (no ad-hoc `fetch`)
 - **Styling rules**:
-  - TailwindCSS for layout / spacing / responsive utilities only — not utility-first across the board. Component-specific styles (colors, complex hover states, animations, glass effects, brand-specific looks) live in `.css` files, colocated per-component or per-feature.
+  - **Tailwind first, CSS as a last resort** — always exhaust Tailwind utility classes before writing any custom CSS. The less custom CSS in the codebase, the better. Custom `.css` files are fully allowed, but only when a style genuinely cannot be expressed with Tailwind (e.g. complex keyframe animations, `:has()` selectors, pseudo-element content, or CSS variables consumed outside of Tailwind's theme). If you find yourself adding CSS for something Tailwind can do, use Tailwind instead.
+  - TailwindCSS covers layout, spacing, responsive breakpoints, colors (via design-token utilities), typography, borders, shadows, transitions, and most interactive states (`hover:`, `focus:`, `active:`, `group-*`, `data-*` variants). Reach for these first.
+  - Component-specific styles that genuinely require CSS (complex keyframes, advanced selectors, glass-morphism backdrop filters not covered by Tailwind) live in `.css` files colocated per-component or per-feature — keep them minimal and well-commented.
   - HeadlessUI for unstyled interactive primitives.
   - **No inline `style={{}}` on JSX** — always reach for a Tailwind utility class or a class defined in a `.css` file. The only acceptable exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`); these should still be documented with a comment.
   - Enforce with ESLint: `react/forbid-component-props` with `forbid: ["style"]` (eslint-plugin-react).
@@ -67,6 +69,7 @@ The adoption contract:
 - **Do not** hand-roll a button, input, dialog, tooltip, or table. Add or extend a primitive in `src/components/ui/` instead, themed to the Orderly tokens.
 - **Do not** introduce a second component library. Radix UI (via the shadcn install path) is the single source of interactive primitives; cmdk is the single source for the command palette; Sonner is the single source for toasts. New primitives must fit one of these or extend an existing one.
 - **Do not** bypass the theme system. The shadcn CSS variables in `src/index.css` already alias the Orderly tokens; use `bg-primary`, `text-ink`, `border-border-subtle`, etc. — never raw hex, never literal font families, never inline `style={{}}` for static values.
+- **Mandatory Barrel Imports**: All imports must go through folder-level barrel files (`index.ts` / `index.tsx`) rather than importing from nested files directly. For example, use `import { Button } from "@/components/ui"` instead of `import { Button } from "@/components/ui/button"`, and similarly for `hooks/`, `utils/`, `types/`, and feature sub-folders. If a new folder is created, or a folder contains multiple exportable files, you must add/update a barrel file and use it.
 - **Do not** add a base component without a Vitest + jest-axe test that covers its open/closed states and the keyboard contract documented in the plan.
 - **Do not** commit a base component that does not pass `pnpm ui:check` (typecheck + lint + a11y tests + Playwright axe).
 

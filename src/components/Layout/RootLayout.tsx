@@ -19,10 +19,10 @@
 
 import { Suspense } from "react";
 import { Outlet } from "react-router";
-import { TooltipProvider } from "../ui/tooltip";
+import { TooltipProvider } from "../ui";
 import { Toaster } from "../ui/sonner";
-import { useTheme } from "../../hooks/useTheme";
-import { SignInDialogHost } from "../SignInDialog/SignInDialogHost";
+import { useTheme } from "../../hooks";
+import { SignInDialogHost } from "../SignInDialog";
 import { RouteLoadingShell } from "./RouteLoadingShell";
 
 export function RootLayout(): React.ReactNode {

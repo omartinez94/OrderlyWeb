@@ -1,0 +1,322 @@
+/* ---------------------------------------------------------------------------
+ * LoginPage.css — Styles for the enterprise login split layout
+ * --------------------------------------------------------------------------- */
+
+.login-page-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Background mesh glows */
+.login-bg-glow-1 {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 25%, transparent) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.login-bg-glow-2 {
+  position: absolute;
+  bottom: -10%;
+  right: -5%;
+  width: 45vw;
+  height: 45vw;
+  max-width: 550px;
+  max-height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 20%, transparent) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+/* Hero Showcase (Left Side) */
+.login-hero-section {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .login-hero-section {
+    display: flex;
+    flex: 1 1 55%;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3.5rem;
+    position: relative;
+    z-index: 10;
+    border-right: 1px solid var(--color-border-subtle);
+    overflow: hidden;
+    /* Fallback solid background while image loads (dark in both themes) */
+    background: linear-gradient(
+      145deg,
+      var(--color-ink),
+      var(--color-primary)
+    );
+  }
+}
+
+.login-hero-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+
+.login-hero-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Cinematic punch: image is fully present, scrim below tints and grades it */
+  filter: saturate(1.15) contrast(1.05);
+  z-index: 0;
+  /* Subtle Ken Burns — depth without distraction */
+  transform: scale(1.04);
+  animation: login-hero-ken-burns 32s ease-in-out infinite alternate;
+}
+
+@keyframes login-hero-ken-burns {
+  from {
+    transform: scale(1.04) translate(0, 0);
+  }
+  to {
+    transform: scale(1.1) translate(-1.5%, -1%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-hero-image {
+    animation: none;
+    transform: none;
+  }
+}
+
+.login-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* Two-layer grade:
+     1) Vertical scrim — heavier at top/bottom so header/footer copy always reads,
+        lighter through the middle where the hero title sits.
+     2) Diagonal brand tint — Tilled Teal wash from the upper-left corner so the
+        image picks up brand color without losing its restaurant-scene content. */
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-ink) 55%, transparent) 0%,
+      color-mix(in srgb, var(--color-ink) 18%, transparent) 28%,
+      color-mix(in srgb, var(--color-ink) 22%, transparent) 55%,
+      color-mix(in srgb, var(--color-ink) 65%, transparent) 100%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-primary) 45%, transparent) 0%,
+      transparent 55%
+    );
+}
+
+.login-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-hero-brand {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #f0f4f2; /* overlay-light: image-overlay text (sage-tinted off-white) */
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--color-ink) 35%, transparent);
+}
+
+.login-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 55%, transparent);
+  color: #f0f4f2; /* overlay-light token (matches title/brand) — readable on dark scrim */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.login-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 3rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f0f4f2;
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+.login-hero-description {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, #f0f4f2 82%, transparent);
+  text-shadow: 0 1px 6px color-mix(in srgb, var(--color-ink) 35%, transparent);
+  max-width: 48ch;
+}
+
+/* Feature Preview Cards */
+.login-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.login-preview-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-card, 12px);
+  background: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid color-mix(in srgb, #f0f4f2 12%, transparent);
+  transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+.login-preview-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+.login-preview-card h3 {
+  color: #f0f4f2;
+}
+
+.login-preview-card p {
+  color: color-mix(in srgb, #f0f4f2 75%, transparent);
+}
+
+.login-preview-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  color: #f0f4f2; /* overlay-light token — readable on the primary-tinted box */
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+.login-hero-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in srgb, #f0f4f2 14%, transparent);
+  color: color-mix(in srgb, #f0f4f2 70%, transparent);
+}
+
+.login-hero-footer .login-security-badge,
+.login-hero-footer > div {
+  color: color-mix(in srgb, #f0f4f2 78%, transparent);
+}
+
+.login-hero-footer > div > div {
+  color: color-mix(in srgb, #f0f4f2 82%, transparent);
+}
+
+.login-hero-footer > span {
+  color: color-mix(in srgb, #f0f4f2 55%, transparent);
+}
+
+/* Form Container (Right Side) */
+.login-form-section {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 1.75rem;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 640px) {
+  .login-form-section {
+    padding: 3.5rem;
+  }
+}
+
+.login-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 2rem auto;
+}
+
+.login-card {
+  padding: 2.25rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-surface-overlay) 85%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+
+/* Quick Fill Preset Pills */
+.login-preset-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: color-mix(in srgb, var(--color-surface-elevated) 90%, transparent);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.login-preset-pill:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  color: var(--color-primary);
+}
+
+.login-security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--color-ink-subtle);
+}

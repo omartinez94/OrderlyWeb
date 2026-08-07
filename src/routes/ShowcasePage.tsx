@@ -16,11 +16,20 @@
 
 import { type ReactNode } from "react";
 import { Link } from "react-router";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Avatar, AvatarFallback } from "../components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Badge,
+  Avatar,
+  AvatarFallback,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../components/ui";
 import { Toaster } from "../components/ui/sonner";
 import { StatusPill } from "../components/StatusPill/StatusPill";
 import { ThemeToggle } from "../components/ThemeToggle/ThemeToggle";

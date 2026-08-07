@@ -9,23 +9,24 @@
  */
 
 import { Link } from "react-router";
-import { Button } from "../components/ui/button";
-import { PATH } from "../router/pathNames";
-import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectUser, selectRoles, selectPermissions } from "../app/session/sessionSelectors";
-import { selectAccessibleRestaurants } from "../app/session/headerSelectors";
-import { clearCredentials } from "../app/session/sessionSlice";
 import {
+  Button,
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
   CardFooter,
-} from "../components/ui/card";
-import { Avatar, AvatarFallback } from "../components/ui/avatar";
-import { Separator } from "../components/ui/separator";
-import { Badge } from "../components/ui/badge";
+  Avatar,
+  AvatarFallback,
+  Separator,
+  Badge,
+} from "../components/ui";
+import { PATH } from "../router/pathNames";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { selectUser, selectRoles, selectPermissions } from "../app/session/sessionSelectors";
+import { selectAccessibleRestaurants } from "../app/session/headerSelectors";
+import { clearCredentials } from "../app/session/sessionSlice";
 
 export function ProfilePage() {
   const dispatch = useAppDispatch();

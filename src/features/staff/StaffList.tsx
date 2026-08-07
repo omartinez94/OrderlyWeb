@@ -17,9 +17,9 @@ import { Link } from "react-router";
 import { useListStaffQuery } from "./api";
 import { useStaffFilters } from "./useStaffFilters";
 import { useRestaurantContext } from "../../components/RestaurantContext/useRestaurantContext";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
 import {
+  Badge,
+  Button,
   Table,
   TableBody,
   TableCaption,
@@ -27,7 +27,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../components/ui";
 import { PATH } from "../../router/pathNames";
 import type { StaffMember } from "./api";
 

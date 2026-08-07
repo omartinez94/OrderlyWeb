@@ -9,8 +9,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useDeactivateStaffMutation, useGetStaffQuery, useReactivateStaffMutation } from "./api";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
+import { Button, Badge } from "../../components/ui";
 import { toast } from "../../components/ui/sonner";
 import { StaffForm } from "./StaffForm";
 import { StaffAuditLog } from "./StaffAuditLog";
