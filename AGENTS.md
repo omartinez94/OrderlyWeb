@@ -169,6 +169,21 @@ For endpoint contracts and JWT claims shape, see `docs/backend-architecture/arch
 - Add tests for every new feature; mock RTK Query endpoints, never hit the real backend in CI
 - All tests + typecheck must pass before opening a PR
 
+### i18n testing contract
+
+- Wrap every component test in `renderWithI18n(ui, lang)` from `src/test/i18n-wrapper.tsx` (or supply an `<I18nextProvider>` directly when a custom store is required).
+- Assertions must cover both `en` and `es` for every user-visible string the component renders.
+- Playwright E2E flows must run their critical path under `es` via the `withLocale` fixture at `e2e/fixtures/withLocale.ts`:
+  ```ts
+  import { test, expect } from "../fixtures/withLocale";
+  test.describe("Order list (es)", () => {
+    test.use({ withLocale: "es" });
+    test("renders Spanish column headers", async ({ page }) => { /* ... */ });
+  });
+  ```
+- The `withLocale` fixture injects `localStorage["orderly-language"]` before navigation so the pre-hydration script in `index.html` sets `<html lang>` before React mounts.
+- New E2E smoke tests should live alongside `e2e/locale.spec.ts` and cover at least one critical flow (login, order list, KDS queue) per supported language.
+
 ## PR & commit conventions
 
 - Branch from `main`; never push to `main` directly

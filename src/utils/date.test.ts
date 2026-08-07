@@ -31,4 +31,11 @@ describe("date utils", () => {
     // Spanish locale emits "hace 5 minutos" or "unos 5 minutos" depending on date-fns version.
     expect(out.toLowerCase()).toMatch(/minutos|hace/);
   });
+
+  it("formats a fixed date in Spanish locale", () => {
+    const isoDate = "2026-08-06T12:00:00.000Z";
+    const en = formatDate(isoDate, "MMM d, yyyy", enUS);
+    const esOut = formatDate(isoDate, "MMM d, yyyy", es);
+    expect(en).not.toBe(esOut);
+  });
 });

@@ -53,3 +53,14 @@ describe("getCurrencyFormatter", () => {
     expect(a).toBe(b);
   });
 });
+
+describe("Spanish locale coverage", () => {
+  it("emits comma decimal separator for USD in es", () => {
+    expect(formatCurrency(12.5, "USD", "es")).toContain(",50");
+  });
+
+  it("emits period grouping for thousands in es", () => {
+    const out = formatNumber(12345.67, "es");
+    expect(out).toBe("12.345,67");
+  });
+});
