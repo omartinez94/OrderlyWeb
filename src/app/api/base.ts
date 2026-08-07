@@ -27,6 +27,7 @@ import { fetchBaseQuery, type FetchBaseQueryError } from "@reduxjs/toolkit/query
 import type { BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
 import { env } from "../../lib/env";
 import { refreshAccessToken } from "../../lib/authRefresh";
+import i18n, { LANGUAGE_STORAGE_KEY, isSupportedLanguage } from "../../lib/i18n";
 import { clearCredentials, setCredentials } from "../session/sessionSlice";
 
 /**
@@ -44,10 +45,33 @@ export const rawBaseQuery = fetchBaseQuery({
     const state = getState() as { session?: { accessToken: string | null } };
     const token = state.session?.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);
+    headers.set("Accept-Language", resolveAcceptLanguage());
     return headers;
   },
   credentials: "include",
 });
+
+/**
+ * Resolves the active locale for the `Accept-Language` header on every
+ * RTK Query request. The order mirrors the detector in `src/lib/i18n.ts`:
+ *   1. `i18n.language` — already in sync with the detector + user choice.
+ *   2. `localStorage["orderly-language"]` — covers the SSR / test
+ *      environment where i18next hasn't initialised.
+ *   3. `"en"` — final fallback.
+ */
+function resolveAcceptLanguage(): string {
+  const fromI18n = i18n.language;
+  if (isSupportedLanguage(fromI18n)) return fromI18n;
+  if (typeof window !== "undefined") {
+    try {
+      const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (isSupportedLanguage(stored)) return stored;
+    } catch {
+      // localStorage may be unavailable in private mode.
+    }
+  }
+  return "en";
+}
 
 /**
  * `dynamicBaseQuery` — wraps `rawBaseQuery` with a single-flight

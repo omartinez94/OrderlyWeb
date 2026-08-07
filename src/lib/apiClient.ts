@@ -45,6 +45,7 @@ import {
   setCredentials as setSessionCredentials,
   clearCredentials as clearSessionCredentials,
 } from "../app/session/sessionSlice";
+import i18n, { LANGUAGE_STORAGE_KEY, isSupportedLanguage } from "./i18n";
 import type { Role } from "../types/auth";
 import type { Permission } from "../types/auth";
 
@@ -92,6 +93,25 @@ function clearCredentials(): void {
   store.dispatch(clearSessionCredentials());
 }
 
+/**
+ * Resolves the active language for the `Accept-Language` header.
+ * Reads i18next's current language (kept in sync with the detector),
+ * falls back to `localStorage`, then to `"en"`.
+ */
+function resolveAcceptLanguage(): string {
+  const fromI18n = i18n.language;
+  if (isSupportedLanguage(fromI18n)) return fromI18n;
+  if (typeof window !== "undefined") {
+    try {
+      const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (isSupportedLanguage(stored)) return stored;
+    } catch {
+      // localStorage may be unavailable in private mode or SSR.
+    }
+  }
+  return "en";
+}
+
 export class ApiError extends Error {
   status: number;
   body: unknown;
@@ -133,6 +153,13 @@ export async function apiFetch<T = unknown>(
     const token = readAccessToken();
     if (token) finalHeaders["Authorization"] = `Bearer ${token}`;
   }
+  // Inject the active locale so backend services can localise
+  // domain data (item names, status labels, error messages). The
+  // header is sourced from i18next first, then from localStorage,
+  // then defaults to "en" — mirroring the detector order in
+  // `src/lib/i18n.ts`. The pre-hydration script in `index.html`
+  // has already set `<html lang>` before any of this code runs.
+  finalHeaders["Accept-Language"] = resolveAcceptLanguage();
 
   const res = await fetch(`${env.apiBaseUrl}${path}`, {
     method,
