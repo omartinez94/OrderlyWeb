@@ -1,26 +1,47 @@
 /**
- * LoginPage — real form (Phase 3).
+ * LoginPage — Modern World-Class Enterprise Auth Page.
  *
- * Calls `useLoginMutation()` from `identityApi`. On success the
- * session slice is populated via the mutation's `onQueryStarted`
- * listener, `selectIsAuthenticated` flips true, and the user is
- * redirected to `defaultZoneForRoles(roles)` via the root
- * redirector (or the `returnTo` query param when present).
+ * Implements a world-class split layout with an interactive brand showcase
+ * on the left and a glassmorphic authentication panel on the right.
  *
- * Errors surface inline as a Sonner toast.
+ * Features:
+ * - Enterprise Trust & Security Badges (SOC2 Type II, 256-Bit SSL, 99.99% SLA)
+ * - Quick Demo / Role Preset buttons for developer convenience
+ * - i18n & Theme Toggle integration
+ * - Smooth state feedback and error handling
  */
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { useTranslation } from "react-i18next";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ChefHat,
+  Crown,
+  Globe,
+  Lock,
+  Server,
+  ShieldCheck,
+  Sparkles,
+  Wine,
+} from "lucide-react";
+import { Button, Input, Label, Badge } from "../components/ui";
 import { toast } from "../components/ui/sonner";
+import { ThemeToggle } from "../components/ThemeToggle/ThemeToggle";
+import { LanguageToggle } from "../components/LanguageToggle/LanguageToggle";
 import { useLoginMutation } from "../app/api/identity";
 import { useAppSelector } from "../app/hooks";
 import { selectIsAuthenticated, selectDefaultZone } from "../app/session/sessionSelectors";
 import { safeReturnPath } from "../lib/safeReturnPath";
 import { PATH } from "../router/pathNames";
+import "./LoginPage.css";
+
+const DEMO_PRESETS: { email: string; key: "admin" | "kitchen" | "floorManager"; Icon: typeof Crown }[] = [
+  { email: "admin@acme.com", key: "admin", Icon: Crown },
+  { email: "kitchen@acme.com", key: "kitchen", Icon: ChefHat },
+  { email: "manager@acme.com", key: "floorManager", Icon: Wine },
+];
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,6 +51,7 @@ export function LoginPage() {
   const defaultZone = useAppSelector(selectDefaultZone);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation("auth");
   const returnTo = safeReturnPath(searchParams.get("returnTo"), PATH.HOME);
 
   useEffect(() => {
@@ -44,64 +66,200 @@ export function LoginPage() {
     try {
       await login({ email, password }).unwrap();
     } catch (err) {
-      const message = (err as { data?: { message?: string } }).data?.message ?? "Sign-in failed";
-      toast.error("Could not sign in", { description: message });
+      const message = (err as { data?: { message?: string } }).data?.message ?? t("login.toastErrorFallback");
+      toast.error(t("login.toastErrorTitle"), { description: message });
     }
   };
 
+  const handlePreset = (presetEmail: string) => {
+    setEmail(presetEmail);
+    setPassword("password123");
+  };
+
   return (
-    <div className="bg-surface text-ink min-h-screen font-sans antialiased">
-      <main className="mx-auto flex min-h-screen max-w-md flex-col items-stretch justify-center gap-6 px-5 py-24">
-        <p className="text-ink-subtle font-mono text-xs tracking-widest uppercase">Sign in</p>
-        <h1 className="text-primary font-display text-4xl font-bold tracking-tight">
-          Welcome back.
-        </h1>
-        <p className="text-ink-muted font-sans text-base leading-relaxed">
-          Use your work email. New here? Ask a Restaurant Admin to invite you.
-        </p>
+    <div className="login-page-container">
+      {/* Dynamic background ambient glows */}
+      <div className="login-bg-glow-1" aria-hidden="true" />
+      <div className="login-bg-glow-2" aria-hidden="true" />
 
-        <form className="mt-2 grid gap-4" onSubmit={onSubmit}>
-          <div className="grid gap-2">
-            <Label htmlFor="login-email">Work email</Label>
-            <Input
-              id="login-email"
-              type="email"
-              placeholder="staff@acme.com"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="login-password">Password</Label>
-            <Input
-              id="login-password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && (
-            <p className="text-danger font-sans text-sm" role="alert">
-              {(error as { data?: { message?: string } }).data?.message ??
-                "Sign-in failed. Please try again."}
-            </p>
-          )}
-          <Button type="submit" size="lg" disabled={isLoading}>
-            {isLoading ? "Signing in…" : "Continue"}
-          </Button>
-        </form>
+      {/* LEFT SIDE: World-Class Hero Showcase (Desktops) */}
+      <div className="login-hero-section">
+        <div
+          className="login-hero-image"
+          aria-hidden="true"
+          style={{ backgroundImage: "url('/images/02-login-background.jpg')" }}
+        />
+        <div className="login-hero-overlay" aria-hidden="true" />
 
-        <div>
-          <Button asChild variant="outline">
-            <Link to={PATH.HOME}>Back to home</Link>
-          </Button>
+        <div className="login-hero-header">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary text-white shadow-lg shadow-primary/20">
+            <ChefHat className="h-5 w-5" />
+          </div>
+          <span className="login-hero-brand">{t("hero.brand")}</span>
         </div>
-      </main>
+
+        <div className="login-hero-content">
+          <div>
+            <div className="login-hero-badge">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>{t("hero.eyebrow")}</span>
+            </div>
+          </div>
+
+          <h1 className="login-hero-title">{t("hero.title")}</h1>
+
+          <p className="login-hero-description">{t("hero.description")}</p>
+
+          <div className="login-preview-grid">
+            <div className="login-preview-card">
+              <div className="login-preview-icon">
+                <Globe className="h-5 w-5" />
+              </div>
+              <h3 className="font-display font-semibold text-sm">{t("hero.featureGlobalTitle")}</h3>
+              <p className="text-xs mt-1 leading-relaxed">{t("hero.featureGlobalDescription")}</p>
+            </div>
+
+            <div className="login-preview-card">
+              <div className="login-preview-icon">
+                <Server className="h-5 w-5" />
+              </div>
+              <h3 className="font-display font-semibold text-sm">{t("hero.featureSlaTitle")}</h3>
+              <p className="text-xs mt-1 leading-relaxed">{t("hero.featureSlaDescription")}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="login-hero-footer">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-xs">
+              <ShieldCheck className="h-4 w-4" />
+              <span>{t("hero.badgeSoc")}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs">
+              <Lock className="h-4 w-4" />
+              <span>{t("hero.badgeSsl")}</span>
+            </div>
+          </div>
+          <span className="text-xs font-mono">{t("hero.version")}</span>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: Authentication Form */}
+      <div className="login-form-section">
+        {/* Top Controls: Locale & Theme */}
+        <div className="login-top-bar">
+          <Button asChild variant="ghost" size="sm" className="text-ink-muted hover:text-ink">
+            <Link to={PATH.HOME}>
+              <ArrowLeft className="h-3.5 w-3.5" />
+              {t("login.backToHome")}
+            </Link>
+          </Button>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
+        </div>
+
+        {/* Form Card */}
+        <div className="login-form-wrapper">
+          <div className="login-card">
+            <div className="mb-6 space-y-1.5">
+              <Badge variant="outline" className="font-mono text-xs tracking-wider uppercase text-primary border-primary/30">
+                {t("login.staffPortal")}
+              </Badge>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+                {t("login.title")}
+              </h2>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                {t("login.subtitle")}
+              </p>
+            </div>
+
+            <form className="space-y-4" onSubmit={onSubmit}>
+              <div className="space-y-1.5">
+                <Label htmlFor="login-email">{t("login.email")}</Label>
+                <Input
+                  id="login-email"
+                  type="email"
+                  placeholder={t("login.emailPlaceholder")}
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-11"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="login-password">{t("login.password")}</Label>
+                  <a
+                    href="#forgot"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toast.info(t("login.forgotToast"));
+                    }}
+                    className="text-xs text-primary hover:underline font-medium"
+                  >
+                    {t("login.forgotPassword")}
+                  </a>
+                </div>
+                <Input
+                  id="login-password"
+                  type="password"
+                  placeholder={t("login.passwordPlaceholder")}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-11"
+                  required
+                />
+              </div>
+
+              {error && (
+                <div
+                  className="flex items-start gap-2 rounded-lg bg-danger/10 border border-danger/20 p-3 text-xs text-danger font-medium"
+                  role="alert"
+                >
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-px" />
+                  <span>
+                    {(error as { data?: { message?: string } }).data?.message ?? t("login.errorInvalid")}
+                  </span>
+                </div>
+              )}
+
+              <Button type="submit" size="lg" className="w-full h-11 text-base font-semibold shadow-md shadow-primary/20" disabled={isLoading}>
+                {isLoading ? t("login.submitting") : t("login.submit")}
+              </Button>
+            </form>
+
+            {/* Quick Demo Preset Fillers */}
+            <div className="mt-6 pt-5 border-t border-border-subtle">
+              <p className="text-xs font-medium text-ink-subtle uppercase tracking-wider mb-2.5">
+                {t("demoPresets.title")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => handlePreset(presetEmail)}
+                    className="login-preset-pill"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{t(`demoPresets.${key}`)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="text-center text-xs text-ink-subtle">
+          <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
+        </div>
+      </div>
     </div>
   );
 }

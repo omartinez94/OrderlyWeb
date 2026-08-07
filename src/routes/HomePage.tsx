@@ -4,7 +4,7 @@ import { ParallaxHero } from "../components/ParallaxHero";
 import { LiveTicketSimulator } from "../components/Home/LiveTicketSimulator";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { ScrollReveal } from "../components/Motion/ScrollReveal";
-import { StatsGrid, type StatItem } from "../components/ui/stats-grid";
+import { StatsGrid, type StatItem } from "../components/ui";
 import { ArchitectureSection } from "../components/Home/ArchitectureSection";
 import { ZoneShowcaseSection } from "../components/Home/ZoneShowcaseSection";
 import { AtmosphereSection } from "../components/Home/AtmosphereSection";
