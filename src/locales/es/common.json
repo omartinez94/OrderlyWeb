@@ -35,5 +35,210 @@
     "network": "Error de red. Verifique su conexión.",
     "forbidden": "No tiene permiso para hacer eso.",
     "notFound": "No pudimos encontrar lo que buscaba."
+  },
+  "home": {
+    "stats": {
+      "latency": {
+        "label": "Latencia en tiempo real",
+        "detail": "WebSockets de SignalR"
+      },
+      "microservices": {
+        "label": "Microservicios",
+        "detail": "Respaldado por YARP API Gateway"
+      },
+      "rolePrecision": {
+        "label": "Precisión de roles",
+        "detail": "Acceso granular por zona"
+      },
+      "hubUptime": {
+        "label": "Disponibilidad del hub",
+        "detail": "Reconexión automática resiliente"
+      }
+    },
+    "hero": {
+      "badge": "Plataforma de Operaciones de Restaurantes Empresariales",
+      "titlePart1": "Donde cada pedido",
+      "titlePart2": "fluye sin problemas",
+      "description": "Orderly unifica la visualización de cocina, las operaciones de sala y la administración en un único sistema en tiempo real de menos de un segundo, diseñado para comedores de alto volumen.",
+      "getStarted": "Comenzar",
+      "exploreArchitecture": "Explorar arquitectura",
+      "latencyHub": "Hub de SignalR <50ms",
+      "microservicesCount": "7 Microservicios",
+      "gatewayOnline": "Gateway de YARP en línea",
+      "chips": {
+        "kdsLive": "KDS en vivo",
+        "kdsLiveDesc": "3 pedidos · cola",
+        "kitchenReady": "Cocina lista",
+        "kitchenReadyDesc": "Mesa 12 · emplatado",
+        "signalrHub": "Hub de SignalR",
+        "signalrHubDesc": "<50ms · 99.99%",
+        "realtimeSync": "Sincronización en tiempo real",
+        "realtimeSyncDesc": "Todas las zonas activas",
+        "orderReceived": "Pedido recibido",
+        "orderReceivedDesc": "Mesa 7 · 4 artículos"
+      }
+    },
+    "simulator": {
+      "badge": "Simulador SignalR KDS en vivo",
+      "title": "Experimente los tickets en tiempo real en acción",
+      "description": "Vea el despacho de pedidos en menos de un segundo o haga clic en cualquier tarjeta de ticket para cambiar manualmente el estado del pedido.",
+      "autoAdvancing": "Turnos con avance automático",
+      "resumeAuto": "Reanudar simulación automática",
+      "tickets": {
+        "table": "Mesa {{num}}",
+        "bar": "Bar {{num}}",
+        "ribeye": "Ojo de bife sellado x2",
+        "fries": "Papas fritas con trufa",
+        "ipa": "IPA artesanal x2",
+        "risotto": "Risotto de hongos silvestres",
+        "calamari": "Calamares crujientes",
+        "chardonnay": "Chardonnay",
+        "oldFashioned": "Old Fashioned ahumado x2",
+        "charcuterie": "Tabla de embutidos",
+        "grillSides": "Parrilla y guarniciones",
+        "hotLine": "Línea caliente",
+        "beverage": "Bebidas"
+      }
+    },
+    "carousel": {
+      "signIn": "Iniciar sesión en la plataforma",
+      "explore": "Explorar capacidades",
+      "slideCaption": "Arquitectura multizona de Orderly",
+      "slides": {
+        "platform": {
+          "badge": "Plataforma de hospitalidad empresarial",
+          "title": "Un SO unificado para cocina, sala y administración",
+          "description": "Orderly elimina la fragmentación de los POS tradicionales. Una sola plataforma consciente de roles que mantiene cada estación sincronizada en tiempo real.",
+          "highlight": "Sincronización en vivo inferior al segundo en todos los dispositivos"
+        },
+        "kds": {
+          "badge": "Sistema inteligente de visualización de cocina",
+          "title": "Enrutamiento de tickets sin estrés con gradientes de estado dinámicos",
+          "description": "Los algoritmos de urgencia codificados por colores mueven los pedidos sin problemas desde los estados de preparación en verde azulado hasta las alertas de servicio en naranja para que los cocineros de línea se mantengan enfocados.",
+          "highlight": "Reduce los tiempos de preparación de tickets hasta en un 28%"
+        },
+        "staff": {
+          "badge": "Gobernanza consciente de roles",
+          "title": "Controles de acceso multizona para el personal y la gerencia",
+          "description": "Las zonas de SuperAdmin, Gerente de Cocina, Camarero y Cajero adaptan automáticamente sus interfaces en función de las funciones del personal y los turnos activos.",
+          "highlight": "8 roles granulares integrados en 3 zonas principales"
+        },
+        "split": {
+          "badge": "POS y facturación de próxima generación",
+          "title": "Pago sin fricciones y división instantánea de cuentas",
+          "description": "Permita que el personal de servicio divida cuentas complejas por mesa o artículo con recálculo en tiempo real y sin tiempos de espera en la terminal.",
+          "highlight": "Cálculo instantáneo del carrito respaldado por Redis"
+        }
+      }
+    },
+    "architecture": {
+      "badge": "Arquitectura empresarial",
+      "title": "Diseñado para un tiempo de inactividad cero y el máximo rendimiento",
+      "description": "Orderly desacopla la entrega del frontend de los servicios de dominio del backend a través de YARP Gateway, brindando un estado en tiempo real de menos de un segundo en todos los dispositivos.",
+      "mesh": {
+        "title": "Malla de microservicios",
+        "desc": "Servicios de backend independientes para Identidad, Catálogo, Pedidos, Cocina, Carrito y Notificaciones.",
+        "p1": "YARP API Gateway (Puerto 6004)",
+        "p2": "Cálculo del carrito respaldado por Redis",
+        "p3": "Flujo de actualización de JWT de solicitud única"
+      },
+      "pipeline": {
+        "title": "Canalización de SignalR en vivo",
+        "desc": "El despacho instantáneo de WebSockets garantiza que los tickets se actualicen sin consultas continuas ni actualizaciones manuales.",
+        "p1": "Hubs OrderReceived y OrderReady",
+        "p2": "Política de reconexión automática de 5 etapas",
+        "p3": "Despacho en vivo de ItemStateChanged"
+      },
+      "security": {
+        "title": "Seguridad basada en roles",
+        "desc": "El enrutamiento de interfaz consciente de roles mantiene al personal enfocado en su dominio operativo específico.",
+        "p1": "Token de acceso JWT en memoria",
+        "p2": "Envoltorio GuardedPage a nivel de diseño",
+        "p3": "8 roles en 3 zonas de nivel superior"
+      }
+    },
+    "zones": {
+      "badge": "Tres zonas operativas",
+      "title": "Interfaces a la medida para cada turno de restaurante",
+      "description": "Haga clic en una zona a continuación para obtener una vista previa del espacio de trabajo dedicado.",
+      "access": "Acceder a la {{name}}",
+      "admin": {
+        "name": "Zona de Administración y Ejecutiva",
+        "badge": "SuperAdmin · Gerente",
+        "description": "Centro de control completo de oficina administrativa para el aprovisionamiento de personal, catálogos de menús, gobernanza de unidades múltiples y métricas del sistema.",
+        "p1": "Incorporación de personal y asignación de roles",
+        "p2": "Catalogación global de categorías y platos",
+        "p3": "Registros de auditoría del sistema y salud operativa"
+      },
+      "kitchen": {
+        "name": "Sistema de Visualización de Cocina (KDS)",
+        "badge": "KitchenManager · Cocinero de línea",
+        "description": "Cola de tickets de alta velocidad diseñada para entornos de turnos intensos con gradientes automáticos de tiempo de urgencia (frío a cálido).",
+        "p1": "Actualizaciones de estado de pedidos inferiores al segundo",
+        "p2": "Despacho de tickets filtrados por estación",
+        "p3": "Umbrales de temporizador de preparación dinámicos codificados por colores"
+      },
+      "restaurant": {
+        "name": "Operaciones de Sala y Comedor",
+        "badge": "Camarero · Cajero · Anfitrión",
+        "description": "Pedidos rápidos desde la mesa, gestión de asientos, división flexible de cuentas y enrutamiento instantáneo de reservas.",
+        "p1": "División de cuentas sin fricciones por asiento",
+        "p2": "Mapa de estado de ocupación de mesas en vivo",
+        "p3": "Precios de carrito directos respaldados por Redis"
+      }
+    },
+    "atmosphere": {
+      "badge": "Experiencia del chef y el cliente",
+      "title": "\"Orderly trajo paz a nuestra línea de cocina y duplicó la eficiencia de rotación de mesas.\"",
+      "description": "Diseñado específicamente para eliminar las ruidosas impresoras de tickets y las fallas de comunicación manual entre camareros y chefs.",
+      "role": "Chef Ejecutivo y Operaciones",
+      "company": "Grand Bistro & Culinary Group"
+    },
+    "cta": {
+      "badge": "¿Listo para mejorar su turno?",
+      "title": "Comience con Orderly en minutos.",
+      "description": "Inicie sesión con sus credenciales de personal o comuníquese con el administrador de su restaurante para solicitar acceso a las zonas.",
+      "signIn": "Abrir diálogo de inicio de sesión",
+      "showcase": "Ver catálogo de componentes"
+    },
+    "faq": {
+      "badge": "Preguntas y respuestas",
+      "title": "Preguntas frecuentes",
+      "q1": "¿Cómo unifica Orderly la sala y la cocina?",
+      "a1": "En lugar de ejecutar software separado para la visualización de la cocina, las terminales de punto de venta y los paneles de gestión, Orderly proporciona un único frontend consciente del rol del usuario conectado a los microservicios de YARP API Gateway.",
+      "q2": "¿Cómo funciona la sincronización en vivo mediante WebSockets entre dispositivos?",
+      "a2": "Orderly conecta a todos los clientes de navegador activos a un hub de SignalR con reconexión automática de retroceso (1s, 2s, 5s, 10s, 30s). Los cambios de estado se transmiten instantáneamente sin necesidad de que el cliente realice consultas.",
+      "q3": "¿Qué medidas de seguridad rigen el acceso a los roles?",
+      "a3": "La autenticación utiliza tokens de acceso JWT en memoria de corta duración combinados con cookies de actualización seguras de tipo httpOnly. Todas las rutas de las zonas están protegidas por predicados de roles a nivel de diseño.",
+      "q4": "¿Puede Orderly escalar para cadenas de restaurantes con múltiples ubicaciones?",
+      "a4": "Sí. La arquitectura de microservicios del backend desacopla los dominios de Identidad, Catálogo, Pedidos, Carritos, Descuentos, Cocina y Notificaciones para lograr el máximo rendimiento y escalabilidad horizontal."
+    }
+  },
+  "marketing": {
+    "header": {
+      "nav": {
+        "capabilities": "Capacidades",
+        "architecture": "Arquitectura",
+        "zones": "Tres zonas",
+        "faq": "Preguntas frecuentes"
+      },
+      "signIn": "Iniciar sesión"
+    },
+    "footer": {
+      "description": "Sistema empresarial de gestión para el personal en salas y cocinas modernas.",
+      "zonesHeading": "Zonas",
+      "adminConsole": "Consola de administración",
+      "kitchenKds": "KDS de cocina",
+      "restaurantOps": "Operaciones del restaurante",
+      "systemHeading": "Sistema",
+      "showcaseLink": "Catálogo de primitivas UI",
+      "gatewayLink": "Gateway de microservicios",
+      "faqLink": "Preguntas frecuentes",
+      "gatewayStatusHeading": "Estado del gateway",
+      "gatewayStatus": "Gateway 6004 en línea",
+      "copyright": "© Orderly. Diseñado para turnos de alto volumen.",
+      "staffSignIn": "Acceso del personal",
+      "designTokens": "Design Tokens"
+    }
   }
 }

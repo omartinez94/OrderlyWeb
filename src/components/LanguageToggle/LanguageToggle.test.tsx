@@ -13,6 +13,19 @@ function renderToggle() {
   );
 }
 
+/**
+ * Radix `NavigationMenu` mounts its content lazily — the option
+ * buttons only land in the DOM after the trigger is clicked.
+ *
+ * The trigger's accessible name comes from the active translation
+ * (`"Language"` in English, `"Idioma"` in Spanish), so the matcher
+ * covers both.
+ */
+async function openLanguageMenu(user: ReturnType<typeof userEvent.setup>): Promise<void> {
+  const trigger = screen.getByRole("button", { name: /language|idioma/i });
+  await user.click(trigger);
+}
+
 afterEach(() => {
   cleanup();
   window.localStorage.removeItem(LANGUAGE_STORAGE_KEY);
@@ -21,24 +34,31 @@ afterEach(() => {
 
 describe("LanguageToggle", () => {
   it("renders EN and ES options", async () => {
+    const user = userEvent.setup();
     await i18n.changeLanguage("en");
     renderToggle();
-    expect(screen.getByRole("radio", { name: "English" })).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Spanish" })).toBeInTheDocument();
+    await openLanguageMenu(user);
+    expect(screen.getByRole("button", { name: "English" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Spanish" })).toBeInTheDocument();
   });
 
   it("uses the active i18n language as the selected toggle", async () => {
+    const user = userEvent.setup();
     await i18n.changeLanguage("es");
     renderToggle();
-    const es = screen.getByRole("radio", { name: "Español" });
-    expect(es).toHaveAttribute("data-state", "on");
+    await openLanguageMenu(user);
+    const es = screen.getByRole("button", { name: "Español" });
+    // NavigationMenuLink forwards `active` as a boolean `data-active`
+    // attribute (present when active, absent otherwise).
+    expect(es).toHaveAttribute("data-active");
   });
 
   it("switches the active language when the user clicks ES", async () => {
     const user = userEvent.setup();
     await i18n.changeLanguage("en");
     renderToggle();
-    await user.click(screen.getByRole("radio", { name: "Spanish" }));
+    await openLanguageMenu(user);
+    await user.click(screen.getByRole("button", { name: "Spanish" }));
     expect(i18n.language).toBe("es");
   });
 
@@ -46,14 +66,17 @@ describe("LanguageToggle", () => {
     const user = userEvent.setup();
     await i18n.changeLanguage("en");
     renderToggle();
-    await user.click(screen.getByRole("radio", { name: "Spanish" }));
+    await openLanguageMenu(user);
+    await user.click(screen.getByRole("button", { name: "Spanish" }));
     expect(window.localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe("es");
   });
 
-  it("renders the Spanish aria-label when language is Spanish", async () => {
+  it("renders the Spanish label when language is Spanish", async () => {
+    const user = userEvent.setup();
     await i18n.changeLanguage("es");
     renderToggle();
-    expect(screen.getByRole("radio", { name: "Inglés" })).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Español" })).toBeInTheDocument();
+    await openLanguageMenu(user);
+    expect(screen.getByRole("button", { name: "Inglés" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Español" })).toBeInTheDocument();
   });
 });

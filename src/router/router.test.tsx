@@ -21,9 +21,7 @@ describe("router", () => {
     it("renders the marketing home", async () => {
       renderWithRoute("/home");
       await waitFor(() => {
-        expect(
-          screen.getByRole("heading", { name: /One unified OS/i }),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: /One unified OS/i })).toBeInTheDocument();
       });
     });
   });

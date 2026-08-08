@@ -1,59 +1,92 @@
 import "./LanguageToggle.css";
 import { useTranslation } from "react-i18next";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Globe } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
 import { useLanguage } from "../../hooks/useLanguage";
 import type { SupportedLanguage } from "../../lib/i18n";
 
 /**
- * LanguageToggle — segmented `EN | ES` control rendered into the top
- * bar of every zone layout. Backed by `useLanguage()` which proxies to
- * i18next's `changeLanguage()`; the detector in `src/lib/i18n.ts`
- * persists the choice to `localStorage["orderly-language"]` and
- * updates `<html lang>` automatically.
+ * LanguageToggle — globe-icon trigger that opens a Radix
+ * `NavigationMenu` listing the supported languages. Uses
+ * `viewport={false}` so the language options render in a compact
+ * popover beneath the trigger rather than the full-width mega-menu
+ * viewport.
  *
  * Accessibility:
- *   - The toggle group carries an `aria-label` sourced from the active
- *     locale (`common:languageToggle.label`).
- *   - Keyboard navigation is handled by Radix's `ToggleGroup`:
- *     arrow keys rove focus, Space/Enter toggles.
- *   - A polite live region announces the new language to screen readers
- *     after a change (see §11 of the i18n plan).
+ *   - Trigger carries `aria-label` sourced from the active locale
+ *     (`common:languageToggle.label`).
+ *   - Keyboard navigation handled by Radix (arrow keys rove, Enter
+ *     selects, Escape closes and returns focus to the trigger).
+ *   - The active option carries `data-active` so it stays visually
+ *     marked as the current language.
+ *   - A polite live region announces the new language to screen
+ *     readers after a change.
  */
 export function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
-  // Bound to the `common` namespace so translation keys are unqualified.
   const { t } = useTranslation("common");
 
-  const handleChange = (next: string | string[] | undefined): void => {
-    if (typeof next !== "string") return;
+  const handleSelect = (next: string): void => {
     if (next === "en" || next === "es") {
       setLanguage(next as SupportedLanguage);
     }
   };
 
+  const triggerLabel = t("languageToggle.label");
   const announce = t("languageToggle.changedTo", {
     lang: language === "es" ? "Español" : "English",
   });
 
   return (
     <>
-      <ToggleGroup
-        type="single"
-        value={language}
-        onValueChange={handleChange}
-        variant="outline"
-        size="sm"
-        spacing={0}
-        aria-label={t("languageToggle.label")}
-        className="language-toggle"
-      >
-        <ToggleGroupItem value="en" aria-label={t("languageToggle.en")}>
-          EN
-        </ToggleGroupItem>
-        <ToggleGroupItem value="es" aria-label={t("languageToggle.es")}>
-          ES
-        </ToggleGroupItem>
-      </ToggleGroup>
+      <NavigationMenu viewport={false} className="language-toggle">
+        <NavigationMenuList>
+          <NavigationMenuItem value="language">
+            <NavigationMenuTrigger
+              aria-label={triggerLabel}
+              title={triggerLabel}
+              className="language-toggle__trigger"
+            >
+              <Globe className="language-toggle__icon" aria-hidden="true" />
+            </NavigationMenuTrigger>
+            <NavigationMenuContent className="language-toggle__content">
+              <ul className="language-toggle__list" role="list">
+                <li>
+                  <NavigationMenuLink asChild active={language === "en"}>
+                    <button
+                      type="button"
+                      data-testid="language-option-en"
+                      onClick={() => handleSelect("en")}
+                      className="language-toggle__option"
+                    >
+                      {t("languageToggle.en")}
+                    </button>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink asChild active={language === "es"}>
+                    <button
+                      type="button"
+                      data-testid="language-option-es"
+                      onClick={() => handleSelect("es")}
+                      className="language-toggle__option"
+                    >
+                      {t("languageToggle.es")}
+                    </button>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
       {/*
         Polite live region: announces the language switch to assistive
         tech without stealing focus. Always rendered (off-screen via

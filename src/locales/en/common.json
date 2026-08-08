@@ -35,5 +35,210 @@
     "network": "Network error. Check your connection.",
     "forbidden": "You do not have permission to do that.",
     "notFound": "We could not find what you were looking for."
+  },
+  "home": {
+    "stats": {
+      "latency": {
+        "label": "Real-time Latency",
+        "detail": "SignalR web sockets"
+      },
+      "microservices": {
+        "label": "Microservices",
+        "detail": "YARP API Gateway backed"
+      },
+      "rolePrecision": {
+        "label": "Role Precision",
+        "detail": "Granular zone access"
+      },
+      "hubUptime": {
+        "label": "Hub Uptime",
+        "detail": "Resilient auto-reconnect"
+      }
+    },
+    "hero": {
+      "badge": "Enterprise Restaurant Operations Platform",
+      "titlePart1": "Where Every Order",
+      "titlePart2": "Flows Flawlessly",
+      "description": "Orderly unifies your kitchen display, floor operations, and admin in one sub-second real-time system — built for high-volume dining.",
+      "getStarted": "Get Started",
+      "exploreArchitecture": "Explore Architecture",
+      "latencyHub": "SignalR <50ms Hub",
+      "microservicesCount": "7 Microservices",
+      "gatewayOnline": "YARP Gateway Online",
+      "chips": {
+        "kdsLive": "KDS Live",
+        "kdsLiveDesc": "3 orders · queue",
+        "kitchenReady": "Kitchen Ready",
+        "kitchenReadyDesc": "Table 12 · Plating",
+        "signalrHub": "SignalR Hub",
+        "signalrHubDesc": "<50ms · 99.99%",
+        "realtimeSync": "Real-time Sync",
+        "realtimeSyncDesc": "All zones active",
+        "orderReceived": "Order Received",
+        "orderReceivedDesc": "Table 7 · 4 items"
+      }
+    },
+    "simulator": {
+      "badge": "Live KDS SignalR Simulator",
+      "title": "Experience real-time tickets in action",
+      "description": "Watch sub-second order dispatch or click any ticket card to manually transition order state.",
+      "autoAdvancing": "Auto-Advancing Shifts",
+      "resumeAuto": "Resume Auto Simulation",
+      "tickets": {
+        "table": "Table {{num}}",
+        "bar": "Bar {{num}}",
+        "ribeye": "Pan-seared Ribeye x2",
+        "fries": "Truffle Fries",
+        "ipa": "Craft IPA x2",
+        "risotto": "Wild Mushroom Risotto",
+        "calamari": "Crispy Calamari",
+        "chardonnay": "Chardonnay",
+        "oldFashioned": "Smoked Old Fashioned x2",
+        "charcuterie": "Charcuterie Board",
+        "grillSides": "Grill & Sides",
+        "hotLine": "Hot Line",
+        "beverage": "Beverage"
+      }
+    },
+    "carousel": {
+      "signIn": "Sign in to Platform",
+      "explore": "Explore Capabilities",
+      "slideCaption": "Orderly Multi-zone Architecture",
+      "slides": {
+        "platform": {
+          "badge": "Enterprise Hospitality Platform",
+          "title": "One unified OS for your kitchen, floor & back office",
+          "description": "Orderly eliminates legacy POS fragmentation. A single role-aware platform keeping every station perfectly synchronized in real time.",
+          "highlight": "Sub-second live sync across all devices"
+        },
+        "kds": {
+          "badge": "Smart Kitchen Display System",
+          "title": "Calm ticket routing with dynamic status gradients",
+          "description": "Color-coded urgency algorithms move orders smoothly from teal prep states to tangerine service alerts so line cooks stay focused.",
+          "highlight": "Reduces ticket prep times by up to 28%"
+        },
+        "staff": {
+          "badge": "Role-Aware Governance",
+          "title": "Multi-zone access controls for staff & management",
+          "description": "SuperAdmin, Kitchen Manager, Waiter, and Cashier zones automatically adapt interfaces based on staff duties and active shifts.",
+          "highlight": "8 granular roles built into 3 core zones"
+        },
+        "split": {
+          "badge": "Next-Gen POS & Billing",
+          "title": "Frictionless checkout and instant bill splitting",
+          "description": "Empower waitstaff to split complex checks by seat or item with real-time recalculation and zero waiting time at the terminal.",
+          "highlight": "Instant Redis-backed basket calculation"
+        }
+      }
+    },
+    "architecture": {
+      "badge": "Enterprise Architecture",
+      "title": "Engineered for zero downtime & maximum throughput",
+      "description": "Orderly decouples frontend delivery from backend domain services via YARP Gateway, delivering sub-second real-time state across every device.",
+      "mesh": {
+        "title": "Microservice Mesh",
+        "desc": "Independent backend services for Identity, Catalog, Order, Kitchen, Basket & Notification.",
+        "p1": "YARP API Gateway (Port 6004)",
+        "p2": "Redis-backed Basket calculation",
+        "p3": "Single flight JWT refresh flow"
+      },
+      "pipeline": {
+        "title": "Live SignalR Pipeline",
+        "desc": "Instant WebSocket dispatch ensures tickets update without polling or manual refreshes.",
+        "p1": "OrderReceived & OrderReady hubs",
+        "p2": "5-stage auto-reconnect policy",
+        "p3": "ItemStateChanged live dispatch"
+      },
+      "security": {
+        "title": "Role-Based Security",
+        "desc": "Role-aware interface routing keeps staff focused on their specific operational domain.",
+        "p1": "In-memory JWT access token",
+        "p2": "Layout-level GuardedPage wrapper",
+        "p3": "8 roles across 3 top-level zones"
+      }
+    },
+    "zones": {
+      "badge": "Three Operational Zones",
+      "title": "Tailored interfaces for every restaurant shift",
+      "description": "Click a zone below to preview the dedicated workspace.",
+      "access": "Access {{name}}",
+      "admin": {
+        "name": "Admin & Executive Zone",
+        "badge": "SuperAdmin · Manager",
+        "description": "Complete back-office control center for staff provisioning, menu catalogs, multi-unit governance, and system metrics.",
+        "p1": "Staff onboarding and role assignment",
+        "p2": "Global category and menu item cataloging",
+        "p3": "System audit logs and operational health"
+      },
+      "kitchen": {
+        "name": "Kitchen Display System (KDS)",
+        "badge": "KitchenManager · Line Cook",
+        "description": "High-velocity ticket queue designed for intense shift environments with automated cool-to-warm time-urgency gradients.",
+        "p1": "Sub-second order state updates",
+        "p2": "Station-filtered ticket dispatch",
+        "p3": "Dynamic color-coded prep timer thresholds"
+      },
+      "restaurant": {
+        "name": "Floor & Dining Operations",
+        "badge": "Waiter · Cashier · Host",
+        "description": "Fast table-side POS ordering, seat management, flexible bill splitting, and instant reservation routing.",
+        "p1": "Frictionless seat-based check splitting",
+        "p2": "Live table occupancy status map",
+        "p3": "Direct Redis-backed basket pricing"
+      }
+    },
+    "atmosphere": {
+      "badge": "Chef & Guest Experience",
+      "title": "\"Orderly gave our kitchen line peace and doubled table turnover efficiency.\"",
+      "description": "Designed specifically to eliminate noisy ticket printers and manual communication breakdowns between servers and chefs.",
+      "role": "Executive Chef & Operations",
+      "company": "Grand Bistro & Culinary Group"
+    },
+    "cta": {
+      "badge": "Ready to Upgrade Your Shift?",
+      "title": "Get started with Orderly in minutes.",
+      "description": "Sign in with your staff credentials or contact your Restaurant Administrator to request zone access.",
+      "signIn": "Open Sign-In Dialog",
+      "showcase": "View Component Showcase"
+    },
+    "faq": {
+      "badge": "Questions & Answers",
+      "title": "Frequently Asked Questions",
+      "q1": "How does Orderly unify front of house and back of house?",
+      "a1": "Instead of running separate software for kitchen display, POS terminals, and management dashboards, Orderly provides a single role-aware frontend connected to YARP API Gateway microservices.",
+      "q2": "How does live WebSocket sync operate across devices?",
+      "a2": "Orderly connects all active browser clients to a SignalR hub with automatic back-off reconnection (1s, 2s, 5s, 10s, 30s). State changes push instantly without client polling.",
+      "q3": "What security measures govern role access?",
+      "a3": "Authentication uses short-lived in-memory JWT access tokens combined with secure httpOnly refresh cookies. All zone routes are guarded by layout-level role predicates.",
+      "q4": "Can Orderly scale to multi-location restaurant chains?",
+      "a4": "Yes. The backend microservices architecture decouples Identity, Catalog, Order, Basket, Discount, Kitchen, and Notification domains for maximum throughput and horizontal scalability."
+    }
+  },
+  "marketing": {
+    "header": {
+      "nav": {
+        "capabilities": "Capabilities",
+        "architecture": "Architecture",
+        "zones": "Three Zones",
+        "faq": "FAQ"
+      },
+      "signIn": "Sign in"
+    },
+    "footer": {
+      "description": "Enterprise staff-facing management system for modern dining rooms and kitchen operations.",
+      "zonesHeading": "Zones",
+      "adminConsole": "Admin Console",
+      "kitchenKds": "Kitchen KDS",
+      "restaurantOps": "Restaurant Operations",
+      "systemHeading": "System",
+      "showcaseLink": "UI Primitive Showcase",
+      "gatewayLink": "Microservice Gateway",
+      "faqLink": "FAQ",
+      "gatewayStatusHeading": "Gateway Status",
+      "gatewayStatus": "Gateway 6004 Online",
+      "copyright": "© Orderly. Built for high-volume restaurant shifts.",
+      "staffSignIn": "Staff Sign In",
+      "designTokens": "Design Tokens"
+    }
   }
 }
