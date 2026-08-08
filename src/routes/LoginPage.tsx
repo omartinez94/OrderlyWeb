@@ -37,7 +37,11 @@ import { safeReturnPath } from "../lib/safeReturnPath";
 import { PATH } from "../router/pathNames";
 import "./LoginPage.css";
 
-const DEMO_PRESETS: { email: string; key: "admin" | "kitchen" | "floorManager"; Icon: typeof Crown }[] = [
+const DEMO_PRESETS: {
+  email: string;
+  key: "admin" | "kitchen" | "floorManager";
+  Icon: typeof Crown;
+}[] = [
   { email: "admin@acme.com", key: "admin", Icon: Crown },
   { email: "kitchen@acme.com", key: "kitchen", Icon: ChefHat },
   { email: "manager@acme.com", key: "floorManager", Icon: Wine },
@@ -66,7 +70,8 @@ export function LoginPage() {
     try {
       await login({ email, password }).unwrap();
     } catch (err) {
-      const message = (err as { data?: { message?: string } }).data?.message ?? t("login.toastErrorFallback");
+      const message =
+        (err as { data?: { message?: string } }).data?.message ?? t("login.toastErrorFallback");
       toast.error(t("login.toastErrorTitle"), { description: message });
     }
   };
@@ -92,7 +97,7 @@ export function LoginPage() {
         <div className="login-hero-overlay" aria-hidden="true" />
 
         <div className="login-hero-header">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary text-white shadow-lg shadow-primary/20">
+          <div className="bg-gradient-primary shadow-primary/20 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg">
             <ChefHat className="h-5 w-5" />
           </div>
           <span className="login-hero-brand">{t("hero.brand")}</span>
@@ -115,16 +120,16 @@ export function LoginPage() {
               <div className="login-preview-icon">
                 <Globe className="h-5 w-5" />
               </div>
-              <h3 className="font-display font-semibold text-sm">{t("hero.featureGlobalTitle")}</h3>
-              <p className="text-xs mt-1 leading-relaxed">{t("hero.featureGlobalDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">{t("hero.featureGlobalTitle")}</h3>
+              <p className="mt-1 text-xs leading-relaxed">{t("hero.featureGlobalDescription")}</p>
             </div>
 
             <div className="login-preview-card">
               <div className="login-preview-icon">
                 <Server className="h-5 w-5" />
               </div>
-              <h3 className="font-display font-semibold text-sm">{t("hero.featureSlaTitle")}</h3>
-              <p className="text-xs mt-1 leading-relaxed">{t("hero.featureSlaDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">{t("hero.featureSlaTitle")}</h3>
+              <p className="mt-1 text-xs leading-relaxed">{t("hero.featureSlaDescription")}</p>
             </div>
           </div>
         </div>
@@ -140,7 +145,7 @@ export function LoginPage() {
               <span>{t("hero.badgeSsl")}</span>
             </div>
           </div>
-          <span className="text-xs font-mono">{t("hero.version")}</span>
+          <span className="font-mono text-xs">{t("hero.version")}</span>
         </div>
       </div>
 
@@ -164,15 +169,16 @@ export function LoginPage() {
         <div className="login-form-wrapper">
           <div className="login-card">
             <div className="mb-6 space-y-1.5">
-              <Badge variant="outline" className="font-mono text-xs tracking-wider uppercase text-primary border-primary/30">
+              <Badge
+                variant="outline"
+                className="text-primary border-primary/30 font-mono text-xs tracking-wider uppercase"
+              >
                 {t("login.staffPortal")}
               </Badge>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+              <h2 className="font-display text-ink text-2xl font-bold tracking-tight">
                 {t("login.title")}
               </h2>
-              <p className="text-sm text-ink-muted leading-relaxed">
-                {t("login.subtitle")}
-              </p>
+              <p className="text-ink-muted text-sm leading-relaxed">{t("login.subtitle")}</p>
             </div>
 
             <form className="space-y-4" onSubmit={onSubmit}>
@@ -199,7 +205,7 @@ export function LoginPage() {
                       e.preventDefault();
                       toast.info(t("login.forgotToast"));
                     }}
-                    className="text-xs text-primary hover:underline font-medium"
+                    className="text-primary text-xs font-medium hover:underline"
                   >
                     {t("login.forgotPassword")}
                   </a>
@@ -218,24 +224,30 @@ export function LoginPage() {
 
               {error && (
                 <div
-                  className="flex items-start gap-2 rounded-lg bg-danger/10 border border-danger/20 p-3 text-xs text-danger font-medium"
+                  className="bg-danger/10 border-danger/20 text-danger flex items-start gap-2 rounded-lg border p-3 text-xs font-medium"
                   role="alert"
                 >
-                  <AlertTriangle className="h-4 w-4 shrink-0 mt-px" />
+                  <AlertTriangle className="mt-px h-4 w-4 shrink-0" />
                   <span>
-                    {(error as { data?: { message?: string } }).data?.message ?? t("login.errorInvalid")}
+                    {(error as { data?: { message?: string } }).data?.message ??
+                      t("login.errorInvalid")}
                   </span>
                 </div>
               )}
 
-              <Button type="submit" size="lg" className="w-full h-11 text-base font-semibold shadow-md shadow-primary/20" disabled={isLoading}>
+              <Button
+                type="submit"
+                size="lg"
+                className="shadow-primary/20 h-11 w-full text-base font-semibold shadow-md"
+                disabled={isLoading}
+              >
                 {isLoading ? t("login.submitting") : t("login.submit")}
               </Button>
             </form>
 
             {/* Quick Demo Preset Fillers */}
-            <div className="mt-6 pt-5 border-t border-border-subtle">
-              <p className="text-xs font-medium text-ink-subtle uppercase tracking-wider mb-2.5">
+            <div className="border-border-subtle mt-6 border-t pt-5">
+              <p className="text-ink-subtle mb-2.5 text-xs font-medium tracking-wider uppercase">
                 {t("demoPresets.title")}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -256,7 +268,7 @@ export function LoginPage() {
         </div>
 
         {/* Footer info */}
-        <div className="text-center text-xs text-ink-subtle">
+        <div className="text-ink-subtle text-center text-xs">
           <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
         </div>
       </div>

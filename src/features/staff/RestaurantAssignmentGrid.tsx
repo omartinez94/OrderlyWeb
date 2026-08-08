@@ -20,14 +20,7 @@
 
 import { useMemo } from "react";
 import type { Role } from "../../types/auth";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui";
 
 export interface RestaurantAssignment {
   restaurantId: string;

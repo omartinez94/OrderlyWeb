@@ -1,0 +1,241 @@
+/* ---------------------------------------------------------------------------
+ * TicketCard styles — animations, transitions, and hover details.
+ * --------------------------------------------------------------------------- */
+
+.ticket-card-transition {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Card Glow, Pulse & Confetti Animations */
+.ticket-card-ready-glow {
+  animation: ticket-ready-pulse 2.5s infinite ease-in-out;
+}
+
+@keyframes ticket-ready-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(242, 106, 58, 0.15),
+      0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-color: rgba(242, 106, 58, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(242, 106, 58, 0.25),
+      0 20px 25px -5px rgba(242, 106, 58, 0.1);
+    border-color: rgba(242, 106, 58, 0.8);
+  }
+}
+
+/* Card Shimmer Glint (Completed) */
+.ticket-completed-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15) 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 70%,
+    transparent
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  animation: ticket-shimmer-run 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ticket-shimmer-run {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+.ticket-status-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  opacity: 0.8;
+  transition: background-color 0.4s ease;
+  z-index: 10;
+}
+
+.ticket-status-glow--new {
+  background-color: var(--color-service-deep);
+  box-shadow: 0 1px 6px var(--color-service-deep);
+}
+
+.ticket-status-glow--acknowledged {
+  background-color: var(--color-service-teal);
+  box-shadow: 0 1px 6px var(--color-service-teal);
+}
+
+.ticket-status-glow--preparing {
+  background-color: var(--color-service-aqua);
+  box-shadow: 0 1px 6px var(--color-service-aqua);
+}
+
+.ticket-status-glow--plating {
+  background-color: var(--color-service-amber);
+  box-shadow: 0 1px 6px var(--color-service-amber);
+}
+
+.ticket-status-glow--ready {
+  background-color: var(--color-service-tangerine);
+  box-shadow: 0 1px 8px var(--color-service-tangerine);
+  animation: ticket-glow-pulse 2s infinite alternate;
+}
+
+.ticket-status-glow--served {
+  background-color: var(--color-ink-muted);
+}
+
+@keyframes ticket-glow-pulse {
+  0% {
+    opacity: 0.6;
+    filter: brightness(1);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+}
+
+/* Cupertino Emoji Animations */
+.apple-emoji-spin {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.group:hover .apple-emoji-spin {
+  transform: scale(1.25) rotate(10deg);
+}
+
+/* Sizzling pan animation (Preparing state) */
+.emoji-sizzle {
+  animation: emoji-toss 1.2s infinite ease-in-out;
+}
+
+@keyframes emoji-toss {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-5px) scaleY(1.08) scaleX(0.95) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(1px) scaleY(0.95) scaleX(1.05) rotate(3deg);
+  }
+  80% {
+    transform: translateY(-2px) scale(1.02) rotate(-1deg);
+  }
+}
+
+/* Ambient Fire flames rising (Preparing state) */
+.fire-container {
+  position: relative;
+  display: inline-block;
+}
+
+.fire-flame {
+  position: absolute;
+  bottom: -4px;
+  font-size: 11px;
+  opacity: 0;
+  pointer-events: none;
+  animation: flame-rise 1.5s infinite ease-out;
+}
+
+.fire-flame-1 {
+  left: -2px;
+  animation-delay: 0s;
+  animation-duration: 1.4s;
+}
+
+.fire-flame-2 {
+  left: 6px;
+  animation-delay: 0.3s;
+  animation-duration: 1.6s;
+}
+
+.fire-flame-3 {
+  left: 14px;
+  animation-delay: 0.75s;
+  animation-duration: 1.3s;
+}
+
+@keyframes flame-rise {
+  0% {
+    transform: translateY(2px) scale(0.5) rotate(0deg);
+    opacity: 0;
+    filter: blur(0.2px);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translateY(-4px) scale(1) rotate(-5deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-9px) scale(0.9) rotate(5deg) skewX(-5deg);
+    filter: brightness(1.2);
+  }
+  80% {
+    opacity: 0.3;
+    transform: translateY(-13px) scale(0.7) rotate(-3deg);
+  }
+  100% {
+    transform: translateY(-18px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Particles Burst (Confetti on Completed) */
+.confetti-burst {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+}
+
+.confetti-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: confetti-fly 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes confetti-fly {
+  0% {
+    transform: translate(18px, 18px) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(1);
+    opacity: 0;
+  }
+}
+
+.ticket-item-slide {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.group:hover .ticket-item-slide {
+  transform: translateX(2px);
+}
