@@ -1,10 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "../ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 export interface FaqItem {
   q: string;
@@ -31,6 +27,17 @@ export const FAQ_ITEMS: FaqItem[] = [
 ];
 
 export function FaqSection() {
+  const { t } = useTranslation("common");
+
+  const translatedFaq = FAQ_ITEMS.map((_, idx) => {
+    const qKey = `home.faq.q${idx + 1}` as unknown as "home.faq.q1";
+    const aKey = `home.faq.a${idx + 1}` as unknown as "home.faq.a1";
+    return {
+      q: t(qKey),
+      a: t(aKey),
+    };
+  });
+
   return (
     <section id="faq" className="bg-surface border-border-subtle border-t py-20 lg:py-24">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -39,19 +46,19 @@ export function FaqSection() {
             variant="outline"
             className="text-primary border-border-strong mb-3 text-xs tracking-wider uppercase"
           >
-            Questions & Answers
+            {t("home.faq.badge")}
           </Badge>
           <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Frequently Asked Questions
+            {t("home.faq.title")}
           </h2>
         </div>
 
         <Accordion type="single" collapsible className="space-y-3">
-          {FAQ_ITEMS.map((item, i) => (
+          {translatedFaq.map((item, i) => (
             <AccordionItem
               key={i}
               value={`faq-${i}`}
-              className="border-border-subtle bg-surface-elevated rounded-xl border px-6 transition-all hover:border-primary/40"
+              className="border-border-subtle bg-surface-elevated hover:border-primary/40 rounded-xl border px-6 transition-all"
             >
               <AccordionTrigger className="text-ink hover:text-primary py-4 font-sans text-base font-semibold hover:no-underline">
                 {item.q}

@@ -1,15 +1,29 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { SignInBridgeTrigger } from "./SignInDialog/SignInBridgeTrigger";
 import { ArrowRight, ChefHat, Zap, Activity, Sparkles, Flame } from "lucide-react";
 
 export function ParallaxHero() {
+  const { t } = useTranslation("common");
   const bgRef = useRef<HTMLDivElement>(null);
   const fgRef = useRef<HTMLDivElement>(null);
   const midGlowRef = useRef<HTMLDivElement>(null);
   const chipsRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const [chips, setChips] = useState<{ id: string; delay: number }[]>([]);
+
+  useEffect(() => {
+    // Random number of chips between 2 and 4
+    const count = 2 + Math.floor(Math.random() * 3);
+    const newChips = Array.from({ length: count }, (_, i) => ({
+      id: `chip-left-${i}`,
+      delay: i * 1500, // staggered delay
+    }));
+    setChips(newChips);
+  }, []);
 
   useEffect(() => {
     let rafId: number;
@@ -60,7 +74,7 @@ export function ParallaxHero() {
           src="/images/parallax-hero-bg.jpg"
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-cover object-center scale-105 filter brightness-90"
+          className="h-full w-full scale-105 object-cover object-center brightness-90 filter"
         />
         {/* Dark gradient overlay for text legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
@@ -87,8 +101,8 @@ export function ParallaxHero() {
         className="pointer-events-none absolute inset-0 z-10 h-[120%] w-full will-change-transform"
       >
         {/* Pulsing Brand Glow Orbs */}
-        <div className="absolute top-10 -left-32 h-96 w-96 rounded-full bg-primary/30 blur-[130px] animate-pulse duration-10000" />
-        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-accent/25 blur-[120px] animate-pulse duration-7000" />
+        <div className="bg-primary/30 absolute top-10 -left-32 h-96 w-96 animate-pulse rounded-full blur-[130px] duration-10000" />
+        <div className="bg-accent/25 absolute -right-24 bottom-0 h-80 w-80 animate-pulse rounded-full blur-[120px] duration-7000" />
         <div className="absolute top-1/3 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-400/15 blur-[100px]" />
       </div>
 
@@ -97,8 +111,14 @@ export function ParallaxHero() {
         ref={chipsRef}
         className="pointer-events-none absolute inset-0 z-20 h-full w-full will-change-transform"
       >
-        {CHIP_ZONES.map((zone) => (
-          <FloatingChip key={zone} zone={zone} />
+        {chips.map((chip, index) => (
+          <FloatingChip
+            key={chip.id}
+            id={chip.id}
+            index={index}
+            total={chips.length}
+            initialDelay={chip.delay}
+          />
         ))}
       </div>
 
@@ -109,23 +129,22 @@ export function ParallaxHero() {
       >
         <Badge
           variant="outline"
-          className="mb-6 inline-flex items-center gap-2 border-primary/40 bg-black/50 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase shadow-xl backdrop-blur-md transition-all hover:border-primary hover:bg-black/70"
+          className="border-primary/40 hover:border-primary mb-6 inline-flex items-center gap-2 bg-black/50 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase shadow-xl backdrop-blur-md transition-all hover:bg-black/70"
         >
-          <Sparkles className="h-3.5 w-3.5 text-accent animate-spin duration-3000" />
-          Enterprise Restaurant Operations Platform
+          <Sparkles className="text-accent h-3.5 w-3.5 animate-spin duration-3000" />
+          {t("home.hero.badge")}
         </Badge>
 
         <h1 className="font-display text-5xl leading-[1.05] font-extrabold tracking-tight text-white drop-shadow-2xl sm:text-6xl lg:text-7xl">
-          Where Every Order
+          {t("home.hero.titlePart1")}
           <br />
           <span className="bg-gradient-to-r from-[#4A8B98] via-[#7AB89E] to-[#F26A3A] bg-clip-text text-transparent">
-            Flows Flawlessly
+            {t("home.hero.titlePart2")}
           </span>
         </h1>
 
         <p className="mt-6 max-w-xl text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:text-lg">
-          Orderly unifies your kitchen display, floor operations, and admin in one sub-second
-          real-time system — built for high-volume dining.
+          {t("home.hero.description")}
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -135,7 +154,7 @@ export function ParallaxHero() {
               size="lg"
               className="group h-13 bg-white px-8 text-sm font-bold text-[#1F4254] shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
             >
-              Get Started
+              {t("home.hero.getStarted")}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </SignInBridgeTrigger>
@@ -146,7 +165,7 @@ export function ParallaxHero() {
               variant="outline"
               className="h-13 border-white/30 px-8 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white hover:bg-white/10"
             >
-              Explore Architecture
+              {t("home.hero.exploreArchitecture")}
             </Button>
           </a>
         </div>
@@ -154,63 +173,55 @@ export function ParallaxHero() {
         {/* Live system indicators */}
         <div className="mt-10 flex items-center justify-center gap-6 font-mono text-xs text-white/60">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-            SignalR &lt;50ms Hub
+            <span className="h-2 w-2 animate-ping rounded-full bg-emerald-400" />
+            {t("home.hero.latencyHub")}
           </span>
           <span className="hidden sm:inline">•</span>
-          <span className="hidden sm:flex items-center gap-1">
-            <Flame className="h-3.5 w-3.5 text-accent" /> 7 Microservices
+          <span className="hidden items-center gap-1 sm:flex">
+            <Flame className="text-accent h-3.5 w-3.5" /> {t("home.hero.microservicesCount")}
           </span>
           <span className="hidden sm:inline">•</span>
-          <span>YARP Gateway Online</span>
+          <span>{t("home.hero.gatewayOnline")}</span>
         </div>
       </div>
 
       {/* Bottom gradient fade into page surface */}
-      <div className="from-surface pointer-events-none absolute inset-x-0 bottom-0 z-40 h-36 bg-gradient-to-t via-surface/60 to-transparent" />
+      <div className="from-surface via-surface/60 pointer-events-none absolute inset-x-0 bottom-0 z-40 h-36 bg-gradient-to-t to-transparent" />
     </section>
   );
 }
 
-const CHIP_ZONES = ["tl", "bl", "tr", "br"] as const;
-type ChipZone = (typeof CHIP_ZONES)[number];
-
 const MOCK_EVENTS = [
   {
-    title: "KDS Live",
-    desc: "3 orders · queue",
+    key: "kdsLive",
     Icon: Activity,
     color: "text-emerald-400",
     bg: "bg-emerald-400/20",
     glow: "shadow-[0_0_30px_rgba(52,211,153,0.3)]",
   },
   {
-    title: "Kitchen Ready",
-    desc: "Table 12 · Plating",
+    key: "kitchenReady",
     Icon: ChefHat,
     color: "text-primary",
     bg: "bg-primary/20",
     glow: "shadow-[0_0_30px_rgba(31,66,84,0.5)]",
   },
   {
-    title: "SignalR Hub",
-    desc: "<50ms · 99.99%",
+    key: "signalrHub",
     Icon: Activity,
     color: "text-accent",
     bg: "bg-accent/20",
     glow: "shadow-[0_0_30px_rgba(242,106,58,0.4)]",
   },
   {
-    title: "Real-time Sync",
-    desc: "All zones active",
+    key: "realtimeSync",
     Icon: Zap,
     color: "text-amber-400",
     bg: "bg-amber-400/20",
     glow: "shadow-[0_0_30px_rgba(251,191,36,0.3)]",
   },
   {
-    title: "Order Received",
-    desc: "Table 7 · 4 items",
+    key: "orderReceived",
     Icon: Activity,
     color: "text-blue-400",
     bg: "bg-blue-400/20",
@@ -218,13 +229,23 @@ const MOCK_EVENTS = [
   },
 ];
 
-function FloatingChip({ zone }: { zone: ChipZone }) {
+function FloatingChip({
+  id,
+  index,
+  total,
+  initialDelay,
+}: {
+  id: string;
+  index: number;
+  total: number;
+  initialDelay: number;
+}) {
+  const { t } = useTranslation("common");
   const [event, setEvent] = useState(MOCK_EVENTS[0]);
   const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ top: "0%", edge: "0%" });
+  const [position, setPosition] = useState({ top: "0%" });
 
   useEffect(() => {
-    const initialDelay = Math.random() * 3000;
     let isMounted = true;
     let cycleTimeout: ReturnType<typeof setTimeout>;
     let hideTimeout: ReturnType<typeof setTimeout>;
@@ -232,11 +253,13 @@ function FloatingChip({ zone }: { zone: ChipZone }) {
     const cycle = () => {
       if (!isMounted) return;
 
-      const isTop = zone.startsWith("t");
-      const topOffset = isTop ? 8 + Math.random() * 30 : 62 + Math.random() * 26;
-      const edgeOffset = 2 + Math.random() * 10;
+      // Segment the vertical space to avoid overlaps (leaving space at the top and bottom)
+      const segmentHeight = 72 / total;
+      const minTop = 10 + index * segmentHeight;
+      // Allow random variance within the segment, with a safety margin
+      const topOffset = minTop + Math.random() * Math.max(5, segmentHeight - 12);
 
-      setPosition({ top: `${topOffset}%`, edge: `${edgeOffset}%` });
+      setPosition({ top: `${topOffset}%` });
 
       const nextEvent = MOCK_EVENTS[Math.floor(Math.random() * MOCK_EVENTS.length)];
       setEvent(nextEvent);
@@ -259,13 +282,16 @@ function FloatingChip({ zone }: { zone: ChipZone }) {
       clearTimeout(cycleTimeout);
       clearTimeout(hideTimeout);
     };
-  }, [zone]);
+  }, [id, index, total, initialDelay]);
 
-  const { title, desc, Icon, color, bg, glow } = event;
-  const isLeft = zone.endsWith("l");
+  const { key, Icon, color, bg, glow } = event;
+  const titleKey = `home.hero.chips.${key}` as unknown as "home.hero.chips.kdsLive";
+  const descKey = `home.hero.chips.${key}Desc` as unknown as "home.hero.chips.kdsLiveDesc";
+  const title = t(titleKey);
+  const desc = t(descKey);
   const style = {
     top: position.top,
-    [isLeft ? "left" : "right"]: position.edge,
+    left: "5%",
   };
 
   const boxShadowValue = glow.replace(/^shadow-\[|\]$/g, "").replace(/_/g, " ");
@@ -273,11 +299,11 @@ function FloatingChip({ zone }: { zone: ChipZone }) {
   return (
     <>
       <style>{`
-        @keyframes chip-in-${zone} {
+        @keyframes chip-in-${id} {
           from { transform: scale(0.8) translateY(10px); opacity: 0; box-shadow: none; }
           to   { transform: scale(1) translateY(0); opacity: 1; box-shadow: ${boxShadowValue}; }
         }
-        @keyframes chip-out-${zone} {
+        @keyframes chip-out-${id} {
           from { transform: scale(1) translateY(0); opacity: 1; box-shadow: ${boxShadowValue}; }
           to   { transform: scale(0.8) translateY(-10px); opacity: 0; box-shadow: none; }
         }
@@ -286,10 +312,10 @@ function FloatingChip({ zone }: { zone: ChipZone }) {
         style={{
           ...style,
           animation: isVisible
-            ? `chip-in-${zone} 1200ms cubic-bezier(0.16, 1, 0.3, 1) forwards`
-            : `chip-out-${zone} 1000ms ease-in-out forwards`,
+            ? `chip-in-${id} 1200ms cubic-bezier(0.16, 1, 0.3, 1) forwards`
+            : `chip-out-${id} 1000ms ease-in-out forwards`,
         }}
-        className="border-border-subtle absolute hidden items-center gap-3 rounded-2xl border bg-black/60 px-4 py-3 backdrop-blur-md lg:flex transition-transform hover:scale-105"
+        className="border-border-subtle absolute hidden items-center gap-3 rounded-2xl border bg-black/60 px-4 py-3 backdrop-blur-md transition-transform hover:scale-105 lg:flex"
       >
         <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${bg}`}>
           <Icon className={`h-5 w-5 ${color}`} />

@@ -1,11 +1,5 @@
 import { useMemo } from "react";
-import {
-  RestaurantSwitcher,
-  Breadcrumb,
-  OpsBadge,
-  NotificationsBell,
-  UserMenu,
-} from "./slots";
+import { RestaurantSwitcher, Breadcrumb, OpsBadge, NotificationsBell, UserMenu } from "./slots";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import { LanguageToggle } from "../LanguageToggle/LanguageToggle";
 import type { AppNotification, CurrentUser, Restaurant, Zone } from "./types";

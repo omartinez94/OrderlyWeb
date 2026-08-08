@@ -269,6 +269,33 @@ body {
     color 200ms ease;
 }
 
+/* Ensure all buttons and interactive button-like roles use the pointer cursor */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+/* Ensure cards do not display the select text cursor */
+[data-slot="card"],
+[data-slot="card"] *,
+[class*="card"],
+[class*="card"] * {
+  user-select: none;
+}
+
+/* Restore normal text selection behavior for editable fields or interactive inputs inside cards */
+[data-slot="card"] input,
+[data-slot="card"] textarea,
+[data-slot="card"] [contenteditable="true"],
+[class*="card"] input,
+[class*="card"] textarea,
+[class*="card"] [contenteditable="true"] {
+  user-select: text;
+}
+
 /* --- Glass / glassmorphism ------------------------------------------------ */
 /* Glass on a flat single-tone background is invisible — pair with a gradient
  * or busy image to see the frosted effect. */

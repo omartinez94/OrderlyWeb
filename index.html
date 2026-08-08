@@ -55,15 +55,17 @@
         try {
           var supported = ["en", "es"];
           var stored = window.localStorage.getItem("orderly-language");
-          var nav = (window.navigator && (window.navigator.languages && window.navigator.languages[0])) ||
+          var nav =
+            (window.navigator && window.navigator.languages && window.navigator.languages[0]) ||
             (window.navigator && window.navigator.language) ||
             "";
           var navLang = nav.split("-")[0].toLowerCase();
-          var resolved = supported.indexOf(stored) >= 0
-            ? stored
-            : supported.indexOf(navLang) >= 0
-              ? navLang
-              : "en";
+          var resolved =
+            supported.indexOf(stored) >= 0
+              ? stored
+              : supported.indexOf(navLang) >= 0
+                ? navLang
+                : "en";
           document.documentElement.setAttribute("lang", resolved);
         } catch (_e) {
           document.documentElement.setAttribute("lang", "en");

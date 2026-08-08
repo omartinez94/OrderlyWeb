@@ -1,9 +1,17 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ScrollReveal } from "../Motion/ScrollReveal";
 import { SignInBridgeTrigger } from "../SignInDialog/SignInBridgeTrigger";
-import { ShieldCheck, ChefHat, Store, CheckCircle2, ArrowRight, type LucideIcon } from "lucide-react";
+import {
+  ShieldCheck,
+  ChefHat,
+  Store,
+  CheckCircle2,
+  ArrowRight,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface ZoneItem {
   id: string;
@@ -65,14 +73,34 @@ export const ZONES: ZoneItem[] = [
 ];
 
 export function ZoneShowcaseSection() {
+  const { t } = useTranslation("common");
   const [activeZone, setActiveZone] = useState<string>("admin");
-  const current = ZONES.find((z) => z.id === activeZone) || ZONES[0];
+
+  const translatedZones = ZONES.map((zone) => {
+    const nameKey = `home.zones.${zone.id}.name` as unknown as "home.zones.admin.name";
+    const badgeKey = `home.zones.${zone.id}.badge` as unknown as "home.zones.admin.badge";
+    const descriptionKey =
+      `home.zones.${zone.id}.description` as unknown as "home.zones.admin.description";
+    const p1Key = `home.zones.${zone.id}.p1` as unknown as "home.zones.admin.p1";
+    const p2Key = `home.zones.${zone.id}.p2` as unknown as "home.zones.admin.p2";
+    const p3Key = `home.zones.${zone.id}.p3` as unknown as "home.zones.admin.p3";
+
+    return {
+      ...zone,
+      name: t(nameKey),
+      badge: t(badgeKey),
+      description: t(descriptionKey),
+      points: [t(p1Key), t(p2Key), t(p3Key)],
+    };
+  });
+
+  const current = translatedZones.find((z) => z.id === activeZone) || translatedZones[0];
   const Icon = current.icon;
 
   return (
     <section
       id="zones"
-      className="bg-surface-elevated/40 border-border-subtle border-b py-20 lg:py-28 relative"
+      className="bg-surface-elevated/40 border-border-subtle relative border-b py-20 lg:py-28"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ScrollReveal direction="up">
@@ -81,21 +109,19 @@ export function ZoneShowcaseSection() {
               variant="outline"
               className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
             >
-              Three Operational Zones
+              {t("home.zones.badge")}
             </Badge>
             <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-              Tailored interfaces for every restaurant shift
+              {t("home.zones.title")}
             </h2>
-            <p className="text-ink-muted mt-4 font-sans text-lg">
-              Click a zone below to preview the dedicated workspace.
-            </p>
+            <p className="text-ink-muted mt-4 font-sans text-lg">{t("home.zones.description")}</p>
           </div>
         </ScrollReveal>
 
         {/* Zone Selector Buttons */}
         <ScrollReveal direction="up" delay={100}>
           <div className="mb-12 flex flex-wrap justify-center gap-3">
-            {ZONES.map((zone) => {
+            {translatedZones.map((zone) => {
               const ZIcon = zone.icon;
               const isSelected = zone.id === activeZone;
               return (
@@ -104,7 +130,7 @@ export function ZoneShowcaseSection() {
                   onClick={() => setActiveZone(zone.id)}
                   className={`font-display flex items-center gap-3 rounded-xl border px-6 py-3.5 text-base font-bold transition-all duration-300 ${
                     isSelected
-                      ? "border-primary bg-primary scale-[1.03] text-white shadow-xl ring-4 ring-primary/20"
+                      ? "border-primary bg-primary ring-primary/20 scale-[1.03] text-white shadow-xl ring-4"
                       : "border-border-strong bg-surface text-ink hover:bg-surface-elevated hover:scale-105"
                   }`}
                 >
@@ -151,7 +177,7 @@ export function ZoneShowcaseSection() {
               <div className="pt-2">
                 <SignInBridgeTrigger>
                   <Button className="font-semibold shadow-md transition-all hover:scale-105">
-                    Access {current.name}
+                    {t("home.zones.access", { name: current.name })}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </SignInBridgeTrigger>
@@ -159,7 +185,7 @@ export function ZoneShowcaseSection() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="border-border-subtle relative overflow-hidden rounded-xl border shadow-xl group">
+              <div className="border-border-subtle group relative overflow-hidden rounded-xl border shadow-xl">
                 <img
                   src={current.image}
                   alt={current.name}

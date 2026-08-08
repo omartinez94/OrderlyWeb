@@ -4,7 +4,6 @@ import { BellIcon, CheckIcon } from "../icons";
 
 import { formatRelativeTime } from "../../../utils/date";
 
-
 /**
  * Notifications bell + popover inbox.
  * - Badge hidden at 0.

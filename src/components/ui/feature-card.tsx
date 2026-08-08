@@ -26,7 +26,7 @@ export function FeatureCard({ feature, className = "" }: FeatureCardProps) {
 
   return (
     <Card
-      className={`border-border-subtle bg-surface-elevated transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group ${hoverBorder} ${className}`}
+      className={`border-border-subtle bg-surface-elevated group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${hoverBorder} ${className}`}
     >
       <CardHeader>
         <div

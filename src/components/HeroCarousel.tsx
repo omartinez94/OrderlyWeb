@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -66,6 +67,7 @@ const HERO_SLIDES: HeroSlide[] = [
 ];
 
 export function HeroCarousel() {
+  const { t } = useTranslation("common");
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -94,6 +96,24 @@ export function HeroCarousel() {
     return () => clearInterval(interval);
   }, [api]);
 
+  const translatedSlides = HERO_SLIDES.map((slide) => {
+    const badgeKey =
+      `home.carousel.slides.${slide.id}.badge` as unknown as "home.carousel.slides.platform.badge";
+    const titleKey =
+      `home.carousel.slides.${slide.id}.title` as unknown as "home.carousel.slides.platform.title";
+    const descKey =
+      `home.carousel.slides.${slide.id}.description` as unknown as "home.carousel.slides.platform.description";
+    const highlightKey =
+      `home.carousel.slides.${slide.id}.highlight` as unknown as "home.carousel.slides.platform.highlight";
+    return {
+      ...slide,
+      badge: t(badgeKey),
+      title: t(titleKey),
+      description: t(descKey),
+      highlight: t(highlightKey),
+    };
+  });
+
   return (
     <div className="bg-surface relative w-full overflow-hidden pt-6 pb-12 lg:pt-10 lg:pb-20">
       {/* Background ambient lighting glow */}
@@ -108,7 +128,7 @@ export function HeroCarousel() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Carousel setApi={setApi} className="w-full">
           <CarouselContent>
-            {HERO_SLIDES.map((slide) => {
+            {translatedSlides.map((slide) => {
               const Icon = slide.icon;
               return (
                 <CarouselItem key={slide.id} className="w-full">
@@ -150,7 +170,7 @@ export function HeroCarousel() {
                             size="lg"
                             className="h-12 px-8 text-base font-semibold shadow-md transition-all hover:scale-[1.02]"
                           >
-                            Sign in to Platform
+                            {t("home.carousel.signIn")}
                             <ChevronRight className="ml-2 h-4 w-4" />
                           </Button>
                         </SignInBridgeTrigger>
@@ -161,7 +181,7 @@ export function HeroCarousel() {
                             size="lg"
                             className="border-border-strong hover:bg-surface-elevated h-12 text-base font-medium"
                           >
-                            Explore Capabilities
+                            {t("home.carousel.explore")}
                           </Button>
                         </a>
                       </div>
@@ -184,7 +204,7 @@ export function HeroCarousel() {
                             {slide.badge}
                           </p>
                           <p className="font-sans text-xs text-gray-200 opacity-90">
-                            Orderly Multi-zone Architecture
+                            {t("home.carousel.slideCaption")}
                           </p>
                         </div>
                       </div>

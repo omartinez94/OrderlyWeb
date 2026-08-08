@@ -32,7 +32,7 @@ export function ScrollReveal({
       {
         threshold: 0.12,
         rootMargin: "0px 0px -50px 0px",
-      }
+      },
     );
 
     const currentRef = ref.current;
@@ -71,7 +71,7 @@ export function ScrollReveal({
         transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
         transitionDelay: `${delay}ms`,
       }}
-      className={`will-change-transform transition-all ${getDirectionStyles()} ${className}`}
+      className={`transition-all will-change-transform ${getDirectionStyles()} ${className}`}
     >
       {children}
     </div>

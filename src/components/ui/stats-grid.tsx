@@ -15,8 +15,8 @@ export function StatsGrid({ stats, columns = 4, className = "" }: StatsGridProps
     columns === 2
       ? "grid-cols-2"
       : columns === 3
-      ? "grid-cols-1 md:grid-cols-3"
-      : "grid-cols-2 md:grid-cols-4";
+        ? "grid-cols-1 md:grid-cols-3"
+        : "grid-cols-2 md:grid-cols-4";
 
   return (
     <section
@@ -28,13 +28,15 @@ export function StatsGrid({ stats, columns = 4, className = "" }: StatsGridProps
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className="group border-primary/30 flex flex-col border-l-2 pl-4 sm:pl-6 transition-all duration-300 hover:border-primary hover:translate-x-1"
+              className="group border-primary/30 hover:border-primary flex flex-col border-l-2 pl-4 transition-all duration-300 hover:translate-x-1 sm:pl-6"
             >
-              <span className="text-primary font-mono text-3xl font-extrabold tracking-tight sm:text-4xl transition-transform group-hover:scale-105">
+              <span className="text-primary font-mono text-3xl font-extrabold tracking-tight transition-transform group-hover:scale-105 sm:text-4xl">
                 {stat.value}
               </span>
               <span className="font-display text-ink mt-1 text-sm font-bold">{stat.label}</span>
-              {stat.detail && <span className="text-ink-muted font-sans text-xs">{stat.detail}</span>}
+              {stat.detail && (
+                <span className="text-ink-muted font-sans text-xs">{stat.detail}</span>
+              )}
             </div>
           ))}
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { TicketCard, type TicketData } from "../../features/kitchen/components/TicketCard";
@@ -42,6 +43,7 @@ const NEXT_STATUS: Record<OrderStatus, OrderStatus> = {
 };
 
 export function LiveTicketSimulator() {
+  const { t } = useTranslation("common");
   const [tickets, setTickets] = useState<TicketData[]>(INITIAL_TICKETS);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState<boolean>(true);
   const [activeTicketId, setActiveTicketId] = useState<string>("#ORD-402");
@@ -53,7 +55,7 @@ export function LiveTicketSimulator() {
         prev.map((t) => ({
           ...t,
           elapsed: t.elapsed + 1,
-        }))
+        })),
       );
     }, 1000);
 
@@ -95,29 +97,62 @@ export function LiveTicketSimulator() {
           };
         }
         return t;
-      })
+      }),
     );
   };
 
+  const translatedTickets = tickets.map((ticket) => {
+    let table = ticket.table;
+    if (ticket.table.startsWith("Table ")) {
+      table = t("home.simulator.tickets.table", { num: ticket.table.substring(6) });
+    } else if (ticket.table.startsWith("Bar ")) {
+      table = t("home.simulator.tickets.bar", { num: ticket.table.substring(4) });
+    }
+
+    const items = ticket.items.map((item) => {
+      if (item === "Pan-seared Ribeye x2") return t("home.simulator.tickets.ribeye");
+      if (item === "Truffle Fries") return t("home.simulator.tickets.fries");
+      if (item === "Craft IPA x2") return t("home.simulator.tickets.ipa");
+      if (item === "Wild Mushroom Risotto") return t("home.simulator.tickets.risotto");
+      if (item === "Crispy Calamari") return t("home.simulator.tickets.calamari");
+      if (item === "Chardonnay") return t("home.simulator.tickets.chardonnay");
+      if (item === "Smoked Old Fashioned x2") return t("home.simulator.tickets.oldFashioned");
+      if (item === "Charcuterie Board") return t("home.simulator.tickets.charcuterie");
+      return item;
+    });
+
+    let station = ticket.station;
+    if (ticket.station === "Grill & Sides") station = t("home.simulator.tickets.grillSides");
+    else if (ticket.station === "Hot Line") station = t("home.simulator.tickets.hotLine");
+    else if (ticket.station === "Beverage") station = t("home.simulator.tickets.beverage");
+
+    return {
+      ...ticket,
+      table,
+      items,
+      station,
+    };
+  });
+
   return (
-    <section className="bg-surface relative overflow-hidden py-16 lg:py-24 border-b border-border-subtle">
+    <section className="bg-surface border-border-subtle relative overflow-hidden border-b py-16 lg:py-24">
       {/* Background ambient lighting */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[450px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary/10 via-accent/10 to-teal-500/10 blur-[130px]" />
+      <div className="from-primary/10 via-accent/10 pointer-events-none absolute top-1/2 left-1/2 h-[450px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r to-teal-500/10 blur-[130px]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center mb-12">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
           <Badge
             variant="outline"
-            className="mb-4 inline-flex items-center gap-1.5 border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary"
+            className="border-primary/30 bg-primary/5 text-primary mb-4 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wider uppercase"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Live KDS SignalR Simulator
+            {t("home.simulator.badge")}
           </Badge>
           <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-            Experience real-time tickets in action
+            {t("home.simulator.title")}
           </h2>
           <p className="text-ink-muted mt-3 font-sans text-base sm:text-lg">
-            Watch sub-second order dispatch or click any ticket card to manually transition order state.
+            {t("home.simulator.description")}
           </p>
 
           <div className="mt-6 flex items-center justify-center gap-3">
@@ -127,21 +162,25 @@ export function LiveTicketSimulator() {
               onClick={() => setIsAutoAdvancing(!isAutoAdvancing)}
               className="gap-2 text-xs font-semibold"
             >
-              {isAutoAdvancing ? <RotateCcw className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
-              {isAutoAdvancing ? "Auto-Advancing Shifts" : "Resume Auto Simulation"}
+              {isAutoAdvancing ? (
+                <RotateCcw className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Play className="h-3.5 w-3.5" />
+              )}
+              {isAutoAdvancing ? t("home.simulator.autoAdvancing") : t("home.simulator.resumeAuto")}
             </Button>
           </div>
         </div>
 
         {/* Live Interactive Tickets Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {tickets.map((t) => (
+          {translatedTickets.map((tData) => (
             <TicketCard
-              key={t.id}
-              ticket={t}
-              isSelected={t.id === activeTicketId}
-              onSelect={() => setActiveTicketId(t.id)}
-              onAdvance={() => advanceTicket(t.id)}
+              key={tData.id}
+              ticket={tData}
+              isSelected={tData.id === activeTicketId}
+              onSelect={() => setActiveTicketId(tData.id)}
+              onAdvance={() => advanceTicket(tData.id)}
             />
           ))}
         </div>

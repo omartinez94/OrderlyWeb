@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MarketingHeader } from "../components/Header/MarketingHeader";
 import { SiteFooter } from "../components/Layout/SiteFooter";
 import { ParallaxHero } from "../components/ParallaxHero";
@@ -11,14 +12,32 @@ import { AtmosphereSection } from "../components/Home/AtmosphereSection";
 import { CtaJumbotron } from "../components/Home/CtaJumbotron";
 import { FaqSection } from "../components/Home/FaqSection";
 
-const HOME_STATS: StatItem[] = [
-  { label: "Real-time Latency", value: "< 50ms", detail: "SignalR web sockets" },
-  { label: "Microservices", value: "7 Core", detail: "YARP API Gateway backed" },
-  { label: "Role Precision", value: "8 Roles", detail: "Granular zone access" },
-  { label: "Hub Uptime", value: "99.99%", detail: "Resilient auto-reconnect" },
-];
-
 export function HomePage() {
+  const { t } = useTranslation("common");
+
+  const homeStats: StatItem[] = [
+    {
+      value: "< 50ms",
+      label: t("home.stats.latency.label"),
+      detail: t("home.stats.latency.detail"),
+    },
+    {
+      value: "7 Core",
+      label: t("home.stats.microservices.label"),
+      detail: t("home.stats.microservices.detail"),
+    },
+    {
+      value: "8 Roles",
+      label: t("home.stats.rolePrecision.label"),
+      detail: t("home.stats.rolePrecision.detail"),
+    },
+    {
+      value: "99.99%",
+      label: t("home.stats.hubUptime.label"),
+      detail: t("home.stats.hubUptime.detail"),
+    },
+  ];
+
   return (
     <div className="bg-surface text-ink selection:bg-primary/20 selection:text-primary min-h-screen font-sans antialiased">
       <MarketingHeader />
@@ -28,7 +47,7 @@ export function HomePage() {
 
         {/* Stats & Trust Banner */}
         <ScrollReveal direction="up">
-          <StatsGrid stats={HOME_STATS} />
+          <StatsGrid stats={homeStats} />
         </ScrollReveal>
 
         {/* Live KDS Ticket Simulation Widget */}
