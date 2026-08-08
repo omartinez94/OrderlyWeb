@@ -133,7 +133,6 @@ The visual system is locked in. Two themes, one source of truth in `src/index.cs
 - **Plural forms**: Any string wrapping a count (items, orders, guests) must use i18next `count` interpolation so the correct plural form is selected per locale.
 - Testing: Component unit tests and Playwright E2E tests must verify key UI flows operate cleanly under both `en` and `es` locales.
 
-
 ## Three-zone architecture
 
 The app is split into three top-level zones, each with its own sidebar:
@@ -185,7 +184,9 @@ For endpoint contracts and JWT claims shape, see `docs/backend-architecture/arch
   import { test, expect } from "../fixtures/withLocale";
   test.describe("Order list (es)", () => {
     test.use({ withLocale: "es" });
-    test("renders Spanish column headers", async ({ page }) => { /* ... */ });
+    test("renders Spanish column headers", async ({ page }) => {
+      /* ... */
+    });
   });
   ```
 - The `withLocale` fixture injects `localStorage["orderly-language"]` before navigation so the pre-hydration script in `index.html` sets `<html lang>` before React mounts.
