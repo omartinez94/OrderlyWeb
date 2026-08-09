@@ -6,7 +6,7 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-08-08) — initial draft, pending Phase 1 approval.
+> **Plan version**: `v2.1` (2026-08-08) — UX review and Impeccable design mandates.
 > **Current state**: ⏸ Not started.
 
 | Phase | Name | Status |
@@ -99,7 +99,10 @@ Concrete deliverables:
 - **Customer-facing auth** — out of scope; we are staff-only.
 - **Customer identity / loyalty** — not modeled; deferred to a future plan.
 - **Multi-language beyond en/es** — explicitly out. The system supports 2 languages; adding a third is a separate workstream.
-- **Server-side enforcement of brand scoping** — the Identity Service already enforces this; the frontend trusts the response (no client-side security boundary). Documented in §8.
+- **Server-side enforcement of brand scoping** — the Identity Service enforces this per-restaurant today; brand-level scoping requires backend work (see §7). The frontend trusts the response (no client-side security boundary). Documented in §8.
+- **Backend migrations** — this plan documents the required backend changes (see §7) but does not own their delivery. Backend prerequisites are tracked per-phase; a phase is blocked until its backend dependencies are met.
+- **Bulk operations** — no multi-select archive, reassign, or export. Single-entity CRUD only.
+- **Image / logo upload** — `logoUrl` is a URL string; the upload flow (file picker, CDN, resize) is a separate workstream. Phase 2 accepts a pasted URL.
 
 ---
 
@@ -109,7 +112,7 @@ Concrete deliverables:
 | :--- | :--- | :--- |
 | Namespace for new i18n keys | **Extend `admin`, do not add `crm`** | All CRM copy is admin-zone-only; another namespace only adds bundle weight. `CustomTypeOptions.resources.admin` regenerates the typed key union. |
 | Brand modeling | **First-class parent entity** (Brand 1-* Restaurant, Brand 1-* Staff) | User decision. Multi-tenant chains need their own audit, settings, and staff-scoping. |
-| Permission shape | **Typed 17-member union** + `ROLE_PERMISSIONS` table in `src/types/auth.ts` | User decision. Replaces placeholder `Permission = string`; enables fine-grained UI gating. |
+| Permission shape | **Typed union aligned to backend `colon:action` convention** + `ROLE_PERMISSIONS` table in `src/types/auth.ts` | Backend already seeds 25 permissions (`users:view_all`, `audit:view`, …) via `PermissionAuthorizationHandler`. New CRM permissions (`brands:view`, `brands:create`, …) follow the same pattern. Replaces placeholder `Permission = string`. |
 | Dual gating (role + permission) | **Keep role-based zone gating; add `usePermission` for fine-grained actions** | Role-based is cheap and exhaustive; permissions enable per-button UX. Cost is one hook + one component. |
 | Restaurant entity | **Add additive `AdminRestaurantDetail` that extends `CatalogRestaurant`** | `CatalogRestaurant` is consumed by the Header switcher and future menu pages. Mutating it would force every consumer to handle new fields. The list endpoint keeps the slim shape; the detail endpoint returns the full CRM shape. |
 | Audit log | **Generic `<EntityAuditLog>`** + thin `StaffAuditLog` wrapper | One source of truth for any entity's audit timeline. Mirrors the `RestaurantAssignmentGrid` reusability precedent. |
@@ -227,18 +230,32 @@ Lives in `src/app/api/catalog.ts` (type-only in Phase 1; endpoints added Phase 2
 
 ```ts
 // src/app/api/catalog.ts — additions
+//
+// ⚠️  BACKEND PREREQUISITE (Phase 2):
+//   The DB `Brands` table currently has: Id, Name, LogoUrl, WebsiteUrl,
+//   ContactEmail, ContactPhone, CuisineType (enum), Description.
+//   Missing columns that this DTO requires:
+//     - Slug (string, unique) — for URL-friendly brand identifiers
+//     - IsActive (bool) — for archive/reactivate lifecycle
+//     - CreatedAt / UpdatedAt (timestamps) — via AuditableEntity<Guid> base
+//   Backend must add these before the frontend can consume them.
+//   See §7 Backend prerequisites table.
+
+export type CuisineType = "Italian" | "Mexican" | "Japanese" | "American" | "Other";
+
 export interface CatalogBrand {
   id: string;
   name: string;
-  slug: string;
+  slug: string;                    // ⚠️ requires backend migration
+  description: string | null;      // exists in DB, was missing in v1.0
   logoUrl: string | null;
   contactEmail: string;
   contactPhone: string | null;
-  cuisineType: string;
+  cuisineType: CuisineType;        // typed enum, not free-text string
   websiteUrl: string | null;
-  active: boolean;
-  createdAt: string;
-  updatedAt: string;
+  active: boolean;                 // ⚠️ requires backend migration (IsActive)
+  createdAt: string;               // ⚠️ requires AuditableEntity base
+  updatedAt: string;               // ⚠️ requires AuditableEntity base
 }
 
 export type RestaurantStatus = "active" | "inactive" | "archived";
@@ -249,30 +266,60 @@ export interface OperatingHoursDay {
   close: string | null;
 }
 
+// ⚠️  BACKEND PREREQUISITE (Phase 5):
+//   The DB `Restaurants.Address` is a flat `text` column today.
+//   Two options (decision needed before Phase 5):
+//     (a) Backend adds an EF Core OwnsOne<RestaurantAddress> complex property
+//         (like Order.BillingAddress) and migrates existing data.
+//     (b) Frontend keeps a flat string and AddressCard renders one text block.
+//   Option (a) is recommended for structured search, validation, and i18n.
+//   Note: existing CatalogRestaurant already derives `city` and `country`
+//   from this flat text, so the Catalog API DTO layer already reshapes it.
 export interface AdminRestaurantAddress {
   line1: string; line2: string | null;
   city: string; region: string; postalCode: string; country: string;
 }
 
+// ⚠️  BACKEND PREREQUISITE (Phase 5):
+//   The DB `Restaurants` table is missing several columns this DTO requires:
+//     - Status (enum: active/inactive/archived) — for lifecycle management
+//     - OwnerId (uuid FK → Users) — for restaurant ownership assignment
+//     - OperatingHours — either a JSON column or a child table
+//     - CreatedAt / UpdatedAt — via AuditableEntity base
+//   All existing DB columns (BrandId, TaxRate, Currency, TimeZone,
+//   EstimatedTurnoverMinutes, AutoConfirm*, AllowAutoSubstitute) are
+//   confirmed present and match this DTO.
+//   See §7 Backend prerequisites table.
 export interface AdminRestaurantDetail extends CatalogRestaurant {
   brandId: string;
-  ownerId: string | null;
-  address: AdminRestaurantAddress;
+  ownerId: string | null;          // ⚠️ requires backend migration
+  address: AdminRestaurantAddress;  // ⚠️ requires structured address migration
   phone: string | null;
   email: string | null;
   timezone: string;
-  currency: string;       // ISO 4217
-  taxRate: number;        // 0..1
-  operatingHours: OperatingHoursDay[];
+  currency: string;                 // ISO 4217
+  taxRate: number;                  // 0..1
+  operatingHours: OperatingHoursDay[];  // ⚠️ requires backend migration
   estimatedTurnoverMinutes: number;
   autoConfirmReservations: boolean;
   autoConfirmOrders: boolean;
   allowAutoSubstitute: boolean;
-  status: RestaurantStatus;
-  createdAt: string;
-  updatedAt: string;
+  status: RestaurantStatus;         // ⚠️ requires backend migration
+  createdAt: string;                // ⚠️ requires AuditableEntity base
+  updatedAt: string;                // ⚠️ requires AuditableEntity base
 }
 
+// ⚠️  BACKEND PREREQUISITE (Phase 6):
+//   No AdminSettings entity or table exists in any backend service today.
+//   Restaurant-level settings (TaxRate, Currency, AutoConfirm*, etc.) live
+//   on the Restaurant entity itself. Global/platform-level settings and
+//   feature flags are currently in appsettings.json / Microsoft.FeatureManagement.
+//   Backend must create either:
+//     (a) A singleton AdminSettings aggregate in Catalog.API with GET/PUT endpoints, or
+//     (b) A dedicated Settings microservice.
+//   Until then, Phase 6 can ship the RolePermissionMatrix (read-only, no
+//   backend dependency) and stub AdminSettingsPage with a "coming soon" state.
+//   See §7 Backend prerequisites table.
 export interface AdminSettings {
   defaultTimezone: string;
   defaultCurrency: string;
@@ -285,6 +332,20 @@ export interface AdminSettings {
   featureFlags: Record<string, boolean>;
 }
 
+// ⚠️  BACKEND PREREQUISITE (Phase 3):
+//   No generic audit log table exists anywhere in the backend today.
+//   Related but non-generic structures:
+//     - Identity: LoginAuditLog (login/logout events only; GET /api/audit-log)
+//     - Catalog: PriceHistory (menu price changes), OrderModificationLog (Marten)
+//     - Ordering: OrderActivities (order state transitions)
+//   None of these cover entity-level CRUD audit (brand created, restaurant
+//   archived, staff role changed). Backend must create:
+//     - An AuditEntries table in Catalog.API (or a dedicated Audit service)
+//     - GET /catalog-api/audit/{entityType}/{entityId}
+//     - GET /catalog-api/audit?entityType=&actorId=&since=&until=
+//   The Identity LoginAuditLog can be consumed separately for login events
+//   but is NOT the same as entity audit.
+//   See §7 Backend prerequisites table.
 export type AuditEntityType = "brand" | "restaurant" | "staff";
 
 export interface AdminAuditEntry {
@@ -307,18 +368,46 @@ Lives in `src/types/auth.ts` and `src/components/RouteGuards/`.
 
 ```ts
 // src/types/auth.ts — additions
+//
+// Convention: permissions use colon-delimited `resource:action` format
+// to match the backend's existing 25 seeded permissions in Identity.API
+// (e.g. `users:view_all`, `audit:view`). New CRM permissions follow
+// the same pattern. The `PermissionAuthorizationHandler` in Identity
+// evaluates these strings from JWT claims.
+//
+// Existing backend permissions consumed by this plan:
+//   users:view_all, users:create, users:edit, users:assign_roles,
+//   users:assign_restaurants, roles:view, audit:view
+// New permissions (require backend seeding):
+//   brands:view, brands:create, brands:edit, brands:archive,
+//   restaurants:create, restaurants:edit, restaurants:archive,
+//   settings:view, settings:edit
+
 export type Permission =
-  | "brand.read" | "brand.create" | "brand.update" | "brand.archive"
-  | "restaurant.read" | "restaurant.create" | "restaurant.update" | "restaurant.archive"
-  | "staff.read" | "staff.invite" | "staff.update" | "staff.deactivate"
-  | "role.read" | "role.assign"
-  | "audit.read"
-  | "settings.read" | "settings.update";
+  // Brand CRM (⚠️ new — require backend seeding in Identity.API)
+  | "brands:view" | "brands:create" | "brands:edit" | "brands:archive"
+  // Restaurant CRM (restaurants:view not needed — list is scoped by server)
+  | "restaurants:create" | "restaurants:edit" | "restaurants:archive"
+  // Staff (maps to existing backend permissions)
+  | "users:view_all" | "users:create" | "users:edit"
+  | "users:assign_roles" | "users:assign_restaurants"
+  // Roles (maps to existing backend permissions)
+  | "roles:view"
+  // Audit (maps to existing backend permission)
+  | "audit:view"
+  // Settings (⚠️ new — require backend seeding)
+  | "settings:view" | "settings:edit";
 
 export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
-  SuperAdmin:      [/* all 17 */],
-  RestaurantAdmin: [/* 13: brand.*, restaurant.*, staff.*, role.read, audit.read, settings.read */],
-  Manager:         ["restaurant.read", "staff.read", "audit.read"],
+  SuperAdmin:      [/* all permissions */],
+  RestaurantAdmin: [
+    "brands:view", "brands:edit",
+    "restaurants:create", "restaurants:edit",
+    "users:view_all", "users:create", "users:edit",
+    "users:assign_roles", "users:assign_restaurants",
+    "roles:view", "audit:view", "settings:view",
+  ],
+  Manager:         ["brands:view", "users:view_all", "audit:view"],
   KitchenManager:  [],
   KitchenStaff:    [],
   Waiter:          [],
@@ -380,7 +469,7 @@ Route tree under `/site/admin` (the existing `<GuardedPage allow="admin">` bound
   index              → AdminDashboardPage      (Phase 7 real; splash through 6)
   brands             → <Outlet/>
     index            → BrandListPage
-    new              → BrandNewPage            [SuperAdmin only — `brand.create`]
+    new              → BrandNewPage            [SuperAdmin only — `brands:create`]
     :id              → <Outlet/>
       index          → BrandDetailPage
       restaurants    → BrandRestaurantsPage
@@ -446,10 +535,11 @@ admin:
                   allEntities, entries_one/_other,
                   entityLabels: { brand, restaurant, staff } }
   roles:        { title, subtitle, roleColumn, permissionColumn,
-                  permissionNames: { brandRead, brandCreate, brandUpdate, brandArchive,
-                    restaurantRead, restaurantCreate, restaurantUpdate, restaurantArchive,
-                    staffRead, staffInvite, staffUpdate, staffDeactivate,
-                    roleRead, roleAssign, auditRead, settingsRead, settingsUpdate } }
+                  permissionNames: { brandsView, brandsCreate, brandsEdit, brandsArchive,
+                    restaurantsCreate, restaurantsEdit, restaurantsArchive,
+                    usersViewAll, usersCreate, usersEdit,
+                    usersAssignRoles, usersAssignRestaurants,
+                    rolesView, auditView, settingsView, settingsEdit } }
   settings:     { title, subtitle,
                   sections: { defaults, reservations, substitutions, email, flags },
                   validation: { invalidTimezone, invalidCurrency } }
@@ -473,7 +563,7 @@ All in `src/app/api/catalog.ts`. New `tagTypes`: `Brands`, `AdminSettings`, `Aud
 | `updateBrand` | 2 | PUT | `/catalog-api/brands/{id}` | `Brands` id |
 | `archiveBrand` | 2 | POST | `/catalog-api/brands/{id}/archive` | `Brands` id, child `Restaurants` |
 | `brandRestaurants` | 4 | GET | `/catalog-api/brands/{id}/restaurants` | (no mutation) |
-| `brandStaff` | 4 | GET | `/catalog-api/brands/{id}/staff` | (no mutation) |
+| `brandStaff` | 4 | GET | `/identity-api/users?brandId={id}` | (no mutation; cross-service: Identity owns staff, filters by joining Brand→Restaurant→User) |
 | `getAdminRestaurant` | 5 | GET | `/catalog-api/restaurants/{id}` (returns `AdminRestaurantDetail`) | `Restaurants` id |
 | `createRestaurant` | 5 | POST | `/catalog-api/restaurants` | `Restaurants` LIST, `Brands` id |
 | `updateRestaurant` | 5 | PUT | `/catalog-api/restaurants/{id}` | `Restaurants` id, `Brands` id |
@@ -482,6 +572,8 @@ All in `src/app/api/catalog.ts`. New `tagTypes`: `Brands`, `AdminSettings`, `Aud
 | `updateAdminSettings` | 6 | PUT | `/catalog-api/settings` | `AdminSettings` GLOBAL |
 | `auditFor` | 3 | GET | `/catalog-api/audit/{entityType}/{entityId}` | `Audit` id |
 | `listAudit` | 3 | GET | `/catalog-api/audit?entityType=&actorId=&since=&until=` | `Audit` LIST |
+
+> **Pagination contract** (all list endpoints): `?page=1&pageSize=20` (offset-based). Response shape: `{ items: T[], totalCount: number, page: number, pageSize: number }`. Mirrors the existing `listStaff` pattern in `identity.ts`.
 
 ### 6.7 Reusable shared components
 
@@ -500,7 +592,7 @@ All in `src/app/api/catalog.ts`. New `tagTypes`: `Brands`, `AdminSettings`, `Aud
 - `src/features/staff/RestaurantAssignmentGrid.tsx` — controlled matrix; reused on the brand Staff tab.
 - `src/features/staff/useGrantableRoles.ts` — stays as-is; `usePermission` is additive.
 - `src/lib/forms.ts` — `useZodForm(schema, options)` is ready.
-- `src/hooks/useRestaurantContext.ts` — URL-bound `?restaurantId=`; new `useBrandContext` (Phase 2) follows the exact pattern for `?brandId=`.
+- `src/components/RestaurantContext/useRestaurantContext.ts` — URL-bound `?restaurantId=`; new `useBrandContext` (Phase 2) follows the exact pattern for `?brandId=`, placed at `src/components/BrandContext/useBrandContext.ts`.
 - `src/components/Layout/ZoneSplash.tsx` — placeholder for every new stub in Phase 1.
 - `src/components/Layout/ZoneSidebar.tsx` — already filters by `item.roles`; no change.
 - `src/components/ui/{table, form, dialog, alert-dialog, sheet, pagination, badge, tabs, select, sonner}` — all reused; no new shadcn install.
@@ -512,12 +604,40 @@ All in `src/app/api/catalog.ts`. New `tagTypes`: `Brands`, `AdminSettings`, `Aud
 
 The OrderlyWeb frontend is a sibling to the Orderly Microservices backend (`docs/backend-architecture/architecture.md`). The contract surface this plan touches:
 
-- **`Catalog.API`** — owns Brands, Admin Restaurants, Admin Settings, Audit. New endpoints (Phase 2+).
-- **`Identity.API`** — owns Staff, Roles, Permissions, JWT claims. Touched minimally: `StaffMember` widens additively; `permissions: Permission[]` claim (server-side) populates the typed array.
+- **`Catalog.API`** — owns Brands, Restaurants, Menu, Tables. New CRM endpoints (Phase 2+) for brand CRUD, restaurant admin detail, and audit.
+- **`Identity.API`** — owns Staff, Roles, Permissions, JWT claims, `LoginAuditLog`. Provides `GET /identity-api/users?brandId=` for brand-scoped staff queries (Phase 4). New permissions must be seeded here.
 
 The frontend does **not** implement server-side authorization; it consumes the response and trusts the gateway. Any change to the JWT `permissions` claim shape (server-side) must be reflected in `src/types/auth.ts` `AuthPredicate.permissions` in the same change.
 
 i18n pre-hydration (`index.html`) already mirrors the language; no per-route coordination needed. The `Accept-Language` header is auto-attached to every RTK Query request (see `src/app/api/base.ts`).
+
+### 7.1 Backend prerequisites table
+
+> Every backend change required by this plan, grouped by blocking phase. A phase **MUST NOT** start implementation until its backend prerequisites are confirmed deployed or have an agreed-upon stub strategy.
+
+| Backend change | Service | Blocking phase | Priority | Notes |
+|---|---|:---:|:---:|---|
+| Add `Slug` (unique), `IsActive`, `CreatedAt`, `UpdatedAt` to `Brands` table | Catalog.API | **2** | 🔴 | `AuditableEntity<Guid>` base gives timestamps + IsActive for free |
+| Brand CRUD endpoints (`GET/POST/PUT /brands`, `POST /brands/{id}/archive`) | Catalog.API | **2** | 🔴 | Carter vertical slice; archive sets `IsActive = false` |
+| Seed new permissions: `brands:view`, `brands:create`, `brands:edit`, `brands:archive` | Identity.API | **1** | 🔴 | Add to `PermissionSeeder`; assign to `SuperAdmin` + `RestaurantAdmin` roles |
+| Seed new permissions: `restaurants:create`, `restaurants:edit`, `restaurants:archive`, `settings:view`, `settings:edit` | Identity.API | **1** | 🔴 | Same seeder |
+| Generic `AuditEntries` table + REST endpoints | Catalog.API | **3** | 🔴 | `GET /audit/{entityType}/{entityId}`, `GET /audit?entityType=&actorId=&since=&until=` |
+| `GET /identity-api/users?brandId=` filter (joins Brand→Restaurant→User) | Identity.API | **4** | 🟡 | Alternative: Catalog exposes `/brands/{id}/staff` and calls Identity internally |
+| Add `Status` (enum), `OwnerId` (FK), `OperatingHours` (JSON or child table) to `Restaurants` | Catalog.API | **5** | 🔴 | Structured `Address` (OwnsOne) also recommended |
+| `AuditableEntity<Guid>` base on `Restaurant` (CreatedAt/UpdatedAt) | Catalog.API | **5** | 🔴 | Same migration as Status |
+| Restaurant archive/restore endpoint (`POST /restaurants/{id}/archive`) | Catalog.API | **5** | 🔴 | Sets `Status = "archived"`; blocks if assigned staff are still active |
+| `AdminSettings` singleton aggregate + `GET/PUT /settings` | Catalog.API | **6** | 🟡 | Can be deferred; Phase 6 ships `RolePermissionMatrix` first |
+| Add `AvatarUrl`, `LastLoginAt` to `AspNetUsers` | Identity.API | **4** | 🟢 | Nice-to-have for staff cards |
+| `brandId` JWT claim (optional) | Identity.API | **—** | 🟢 | Not required if server-side brand scoping works via restaurant→brand join |
+
+### 7.2 Brand scoping strategy
+
+> [!IMPORTANT]
+> The Identity Service tracks user→restaurant assignments via the `UserRestaurant` table (`UserId`, `RestaurantId`, `IsDefault`). There is **no `UserBrand` table** and **no `brandId` JWT claim**.
+>
+> Brand-scoped queries work by joining through the chain: **Brand → Restaurant → UserRestaurant → User**. The server scopes list responses (brands, restaurants, staff) to the actor's assigned restaurants, then groups by brand. The frontend renders whatever the server returns — no client-side brand filtering.
+>
+> If a dedicated `UserBrand` junction table or `brandId` claim is needed later (e.g., for brand-level admin assignment without restaurant assignment), that is a separate Identity Service migration tracked outside this plan.
 
 ---
 
@@ -529,7 +649,7 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 | Risk | Mitigation |
 |---|---|
 | Manager sees brands outside their scope | Server scopes the brand list to the actor's claims. Client renders whatever the server returns; `RequirePermission` hides sub-routes the user can't reach. |
-| RestaurantAdmin edits another brand's settings | Route-level `RequirePermission("brand.update")` + server re-check on the mutation; conflict type guard `isBrandForbidden` (403) → toast + no state change. |
+| RestaurantAdmin edits another brand's settings | Route-level `RequirePermission("brands:edit")` + server re-check on the mutation; conflict type guard `isBrandForbidden` (403) → toast + no state change. |
 | Audit log leaks other tenants' actions | Server scopes `listAudit` and `auditFor` by actor. `useAuditForQuery` skips if no permission. |
 | Slug collision on brand create | `BRAND_DUPLICATE_SLUG` (409) type guard in `src/features/brand/conflict.ts`; UI shows inline form error. |
 | Archiving a brand with active restaurants | `BRAND_HAS_ACTIVE_RESTAURANTS` (409) type guard; `archiveBrand` is blocked until child restaurants are archived first. |
@@ -562,7 +682,7 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Deliverables**:
 
-- [ ] Extend `src/types/auth.ts` with `Permission` union (17 entries) and `ROLE_PERMISSIONS` table
+- [ ] Extend `src/types/auth.ts` with `Permission` union (16 entries, `colon:action` convention matching backend) and `ROLE_PERMISSIONS` table
 - [ ] Add `src/components/RouteGuards/usePermission.ts` + `RequirePermission.tsx`; update barrel
 - [ ] Add 15 new `ADMIN_*` path constants and 3 query-param keys to `src/router/pathNames.ts`
 - [ ] Extend `src/router/zones/adminZone.tsx` with ~20 new route children, all rendering stubs
@@ -581,6 +701,11 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 **Goal**: SuperAdmin can create, view, edit, and archive brands. RestaurantAdmin can read and update brands they own.
 
 **Status**: 🔒 Blocked
+
+**Backend prerequisites** (must be deployed before Phase 2 starts):
+- [ ] `Brands` table migration: add `Slug`, `IsActive`, inherit `AuditableEntity<Guid>` for timestamps
+- [ ] Brand CRUD Carter endpoints: `GET/POST /brands`, `GET/PUT /brands/{id}`, `POST /brands/{id}/archive`
+- [ ] Confirm `CuisineType` enum values match `CuisineType` union in the DTO
 
 **Deliverables**:
 
@@ -603,6 +728,15 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Status**: 🔒 Blocked
 
+**Backend prerequisites** (must be deployed before Phase 3 starts):
+- [ ] Generic `AuditEntries` table in Catalog.API (entity_type, entity_id, actor_id, actor_name, action, before, after, timestamp, reason)
+- [ ] `GET /catalog-api/audit/{entityType}/{entityId}` endpoint (paginated)
+- [ ] `GET /catalog-api/audit?entityType=&actorId=&since=&until=` endpoint (paginated, filterable)
+- [ ] Catalog.API must emit audit entries on brand/restaurant CRUD operations
+
+> [!WARNING]
+> This is the largest backend dependency in the plan. If the audit system is delayed, Phase 3 can be **deferred after Phase 5** (restaurants) without blocking the rest of the plan. Audit tabs on brand/restaurant detail pages would show a "coming soon" placeholder, and the `AdminAuditPage` stays as `<ZoneSplash />`.
+
 **Deliverables**:
 
 - [ ] Wire `auditFor` and `listAudit` in `catalog.ts` (tag: `Audit` LIST, id)
@@ -623,6 +757,10 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Status**: 🔒 Blocked
 
+**Backend prerequisites:**
+- [ ] `GET /identity-api/users?brandId={id}` — Identity must support filtering staff by brand (joining Brand → Restaurant → UserRestaurant → User)
+- [ ] Audit tab depends on Phase 3 backend; if deferred, show placeholder
+
 **Deliverables**:
 
 - [ ] Wire `brandRestaurants` and `brandStaff` queries in `catalog.ts` (no mutation; pure data)
@@ -641,6 +779,14 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 **Goal**: SuperAdmin can fully manage restaurants, including hours, address, tax, currency, and ownership.
 
 **Status**: 🔒 Blocked
+
+**Backend prerequisites** (must be deployed before Phase 5 starts):
+- [ ] `Restaurants` table migration: add `Status` (enum: active/inactive/archived), `OwnerId` (FK → Users)
+- [ ] `Restaurants` table: inherit `AuditableEntity<Guid>` for `CreatedAt`/`UpdatedAt`
+- [ ] Structured `Address` on `Restaurant` — either `OwnsOne<RestaurantAddress>` (recommended) or keep flat text
+- [ ] `OperatingHours` storage: JSON column on `Restaurant` or child `RestaurantOperatingHours` table (7 rows per restaurant)
+- [ ] Restaurant archive endpoint: `POST /restaurants/{id}/archive` (sets `Status = "archived"`)
+- [ ] Confirm existing fields match DTO: `BrandId`, `TaxRate`, `Currency`, `TimeZone`, `EstimatedTurnoverMinutes`, `AutoConfirmOrders`, `AutoConfirmReservations`, `AllowAutoSubstitute`
 
 **Deliverables**:
 
@@ -664,6 +810,12 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Status**: 🔒 Blocked
 
+**Backend prerequisites:**
+- [ ] `AdminSettings` singleton aggregate in Catalog.API + `GET/PUT /catalog-api/settings` endpoints
+
+> [!TIP]
+> This phase can be **split**: the `RolePermissionMatrix` (read-only, reads `ROLE_PERMISSIONS` from `types/auth.ts`) has **zero backend dependencies** and can ship immediately. The `AdminSettingsForm` depends on the backend `AdminSettings` entity and can be deferred.
+
 **Deliverables**:
 
 - [ ] `getAdminSettings` / `updateAdminSettings` in `catalog.ts`; tag: `AdminSettings` GLOBAL
@@ -681,6 +833,10 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 **Goal**: `/site/admin` shows a real dashboard on first login.
 
 **Status**: 🔒 Blocked
+
+**Backend prerequisites:**
+- [ ] All list endpoints must be deployed (brands, restaurants, audit) — KPIs are derived from list queries with `pageSize=1` (for `totalCount`)
+- [ ] Consider a dedicated `/catalog-api/admin/stats` summary endpoint to avoid N+1 queries on dashboard load
 
 **Deliverables**:
 
@@ -793,6 +949,20 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 - **[P7 ⏳ pending]`** No `style={{}}`; all chart colors come from `bg-primary`, `text-ink`, `border-border-subtle` etc.
 - **[P7 ⏳ pending]`** KPI tiles follow the `stats-grid` pattern (mono number, display label, muted detail, `hover:translate-x-1`).
 
+### 10.5 Unconsidered areas (added in v2.0 reconciliation)
+
+- **Concurrency / optimistic locking** — when two admins edit the same brand simultaneously, who wins? Consider adding `version` or `ETag` headers and handling `409 Conflict` on stale writes. Decision deferred to Phase 2 implementation.
+- **Archive cascade and reversibility** — archiving a brand blocks when active restaurants exist (documented), but: can archived brands be **restored** (reactivated)? What about historical order data referencing the brand's restaurants? The plan includes a `reactivate` action key but no endpoint. Decision: add `POST /brands/{id}/reactivate` (sets `IsActive = true`) to the backend prerequisites.
+- **Navigation canonicalization** — `BrandRestaurantsPage` lists restaurants under a brand. Clicking a restaurant navigates to `/admin/restaurants/:id` (global path), not `/admin/brands/:brandId/restaurants/:id` (nested). The global path is canonical; the brand context is preserved via `?brandId=` query param for breadcrumb back-navigation.
+- **Dashboard data freshness** — KPI tiles on the dashboard should use RTK Query's `keepUnusedDataFor: 60` (1 minute) to avoid hammering the backend on every tab switch. No live polling; manual refresh button.
+- **Mobile responsiveness** — the admin CRM is staff-facing and primarily used on desktop/tablet. The `impeccable` skill covers responsive breakpoints, but the sidebar should collapse to a hamburger menu on `< md` breakpoints. No dedicated mobile layout.
+- **Timezone in operating hours** — `OperatingHoursDay.open/close` times are in the **restaurant's local timezone** (stored in `AdminRestaurantDetail.timezone`). The UI renders them as-is; no UTC conversion. Dashboard "last 7 days" uses the viewer's browser timezone for date boundaries.
+- **Logo upload flow** — deferred (see §3 out-of-scope). Phase 2 brand form accepts a `logoUrl` text input. Future plan: file picker → presigned S3 upload → CDN URL.
+- **Toast patterns** — all CUD operations show a Sonner toast on success (`t("admin:actions.saved")`) and on conflict (409) or forbidden (403). Toasts auto-dismiss after 5s. Archive actions use `<AlertDialog>` for confirmation before the request.
+- **Empty states** — every list page must handle the zero-items case with an illustrated empty state (icon + message + CTA button). Use `t("admin:brands.empty")` / `t("admin:restaurants.empty")` keys. Add these to the i18n catalog.
+- **Data export** — not in scope. Deferred to a future plan (CSV/PDF export of brands, restaurants, staff, audit).
+- **Impeccable Design Mandates (UX Review)** — Avoid color leakage: do not use the 5 service hues (e.g., `bg-gradient-service-cool`) for CRM statuses (Brands/Restaurants). Use semantic states (`success`, `info`, `ink-muted`) instead. KPIs and dataviz must rely on `primary` and `ink` variables, avoiding pure white (`#FFFFFF`) on content pages. KPI numbers should use the `mono` font scale, and empty states should stick to `body` (`Urbanist`) for description copy. Ensure cards remain flat (no `box-shadow`) relying solely on tonal layering (`Sage Linen High`), reserving shadows for overlays like `<AlertDialog>`.
+
 ---
 
 ## How to use this template
@@ -817,6 +987,24 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 ## Changelog
 
 > Append a new entry every time the plan's `Plan version` field is bumped.
+
+### v2.1 (2026-08-08) — UX review and Impeccable design mandates
+- **Impeccable Design Mandates**: Added UX review findings to §10.5 restricting the use of service hues for CRM entities, emphasizing flat cards, and enforcing typography rules for empty states and KPI tiles.
+
+### v2.0 (2026-08-08) — gap-analysis reconciliation against backend architecture
+- Cross-referenced plan against `docs/backend-architecture/architecture.md`, `db_relational_model.mermaid`, and current codebase.
+- **Permission convention**: switched from `dot.action` to `colon:action` to match backend's existing 25 seeded permissions in Identity.API. Union reduced from 17 to 16 members (mapped to real backend permission names).
+- **CatalogBrand shape**: added `description` (exists in DB, was missing); typed `cuisineType` as enum union; documented `slug`, `active`, `createdAt/updatedAt` as backend migration prerequisites.
+- **AdminRestaurantDetail**: documented backend gaps (flat `Address`, missing `Status`, `OwnerId`, `OperatingHours`, timestamps).
+- **Audit system**: documented that no generic audit table exists in any backend service; marked Phase 3 as deferrable.
+- **AdminSettings**: documented that no settings entity exists; Phase 6 can be split (RolePermissionMatrix ships first).
+- **Brand staff query**: rerouted `brandStaff` from Catalog to Identity (`GET /identity-api/users?brandId=`).
+- **Cross-repo §7**: added backend prerequisites table (§7.1) and brand scoping strategy (§7.2).
+- **Hook path**: fixed `useRestaurantContext` path from `src/hooks/` to actual `src/components/RestaurantContext/`.
+- **Phases**: added `Backend prerequisites` checklist to Phases 2–7; added deferral strategy for Phase 3 (audit).
+- **§10.5**: added 10 unconsidered areas (concurrency, cascade, navigation, freshness, mobile, timezone, upload, toasts, empty states, export).
+- **Out of scope**: added backend migrations, bulk operations, image upload.
+- **RestaurantAdmin permissions**: clarified — `brands:create` and `brands:archive` are SuperAdmin-only; RestaurantAdmin gets `brands:view` + `brands:edit` only.
 
 ### v1.0 (2026-08-08) — initial draft
 - Created plan from design exploration of the OrderlyWeb admin zone.
