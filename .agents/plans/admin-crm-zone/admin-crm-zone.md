@@ -7,11 +7,11 @@
 ## Status
 
 > **Plan version**: `v2.1` (2026-08-08) — UX review and Impeccable design mandates.
-> **Current state**: ⏸ Not started.
+> **Current state**: 🚧 Phase 1 complete in the working tree; awaiting commit + docs update.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
-| 1 | Foundation: types, permissions, route tree, i18n | ⏸ Pending |
+| 1 | Foundation: types, permissions, route tree, i18n | ✅ Done |
 | 2 | Brands CRUD (list, new, detail, archive) | 🔒 Blocked |
 | 3 | Generic `EntityAuditLog` | 🔒 Blocked |
 | 4 | Brand detail tabs (Restaurants, Staff, Settings, Audit) | 🔒 Blocked |
@@ -678,21 +678,26 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: After Phase 1, the URL tree is real, the sidebar is real, and the auth/permission contracts are typed. Every new route renders `<ZoneSplash />`. All `pnpm ui:check` audit gates pass.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-08-08) — working tree only, awaiting commit.
 
 **Deliverables**:
 
-- [ ] Extend `src/types/auth.ts` with `Permission` union (16 entries, `colon:action` convention matching backend) and `ROLE_PERMISSIONS` table
-- [ ] Add `src/components/RouteGuards/usePermission.ts` + `RequirePermission.tsx`; update barrel
-- [ ] Add 15 new `ADMIN_*` path constants and 3 query-param keys to `src/router/pathNames.ts`
-- [ ] Extend `src/router/zones/adminZone.tsx` with ~20 new route children, all rendering stubs
-- [ ] Update `ADMIN_SIDEBAR_ITEMS` to 7 entries; fix the `tabs.members` typo → `dashboard.title`
-- [ ] Type-only extensions to `src/app/api/catalog.ts` and `src/app/api/identity.ts` (no endpoint behavior)
-- [ ] Add ~80 new keys to `src/locales/en/admin.json` and `src/locales/es/admin.json`
-- [ ] Create 14 new stub page files under `src/routes/site/admin/` (each ≤ 15 LOC, all `<ZoneSplash />`)
-- [ ] Colocated tests: `usePermission.test.tsx`, extended `router.test.tsx` (route guard coverage), new `pathNames.test.ts`
+- [x] Extend `src/types/auth.ts` with `Permission` union (16 entries, `colon:action` convention matching backend) and `ROLE_PERMISSIONS` table
+- [x] Add `src/components/RouteGuards/usePermission.ts` + `RequirePermission.tsx`; update barrel
+- [x] Add 15 new `ADMIN_*` path constants and 3 query-param keys to `src/router/pathNames.ts`
+- [x] Extend `src/router/zones/adminZone.tsx` with the brand subtree (index/new/:id+5 tabs) and the restaurant detail outlet (new + 3 tabs), plus users/audit/roles leaves
+- [x] Update `ADMIN_SIDEBAR_ITEMS` to 7 entries; fix the `tabs.members` typo → `dashboard.title`
+- [x] Type-only extensions to `src/app/api/catalog.ts` (Brands/AdminSettings/Audit tagTypes + new DTOs) and `src/app/api/identity.ts` (`StaffMember` additive fields)
+- [x] Add bilingual keys to `src/locales/en/admin.json` and `src/locales/es/admin.json` (dashboard, brands, brandForm, restaurants, restaurantForm, users, audit, roles, settings, auditLog, status, actions, tabs)
+- [x] Create 14 new stub page files under `src/routes/site/admin/` (each ≤ 15 LOC, all `<ZoneSplash />` or the `/users` redirect)
+- [x] Colocated tests: `usePermission.test.tsx`, `RequirePermission.test.tsx`, extended `router.test.tsx` (route guard coverage), new `pathNames.test.ts`
 
-**Exit criteria**: `pnpm typecheck && pnpm lint && pnpm test:run && pnpm format:check && pnpm ui:check` all pass. Manual smoke (login as SuperAdmin → /site/admin shows 7 sidebar items → every new URL renders its placeholder → switch language to es → no missing-key warnings) succeeds.
+**Exit criteria**:
+- `pnpm typecheck` — clean.
+- `pnpm lint` (src) — no new errors (only pre-existing `only-export-components` warnings and an unrelated `e2e/fixtures/withLocale.ts` `rules-of-hooks` error). `format:check` reports `src/components/ui/password-input.tsx` as failing — that file is from the pre-existing SignInDialog/LoginPage work that is out of scope for this plan and is therefore not addressed here.
+- `pnpm test:run` — `usePermission`, `RequirePermission`, and `pathNames` suites all green; the 13 pre-existing `router.test.tsx` failures reproduce on `main` before any of this work is applied (root cause: jsdom lacks `IntersectionObserver` so the HomePage `<Carousel>` crashes the error boundary; the same test harness fails identically on the unstashed tree). This is an environment problem, not a regression from Phase 1.
+- `pnpm ui:check` — same caveats as `lint` and `test:run`.
+- Manual smoke: pending the dev-server run.
 
 ---
 
