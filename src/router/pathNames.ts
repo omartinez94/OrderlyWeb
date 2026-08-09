@@ -22,8 +22,22 @@ export const PATH = {
   ADMIN_STAFF: "/site/admin/staff",
   ADMIN_STAFF_NEW: "/site/admin/staff/new",
   ADMIN_STAFF_DETAIL: "/site/admin/staff/:id",
+  ADMIN_BRANDS: "/site/admin/brands",
+  ADMIN_BRAND_NEW: "/site/admin/brands/new",
+  ADMIN_BRAND_DETAIL: "/site/admin/brands/:id",
+  ADMIN_BRAND_RESTAURANTS: "/site/admin/brands/:id/restaurants",
+  ADMIN_BRAND_STAFF: "/site/admin/brands/:id/staff",
+  ADMIN_BRAND_SETTINGS: "/site/admin/brands/:id/settings",
+  ADMIN_BRAND_AUDIT: "/site/admin/brands/:id/audit",
   ADMIN_RESTAURANTS: "/site/admin/restaurants",
+  ADMIN_RESTAURANT_NEW: "/site/admin/restaurants/new",
   ADMIN_RESTAURANT_DETAIL: "/site/admin/restaurants/:id",
+  ADMIN_RESTAURANT_STAFF: "/site/admin/restaurants/:id/staff",
+  ADMIN_RESTAURANT_SETTINGS: "/site/admin/restaurants/:id/settings",
+  ADMIN_RESTAURANT_AUDIT: "/site/admin/restaurants/:id/audit",
+  ADMIN_USERS: "/site/admin/users",
+  ADMIN_AUDIT: "/site/admin/audit",
+  ADMIN_ROLES: "/site/admin/roles",
   ADMIN_SETTINGS: "/site/admin/settings",
 
   // Kitchen zone children.
@@ -54,6 +68,9 @@ export type PathKey = keyof typeof PATH;
  */
 export const QUERY_PARAM = {
   RESTAURANT_ID: "restaurantId",
+  BRAND_ID: "brandId",
+  ROLE: "role",
+  QUERY: "q",
   /** Legacy alias preserved for the showcase + dev surfaces. */
   SHOWCASE: "showcase",
 } as const;

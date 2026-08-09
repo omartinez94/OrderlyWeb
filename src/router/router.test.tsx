@@ -49,6 +49,48 @@ describe("router", () => {
         expect(screen.getByRole("heading", { name: "Staff" })).toBeInTheDocument();
       });
     });
+
+    it("renders the brand list at /site/admin/brands", async () => {
+      renderWithRoute("/site/admin/brands");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Brands" })).toBeInTheDocument();
+      });
+    });
+
+    it("renders the new-brand splash at /site/admin/brands/new", async () => {
+      renderWithRoute("/site/admin/brands/new");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "New brand" })).toBeInTheDocument();
+      });
+    });
+
+    it("renders the brand detail splash at /site/admin/brands/:id", async () => {
+      renderWithRoute("/site/admin/brands/abc");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Brand overview" })).toBeInTheDocument();
+      });
+    });
+
+    it("renders the audit splash at /site/admin/audit", async () => {
+      renderWithRoute("/site/admin/audit");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Audit" })).toBeInTheDocument();
+      });
+    });
+
+    it("renders the roles splash at /site/admin/roles", async () => {
+      renderWithRoute("/site/admin/roles");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Roles and permissions" })).toBeInTheDocument();
+      });
+    });
+
+    it("redirects /site/admin/users to /site/admin/staff", async () => {
+      renderWithRoute("/site/admin/users");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Staff" })).toBeInTheDocument();
+      });
+    });
   });
 
   describe("/site/kitchen", () => {

@@ -1,6 +1,191 @@
 {
+  "dashboard": {
+    "title": "Panel",
+    "subtitle": "Una vista clara de las marcas, restaurantes, personal y actividad que gestionas.",
+    "pendingInvitations": "Invitaciones pendientes",
+    "recentActivity": "Actividad reciente",
+    "viewAll": "Ver todo",
+    "stats": {
+      "brands": "Marcas",
+      "restaurants": "Restaurantes",
+      "staff": "Personal",
+      "audit": "Entradas de auditoría"
+    }
+  },
+  "brands": {
+    "title": "Marcas",
+    "subtitle_one": "{{count}} marca",
+    "subtitle_other": "{{count}} marcas",
+    "new": "Nueva marca",
+    "name": "Nombre",
+    "slug": "Slug",
+    "description": "Descripción",
+    "contactEmail": "Correo de contacto",
+    "contactPhone": "Teléfono de contacto",
+    "cuisine": "Tipo de cocina",
+    "website": "Sitio web",
+    "logo": "URL del logotipo",
+    "status": {
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "archived": "Archivada"
+    },
+    "archive": "Archivar marca",
+    "archiveConfirmTitle": "¿Archivar esta marca?",
+    "archiveConfirmBody": "La marca dejará de aparecer en las listas activas.",
+    "empty": "Aún no hay marcas. Crea una marca para comenzar.",
+    "tabs": {
+      "overview": "Resumen",
+      "restaurants": "Restaurantes",
+      "staff": "Personal",
+      "settings": "Ajustes",
+      "audit": "Auditoría"
+    }
+  },
+  "brandForm": {
+    "create": "Crear marca",
+    "edit": "Editar marca",
+    "sections": {
+      "basic": "Información básica",
+      "contact": "Información de contacto",
+      "branding": "Identidad de marca"
+    },
+    "validation": {
+      "nameRequired": "Escribe un nombre de marca.",
+      "slugPattern": "Usa letras minúsculas, números y guiones.",
+      "invalidEmail": "Escribe un correo electrónico válido."
+    }
+  },
+  "restaurants": {
+    "title": "Restaurantes",
+    "subtitle_one": "{{count}} restaurante",
+    "subtitle_other": "{{count}} restaurantes",
+    "new": "Nuevo restaurante",
+    "name": "Nombre",
+    "brand": "Marca",
+    "city": "Ciudad",
+    "country": "País",
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "archived": "Archivado"
+    },
+    "archive": "Archivar restaurante",
+    "empty": "Aún no hay restaurantes. Crea un restaurante para comenzar.",
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "email": "Correo electrónico",
+    "timezone": "Zona horaria",
+    "currency": "Moneda",
+    "taxRate": "Tasa impositiva",
+    "hours": "Horario de apertura",
+    "features": "Funciones",
+    "autoConfirmReservations": "Confirmar reservas automáticamente",
+    "autoConfirmOrders": "Confirmar pedidos automáticamente",
+    "allowAutoSubstitute": "Permitir sustituciones automáticas",
+    "estimatedTurnoverMinutes": "Rotación estimada (minutos)",
+    "tabs": {
+      "overview": "Resumen",
+      "staff": "Personal",
+      "settings": "Ajustes",
+      "audit": "Auditoría"
+    }
+  },
+  "restaurantForm": {
+    "create": "Crear restaurante",
+    "edit": "Editar restaurante",
+    "sections": {
+      "identity": "Identidad",
+      "address": "Dirección",
+      "contact": "Contacto",
+      "schedule": "Horario",
+      "operations": "Operaciones",
+      "ownership": "Propiedad"
+    },
+    "validation": {
+      "nameRequired": "Escribe un nombre de restaurante.",
+      "invalidEmail": "Escribe un correo electrónico válido.",
+      "invalidTimezone": "Escribe una zona horaria válida.",
+      "invalidCurrency": "Escribe un código de moneda de tres letras.",
+      "invalidCountry": "Escribe un código de país de dos letras.",
+      "invalidTaxRate": "Escribe una tasa impositiva entre 0% y 100%."
+    },
+    "hoursEditor": {
+      "open": "Apertura",
+      "close": "Cierre",
+      "closed": "Cerrado",
+      "addDay": "Añadir día"
+    }
+  },
+  "users": {
+    "title": "Usuarios",
+    "aliasNotice": "Los usuarios se gestionan desde Personal."
+  },
+  "audit": {
+    "title": "Auditoría",
+    "subtitle": "Revisa los cambios realizados en marcas, restaurantes y personal.",
+    "filterEntity": "Filtrar por entidad",
+    "filterActor": "Filtrar por persona",
+    "filterDateRange": "Filtrar por fechas",
+    "allEntities": "Todas las entidades",
+    "entries_one": "{{count}} entrada",
+    "entries_other": "{{count}} entradas",
+    "entityLabels": {
+      "brand": "Marca",
+      "restaurant": "Restaurante",
+      "staff": "Personal"
+    }
+  },
+  "roles": {
+    "superAdmin": "Superadministrador",
+    "restaurantAdmin": "Administrador de restaurante",
+    "manager": "Gerente",
+    "kitchenManager": "Gerente de cocina",
+    "kitchenStaff": "Personal de cocina",
+    "waiter": "Mesero",
+    "cashier": "Cajero",
+    "host": "Anfitrión",
+    "title": "Roles y permisos",
+    "subtitle": "Matriz de acceso de solo lectura para el CRM administrativo.",
+    "roleColumn": "Rol",
+    "permissionColumn": "Permiso",
+    "permissionNames": {
+      "brandsView": "Ver marcas",
+      "brandsCreate": "Crear marcas",
+      "brandsEdit": "Editar marcas",
+      "brandsArchive": "Archivar marcas",
+      "restaurantsCreate": "Crear restaurantes",
+      "restaurantsEdit": "Editar restaurantes",
+      "restaurantsArchive": "Archivar restaurantes",
+      "usersViewAll": "Ver todos los usuarios",
+      "usersCreate": "Crear usuarios",
+      "usersEdit": "Editar usuarios",
+      "usersAssignRoles": "Asignar roles",
+      "usersAssignRestaurants": "Asignar restaurantes",
+      "rolesView": "Ver roles",
+      "auditView": "Ver auditoría",
+      "settingsView": "Ver ajustes",
+      "settingsEdit": "Editar ajustes"
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Gestiona los valores predeterminados del CRM administrativo.",
+    "sections": {
+      "defaults": "Valores predeterminados",
+      "reservations": "Reservas",
+      "substitutions": "Sustituciones",
+      "email": "Correo electrónico",
+      "flags": "Indicadores de funciones"
+    },
+    "validation": {
+      "invalidTimezone": "Escribe una zona horaria válida.",
+      "invalidCurrency": "Escribe un código de moneda de tres letras."
+    }
+  },
   "staff": {
     "title": "Gestión de personal",
+    "subtitle": "{{count}} miembro",
     "subtitle_one": "{{count}} miembro",
     "subtitle_other": "{{count}} miembros",
     "invite": "Invitar miembro",
@@ -9,24 +194,36 @@
     "inviteSubmit": "Enviar invitación",
     "inviteSuccess": "Invitación enviada"
   },
-  "roles": {
-    "superAdmin": "Super Administrador",
-    "restaurantAdmin": "Administrador de restaurante",
-    "manager": "Gerente",
-    "kitchenManager": "Gerente de cocina",
-    "kitchenStaff": "Personal de cocina",
-    "waiter": "Mesero",
-    "cashier": "Cajero",
-    "host": "Anfitrión"
-  },
   "auditLog": {
     "title": "Registro de auditoría",
-    "empty": "Aún no hay actividad"
+    "empty": "Aún no hay actividad",
+    "entityLabels": {
+      "brand": "Marca",
+      "restaurant": "Restaurante",
+      "staff": "Personal"
+    },
+    "viewFull": "Ver registro completo"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "archived": "Archivado"
+  },
+  "actions": {
+    "save": "Guardar",
+    "saved": "Guardado",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "archive": "Archivar",
+    "reactivate": "Reactivar",
+    "invite": "Invitar"
   },
   "tabs": {
+    "dashboard": "Panel",
+    "brands": "Marcas",
+    "audit": "Auditoría",
     "members": "Miembros",
     "roles": "Roles",
-    "audit": "Registro",
     "settings": "Ajustes"
   }
 }

@@ -14,12 +14,26 @@
 
 import { ZoneShell } from "../../../components/Layout/ZoneShell";
 import type { SidebarItem } from "../../../components/Layout/ZoneSidebar";
+import { PATH } from "../../../router/pathNames";
 
 export const ADMIN_SIDEBAR_ITEMS: readonly SidebarItem[] = [
-  { to: "/site/admin", label: "Dashboard", labelKey: "admin:tabs.members" },
-  { to: "/site/admin/staff", label: "Staff", labelKey: "admin:staff.title" },
-  { to: "/site/admin/restaurants", label: "Restaurants", roles: ["SuperAdmin"] },
-  { to: "/site/admin/settings", label: "Settings", roles: ["SuperAdmin"] },
+  { to: PATH.ADMIN, label: "Dashboard", labelKey: "admin:dashboard.title" },
+  { to: PATH.ADMIN_BRANDS, label: "Brands", labelKey: "admin:brands.title" },
+  {
+    to: PATH.ADMIN_RESTAURANTS,
+    label: "Restaurants",
+    labelKey: "admin:restaurants.title",
+    roles: ["SuperAdmin"],
+  },
+  { to: PATH.ADMIN_STAFF, label: "Staff", labelKey: "admin:staff.title" },
+  { to: PATH.ADMIN_AUDIT, label: "Audit", labelKey: "admin:audit.title" },
+  { to: PATH.ADMIN_ROLES, label: "Roles", labelKey: "admin:roles.title", roles: ["SuperAdmin"] },
+  {
+    to: PATH.ADMIN_SETTINGS,
+    label: "Settings",
+    labelKey: "admin:settings.title",
+    roles: ["SuperAdmin"],
+  },
 ];
 
 export function AdminZoneLayout() {

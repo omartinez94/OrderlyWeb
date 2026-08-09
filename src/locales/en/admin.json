@@ -1,4 +1,188 @@
 {
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "A clear view of the brands, restaurants, staff, and activity you manage.",
+    "pendingInvitations": "Pending invitations",
+    "recentActivity": "Recent activity",
+    "viewAll": "View all",
+    "stats": {
+      "brands": "Brands",
+      "restaurants": "Restaurants",
+      "staff": "Staff",
+      "audit": "Audit entries"
+    }
+  },
+  "brands": {
+    "title": "Brands",
+    "subtitle_one": "{{count}} brand",
+    "subtitle_other": "{{count}} brands",
+    "new": "New brand",
+    "name": "Name",
+    "slug": "Slug",
+    "description": "Description",
+    "contactEmail": "Contact email",
+    "contactPhone": "Contact phone",
+    "cuisine": "Cuisine",
+    "website": "Website",
+    "logo": "Logo URL",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "archived": "Archived"
+    },
+    "archive": "Archive brand",
+    "archiveConfirmTitle": "Archive this brand?",
+    "archiveConfirmBody": "The brand will no longer appear in active brand lists.",
+    "empty": "No brands yet. Create a brand to get started.",
+    "tabs": {
+      "overview": "Overview",
+      "restaurants": "Restaurants",
+      "staff": "Staff",
+      "settings": "Settings",
+      "audit": "Audit"
+    }
+  },
+  "brandForm": {
+    "create": "Create brand",
+    "edit": "Edit brand",
+    "sections": {
+      "basic": "Basic information",
+      "contact": "Contact information",
+      "branding": "Branding"
+    },
+    "validation": {
+      "nameRequired": "Enter a brand name.",
+      "slugPattern": "Use lowercase letters, numbers, and hyphens.",
+      "invalidEmail": "Enter a valid email address."
+    }
+  },
+  "restaurants": {
+    "title": "Restaurants",
+    "subtitle_one": "{{count}} restaurant",
+    "subtitle_other": "{{count}} restaurants",
+    "new": "New restaurant",
+    "name": "Name",
+    "brand": "Brand",
+    "city": "City",
+    "country": "Country",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "archived": "Archived"
+    },
+    "archive": "Archive restaurant",
+    "empty": "No restaurants yet. Create a restaurant to get started.",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "timezone": "Time zone",
+    "currency": "Currency",
+    "taxRate": "Tax rate",
+    "hours": "Operating hours",
+    "features": "Features",
+    "autoConfirmReservations": "Auto-confirm reservations",
+    "autoConfirmOrders": "Auto-confirm orders",
+    "allowAutoSubstitute": "Allow automatic substitutions",
+    "estimatedTurnoverMinutes": "Estimated turnover (minutes)",
+    "tabs": {
+      "overview": "Overview",
+      "staff": "Staff",
+      "settings": "Settings",
+      "audit": "Audit"
+    }
+  },
+  "restaurantForm": {
+    "create": "Create restaurant",
+    "edit": "Edit restaurant",
+    "sections": {
+      "identity": "Identity",
+      "address": "Address",
+      "contact": "Contact",
+      "schedule": "Schedule",
+      "operations": "Operations",
+      "ownership": "Ownership"
+    },
+    "validation": {
+      "nameRequired": "Enter a restaurant name.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidTimezone": "Enter a valid time zone.",
+      "invalidCurrency": "Enter a three-letter currency code.",
+      "invalidCountry": "Enter a two-letter country code.",
+      "invalidTaxRate": "Enter a tax rate between 0% and 100%."
+    },
+    "hoursEditor": {
+      "open": "Open",
+      "close": "Close",
+      "closed": "Closed",
+      "addDay": "Add day"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "aliasNotice": "Users are managed from Staff."
+  },
+  "audit": {
+    "title": "Audit",
+    "subtitle": "Review changes made across brands, restaurants, and staff.",
+    "filterEntity": "Filter by entity",
+    "filterActor": "Filter by actor",
+    "filterDateRange": "Filter by date range",
+    "allEntities": "All entities",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "entityLabels": {
+      "brand": "Brand",
+      "restaurant": "Restaurant",
+      "staff": "Staff"
+    }
+  },
+  "roles": {
+    "superAdmin": "Super Admin",
+    "restaurantAdmin": "Restaurant Admin",
+    "manager": "Manager",
+    "kitchenManager": "Kitchen Manager",
+    "kitchenStaff": "Kitchen Staff",
+    "waiter": "Waiter",
+    "cashier": "Cashier",
+    "host": "Host",
+    "title": "Roles and permissions",
+    "subtitle": "Read-only access matrix for the admin CRM.",
+    "roleColumn": "Role",
+    "permissionColumn": "Permission",
+    "permissionNames": {
+      "brandsView": "View brands",
+      "brandsCreate": "Create brands",
+      "brandsEdit": "Edit brands",
+      "brandsArchive": "Archive brands",
+      "restaurantsCreate": "Create restaurants",
+      "restaurantsEdit": "Edit restaurants",
+      "restaurantsArchive": "Archive restaurants",
+      "usersViewAll": "View all users",
+      "usersCreate": "Create users",
+      "usersEdit": "Edit users",
+      "usersAssignRoles": "Assign roles",
+      "usersAssignRestaurants": "Assign restaurants",
+      "rolesView": "View roles",
+      "auditView": "View audit",
+      "settingsView": "View settings",
+      "settingsEdit": "Edit settings"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage defaults used across the admin CRM.",
+    "sections": {
+      "defaults": "Defaults",
+      "reservations": "Reservations",
+      "substitutions": "Substitutions",
+      "email": "Email",
+      "flags": "Feature flags"
+    },
+    "validation": {
+      "invalidTimezone": "Enter a valid time zone.",
+      "invalidCurrency": "Enter a three-letter currency code."
+    }
+  },
   "staff": {
     "title": "Staff management",
     "subtitle": "{{count}} member",
@@ -10,24 +194,36 @@
     "inviteSubmit": "Send invite",
     "inviteSuccess": "Invite sent"
   },
-  "roles": {
-    "superAdmin": "Super Admin",
-    "restaurantAdmin": "Restaurant Admin",
-    "manager": "Manager",
-    "kitchenManager": "Kitchen Manager",
-    "kitchenStaff": "Kitchen Staff",
-    "waiter": "Waiter",
-    "cashier": "Cashier",
-    "host": "Host"
-  },
   "auditLog": {
     "title": "Audit log",
-    "empty": "No activity yet"
+    "empty": "No activity yet",
+    "entityLabels": {
+      "brand": "Brand",
+      "restaurant": "Restaurant",
+      "staff": "Staff"
+    },
+    "viewFull": "View full audit log"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "archived": "Archived"
+  },
+  "actions": {
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "archive": "Archive",
+    "reactivate": "Reactivate",
+    "invite": "Invite"
   },
   "tabs": {
+    "dashboard": "Dashboard",
+    "brands": "Brands",
+    "audit": "Audit",
     "members": "Members",
     "roles": "Roles",
-    "audit": "Audit log",
     "settings": "Settings"
   }
 }
