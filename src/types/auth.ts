@@ -18,7 +18,64 @@ export type Role =
   | "Cashier"
   | "Host";
 
-export type Permission = string;
+export type Permission =
+  | "brands:view"
+  | "brands:create"
+  | "brands:edit"
+  | "brands:archive"
+  | "restaurants:create"
+  | "restaurants:edit"
+  | "restaurants:archive"
+  | "users:view_all"
+  | "users:create"
+  | "users:edit"
+  | "users:assign_roles"
+  | "users:assign_restaurants"
+  | "roles:view"
+  | "audit:view"
+  | "settings:view"
+  | "settings:edit";
+
+export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
+  SuperAdmin: [
+    "brands:view",
+    "brands:create",
+    "brands:edit",
+    "brands:archive",
+    "restaurants:create",
+    "restaurants:edit",
+    "restaurants:archive",
+    "users:view_all",
+    "users:create",
+    "users:edit",
+    "users:assign_roles",
+    "users:assign_restaurants",
+    "roles:view",
+    "audit:view",
+    "settings:view",
+    "settings:edit",
+  ],
+  RestaurantAdmin: [
+    "brands:view",
+    "brands:edit",
+    "restaurants:create",
+    "restaurants:edit",
+    "users:view_all",
+    "users:create",
+    "users:edit",
+    "users:assign_roles",
+    "users:assign_restaurants",
+    "roles:view",
+    "audit:view",
+    "settings:view",
+  ],
+  Manager: ["brands:view", "users:view_all", "audit:view"],
+  KitchenManager: [],
+  KitchenStaff: [],
+  Waiter: [],
+  Cashier: [],
+  Host: [],
+};
 
 export interface AuthPredicate {
   isAuthenticated: boolean;

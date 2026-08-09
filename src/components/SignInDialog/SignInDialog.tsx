@@ -13,13 +13,25 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ChefHat, Crown, Wine } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
+import { PasswordInput } from "../ui/password-input";
 import { useLoginMutation } from "../../app/api/identity";
 import { toast } from "../ui/sonner";
+
+const DEMO_PRESETS: {
+  email: string;
+  key: "admin" | "kitchen" | "floorManager";
+  Icon: typeof Crown;
+}[] = [
+  { email: "admin@acme.com", key: "admin", Icon: Crown },
+  { email: "kitchen@acme.com", key: "kitchen", Icon: ChefHat },
+  { email: "manager@acme.com", key: "floorManager", Icon: Wine },
+];
 
 export interface SignInDialogProps {
   open: boolean;
@@ -30,6 +42,12 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { isLoading }] = useLoginMutation();
+  const { t } = useTranslation("auth");
+
+  const handlePreset = (presetEmail: string) => {
+    setEmail(presetEmail);
+    setPassword("password123");
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -70,9 +88,8 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="signin-password">Password</Label>
-            <Input
+            <PasswordInput
               id="signin-password"
-              type="password"
               placeholder="••••••••"
               autoComplete="current-password"
               value={password}
@@ -85,19 +102,23 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
           </Button>
         </form>
 
-        <div className="my-2 flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="text-ink-subtle font-sans text-xs tracking-wider uppercase">or</span>
-          <Separator className="flex-1" />
-        </div>
-
-        <div className="grid gap-2">
-          <Button variant="outline" type="button" disabled>
-            Continue with Google
-          </Button>
-          <Button variant="outline" type="button" disabled>
-            Continue with Microsoft
-          </Button>
+        <div className="border-border-subtle mt-2 border-t pt-4">
+          <p className="text-ink-subtle mb-2.5 text-xs font-medium tracking-wider uppercase">
+            {t("demoPresets.title", "Quick Demo Roles")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => handlePreset(presetEmail)}
+                className="border-border-subtle bg-surface hover:bg-surface-elevated text-ink flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{t(`demoPresets.${key}`)}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <p className="text-ink-subtle mt-3 text-center font-sans text-xs">

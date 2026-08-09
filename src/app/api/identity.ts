@@ -52,6 +52,10 @@ export interface StaffMember {
   roles: readonly import("../../types/auth").Role[];
   restaurantIds: readonly string[];
   active: boolean;
+  brandId?: string;
+  phone?: string;
+  avatarUrl?: string;
+  lastLoginAt?: string;
 }
 
 export interface StaffRoleGrant {

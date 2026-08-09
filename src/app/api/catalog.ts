@@ -27,6 +27,86 @@ export interface CatalogRestaurant {
   active: boolean;
 }
 
+export type CuisineType = "Italian" | "Mexican" | "Japanese" | "American" | "Other";
+
+export interface CatalogBrand {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logoUrl: string | null;
+  contactEmail: string;
+  contactPhone: string | null;
+  cuisineType: CuisineType;
+  websiteUrl: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type RestaurantStatus = "active" | "inactive" | "archived";
+
+export interface OperatingHoursDay {
+  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  open: string | null;
+  close: string | null;
+}
+
+export interface AdminRestaurantAddress {
+  line1: string;
+  line2: string | null;
+  city: string;
+  region: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface AdminRestaurantDetail extends CatalogRestaurant {
+  brandId: string;
+  ownerId: string | null;
+  address: AdminRestaurantAddress;
+  phone: string | null;
+  email: string | null;
+  timezone: string;
+  currency: string;
+  taxRate: number;
+  operatingHours: OperatingHoursDay[];
+  estimatedTurnoverMinutes: number;
+  autoConfirmReservations: boolean;
+  autoConfirmOrders: boolean;
+  allowAutoSubstitute: boolean;
+  status: RestaurantStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminSettings {
+  defaultTimezone: string;
+  defaultCurrency: string;
+  defaultTaxRate: number;
+  reservationReminderMinutes: number;
+  maxReservationPartySize: number;
+  enableAutoSubstitute: boolean;
+  emailFromAddress: string;
+  supportContactUrl: string;
+  featureFlags: Record<string, boolean>;
+}
+
+export type AuditEntityType = "brand" | "restaurant" | "staff";
+
+export interface AdminAuditEntry {
+  id: string;
+  entityType: AuditEntityType;
+  entityId: string;
+  actorId: string;
+  actorName: string;
+  action: string;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  timestamp: string;
+  reason?: string;
+}
+
 export interface Table {
   id: string;
   restaurantId: string;
@@ -85,7 +165,7 @@ export const catalogApi = createApi({
       providesTags: (_r, _e, { restaurantId }) => [{ type: "Menu", id: `MENU-${restaurantId}` }],
     }),
   }),
-  tagTypes: ["Restaurants", "Tables", "Menu"],
+  tagTypes: ["Restaurants", "Tables", "Menu", "Brands", "AdminSettings", "Audit"],
 });
 
 export const { useGetRestaurantsQuery, useGetRestaurantQuery, useGetTablesQuery, useGetMenuQuery } =

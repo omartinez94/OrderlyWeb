@@ -26,7 +26,7 @@ import {
   Sparkles,
   Wine,
 } from "lucide-react";
-import { Button, Input, Label, Badge } from "../components/ui";
+import { Button, Input, Label, Badge, PasswordInput } from "../components/ui";
 import { toast } from "../components/ui/sonner";
 import { ThemeToggle } from "../components/ThemeToggle/ThemeToggle";
 import { LanguageToggle } from "../components/LanguageToggle/LanguageToggle";
@@ -210,9 +210,8 @@ export function LoginPage() {
                     {t("login.forgotPassword")}
                   </a>
                 </div>
-                <Input
+                <PasswordInput
                   id="login-password"
-                  type="password"
                   placeholder={t("login.passwordPlaceholder")}
                   autoComplete="current-password"
                   value={password}
