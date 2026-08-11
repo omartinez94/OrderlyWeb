@@ -212,6 +212,97 @@
       "a3": "La autenticación utiliza tokens de acceso JWT en memoria de corta duración combinados con cookies de actualización seguras de tipo httpOnly. Todas las rutas de las zonas están protegidas por predicados de roles a nivel de diseño.",
       "q4": "¿Puede Orderly escalar para cadenas de restaurantes con múltiples ubicaciones?",
       "a4": "Sí. La arquitectura de microservicios del backend desacopla los dominios de Identidad, Catálogo, Pedidos, Carritos, Descuentos, Cocina y Notificaciones para lograr el máximo rendimiento y escalabilidad horizontal."
+    },
+    "scrollShowcase": {
+      "heading": "El Viaje de un Pedido",
+      "prep": {
+        "label": "Estación de Cocción",
+        "title": "Preparación en Cocina",
+        "description": "En el momento en que los clientes realizan un pedido, el KDS muestra los tickets activos al instante. El personal de cocina registra el tiempo de preparación."
+      },
+      "served": {
+        "label": "Ventanilla de Servicio",
+        "title": "Servido y Completado",
+        "description": "Una vez emplatados y verificados todos los platos, el ticket finaliza. El personal de salón recibe avisos y la cuenta se actualiza en tiempo real."
+      },
+      "ticket": {
+        "header": "TICKET DIGITAL",
+        "order": "PEDIDO #2049",
+        "table": "Mesa 04",
+        "item1": "1x Ojo de Bife (A Punto)",
+        "item2": "1x Papas con Trufa y Parm.",
+        "item3": "2x Cerveza Rubia Artesanal",
+        "statusPrep": "PREPARANDO",
+        "statusServed": "SERVIDO",
+        "timePrep": "04:12",
+        "timeServed": "14:20",
+        "qcStamp": "CONTROL QC"
+      }
+    },
+    "threeTicketShowcase": {
+      "badge": "Flujo de Tickets en 3D",
+      "heading": "Vea el flujo de pedidos en tiempo real",
+      "description": "Cada cambio, división de mesa y pedido envía eventos 3D instantáneos a los servicios de cocina y administración. Nuestra tubería en tiempo real enruta datos en menos de 50 milisegundos.",
+      "timelineTitle": "Ciclo de Vida del Pedido",
+      "timeline": {
+        "step1Title": "Pedido Realizado",
+        "step1Desc": "Enviado vía API Gateway",
+        "step2Title": "Alerta KDS",
+        "step2Desc": "Entrega por SignalR WebSocket",
+        "step3Title": "Preparación",
+        "step3Desc": "Chef cocinando ingredientes",
+        "step4Title": "Completado",
+        "step4Desc": "Control de calidad aprobado y servido",
+        "step1Time": "19:42",
+        "step2Time": "19:42",
+        "step3Time": "19:44",
+        "step4Time": "19:57"
+      },
+      "ticket": {
+        "header": "TICKET DIGITAL",
+        "order": "PEDIDO #2049",
+        "table": "Mesa 4",
+        "item1": "1x Ojo de Bife (A Punto)",
+        "item1Mod": "A punto · Sin cebolla",
+        "item2": "2x Papas Trufadas",
+        "item2Mod": "Extra aceite de trufa · Sal marina",
+        "item3": "1x Smoked Old Fashioned",
+        "item3Mod": "Corteza de naranja ahumada · Cereza",
+        "status": "PREPARANDO",
+        "statusCompleted": "COMPLETADO",
+        "subtotal": "Subtotal: $38.50",
+        "tax": "Impuesto: $6.50",
+        "total": "TOTAL: $45.00",
+        "qcStamp": "CONTROL QC",
+        "thanks": "¡Gracias por visitarnos!",
+        "bistro": "Grand Bistro & Co.",
+        "metadata": "Mesera: Camila · 2 invitados · 19:42",
+        "archivedTag": "ARCHIVADO EN KDS",
+        "kdsArchived": "KDS: ARCHIVADO",
+        "kdsActive": "KDS: ACTIVO"
+      }
+    },
+    "threeAssetShowcase": {
+      "asset1": {
+        "badge": "Telemetría de Sala",
+        "title": "Mapas de Mesas Interactivos",
+        "description": "Monitoree sus salones en tiempo real. Los mapas de mesas 3D pulsan a medida que los clientes se sientan, se limpian las mesas o se realizan pedidos VIP."
+      },
+      "asset2": {
+        "badge": "Sincronización de Dispositivos",
+        "title": "Terminales Holográficas",
+        "description": "Cada pedido vuela por el espacio. Vea los flujos de pedidos digitales materializarse directamente en las tablets de los camareros."
+      },
+      "asset3": {
+        "badge": "División de Cuentas",
+        "title": "Facturación Expandida",
+        "description": "La facturación compleja hecha tangible. Los platos flotan y se separan con física de resortes, trazando conexiones en tiempo real directamente con los asientos."
+      },
+      "asset4": {
+        "badge": "Enrutamiento de Cocina",
+        "title": "Despacho Prismático de Tickets",
+        "description": "Despacho inteligente de pedidos. Un ticket maestro se divide en flujos de preparación de colores, dirigiendo tareas a sus respectivas líneas de cocina."
+      }
     }
   },
   "marketing": {

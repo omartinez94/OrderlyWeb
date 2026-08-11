@@ -2,15 +2,18 @@ import { useTranslation } from "react-i18next";
 import { MarketingHeader } from "../components/Header/MarketingHeader";
 import { SiteFooter } from "../components/Layout/SiteFooter";
 import { ParallaxHero } from "../components/ParallaxHero";
-import { LiveTicketSimulator } from "../components/Home/LiveTicketSimulator";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { ScrollReveal } from "../components/Motion/ScrollReveal";
 import { StatsGrid, type StatItem } from "../components/ui";
-import { ArchitectureSection } from "../components/Home/ArchitectureSection";
-import { ZoneShowcaseSection } from "../components/Home/ZoneShowcaseSection";
-import { AtmosphereSection } from "../components/Home/AtmosphereSection";
-import { CtaJumbotron } from "../components/Home/CtaJumbotron";
-import { FaqSection } from "../components/Home/FaqSection";
+import {
+  ArchitectureSection,
+  ZoneShowcaseSection,
+  AtmosphereSection,
+  CtaJumbotron,
+  FaqSection,
+  LiveTicketSimulator,
+  ThreeTicketShowcase,
+} from "../components/Home";
 
 export function HomePage() {
   const { t } = useTranslation("common");
@@ -45,6 +48,12 @@ export function HomePage() {
         {/* Big Picture Hero Parallax */}
         <ParallaxHero />
 
+        {/* 3D Scroll-Driven Ticket Flow */}
+        <ThreeTicketShowcase />
+
+        {/* 3D Scroll-Deck Asset Showcase
+        <ThreeAssetShowcase />*/}
+
         {/* Stats & Trust Banner */}
         <ScrollReveal direction="up">
           <StatsGrid stats={homeStats} />
@@ -54,6 +63,9 @@ export function HomePage() {
         <ScrollReveal direction="up" delay={100}>
           <LiveTicketSimulator />
         </ScrollReveal>
+
+        {/* 3D Scroll-Driven KDS ↔ Admin Card Flip
+        <ScrollRotateShowcase />*/}
 
         {/* Big Picture Hero Jumbotron with Carousel */}
         <ScrollReveal direction="up">

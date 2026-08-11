@@ -1,0 +1,67 @@
+.three-asset-showcase-container {
+  position: relative;
+  width: 100%;
+  min-height: 250vh; /* Scroll track for 4 assets */
+  background-color: var(--color-surface);
+}
+
+.three-asset-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.three-asset-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  height: 100%;
+  max-width: var(--breakpoint-xl);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .three-asset-layout {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+  }
+}
+
+.three-asset-text-column {
+  position: relative;
+  height: 250px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.three-asset-text-card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.three-asset-canvas-container {
+  width: 100%;
+  height: 50vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .three-asset-canvas-container {
+    height: 75vh;
+  }
+}

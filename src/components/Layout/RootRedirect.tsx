@@ -23,20 +23,17 @@
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { shallowEqual } from "react-redux";
-import { useAppSelector } from "../../app/hooks";
-import { selectRoles } from "../../app/session/sessionSelectors";
+import { useAuthPredicate } from "../RouteGuards/useAuthPredicate";
 import { PATH, QUERY_PARAM } from "../../router/pathNames";
 import { defaultZoneForRoles } from "../../lib/defaultZone";
-import type { Role } from "../../types/auth";
 import { HomePage } from "../../routes/HomePage";
 
 export function RootRedirect(): React.ReactElement | null {
-  const liveRoles = useAppSelector(selectRoles, shallowEqual);
+  const predicate = useAuthPredicate();
   const navigate = useNavigate();
 
-  const roles: readonly Role[] = liveRoles;
-  const isAuthenticated = roles.length > 0;
+  const roles = predicate.roles;
+  const isAuthenticated = predicate.isAuthenticated;
 
   useEffect(() => {
     // Legacy `?showcase=1` URL → preserve by redirecting to /showcase.

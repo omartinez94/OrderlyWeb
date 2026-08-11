@@ -20,7 +20,7 @@ export function PasswordInput({ className, ...props }: React.ComponentProps<"inp
       />
       <button
         type="button"
-        className="absolute right-0 top-0 flex h-full items-center justify-center px-3 text-ink-subtle hover:text-ink focus:outline-none"
+        className="text-ink-subtle hover:text-ink absolute top-0 right-0 flex h-full items-center justify-center px-3 focus:outline-none"
         onClick={() => setShowPassword((prev) => !prev)}
         tabIndex={-1}
       >
@@ -29,9 +29,7 @@ export function PasswordInput({ className, ...props }: React.ComponentProps<"inp
         ) : (
           <Eye className="h-4 w-4" aria-hidden="true" />
         )}
-        <span className="sr-only">
-          {showPassword ? "Hide password" : "Show password"}
-        </span>
+        <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
       </button>
     </div>
   );

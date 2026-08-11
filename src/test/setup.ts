@@ -17,6 +17,22 @@ class ResizeObserverStub {
 (globalThis as unknown as { ResizeObserver: typeof ResizeObserverStub }).ResizeObserver =
   ResizeObserverStub;
 
+// jsdom doesn't implement IntersectionObserver. Embla Carousel and other
+// components depend on it. A stub prevents test environment crashes.
+class IntersectionObserverStub {
+  readonly root: Element | null = null;
+  readonly rootMargin: string = "";
+  readonly thresholds: ReadonlyArray<number> = [];
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+(globalThis as any).IntersectionObserver = IntersectionObserverStub;
+
 // jsdom doesn't implement scrollIntoView. Radix Select uses it to keep
 // the highlighted option in view when the user types or navigates; the
 // method is never visible in a real DOM-less test, so a no-op is fine.

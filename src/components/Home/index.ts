@@ -3,4 +3,7 @@ export * from "./AtmosphereSection";
 export * from "./CtaJumbotron";
 export * from "./FaqSection";
 export * from "./LiveTicketSimulator";
+export * from "./ScrollRotateShowcase";
+export * from "./ThreeTicketShowcase";
+export * from "./ThreeAssetShowcase";
 export * from "./ZoneShowcaseSection";

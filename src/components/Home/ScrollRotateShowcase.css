@@ -1,0 +1,45 @@
+/* ScrollRotateShowcase — 3D card flip driven by scroll progress.
+ *
+ * Only properties that genuinely cannot be expressed in Tailwind live here:
+ * perspective, transform-style, backface-visibility, and the
+ * prefers-reduced-motion fallback that disables 3D entirely.
+ */
+
+.scroll-rotate-perspective {
+  perspective: 1200px;
+}
+
+.scroll-rotate-card {
+  transform-style: preserve-3d;
+  /* Dynamic rotateY is applied via inline style (computed transform) */
+}
+
+.scroll-rotate-face {
+  backface-visibility: hidden;
+}
+
+.scroll-rotate-face--back {
+  transform: rotateX(180deg);
+}
+
+/* ── Reduced motion: stack both faces, no 3D ── */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-rotate-perspective {
+    perspective: none;
+  }
+
+  .scroll-rotate-card {
+    transform-style: flat;
+    transform: none !important;
+  }
+
+  .scroll-rotate-face {
+    backface-visibility: visible;
+    position: relative !important;
+  }
+
+  .scroll-rotate-face--back {
+    transform: none;
+    margin-top: 1.5rem;
+  }
+}

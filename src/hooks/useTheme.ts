@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Theme management for Orderly Web.
@@ -79,12 +79,42 @@ export interface UseThemeResult {
 
 export function useTheme(): UseThemeResult {
   const [mode, setModeState] = useState<ThemeMode>(readStoredMode);
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => resolveMode(mode));
 
-  // Derived during render — no effect, no setState ping-pong.
-  const resolvedTheme = useMemo(() => resolveMode(mode), [mode]);
+  // Sync state with DOM theme attribute (enables cross-component reactivity)
+  useEffect(() => {
+    if (typeof document === "undefined") return;
 
-  // Effect's only job: paint the DOM + persist user choice. The
-  // resolvedTheme value is already computed above.
+    const syncTheme = () => {
+      const currentAttr = document.documentElement.getAttribute(
+        "data-theme",
+      ) as ResolvedTheme | null;
+      if (currentAttr && currentAttr !== resolvedTheme) {
+        setResolvedTheme(currentAttr);
+        const stored = readStoredMode();
+        if (stored !== mode) {
+          setModeState(stored);
+        }
+      }
+    };
+
+    syncTheme();
+
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, [mode, resolvedTheme]);
+
+  // Update resolvedTheme when mode changes
+  useEffect(() => {
+    setResolvedTheme(resolveMode(mode));
+  }, [mode]);
+
+  // Effect's only job: paint the DOM + persist user choice.
   useEffect(() => {
     applyTheme(resolvedTheme);
     writeStoredMode(mode);
@@ -95,7 +125,9 @@ export function useTheme(): UseThemeResult {
     if (mode !== "system" || typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (): void => {
-      applyTheme(mq.matches ? "dark" : "light");
+      const nextResolved = mq.matches ? "dark" : "light";
+      applyTheme(nextResolved);
+      setResolvedTheme(nextResolved);
     };
     mq.addEventListener("change", handler);
     return () => {

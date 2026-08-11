@@ -212,6 +212,97 @@
       "a3": "Authentication uses short-lived in-memory JWT access tokens combined with secure httpOnly refresh cookies. All zone routes are guarded by layout-level role predicates.",
       "q4": "Can Orderly scale to multi-location restaurant chains?",
       "a4": "Yes. The backend microservices architecture decouples Identity, Catalog, Order, Basket, Discount, Kitchen, and Notification domains for maximum throughput and horizontal scalability."
+    },
+    "scrollShowcase": {
+      "heading": "The Journey of an Order",
+      "prep": {
+        "label": "Prep Station",
+        "title": "Kitchen Preparation",
+        "description": "The moment guests place an order, the KDS displays active tickets instantly. Kitchen staff track preparation times and mark ingredients as they cook."
+      },
+      "served": {
+        "label": "Service Window",
+        "title": "Served & Completed",
+        "description": "Once all items are plated and checked, the ticket is finalized. Saloon staff receive push alerts and the check updates in real time."
+      },
+      "ticket": {
+        "header": "DIGITAL TICKET",
+        "order": "ORDER #2049",
+        "table": "Table 04",
+        "item1": "1x Ribeye Steak (Med-Rare)",
+        "item2": "1x Truffle Parm Fries",
+        "item3": "2x Craft Pale Ale",
+        "statusPrep": "PREPARING",
+        "statusServed": "SERVED",
+        "timePrep": "04:12",
+        "timeServed": "14:20",
+        "qcStamp": "PASSED QC"
+      }
+    },
+    "threeTicketShowcase": {
+      "badge": "3D Live Ticket Flow",
+      "heading": "Watch orders flow through the system",
+      "description": "Every swipe, seat split, and order sends instant 3D events to the kitchen and back-office services. Our real-time pipeline routes data in under 50 milliseconds.",
+      "timelineTitle": "Order Lifecycle",
+      "timeline": {
+        "step1Title": "Order Placed",
+        "step1Desc": "Dispatched via API Gateway",
+        "step2Title": "KDS Alert",
+        "step2Desc": "SignalR WebSocket delivery",
+        "step3Title": "Preparation",
+        "step3Desc": "Chef cooking items",
+        "step4Title": "Completed",
+        "step4Desc": "QC passed & order served",
+        "step1Time": "19:42",
+        "step2Time": "19:42",
+        "step3Time": "19:44",
+        "step4Time": "19:57"
+      },
+      "ticket": {
+        "header": "DIGITAL TICKET",
+        "order": "ORDER #2049",
+        "table": "Table 4",
+        "item1": "1x Ribeye Steak (Med-Rare)",
+        "item1Mod": "Med-Rare · No onions",
+        "item2": "2x Crispy Truffle Fries",
+        "item2Mod": "Extra truffle oil · Sea salt",
+        "item3": "1x Smoked Old Fashioned",
+        "item3Mod": "Smoked orange peel · Cherry",
+        "status": "PREPARING",
+        "statusCompleted": "COMPLETED",
+        "subtotal": "Subtotal: $38.50",
+        "tax": "Tax: $6.50",
+        "total": "TOTAL: $45.00",
+        "qcStamp": "PASSED QC",
+        "thanks": "Thanks for dining with us!",
+        "bistro": "Grand Bistro & Co.",
+        "metadata": "Server: Camila · 2 guests · 19:42",
+        "archivedTag": "ARCHIVED IN KDS",
+        "kdsArchived": "KDS: ARCHIVED",
+        "kdsActive": "KDS: ACTIVE"
+      }
+    },
+    "threeAssetShowcase": {
+      "asset1": {
+        "badge": "Floor Telemetry",
+        "title": "Interactive Table Maps",
+        "description": "Watch your dining rooms in real-time. Glowing 3D table maps pulsate as guests are seated, tables cleared, or VIP orders placed."
+      },
+      "asset2": {
+        "badge": "Device Sync",
+        "title": "Holographic Terminals",
+        "description": "Every order flies through space. Watch digital order flows materialize from raw code streams directly onto handheld waiter tablets."
+      },
+      "asset3": {
+        "badge": "Bill Splitting",
+        "title": "Exploded Seat Checkout",
+        "description": "Complex checkout made tangible. Plates float and separate with spring physics, charting real-time connections directly to guest seats."
+      },
+      "asset4": {
+        "badge": "Kitchen Routing",
+        "title": "Prismatic Ticket Splicer",
+        "description": "Smart ticket dispatch. A single master ticket splits into colored preparation streams, routing tasks to their respective kitchen lines."
+      }
     }
   },
   "marketing": {

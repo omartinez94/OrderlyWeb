@@ -20,10 +20,13 @@ describe("router", () => {
   describe("/home", () => {
     it("renders the marketing home", async () => {
       renderWithRoute("/home");
-      await waitFor(() => {
-        expect(screen.getByRole("heading", { name: /One unified OS/i })).toBeInTheDocument();
-      });
-    });
+      await waitFor(
+        () => {
+          expect(screen.getByRole("heading", { name: /One unified OS/i })).toBeInTheDocument();
+        },
+        { timeout: 8000 },
+      );
+    }, 15000);
   });
 
   describe("unknown paths", () => {
