@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../hooks/useTranslate";
 import { MarketingHeader } from "../components/Header/MarketingHeader";
 import { SiteFooter } from "../components/Layout/SiteFooter";
 import { ParallaxHero } from "../components/ParallaxHero";
@@ -16,28 +16,28 @@ import {
 } from "../components/Home";
 
 export function HomePage() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
 
   const homeStats: StatItem[] = [
     {
       value: "< 50ms",
-      label: t("home.stats.latency.label"),
-      detail: t("home.stats.latency.detail"),
+      label: translate("home.stats.latency.label"),
+      detail: translate("home.stats.latency.detail"),
     },
     {
       value: "7 Core",
-      label: t("home.stats.microservices.label"),
-      detail: t("home.stats.microservices.detail"),
+      label: translate("home.stats.microservices.label"),
+      detail: translate("home.stats.microservices.detail"),
     },
     {
       value: "8 Roles",
-      label: t("home.stats.rolePrecision.label"),
-      detail: t("home.stats.rolePrecision.detail"),
+      label: translate("home.stats.rolePrecision.label"),
+      detail: translate("home.stats.rolePrecision.detail"),
     },
     {
       value: "99.99%",
-      label: t("home.stats.hubUptime.label"),
-      detail: t("home.stats.hubUptime.detail"),
+      label: translate("home.stats.hubUptime.label"),
+      detail: translate("home.stats.hubUptime.detail"),
     },
   ];
 
@@ -47,9 +47,6 @@ export function HomePage() {
       <main id="main">
         {/* Big Picture Hero Parallax */}
         <ParallaxHero />
-
-        {/* 3D Scroll-Driven Ticket Flow */}
-        <ThreeTicketShowcase />
 
         {/* 3D Scroll-Deck Asset Showcase
         <ThreeAssetShowcase />*/}
@@ -63,6 +60,9 @@ export function HomePage() {
         <ScrollReveal direction="up" delay={100}>
           <LiveTicketSimulator />
         </ScrollReveal>
+
+        {/* 3D Scroll-Driven Ticket Flow */}
+        <ThreeTicketShowcase />
 
         {/* 3D Scroll-Driven KDS ↔ Admin Card Flip
         <ScrollRotateShowcase />*/}

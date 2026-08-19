@@ -13,7 +13,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../hooks/useTranslate";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -55,7 +55,7 @@ export function LoginPage() {
   const defaultZone = useAppSelector(selectDefaultZone);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t } = useTranslation("auth");
+  const translate = useTranslate("auth");
   const returnTo = safeReturnPath(searchParams.get("returnTo"), PATH.HOME);
 
   useEffect(() => {
@@ -71,8 +71,8 @@ export function LoginPage() {
       await login({ email, password }).unwrap();
     } catch (err) {
       const message =
-        (err as { data?: { message?: string } }).data?.message ?? t("login.toastErrorFallback");
-      toast.error(t("login.toastErrorTitle"), { description: message });
+        (err as { data?: { message?: string } }).data?.message ?? translate("login.toastErrorFallback");
+      toast.error(translate("login.toastErrorTitle"), { description: message });
     }
   };
 
@@ -100,36 +100,36 @@ export function LoginPage() {
           <div className="bg-gradient-primary shadow-primary/20 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg">
             <ChefHat className="h-5 w-5" />
           </div>
-          <span className="login-hero-brand">{t("hero.brand")}</span>
+          <span className="login-hero-brand">{translate("hero.brand")}</span>
         </div>
 
         <div className="login-hero-content">
           <div>
             <div className="login-hero-badge">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>{t("hero.eyebrow")}</span>
+              <span>{translate("hero.eyebrow")}</span>
             </div>
           </div>
 
-          <h1 className="login-hero-title">{t("hero.title")}</h1>
+          <h1 className="login-hero-title">{translate("hero.title")}</h1>
 
-          <p className="login-hero-description">{t("hero.description")}</p>
+          <p className="login-hero-description">{translate("hero.description")}</p>
 
           <div className="login-preview-grid">
             <div className="login-preview-card">
               <div className="login-preview-icon">
                 <Globe className="h-5 w-5" />
               </div>
-              <h3 className="font-display text-sm font-semibold">{t("hero.featureGlobalTitle")}</h3>
-              <p className="mt-1 text-xs leading-relaxed">{t("hero.featureGlobalDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">{translate("hero.featureGlobalTitle")}</h3>
+              <p className="mt-1 text-xs leading-relaxed">{translate("hero.featureGlobalDescription")}</p>
             </div>
 
             <div className="login-preview-card">
               <div className="login-preview-icon">
                 <Server className="h-5 w-5" />
               </div>
-              <h3 className="font-display text-sm font-semibold">{t("hero.featureSlaTitle")}</h3>
-              <p className="mt-1 text-xs leading-relaxed">{t("hero.featureSlaDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">{translate("hero.featureSlaTitle")}</h3>
+              <p className="mt-1 text-xs leading-relaxed">{translate("hero.featureSlaDescription")}</p>
             </div>
           </div>
         </div>
@@ -138,14 +138,14 @@ export function LoginPage() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5 text-xs">
               <ShieldCheck className="h-4 w-4" />
-              <span>{t("hero.badgeSoc")}</span>
+              <span>{translate("hero.badgeSoc")}</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs">
               <Lock className="h-4 w-4" />
-              <span>{t("hero.badgeSsl")}</span>
+              <span>{translate("hero.badgeSsl")}</span>
             </div>
           </div>
-          <span className="font-mono text-xs">{t("hero.version")}</span>
+          <span className="font-mono text-xs">{translate("hero.version")}</span>
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export function LoginPage() {
           <Button asChild variant="ghost" size="sm" className="text-ink-muted hover:text-ink">
             <Link to={PATH.HOME}>
               <ArrowLeft className="h-3.5 w-3.5" />
-              {t("login.backToHome")}
+              {translate("login.backToHome")}
             </Link>
           </Button>
           <div className="flex items-center gap-3">
@@ -173,21 +173,21 @@ export function LoginPage() {
                 variant="outline"
                 className="text-primary border-primary/30 font-mono text-xs tracking-wider uppercase"
               >
-                {t("login.staffPortal")}
+                {translate("login.staffPortal")}
               </Badge>
               <h2 className="font-display text-ink text-2xl font-bold tracking-tight">
-                {t("login.title")}
+                {translate("login.title")}
               </h2>
-              <p className="text-ink-muted text-sm leading-relaxed">{t("login.subtitle")}</p>
+              <p className="text-ink-muted text-sm leading-relaxed">{translate("login.subtitle")}</p>
             </div>
 
             <form className="space-y-4" onSubmit={onSubmit}>
               <div className="space-y-1.5">
-                <Label htmlFor="login-email">{t("login.email")}</Label>
+                <Label htmlFor="login-email">{translate("login.email")}</Label>
                 <Input
                   id="login-email"
                   type="email"
-                  placeholder={t("login.emailPlaceholder")}
+                  placeholder={translate("login.emailPlaceholder")}
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -198,21 +198,21 @@ export function LoginPage() {
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="login-password">{t("login.password")}</Label>
+                  <Label htmlFor="login-password">{translate("login.password")}</Label>
                   <a
                     href="#forgot"
                     onClick={(e) => {
                       e.preventDefault();
-                      toast.info(t("login.forgotToast"));
+                      toast.info(translate("login.forgotToast"));
                     }}
                     className="text-primary text-xs font-medium hover:underline"
                   >
-                    {t("login.forgotPassword")}
+                    {translate("login.forgotPassword")}
                   </a>
                 </div>
                 <PasswordInput
                   id="login-password"
-                  placeholder={t("login.passwordPlaceholder")}
+                  placeholder={translate("login.passwordPlaceholder")}
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -229,7 +229,7 @@ export function LoginPage() {
                   <AlertTriangle className="mt-px h-4 w-4 shrink-0" />
                   <span>
                     {(error as { data?: { message?: string } }).data?.message ??
-                      t("login.errorInvalid")}
+                      translate("login.errorInvalid")}
                   </span>
                 </div>
               )}
@@ -240,14 +240,14 @@ export function LoginPage() {
                 className="shadow-primary/20 h-11 w-full text-base font-semibold shadow-md"
                 disabled={isLoading}
               >
-                {isLoading ? t("login.submitting") : t("login.submit")}
+                {isLoading ? translate("login.submitting") : translate("login.submit")}
               </Button>
             </form>
 
             {/* Quick Demo Preset Fillers */}
             <div className="border-border-subtle mt-6 border-t pt-5">
               <p className="text-ink-subtle mb-2.5 text-xs font-medium tracking-wider uppercase">
-                {t("demoPresets.title")}
+                {translate("demoPresets.title")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
@@ -258,7 +258,7 @@ export function LoginPage() {
                     className="login-preset-pill"
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    <span>{t(`demoPresets.${key}`)}</span>
+                    <span>{translate(`demoPresets.${key}`)}</span>
                   </button>
                 ))}
               </div>
@@ -268,7 +268,7 @@ export function LoginPage() {
 
         {/* Footer info */}
         <div className="text-ink-subtle text-center text-xs">
-          <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
+          <p>{translate("footer.copyright", { year: new Date().getFullYear() })}</p>
         </div>
       </div>
     </div>

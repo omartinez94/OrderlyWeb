@@ -1,13 +1,13 @@
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { useScrollProgress } from "../../hooks";
 import "./ScrollRotateShowcase.css";
 
 interface FaceProps {
-  t: any;
+  translate: any;
 }
 
 /** Front Face: Active/Preparing ticket */
-function TicketPrepFace({ t }: FaceProps) {
+function TicketPrepFace({ translate }: FaceProps) {
   return (
     <div className="flex h-full flex-col justify-between font-sans text-xs">
       <div>
@@ -15,34 +15,34 @@ function TicketPrepFace({ t }: FaceProps) {
         <div className="border-border-strong mb-2 flex items-start justify-between border-b border-dashed pb-2">
           <div className="text-left">
             <span className="text-ink font-mono font-bold">
-              {t("home.scrollShowcase.ticket.order")}
+              {translate("home.scrollShowcase.ticket.order")}
             </span>
             <p className="text-ink-subtle mt-0.5 font-mono text-[9px]">
-              {t("home.scrollShowcase.ticket.header")}
+              {translate("home.scrollShowcase.ticket.header")}
             </p>
           </div>
           <span className="bg-service-aqua/15 text-service-aqua shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px] font-bold">
-            {t("home.scrollShowcase.ticket.statusPrep")}
+            {translate("home.scrollShowcase.ticket.statusPrep")}
           </span>
         </div>
 
         {/* Ticket content */}
         <div className="space-y-1.5">
           <div className="text-ink-subtle text-left font-mono text-[10px]">
-            {t("home.scrollShowcase.ticket.table")}
+            {translate("home.scrollShowcase.ticket.table")}
           </div>
           <ul className="text-ink-muted space-y-1.5 text-left">
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item1")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item1")}</span>
             </li>
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item2")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item2")}</span>
             </li>
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item3")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item3")}</span>
             </li>
           </ul>
         </div>
@@ -52,7 +52,7 @@ function TicketPrepFace({ t }: FaceProps) {
       <div className="border-border-strong text-ink-subtle mt-2 flex items-center justify-between border-t border-dashed pt-2 font-mono text-[10px]">
         <span>KDS: ACTIVE</span>
         <span className="text-accent animate-pulse font-semibold">
-          {t("home.scrollShowcase.ticket.timePrep")}
+          {translate("home.scrollShowcase.ticket.timePrep")}
         </span>
       </div>
     </div>
@@ -60,12 +60,12 @@ function TicketPrepFace({ t }: FaceProps) {
 }
 
 /** Back Face: Served/Completed ticket with stamp overlay */
-function TicketServedFace({ t }: FaceProps) {
+function TicketServedFace({ translate }: FaceProps) {
   return (
     <div className="relative flex h-full flex-col justify-between font-sans text-xs">
       {/* Stamped QC overlay */}
       <div className="border-success text-success bg-surface-overlay absolute top-[45%] left-[50%] z-20 -translate-x-[50%] -translate-y-[50%] -rotate-12 rounded border-2 border-dashed px-3 py-1 font-mono text-[13px] font-black whitespace-nowrap opacity-85 shadow-sm select-none">
-        {t("home.scrollShowcase.ticket.qcStamp")}
+        {translate("home.scrollShowcase.ticket.qcStamp")}
       </div>
 
       <div className="opacity-40">
@@ -73,40 +73,40 @@ function TicketServedFace({ t }: FaceProps) {
         <div className="border-border-strong mb-2 flex items-start justify-between border-b border-dashed pb-2">
           <div className="text-left">
             <span className="text-ink font-mono font-bold">
-              {t("home.scrollShowcase.ticket.order")}
+              {translate("home.scrollShowcase.ticket.order")}
             </span>
             <p className="text-ink-subtle mt-0.5 font-mono text-[9px]">
-              {t("home.scrollShowcase.ticket.header")}
+              {translate("home.scrollShowcase.ticket.header")}
             </p>
           </div>
           <span className="bg-success/15 text-success shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px] font-bold">
-            {t("home.scrollShowcase.ticket.statusServed")}
+            {translate("home.scrollShowcase.ticket.statusServed")}
           </span>
         </div>
 
         {/* Ticket content */}
         <div className="space-y-1.5">
           <div className="text-ink-subtle text-left font-mono text-[10px]">
-            {t("home.scrollShowcase.ticket.table")}
+            {translate("home.scrollShowcase.ticket.table")}
           </div>
           <ul className="text-ink-muted space-y-1.5 text-left">
             <li className="flex items-center gap-2 line-through">
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item1")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item1")}</span>
             </li>
             <li className="flex items-center gap-2 line-through">
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item2")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item2")}</span>
             </li>
             <li className="flex items-center gap-2 line-through">
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{t("home.scrollShowcase.ticket.item3")}</span>
+              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item3")}</span>
             </li>
           </ul>
         </div>
@@ -115,7 +115,7 @@ function TicketServedFace({ t }: FaceProps) {
       {/* Ticket footer */}
       <div className="border-border-strong text-ink-subtle mt-2 flex items-center justify-between border-t border-dashed pt-2 font-mono text-[10px] opacity-50">
         <span>KDS: ARCHIVED</span>
-        <span className="text-success font-bold">{t("home.scrollShowcase.ticket.timeServed")}</span>
+        <span className="text-success font-bold">{translate("home.scrollShowcase.ticket.timeServed")}</span>
       </div>
     </div>
   );
@@ -129,7 +129,7 @@ function TicketServedFace({ t }: FaceProps) {
  * into a completed "Served" ticket, illustrating the Orderly workflow.
  */
 export function ScrollRotateShowcase() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const { ref, progress } = useScrollProgress<HTMLDivElement>();
 
   // Calculations for vertical translation and 3D rotations
@@ -141,7 +141,7 @@ export function ScrollRotateShowcase() {
     <section
       ref={ref}
       className="bg-surface relative min-h-[180vh]"
-      aria-label={t("home.scrollShowcase.heading")}
+      aria-label={translate("home.scrollShowcase.heading")}
     >
       {/* Sticky frame — stays pinned while scrolling the runway */}
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden px-4 md:px-8">
@@ -149,7 +149,7 @@ export function ScrollRotateShowcase() {
           {/* Left Side: Descriptions for active preparation vs served */}
           <div className="flex flex-col justify-center gap-6 text-left">
             <h2 className="font-display text-primary text-3xl font-bold tracking-tight md:text-4xl">
-              {t("home.scrollShowcase.heading")}
+              {translate("home.scrollShowcase.heading")}
             </h2>
 
             <div className="relative flex flex-col gap-6">
@@ -164,13 +164,13 @@ export function ScrollRotateShowcase() {
                 }}
               >
                 <span className="text-accent font-mono text-[10px] font-bold tracking-widest uppercase">
-                  {t("home.scrollShowcase.prep.label")}
+                  {translate("home.scrollShowcase.prep.label")}
                 </span>
                 <h3 className="font-display text-ink mt-1 text-lg font-bold">
-                  {t("home.scrollShowcase.prep.title")}
+                  {translate("home.scrollShowcase.prep.title")}
                 </h3>
                 <p className="text-ink-muted mt-1.5 font-sans text-sm leading-relaxed">
-                  {t("home.scrollShowcase.prep.description")}
+                  {translate("home.scrollShowcase.prep.description")}
                 </p>
               </div>
 
@@ -185,13 +185,13 @@ export function ScrollRotateShowcase() {
                 }}
               >
                 <span className="text-primary font-mono text-[10px] font-bold tracking-widest uppercase">
-                  {t("home.scrollShowcase.served.label")}
+                  {translate("home.scrollShowcase.served.label")}
                 </span>
                 <h3 className="font-display text-ink mt-1 text-lg font-bold">
-                  {t("home.scrollShowcase.served.title")}
+                  {translate("home.scrollShowcase.served.title")}
                 </h3>
                 <p className="text-ink-muted mt-1.5 font-sans text-sm leading-relaxed">
-                  {t("home.scrollShowcase.served.description")}
+                  {translate("home.scrollShowcase.served.description")}
                 </p>
               </div>
             </div>
@@ -205,14 +205,14 @@ export function ScrollRotateShowcase() {
             {/* Top station marker */}
             <div className="border-accent/20 bg-accent/[0.01] absolute top-2 flex h-[180px] w-[220px] flex-col items-center justify-start rounded-xl border border-dashed p-3 select-none">
               <span className="text-accent/60 font-mono text-[9px] font-bold tracking-widest uppercase">
-                {t("home.scrollShowcase.prep.label")}
+                {translate("home.scrollShowcase.prep.label")}
               </span>
             </div>
 
             {/* Bottom station marker */}
             <div className="border-primary/20 bg-primary/[0.01] absolute bottom-2 flex h-[180px] w-[220px] flex-col items-center justify-end rounded-xl border border-dashed p-3 select-none">
               <span className="text-primary/60 font-mono text-[9px] font-bold tracking-widest uppercase">
-                {t("home.scrollShowcase.served.label")}
+                {translate("home.scrollShowcase.served.label")}
               </span>
             </div>
 
@@ -240,7 +240,7 @@ export function ScrollRotateShowcase() {
                     }}
                   />
                   <div className="h-full pt-1.5">
-                    <TicketPrepFace t={t} />
+                    <TicketPrepFace translate={translate} />
                   </div>
                 </div>
 
@@ -255,7 +255,7 @@ export function ScrollRotateShowcase() {
                     }}
                   />
                   <div className="h-full pt-1.5">
-                    <TicketServedFace t={t} />
+                    <TicketServedFace translate={translate} />
                   </div>
                 </div>
               </div>

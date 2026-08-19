@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Badge } from "../ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
@@ -27,14 +27,14 @@ export const FAQ_ITEMS: FaqItem[] = [
 ];
 
 export function FaqSection() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
 
   const translatedFaq = FAQ_ITEMS.map((_, idx) => {
     const qKey = `home.faq.q${idx + 1}` as unknown as "home.faq.q1";
     const aKey = `home.faq.a${idx + 1}` as unknown as "home.faq.a1";
     return {
-      q: t(qKey),
-      a: t(aKey),
+      q: translate(qKey),
+      a: translate(aKey),
     };
   });
 
@@ -46,10 +46,10 @@ export function FaqSection() {
             variant="outline"
             className="text-primary border-border-strong mb-3 text-xs tracking-wider uppercase"
           >
-            {t("home.faq.badge")}
+            {translate("home.faq.badge")}
           </Badge>
           <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl">
-            {t("home.faq.title")}
+            {translate("home.faq.title")}
           </h2>
         </div>
 

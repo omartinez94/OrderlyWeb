@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ScrollReveal } from "../Motion/ScrollReveal";
@@ -73,7 +73,7 @@ export const ZONES: ZoneItem[] = [
 ];
 
 export function ZoneShowcaseSection() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const [activeZone, setActiveZone] = useState<string>("admin");
 
   const translatedZones = ZONES.map((zone) => {
@@ -87,10 +87,10 @@ export function ZoneShowcaseSection() {
 
     return {
       ...zone,
-      name: t(nameKey),
-      badge: t(badgeKey),
-      description: t(descriptionKey),
-      points: [t(p1Key), t(p2Key), t(p3Key)],
+      name: translate(nameKey),
+      badge: translate(badgeKey),
+      description: translate(descriptionKey),
+      points: [translate(p1Key), translate(p2Key), translate(p3Key)],
     };
   });
 
@@ -109,12 +109,12 @@ export function ZoneShowcaseSection() {
               variant="outline"
               className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
             >
-              {t("home.zones.badge")}
+              {translate("home.zones.badge")}
             </Badge>
             <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-              {t("home.zones.title")}
+              {translate("home.zones.title")}
             </h2>
-            <p className="text-ink-muted mt-4 font-sans text-lg">{t("home.zones.description")}</p>
+            <p className="text-ink-muted mt-4 font-sans text-lg">{translate("home.zones.description")}</p>
           </div>
         </ScrollReveal>
 
@@ -177,7 +177,7 @@ export function ZoneShowcaseSection() {
               <div className="pt-2">
                 <SignInBridgeTrigger>
                   <Button className="font-semibold shadow-md transition-all hover:scale-105">
-                    {t("home.zones.access", { name: current.name })}
+                    {translate("home.zones.access", { name: current.name })}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </SignInBridgeTrigger>

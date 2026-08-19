@@ -1,11 +1,11 @@
 import { Link } from "react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Zap } from "lucide-react";
 import { SignInBridgeTrigger } from "../SignInDialog/SignInBridgeTrigger";
 import { PATH } from "../../router/pathNames";
 
 export function SiteFooter() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   return (
     <footer
       aria-label="Site footer"
@@ -21,28 +21,28 @@ export function SiteFooter() {
               <span className="font-display text-primary text-xl font-bold">Orderly</span>
             </div>
             <p className="text-ink-muted font-sans text-xs leading-relaxed">
-              {t("marketing.footer.description")}
+              {translate("marketing.footer.description")}
             </p>
           </div>
 
           <div>
             <p className="font-display text-ink mb-3 text-sm font-bold">
-              {t("marketing.footer.zonesHeading")}
+              {translate("marketing.footer.zonesHeading")}
             </p>
             <ul className="text-ink-muted space-y-2 font-sans text-xs">
               <li>
                 <Link to="/site/admin" className="hover:text-primary transition-colors">
-                  {t("marketing.footer.adminConsole")}
+                  {translate("marketing.footer.adminConsole")}
                 </Link>
               </li>
               <li>
                 <Link to="/site/kitchen" className="hover:text-primary transition-colors">
-                  {t("marketing.footer.kitchenKds")}
+                  {translate("marketing.footer.kitchenKds")}
                 </Link>
               </li>
               <li>
                 <Link to="/site/restaurant" className="hover:text-primary transition-colors">
-                  {t("marketing.footer.restaurantOps")}
+                  {translate("marketing.footer.restaurantOps")}
                 </Link>
               </li>
             </ul>
@@ -50,22 +50,22 @@ export function SiteFooter() {
 
           <div>
             <p className="font-display text-ink mb-3 text-sm font-bold">
-              {t("marketing.footer.systemHeading")}
+              {translate("marketing.footer.systemHeading")}
             </p>
             <ul className="text-ink-muted space-y-2 font-sans text-xs">
               <li>
                 <Link to={PATH.SHOWCASE} className="hover:text-primary transition-colors">
-                  {t("marketing.footer.showcaseLink")}
+                  {translate("marketing.footer.showcaseLink")}
                 </Link>
               </li>
               <li>
                 <a href="#architecture" className="hover:text-primary transition-colors">
-                  {t("marketing.footer.gatewayLink")}
+                  {translate("marketing.footer.gatewayLink")}
                 </a>
               </li>
               <li>
                 <a href="#faq" className="hover:text-primary transition-colors">
-                  {t("marketing.footer.faqLink")}
+                  {translate("marketing.footer.faqLink")}
                 </a>
               </li>
             </ul>
@@ -73,27 +73,27 @@ export function SiteFooter() {
 
           <div>
             <p className="font-display text-ink mb-3 text-sm font-bold">
-              {t("marketing.footer.gatewayStatusHeading")}
+              {translate("marketing.footer.gatewayStatusHeading")}
             </p>
             <div className="border-border-subtle bg-surface flex items-center gap-2 rounded-lg border p-3 text-xs">
               <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-500" />
               <span className="text-ink font-mono font-medium">
-                {t("marketing.footer.gatewayStatus")}
+                {translate("marketing.footer.gatewayStatus")}
               </span>
             </div>
           </div>
         </div>
 
         <div className="border-border-subtle text-ink-subtle flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row">
-          <p>{t("marketing.footer.copyright")}</p>
+          <p>{translate("marketing.footer.copyright")}</p>
           <div className="flex items-center gap-6">
             <SignInBridgeTrigger>
               <button type="button" className="hover:text-ink transition-colors">
-                {t("marketing.footer.staffSignIn")}
+                {translate("marketing.footer.staffSignIn")}
               </button>
             </SignInBridgeTrigger>
             <Link to={PATH.SHOWCASE} className="hover:text-ink transition-colors">
-              {t("marketing.footer.designTokens")}
+              {translate("marketing.footer.designTokens")}
             </Link>
             <span className="font-mono">v0.0.0</span>
           </div>

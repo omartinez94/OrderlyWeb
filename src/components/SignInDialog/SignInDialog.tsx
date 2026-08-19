@@ -13,7 +13,7 @@
  */
 
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { ChefHat, Crown, Wine } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -42,7 +42,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { isLoading }] = useLoginMutation();
-  const { t } = useTranslation("auth");
+  const translate = useTranslate("auth");
 
   const handlePreset = (presetEmail: string) => {
     setEmail(presetEmail);
@@ -104,7 +104,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
 
         <div className="border-border-subtle mt-2 border-t pt-4">
           <p className="text-ink-subtle mb-2.5 text-xs font-medium tracking-wider uppercase">
-            {t("demoPresets.title", "Quick Demo Roles")}
+            {translate("demoPresets.title", "Quick Demo Roles")}
           </p>
           <div className="flex flex-wrap gap-2">
             {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
@@ -115,7 +115,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
                 className="border-border-subtle bg-surface hover:bg-surface-elevated text-ink flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
               >
                 <Icon className="h-3.5 w-3.5" />
-                <span>{t(`demoPresets.${key}`)}</span>
+                <span>{translate(`demoPresets.${key}`)}</span>
               </button>
             ))}
           </div>

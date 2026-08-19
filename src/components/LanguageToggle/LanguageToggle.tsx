@@ -1,5 +1,5 @@
 import "./LanguageToggle.css";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Globe } from "lucide-react";
 import {
   NavigationMenu,
@@ -31,7 +31,7 @@ import type { SupportedLanguage } from "../../lib/i18n";
  */
 export function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
 
   const handleSelect = (next: string): void => {
     if (next === "en" || next === "es") {
@@ -39,8 +39,8 @@ export function LanguageToggle() {
     }
   };
 
-  const triggerLabel = t("languageToggle.label");
-  const announce = t("languageToggle.changedTo", {
+  const triggerLabel = translate("languageToggle.label");
+  const announce = translate("languageToggle.changedTo", {
     lang: language === "es" ? "Español" : "English",
   });
 
@@ -66,7 +66,7 @@ export function LanguageToggle() {
                       onClick={() => handleSelect("en")}
                       className="language-toggle__option"
                     >
-                      {t("languageToggle.en")}
+                      {translate("languageToggle.en")}
                     </button>
                   </NavigationMenuLink>
                 </li>
@@ -78,7 +78,7 @@ export function LanguageToggle() {
                       onClick={() => handleSelect("es")}
                       className="language-toggle__option"
                     >
-                      {t("languageToggle.es")}
+                      {translate("languageToggle.es")}
                     </button>
                   </NavigationMenuLink>
                 </li>

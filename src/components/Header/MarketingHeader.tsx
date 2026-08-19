@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Zap } from "lucide-react";
 import { Button } from "../ui/button";
 import { SignInBridgeTrigger } from "../SignInDialog/SignInBridgeTrigger";
@@ -7,7 +7,7 @@ import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import { LanguageToggle } from "../LanguageToggle/LanguageToggle";
 
 export function MarketingHeader() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   return (
     <header className="border-border-subtle bg-surface/85 sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -25,16 +25,16 @@ export function MarketingHeader() {
           {/* Navigation Links */}
           <nav className="text-ink-muted hidden items-center gap-6 text-sm font-medium md:flex">
             <a href="#capabilities" className="hover:text-primary transition-colors">
-              {t("marketing.header.nav.capabilities")}
+              {translate("marketing.header.nav.capabilities")}
             </a>
             <a href="#architecture" className="hover:text-primary transition-colors">
-              {t("marketing.header.nav.architecture")}
+              {translate("marketing.header.nav.architecture")}
             </a>
             <a href="#zones" className="hover:text-primary transition-colors">
-              {t("marketing.header.nav.zones")}
+              {translate("marketing.header.nav.zones")}
             </a>
             <a href="#faq" className="hover:text-primary transition-colors">
-              {t("marketing.header.nav.faq")}
+              {translate("marketing.header.nav.faq")}
             </a>
           </nav>
         </div>
@@ -49,7 +49,7 @@ export function MarketingHeader() {
               size="sm"
               className="font-semibold shadow-xs transition-transform hover:scale-105"
             >
-              {t("marketing.header.signIn")}
+              {translate("marketing.header.signIn")}
             </Button>
           </SignInBridgeTrigger>
         </div>

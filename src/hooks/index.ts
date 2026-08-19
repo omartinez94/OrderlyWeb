@@ -4,3 +4,4 @@ export * from "./useNavigateWithTransition";
 export * from "./useReducedMotion";
 export * from "./useScrollProgress";
 export * from "./useTheme";
+export * from "./useTranslate";

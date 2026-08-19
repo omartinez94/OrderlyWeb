@@ -1,0 +1,92 @@
+/* ---------------------------------------------------------------------------
+ * ParallaxHero — Cinematic Tracking Keyword Layer
+ *
+ * Giant cinematic effect (COOK → SERVE → MANAGE → …) that sits between
+ * the background image and the foreground chef cutout.
+ * The letters start spread far apart and slowly pull together while fading in.
+ *
+ * The gradient fill (surface-elevated top → pure black bottom) is achieved via
+ * background-clip: text on a CSS gradient.
+ * --------------------------------------------------------------------------- */
+
+.hero-track-keyword {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.hero-track-word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+
+  /* Gradient fill: surface-elevated (sage off-white) top → pure black bottom with 0.8 alpha */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-surface-elevated) 95%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-elevated) 70%, transparent) 35%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  /* Sizing — fills the viewport width with breathing room */
+  font-size: clamp(8rem, 20vw, 24rem);
+
+  /* Base state (hidden) */
+  opacity: 0;
+  letter-spacing: 0.3em;
+  transition: none;
+}
+
+/* ── Tracking In ─────────────────────────────────────────────────────────── */
+.hero-track-word[data-state="entering"] {
+  animation: track-in 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes track-in {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.4em;
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 0.9;
+    letter-spacing: 0.04em;
+    filter: blur(0px);
+  }
+}
+
+/* ── Visible (hold) ──────────────────────────────────────────────────────── */
+.hero-track-word[data-state="visible"] {
+  opacity: 0.9;
+  letter-spacing: 0.04em;
+  filter: blur(0px);
+}
+
+/* ── Tracking Out ────────────────────────────────────────────────────────── */
+.hero-track-word[data-state="exiting"] {
+  animation: track-out 1s ease-in-out forwards;
+}
+
+@keyframes track-out {
+  0% {
+    opacity: 0.9;
+    letter-spacing: 0.04em;
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    letter-spacing: -0.05em;
+    filter: blur(12px);
+  }
+}

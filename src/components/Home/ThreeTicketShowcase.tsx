@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Check } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
 import { useScrollProgress } from "../../hooks/useScrollProgress";
@@ -43,7 +43,7 @@ function loadLogoImage(color: string): Promise<HTMLImageElement> {
 // Helper function to draw the receipt ticket texture on a 2D Canvas
 function drawTicketCanvas(
   canvas: HTMLCanvasElement,
-  t: any,
+  translate: any,
   isDark: boolean,
   status: "preparing" | "completed",
   logoImage: HTMLImageElement | null = null,
@@ -103,17 +103,17 @@ function drawTicketCanvas(
   ctx.fillStyle = mutedTextColor;
   ctx.textAlign = "center";
   ctx.font = "bold 18px Urbanist, sans-serif";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.header"), w / 2, 118);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.header"), w / 2, 118);
 
   // Restaurant Brand Title
   ctx.fillStyle = textColor;
   ctx.font = "bold 30px MuseoModerno, sans-serif";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.bistro"), w / 2, 158);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.bistro"), w / 2, 158);
 
   // Server metadata row
   ctx.fillStyle = mutedTextColor;
   ctx.font = "500 14px Urbanist, monospace";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.metadata"), w / 2, 191);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.metadata"), w / 2, 191);
 
   // 5. Draw Separator Line
   ctx.strokeStyle = borderCol;
@@ -128,11 +128,11 @@ function drawTicketCanvas(
   // 6. Draw Title (Order Number) & Table Info
   ctx.fillStyle = status === "completed" ? successColor : tealColor;
   ctx.font = "bold 32px MuseoModerno, sans-serif";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.order"), w / 2, 248);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.order"), w / 2, 248);
 
   ctx.fillStyle = textColor;
   ctx.font = "600 20px Urbanist, sans-serif";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.table"), w / 2, 285);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.table"), w / 2, 285);
 
   // 7. Draw Separator Line
   ctx.strokeStyle = borderCol;
@@ -148,15 +148,15 @@ function drawTicketCanvas(
   ctx.font = "bold 18px Urbanist, sans-serif";
 
   const items = [
-    t("home.threeTicketShowcase.ticket.item1"),
-    t("home.threeTicketShowcase.ticket.item2"),
-    t("home.threeTicketShowcase.ticket.item3"),
+    translate("home.threeTicketShowcase.ticket.item1"),
+    translate("home.threeTicketShowcase.ticket.item2"),
+    translate("home.threeTicketShowcase.ticket.item3"),
   ];
 
   const mods = [
-    t("home.threeTicketShowcase.ticket.item1Mod"),
-    t("home.threeTicketShowcase.ticket.item2Mod"),
-    t("home.threeTicketShowcase.ticket.item3Mod"),
+    translate("home.threeTicketShowcase.ticket.item1Mod"),
+    translate("home.threeTicketShowcase.ticket.item2Mod"),
+    translate("home.threeTicketShowcase.ticket.item3Mod"),
   ];
 
   let currentY = 343;
@@ -219,8 +219,8 @@ function drawTicketCanvas(
   ctx.textAlign = "right";
   ctx.font = "500 16px Urbanist, sans-serif";
   ctx.fillStyle = mutedTextColor;
-  ctx.fillText(t("home.threeTicketShowcase.ticket.subtotal"), w - 40, currentY + 40);
-  ctx.fillText(t("home.threeTicketShowcase.ticket.tax"), w - 40, currentY + 65);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.subtotal"), w - 40, currentY + 40);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.tax"), w - 40, currentY + 65);
 
   ctx.textAlign = "left";
   ctx.fillStyle = textColor;
@@ -271,8 +271,8 @@ function drawTicketCanvas(
   ctx.textAlign = "center";
   const statusLabel =
     status === "completed"
-      ? t("home.threeTicketShowcase.ticket.statusCompleted")
-      : t("home.threeTicketShowcase.ticket.status");
+      ? translate("home.threeTicketShowcase.ticket.statusCompleted")
+      : translate("home.threeTicketShowcase.ticket.status");
   ctx.fillText(statusLabel, badgeX + 8, badgeY + 5);
 
   // 12. Draw Total Price or Completed Stamp
@@ -286,12 +286,12 @@ function drawTicketCanvas(
     ctx.fillStyle = "rgba(45, 106, 79, 0.65)";
     ctx.font = "bold 20px MuseoModerno, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(t("home.threeTicketShowcase.ticket.qcStamp"), 0, 6);
+    ctx.fillText(translate("home.threeTicketShowcase.ticket.qcStamp"), 0, 6);
     ctx.restore();
   } else {
     ctx.fillStyle = accentColor;
     ctx.font = "bold 28px MuseoModerno, sans-serif";
-    ctx.fillText(t("home.threeTicketShowcase.ticket.total"), w / 2, currentY + 190);
+    ctx.fillText(translate("home.threeTicketShowcase.ticket.total"), w / 2, currentY + 190);
   }
 
   // 13. Simulated Barcode
@@ -310,7 +310,7 @@ function drawTicketCanvas(
   ctx.fillStyle = mutedTextColor;
   ctx.font = "bold 14px Urbanist, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(t("home.threeTicketShowcase.ticket.thanks"), w / 2, h - 35);
+  ctx.fillText(translate("home.threeTicketShowcase.ticket.thanks"), w / 2, h - 35);
 }
 
 interface TicketMeshProps {
@@ -319,7 +319,7 @@ interface TicketMeshProps {
 
 function TicketMesh({ scrollProgress }: TicketMeshProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const tealColor = isDark ? "#4A8B98" : "#1F4254";
@@ -345,44 +345,44 @@ function TicketMesh({ scrollProgress }: TicketMeshProps) {
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 960; // Increased height for realistic metadata
-    drawTicketCanvas(canvas, t, isDark, "preparing", logoImage);
+    drawTicketCanvas(canvas, translate, isDark, "preparing", logoImage);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.minFilter = THREE.LinearFilter;
     return tex;
-  }, [t, isDark, logoImage]);
+  }, [translate, isDark, logoImage]);
 
   // Create back (completed) canvas texture
   const textureCompleted = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 960; // Increased height for realistic metadata
-    drawTicketCanvas(canvas, t, isDark, "completed", logoImage);
+    drawTicketCanvas(canvas, translate, isDark, "completed", logoImage);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.minFilter = THREE.LinearFilter;
     return tex;
-  }, [t, isDark, logoImage]);
+  }, [translate, isDark, logoImage]);
 
   // Update canvas textures on switches
   useEffect(() => {
     if (texturePrep.image) {
-      drawTicketCanvas(texturePrep.image as HTMLCanvasElement, t, isDark, "preparing", logoImage);
+      drawTicketCanvas(texturePrep.image as HTMLCanvasElement, translate, isDark, "preparing", logoImage);
       texturePrep.needsUpdate = true;
     }
     if (textureCompleted.image) {
       drawTicketCanvas(
         textureCompleted.image as HTMLCanvasElement,
-        t,
+        translate,
         isDark,
         "completed",
         logoImage,
       );
       textureCompleted.needsUpdate = true;
     }
-  }, [t, isDark, texturePrep, textureCompleted, logoImage]);
+  }, [translate, isDark, texturePrep, textureCompleted, logoImage]);
 
   // Shared geometry so both faces wave and bend identically (resized to be slightly smaller)
   const geometry = useMemo(() => new THREE.PlaneGeometry(1.4, 2.4, 32, 32), []);
@@ -561,7 +561,7 @@ function TimelineStep({
 }
 
 export function ThreeTicketShowcase() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const { ref, progress } = useScrollProgress();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -621,42 +621,42 @@ export function ThreeTicketShowcase() {
               {/* Column 1: Text */}
               <div className="three-text-content bg-surface/90 border-border-subtle/50 pointer-events-auto max-w-lg rounded-2xl border p-6 backdrop-blur-md md:max-w-none md:border-none md:bg-transparent md:p-0 md:backdrop-blur-none">
                 <span className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
-                  {t("home.threeTicketShowcase.badge")}
+                  {translate("home.threeTicketShowcase.badge")}
                 </span>
                 <h2 className="font-display text-primary mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-                  {t("home.threeTicketShowcase.heading")}
+                  {translate("home.threeTicketShowcase.heading")}
                 </h2>
                 <p className="text-ink-muted mt-4 font-sans text-base leading-relaxed">
-                  {t("home.threeTicketShowcase.description")}
+                  {translate("home.threeTicketShowcase.description")}
                 </p>
 
                 {/* Timeline Section */}
                 <div className="mt-8 flex w-full max-w-sm flex-col">
                   <h3 className="text-primary mb-4 text-xs font-bold tracking-wider uppercase">
-                    {t("home.threeTicketShowcase.timelineTitle")}
+                    {translate("home.threeTicketShowcase.timelineTitle")}
                   </h3>
                   <div className="flex flex-col">
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step1Title")}
-                      description={t("home.threeTicketShowcase.timeline.step1Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step1Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step1Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step1Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step1Time")}
                       status="completed"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step2Title")}
-                      description={t("home.threeTicketShowcase.timeline.step2Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step2Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step2Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step2Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step2Time")}
                       status="completed"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step3Title")}
-                      description={t("home.threeTicketShowcase.timeline.step3Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step3Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step3Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step3Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step3Time")}
                       status="active"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step4Title")}
-                      description={t("home.threeTicketShowcase.timeline.step4Desc")}
+                      title={translate("home.threeTicketShowcase.timeline.step4Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step4Desc")}
                       status="pending"
                       isLast
                     />
@@ -665,18 +665,18 @@ export function ThreeTicketShowcase() {
 
                 <div className="mt-6 flex items-center gap-3 font-mono text-xs">
                   <span className="bg-service-aqua/10 text-service-aqua border-service-aqua/20 rounded-full border px-2.5 py-1">
-                    {t("home.threeTicketShowcase.ticket.status")}
+                    {translate("home.threeTicketShowcase.ticket.status")}
                   </span>
                   <span className="text-ink-subtle">•</span>
                   <span className="text-ink-muted">
-                    {t("home.threeTicketShowcase.ticket.table")}
+                    {translate("home.threeTicketShowcase.ticket.table")}
                   </span>
                 </div>
               </div>
 
               {/* Column 2: Placeholder for WebGL Ticket / Fallback Card */}
               <div className="flex items-center justify-center py-8">
-                {!hasWebGL && <FallbackTicketCard status="preparing" t={t} logoSrc={logoSrc} />}
+                {!hasWebGL && <FallbackTicketCard status="preparing" translate={translate} logoSrc={logoSrc} />}
               </div>
             </div>
           </div>
@@ -693,49 +693,49 @@ export function ThreeTicketShowcase() {
             <div className="three-ticket-layout">
               {/* Column 1: Placeholder for WebGL Ticket / Fallback Card */}
               <div className="flex items-center justify-center py-8">
-                {!hasWebGL && <FallbackTicketCard status="completed" t={t} logoSrc={logoSrc} />}
+                {!hasWebGL && <FallbackTicketCard status="completed" translate={translate} logoSrc={logoSrc} />}
               </div>
 
               {/* Column 2: Text */}
               <div className="three-text-content bg-surface/90 border-border-subtle/50 pointer-events-auto flex max-w-lg flex-col rounded-2xl border p-6 text-left backdrop-blur-md md:max-w-none md:items-end md:border-none md:bg-transparent md:p-0 md:text-right md:backdrop-blur-none">
                 <span className="text-success font-mono text-xs font-bold tracking-widest uppercase">
-                  {t("home.scrollShowcase.served.label")}
+                  {translate("home.scrollShowcase.served.label")}
                 </span>
                 <h2 className="font-display text-primary mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-                  {t("home.scrollShowcase.served.title")}
+                  {translate("home.scrollShowcase.served.title")}
                 </h2>
                 <p className="text-ink-muted mt-4 font-sans text-base leading-relaxed">
-                  {t("home.scrollShowcase.served.description")}
+                  {translate("home.scrollShowcase.served.description")}
                 </p>
 
                 {/* Timeline Section (no header) */}
                 <div className="mt-8 flex w-full max-w-sm flex-col">
                   <div className="flex flex-col">
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step1Title")}
-                      description={t("home.threeTicketShowcase.timeline.step1Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step1Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step1Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step1Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step1Time")}
                       status="completed"
                       align="right"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step2Title")}
-                      description={t("home.threeTicketShowcase.timeline.step2Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step2Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step2Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step2Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step2Time")}
                       status="completed"
                       align="right"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step3Title")}
-                      description={t("home.threeTicketShowcase.timeline.step3Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step3Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step3Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step3Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step3Time")}
                       status="completed"
                       align="right"
                     />
                     <TimelineStep
-                      title={t("home.threeTicketShowcase.timeline.step4Title")}
-                      description={t("home.threeTicketShowcase.timeline.step4Desc")}
-                      time={t("home.threeTicketShowcase.timeline.step4Time")}
+                      title={translate("home.threeTicketShowcase.timeline.step4Title")}
+                      description={translate("home.threeTicketShowcase.timeline.step4Desc")}
+                      time={translate("home.threeTicketShowcase.timeline.step4Time")}
                       status="completed"
                       isLast
                       align="right"
@@ -745,11 +745,11 @@ export function ThreeTicketShowcase() {
 
                 <div className="mt-6 flex items-center gap-3 font-mono text-xs">
                   <span className="bg-success/10 text-success border-success/20 rounded-full border px-2.5 py-1 font-bold">
-                    {t("home.threeTicketShowcase.ticket.statusCompleted")}
+                    {translate("home.threeTicketShowcase.ticket.statusCompleted")}
                   </span>
                   <span className="text-ink-subtle">•</span>
                   <span className="text-ink-muted">
-                    {t("home.threeTicketShowcase.ticket.archivedTag")}
+                    {translate("home.threeTicketShowcase.ticket.archivedTag")}
                   </span>
                 </div>
               </div>
@@ -764,11 +764,11 @@ export function ThreeTicketShowcase() {
 // Fallback HTML static ticket card rendering for environments without WebGL
 function FallbackTicketCard({
   status,
-  t,
+  translate,
   logoSrc,
 }: {
   status: "preparing" | "completed";
-  t: any;
+  translate: any;
   logoSrc: string;
 }) {
   const successColor = "text-success border-success bg-success/10";
@@ -786,7 +786,7 @@ function FallbackTicketCard({
 
       {status === "completed" && (
         <div className="border-success/70 text-success/70 bg-surface-overlay absolute top-[45%] left-[50%] z-20 -translate-x-[50%] -translate-y-[50%] -rotate-12 rounded border-2 border-dashed px-3 py-1 font-mono text-sm font-black shadow-sm select-none">
-          {t("home.threeTicketShowcase.ticket.qcStamp")}
+          {translate("home.threeTicketShowcase.ticket.qcStamp")}
         </div>
       )}
 
@@ -802,10 +802,10 @@ function FallbackTicketCard({
           <div className="border-border-strong mb-2 flex items-start justify-between border-b border-dashed pb-2">
             <div className="text-left">
               <span className="text-ink font-mono text-sm font-bold">
-                {t("home.threeTicketShowcase.ticket.order")}
+                {translate("home.threeTicketShowcase.ticket.order")}
               </span>
               <p className="text-ink-subtle mt-0.5 font-mono text-[10px]">
-                {t("home.threeTicketShowcase.ticket.header")}
+                {translate("home.threeTicketShowcase.ticket.header")}
               </p>
             </div>
             <span
@@ -814,14 +814,14 @@ function FallbackTicketCard({
               }`}
             >
               {status === "completed"
-                ? t("home.threeTicketShowcase.ticket.statusCompleted")
-                : t("home.threeTicketShowcase.ticket.status")}
+                ? translate("home.threeTicketShowcase.ticket.statusCompleted")
+                : translate("home.threeTicketShowcase.ticket.status")}
             </span>
           </div>
 
           <div className="space-y-1.5">
             <div className="text-ink-subtle text-left font-mono text-[11px]">
-              {t("home.threeTicketShowcase.ticket.table")}
+              {translate("home.threeTicketShowcase.ticket.table")}
             </div>
             <ul className="text-ink-muted space-y-1.5 text-left">
               {status === "completed" ? (
@@ -831,7 +831,7 @@ function FallbackTicketCard({
                       ✓
                     </span>
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item1")}
+                      {translate("home.threeTicketShowcase.ticket.item1")}
                     </span>
                   </li>
                   <li className="flex items-center gap-2 line-through">
@@ -839,7 +839,7 @@ function FallbackTicketCard({
                       ✓
                     </span>
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item2")}
+                      {translate("home.threeTicketShowcase.ticket.item2")}
                     </span>
                   </li>
                   <li className="flex items-center gap-2 line-through">
@@ -847,7 +847,7 @@ function FallbackTicketCard({
                       ✓
                     </span>
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item3")}
+                      {translate("home.threeTicketShowcase.ticket.item3")}
                     </span>
                   </li>
                 </>
@@ -856,19 +856,19 @@ function FallbackTicketCard({
                   <li className="flex items-center gap-2">
                     <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item1")}
+                      {translate("home.threeTicketShowcase.ticket.item1")}
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item2")}
+                      {translate("home.threeTicketShowcase.ticket.item2")}
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
                     <span className="truncate text-[11px]">
-                      {t("home.threeTicketShowcase.ticket.item3")}
+                      {translate("home.threeTicketShowcase.ticket.item3")}
                     </span>
                   </li>
                 </>
@@ -880,8 +880,8 @@ function FallbackTicketCard({
         <div className="border-border-strong text-ink-subtle mt-2 flex items-center justify-between border-t border-dashed pt-2 font-mono text-[11px]">
           <span>
             {status === "completed"
-              ? t("home.threeTicketShowcase.ticket.kdsArchived")
-              : t("home.threeTicketShowcase.ticket.kdsActive")}
+              ? translate("home.threeTicketShowcase.ticket.kdsArchived")
+              : translate("home.threeTicketShowcase.ticket.kdsActive")}
           </span>
           <span
             className={`${
@@ -891,8 +891,8 @@ function FallbackTicketCard({
             }`}
           >
             {status === "completed"
-              ? t("home.threeTicketShowcase.ticket.statusCompleted")
-              : t("home.threeTicketShowcase.ticket.total")}
+              ? translate("home.threeTicketShowcase.ticket.statusCompleted")
+              : translate("home.threeTicketShowcase.ticket.total")}
           </span>
         </div>
       </div>

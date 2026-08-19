@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { TicketCard, type TicketData } from "../../features/kitchen/components/TicketCard";
@@ -43,7 +43,7 @@ const NEXT_STATUS: Record<OrderStatus, OrderStatus> = {
 };
 
 export function LiveTicketSimulator() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const [tickets, setTickets] = useState<TicketData[]>(INITIAL_TICKETS);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState<boolean>(true);
   const [activeTicketId, setActiveTicketId] = useState<string>("#ORD-402");
@@ -104,27 +104,27 @@ export function LiveTicketSimulator() {
   const translatedTickets = tickets.map((ticket) => {
     let table = ticket.table;
     if (ticket.table.startsWith("Table ")) {
-      table = t("home.simulator.tickets.table", { num: ticket.table.substring(6) });
+      table = translate("home.simulator.tickets.table", { num: ticket.table.substring(6) });
     } else if (ticket.table.startsWith("Bar ")) {
-      table = t("home.simulator.tickets.bar", { num: ticket.table.substring(4) });
+      table = translate("home.simulator.tickets.bar", { num: ticket.table.substring(4) });
     }
 
     const items = ticket.items.map((item) => {
-      if (item === "Pan-seared Ribeye x2") return t("home.simulator.tickets.ribeye");
-      if (item === "Truffle Fries") return t("home.simulator.tickets.fries");
-      if (item === "Craft IPA x2") return t("home.simulator.tickets.ipa");
-      if (item === "Wild Mushroom Risotto") return t("home.simulator.tickets.risotto");
-      if (item === "Crispy Calamari") return t("home.simulator.tickets.calamari");
-      if (item === "Chardonnay") return t("home.simulator.tickets.chardonnay");
-      if (item === "Smoked Old Fashioned x2") return t("home.simulator.tickets.oldFashioned");
-      if (item === "Charcuterie Board") return t("home.simulator.tickets.charcuterie");
+      if (item === "Pan-seared Ribeye x2") return translate("home.simulator.tickets.ribeye");
+      if (item === "Truffle Fries") return translate("home.simulator.tickets.fries");
+      if (item === "Craft IPA x2") return translate("home.simulator.tickets.ipa");
+      if (item === "Wild Mushroom Risotto") return translate("home.simulator.tickets.risotto");
+      if (item === "Crispy Calamari") return translate("home.simulator.tickets.calamari");
+      if (item === "Chardonnay") return translate("home.simulator.tickets.chardonnay");
+      if (item === "Smoked Old Fashioned x2") return translate("home.simulator.tickets.oldFashioned");
+      if (item === "Charcuterie Board") return translate("home.simulator.tickets.charcuterie");
       return item;
     });
 
     let station = ticket.station;
-    if (ticket.station === "Grill & Sides") station = t("home.simulator.tickets.grillSides");
-    else if (ticket.station === "Hot Line") station = t("home.simulator.tickets.hotLine");
-    else if (ticket.station === "Beverage") station = t("home.simulator.tickets.beverage");
+    if (ticket.station === "Grill & Sides") station = translate("home.simulator.tickets.grillSides");
+    else if (ticket.station === "Hot Line") station = translate("home.simulator.tickets.hotLine");
+    else if (ticket.station === "Beverage") station = translate("home.simulator.tickets.beverage");
 
     return {
       ...ticket,
@@ -146,13 +146,13 @@ export function LiveTicketSimulator() {
             className="border-primary/30 bg-primary/5 text-primary mb-4 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wider uppercase"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            {t("home.simulator.badge")}
+            {translate("home.simulator.badge")}
           </Badge>
           <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-            {t("home.simulator.title")}
+            {translate("home.simulator.title")}
           </h2>
           <p className="text-ink-muted mt-3 font-sans text-base sm:text-lg">
-            {t("home.simulator.description")}
+            {translate("home.simulator.description")}
           </p>
 
           <div className="mt-6 flex items-center justify-center gap-3">
@@ -167,7 +167,7 @@ export function LiveTicketSimulator() {
               ) : (
                 <Play className="h-3.5 w-3.5" />
               )}
-              {isAutoAdvancing ? t("home.simulator.autoAdvancing") : t("home.simulator.resumeAuto")}
+              {isAutoAdvancing ? translate("home.simulator.autoAdvancing") : translate("home.simulator.resumeAuto")}
             </Button>
           </div>
         </div>

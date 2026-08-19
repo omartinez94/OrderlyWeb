@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../hooks/useTranslate";
 import {
   Carousel,
   CarouselContent,
@@ -67,7 +67,7 @@ const HERO_SLIDES: HeroSlide[] = [
 ];
 
 export function HeroCarousel() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -107,10 +107,10 @@ export function HeroCarousel() {
       `home.carousel.slides.${slide.id}.highlight` as unknown as "home.carousel.slides.platform.highlight";
     return {
       ...slide,
-      badge: t(badgeKey),
-      title: t(titleKey),
-      description: t(descKey),
-      highlight: t(highlightKey),
+      badge: translate(badgeKey),
+      title: translate(titleKey),
+      description: translate(descKey),
+      highlight: translate(highlightKey),
     };
   });
 
@@ -170,7 +170,7 @@ export function HeroCarousel() {
                             size="lg"
                             className="h-12 px-8 text-base font-semibold shadow-md transition-all hover:scale-[1.02]"
                           >
-                            {t("home.carousel.signIn")}
+                            {translate("home.carousel.signIn")}
                             <ChevronRight className="ml-2 h-4 w-4" />
                           </Button>
                         </SignInBridgeTrigger>
@@ -181,7 +181,7 @@ export function HeroCarousel() {
                             size="lg"
                             className="border-border-strong hover:bg-surface-elevated h-12 text-base font-medium"
                           >
-                            {t("home.carousel.explore")}
+                            {translate("home.carousel.explore")}
                           </Button>
                         </a>
                       </div>
@@ -204,7 +204,7 @@ export function HeroCarousel() {
                             {slide.badge}
                           </p>
                           <p className="font-sans text-xs text-gray-200 opacity-90">
-                            {t("home.carousel.slideCaption")}
+                            {translate("home.carousel.slideCaption")}
                           </p>
                         </div>
                       </div>

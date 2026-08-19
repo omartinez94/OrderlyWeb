@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Badge } from "../ui/badge";
 
 export function AtmosphereSection() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
 
   return (
     <section className="bg-surface relative overflow-hidden py-28">
@@ -20,13 +20,13 @@ export function AtmosphereSection() {
           variant="outline"
           className="text-primary border-border-strong bg-surface/80 mb-4 text-xs tracking-wider uppercase backdrop-blur-md"
         >
-          {t("home.atmosphere.badge")}
+          {translate("home.atmosphere.badge")}
         </Badge>
         <h2 className="font-display text-ink text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-          {t("home.atmosphere.title")}
+          {translate("home.atmosphere.title")}
         </h2>
         <p className="text-ink-muted mx-auto mt-6 max-w-2xl font-sans text-xl leading-relaxed">
-          {t("home.atmosphere.description")}
+          {translate("home.atmosphere.description")}
         </p>
 
         <div className="mt-8 flex items-center justify-center gap-4">
@@ -36,8 +36,8 @@ export function AtmosphereSection() {
             className="border-primary h-14 w-14 rounded-full border-2 object-cover shadow-lg transition-transform hover:scale-110"
           />
           <div className="text-left">
-            <p className="font-display text-ink text-base font-bold">{t("home.atmosphere.role")}</p>
-            <p className="text-ink-muted font-sans text-xs">{t("home.atmosphere.company")}</p>
+            <p className="font-display text-ink text-base font-bold">{translate("home.atmosphere.role")}</p>
+            <p className="text-ink-muted font-sans text-xs">{translate("home.atmosphere.company")}</p>
           </div>
         </div>
       </div>

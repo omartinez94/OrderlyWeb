@@ -76,7 +76,8 @@
         "realtimeSyncDesc": "All zones active",
         "orderReceived": "Order Received",
         "orderReceivedDesc": "Table 7 · 4 items"
-      }
+      },
+      "morphKeywords": ["COOK", "SERVE", "MANAGE", "PLATE", "ORDER"]
     },
     "simulator": {
       "badge": "Live KDS SignalR Simulator",

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { Badge } from "../ui/badge";
 import { ScrollReveal } from "../Motion/ScrollReveal";
 import { FeatureCard, type FeatureCardItem } from "../ui/feature-card";
@@ -42,7 +42,7 @@ const ARCHITECTURE_FEATURES: FeatureCardItem[] = [
 ];
 
 export function ArchitectureSection() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
 
   const translatedFeatures = ARCHITECTURE_FEATURES.map((feature, idx) => {
     const keys = ["mesh", "pipeline", "security"];
@@ -55,9 +55,9 @@ export function ArchitectureSection() {
 
     return {
       ...feature,
-      title: t(titleKey),
-      description: t(descKey),
-      points: [t(p1Key), t(p2Key), t(p3Key)],
+      title: translate(titleKey),
+      description: translate(descKey),
+      points: [translate(p1Key), translate(p2Key), translate(p3Key)],
     };
   });
 
@@ -70,13 +70,13 @@ export function ArchitectureSection() {
               variant="outline"
               className="text-primary border-border-strong mb-4 text-xs tracking-wider uppercase"
             >
-              {t("home.architecture.badge")}
+              {translate("home.architecture.badge")}
             </Badge>
             <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-              {t("home.architecture.title")}
+              {translate("home.architecture.title")}
             </h2>
             <p className="text-ink-muted mt-4 font-sans text-lg leading-relaxed">
-              {t("home.architecture.description")}
+              {translate("home.architecture.description")}
             </p>
           </div>
         </ScrollReveal>

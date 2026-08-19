@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import { useScrollProgress } from "../../hooks/useScrollProgress";
 import "./ThreeAssetShowcase.css";
 
@@ -405,7 +405,7 @@ function KitchenSplicer({ active, progress }: { active: boolean; progress: numbe
 // 5. Parent Scroll-Deck Component
 // ==========================================
 export function ThreeAssetShowcase() {
-  const { t } = useTranslation("common");
+  const translate = useTranslate("common");
   const { ref, progress } = useScrollProgress();
   const [hasWebGL, setHasWebGL] = useState(true);
 
@@ -433,27 +433,27 @@ export function ThreeAssetShowcase() {
   const assetData = useMemo(
     () => [
       {
-        badge: t("home.threeAssetShowcase.asset1.badge"),
-        title: t("home.threeAssetShowcase.asset1.title"),
-        description: t("home.threeAssetShowcase.asset1.description"),
+        badge: translate("home.threeAssetShowcase.asset1.badge"),
+        title: translate("home.threeAssetShowcase.asset1.title"),
+        description: translate("home.threeAssetShowcase.asset1.description"),
       },
       {
-        badge: t("home.threeAssetShowcase.asset2.badge"),
-        title: t("home.threeAssetShowcase.asset2.title"),
-        description: t("home.threeAssetShowcase.asset2.description"),
+        badge: translate("home.threeAssetShowcase.asset2.badge"),
+        title: translate("home.threeAssetShowcase.asset2.title"),
+        description: translate("home.threeAssetShowcase.asset2.description"),
       },
       {
-        badge: t("home.threeAssetShowcase.asset3.badge"),
-        title: t("home.threeAssetShowcase.asset3.title"),
-        description: t("home.threeAssetShowcase.asset3.description"),
+        badge: translate("home.threeAssetShowcase.asset3.badge"),
+        title: translate("home.threeAssetShowcase.asset3.title"),
+        description: translate("home.threeAssetShowcase.asset3.description"),
       },
       {
-        badge: t("home.threeAssetShowcase.asset4.badge"),
-        title: t("home.threeAssetShowcase.asset4.title"),
-        description: t("home.threeAssetShowcase.asset4.description"),
+        badge: translate("home.threeAssetShowcase.asset4.badge"),
+        title: translate("home.threeAssetShowcase.asset4.title"),
+        description: translate("home.threeAssetShowcase.asset4.description"),
       },
     ],
-    [t],
+    [translate],
   );
 
   return (

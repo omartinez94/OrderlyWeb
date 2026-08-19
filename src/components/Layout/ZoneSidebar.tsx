@@ -20,7 +20,7 @@
  */
 
 import { NavLink } from "react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../hooks/useTranslate";
 import type { Role } from "../../types/auth";
 import { useAuthPredicate } from "../RouteGuards/useAuthPredicate";
 
@@ -41,7 +41,7 @@ export interface SidebarItem {
 
 export function ZoneSidebar({ items }: { items: readonly SidebarItem[] }) {
   const predicate = useAuthPredicate();
-  const { t } = useTranslation();
+  const translate = useTranslate();
   const roleSet = new Set<Role>(predicate.roles);
   const visible = items.filter((item) => !item.roles || item.roles.some((r) => roleSet.has(r)));
 
@@ -50,7 +50,7 @@ export function ZoneSidebar({ items }: { items: readonly SidebarItem[] }) {
       <ul className="m-0 flex flex-col gap-1 p-3 font-sans text-sm">
         {visible.map((item) => {
           const labelText = item.labelKey
-            ? t(item.labelKey, item.label ?? item.labelKey)
+            ? translate(item.labelKey, item.label ?? item.labelKey)
             : (item.label ?? "");
           return (
             <li key={item.to}>

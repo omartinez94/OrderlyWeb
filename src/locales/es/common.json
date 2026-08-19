@@ -76,7 +76,8 @@
         "realtimeSyncDesc": "Todas las zonas activas",
         "orderReceived": "Pedido recibido",
         "orderReceivedDesc": "Mesa 7 · 4 artículos"
-      }
+      },
+      "morphKeywords": ["COCINA", "SIRVE", "GESTIONA", "EMPLATA", "ORDENA"]
     },
     "simulator": {
       "badge": "Simulador SignalR KDS en vivo",
