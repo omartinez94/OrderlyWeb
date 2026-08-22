@@ -74,11 +74,40 @@ function resolveAcceptLanguage(): string {
 }
 
 /**
+ * Whether the request URL points at one of the Identity Service's
+ * auth endpoints. These must NOT trigger the 401 → refresh chain:
+ *
+ *   - `/auth/login`     → a 401 is a *legitimate* "wrong credentials"
+ *                         response. Wasting a refresh round-trip on
+ *                         a bad password is wasteful and could
+ *                         rotate a still-valid refresh cookie.
+ *   - `/auth/refresh`   → already *is* the refresh call. Recursing
+ *                         would either infinite-loop (until the mutex
+ *                         resolves) or rotate a doomed cookie
+ *                         pointlessly.
+ *
+ * The `onQueryStarted` listener in `identity.ts` handles terminal
+ * refresh failure (it dispatches `clearCredentials`), so we don't
+ * need to centralise that here.
+ *
+ * Exported for unit testing — the dynamicBaseQuery integration test
+ * also covers the wiring.
+ */
+export function isAuthEndpoint(args: string | FetchArgs): boolean {
+  const url = typeof args === "string" ? args : (args.url ?? "");
+  return url.includes("/auth/login") || url.includes("/auth/refresh");
+}
+
+/**
  * `dynamicBaseQuery` — wraps `rawBaseQuery` with a single-flight
  * 401 refresh + retry. The first 401 kicks off a refresh; concurrent
  * 401s share the same Promise. On success, the original request is
  * retried once with the new token. On terminal failure, the
  * original error is returned.
+ *
+ * Auth-endpoint requests (login/refresh) bypass the interceptor
+ * entirely — a 401 there means "your credentials are wrong", not
+ * "your token expired".
  */
 export const dynamicBaseQuery: BaseQueryFn<
   string | FetchArgs,
@@ -86,7 +115,7 @@ export const dynamicBaseQuery: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === 401 && !isAuthEndpoint(args)) {
     try {
       const json = await refreshAccessToken();
       api.dispatch(setCredentials(json));

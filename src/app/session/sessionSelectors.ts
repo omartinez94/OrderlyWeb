@@ -35,8 +35,16 @@ export const selectRoles = (state: RootState) => state.session.roles;
 
 export const selectPermissions = (state: RootState) => state.session.permissions;
 
+/**
+ * Derived `isAuthenticated` — both `status === 'authenticated'` AND
+ * a populated `user` are required. `setCredentials` always populates
+ * both, so today this is functionally equivalent to the status-only
+ * check, but the user-non-null guard prevents future reducers that
+ * flip status without populating the user from being silently
+ * "authenticated" with no profile.
+ */
 export const selectIsAuthenticated = (state: RootState): boolean =>
-  state.session.status === "authenticated";
+  state.session.status === "authenticated" && state.session.user !== null;
 
 /**
  * Memoized auth predicate. Reference-stable until `roles` or

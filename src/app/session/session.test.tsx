@@ -2,7 +2,7 @@
  * Phase 3 proof — the auth round-trip.
  *
  * Exercises:
- *   1. `useLoginMutation` hits MSW at `/identity-api/auth/login`.
+ *   1. `useLoginMutation` hits MSW at `/identity-api/api/auth/login`.
  *   2. The mutation's `onQueryStarted` dispatches `setCredentials`.
  *   3. `selectIsAuthenticated` flips true.
  *   4. `selectDefaultZone` resolves for the Manager role the MSW
@@ -20,7 +20,26 @@ import { useEffect } from "react";
 import { store } from "../store";
 import { useLoginMutation } from "../api/identity";
 import { useAppSelector } from "../hooks";
-import { selectIsAuthenticated, selectDefaultZone, selectRoles } from "./sessionSelectors";
+import {
+  selectIsAuthenticated,
+  selectDefaultZone,
+  selectRoles,
+} from "./sessionSelectors";
+import {
+  setCredentials,
+  setStatus,
+  clearCredentials,
+  type CredentialsPayload,
+} from "./sessionSlice";
+import type { Role, Permission } from "../../types/auth";
+
+const CREDENTIALS: CredentialsPayload = {
+  accessToken: "test-access-token",
+  expiresAt: Date.now() + 15 * 60 * 1000,
+  user: { id: "u-001", name: "Test User", email: "test@example.com", initials: "TU" },
+  roles: ["Manager"] as readonly Role[],
+  permissions: [] as readonly Permission[],
+};
 
 function Probe({
   onSession,
@@ -74,5 +93,30 @@ describe("session round-trip", () => {
     expect(utils.getByTestId("roles").textContent).toBe("Manager");
     expect(last?.accessToken).toBe("test-access-token");
     expect(last?.user?.email).toBe("manager@acme.com");
+  });
+
+  it("selectIsAuthenticated === false when status is 'authenticated' but user is null", () => {
+    // Regression: the derivation must require BOTH status and a
+    // populated user. A reducer that flips status without populating
+    // user must NOT make the user "authenticated".
+    const before = store.getState().session;
+    expect(before.status).toBe("authenticated");
+    expect(before.user).not.toBeNull();
+
+    // Simulate the degenerate state directly: status='authenticated'
+    // but user null (this can only happen via direct setStatus — it
+    // exists as a regression scenario for future reducers).
+    store.dispatch(setStatus("authenticated"));
+    // Force user back to null while leaving status — the slice
+    // doesn't allow this via setStatus alone, so reset via
+    // clearCredentials and then manually re-set status.
+    store.dispatch(clearCredentials());
+    store.dispatch(setStatus("authenticated"));
+
+    expect(selectIsAuthenticated(store.getState())).toBe(false);
+
+    // Sanity: re-seeding credentials flips it back to true.
+    store.dispatch(setCredentials(CREDENTIALS));
+    expect(selectIsAuthenticated(store.getState())).toBe(true);
   });
 });
