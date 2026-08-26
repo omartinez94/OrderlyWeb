@@ -34,7 +34,13 @@ export interface LoginRequest {
 export interface AuthResponse {
   accessToken: string;
   expiresAt: number;
-  user: { id: string; name: string; email: string; initials: string };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    initials: string;
+    isActive: boolean;
+  };
   roles: readonly import("../../types/auth").Role[];
   permissions: readonly import("../../types/auth").Permission[];
 }
@@ -86,47 +92,96 @@ export interface StaffAuditEntry {
   reason?: string;
 }
 
+function transformAuthResponse(res: any): AuthResponse {
+  // If the backend already returns the custom shape, use it:
+  if (res.user && res.accessToken) return res as AuthResponse;
+
+  // Otherwise, parse the OpenIddict shape:
+  const token = res.id_token || res.access_token;
+  if (!token) throw new Error("No token returned");
+  
+  let claims: any = {};
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      window.atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    claims = JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Failed to parse JWT claims", e);
+  }
+
+  const roleClaim = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || [];
+  const roles = Array.isArray(roleClaim) ? roleClaim : [roleClaim];
+  
+  const name = claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '';
+  const email = claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
+  
+  return {
+    accessToken: res.access_token,
+    expiresAt: Date.now() + (res.expires_in * 1000),
+    user: {
+      id: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || claims.sub || '',
+      name,
+      email,
+      initials: name.substring(0, 2).toUpperCase(),
+      isActive: true,
+    },
+    roles,
+    permissions: [],
+  };
+}
+
 export const identityApi = createApi({
   reducerPath: "identityApi",
   baseQuery: dynamicBaseQuery,
   endpoints: (build) => ({
     login: build.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
-        url: `${env.apiBaseUrl}/identity-api/auth/login`,
+        url: `${env.apiBaseUrl}/identity-api/connect/token`,
         method: "POST",
-        body,
+        body: new URLSearchParams({
+          grant_type: "password",
+          username: body.email,
+          password: body.password,
+          scope: "openid email profile offline_access",
+        }).toString(),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }),
+      transformResponse: (res: any) => transformAuthResponse(res),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCredentials(data));
-        } catch {
-          // Login failed — leave session state untouched. The
-          // mutation's `error` field surfaces the message to the
-          // form.
+        } catch (err) {
+          console.error("Login onQueryStarted failed:", err);
         }
       },
     }),
     refresh: build.mutation<AuthResponse, void>({
       query: () => ({
-        url: `${env.apiBaseUrl}/identity-api/auth/refresh`,
+        url: `${env.apiBaseUrl}/identity-api/api/auth/refresh`,
         method: "POST",
       }),
+      transformResponse: (res: any) => transformAuthResponse(res),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCredentials(data));
         } catch {
-          // Refresh failed — session is dead. The apiClient's 401
-          // interceptor dispatches clearCredentials on terminal
-          // failure.
           dispatch(clearCredentials());
         }
       },
     }),
     logout: build.mutation<void, void>({
       query: () => ({
-        url: `${env.apiBaseUrl}/identity-api/auth/logout`,
+        url: `${env.apiBaseUrl}/identity-api/api/auth/logout`,
         method: "POST",
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
@@ -135,15 +190,15 @@ export const identityApi = createApi({
       },
     }),
     currentUser: build.query<AuthResponse["user"], void>({
-      query: () => `${env.apiBaseUrl}/identity-api/users/me`,
+      query: () => `${env.apiBaseUrl}/identity-api/api/users/me`,
     }),
     userRestaurants: build.query<RestaurantSummary[], void>({
-      query: () => `${env.apiBaseUrl}/identity-api/users/me/restaurants`,
+      query: () => `${env.apiBaseUrl}/identity-api/api/users/me/restaurants`,
       providesTags: ["Restaurants"],
     }),
     listStaff: build.query<StaffMember[], { restaurantId: string }>({
       query: ({ restaurantId }) =>
-        `${env.apiBaseUrl}/identity-api/staff?restaurantId=${encodeURIComponent(restaurantId)}`,
+        `${env.apiBaseUrl}/identity-api/api/staff?restaurantId=${encodeURIComponent(restaurantId)}`,
       providesTags: (result, _err, { restaurantId }) =>
         result
           ? [
@@ -153,12 +208,12 @@ export const identityApi = createApi({
           : [{ type: "Staff" as const, id: `LIST-${restaurantId}` }],
     }),
     getStaff: build.query<StaffMember, string>({
-      query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}`,
+      query: (id) => `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}`,
       providesTags: (_r, _e, id) => [{ type: "Staff", id }],
     }),
     createStaff: build.mutation<StaffMember, Omit<StaffMember, "id" | "active">>({
       query: (body) => ({
-        url: `${env.apiBaseUrl}/identity-api/staff`,
+        url: `${env.apiBaseUrl}/identity-api/api/staff`,
         method: "POST",
         body,
       }),
@@ -167,7 +222,7 @@ export const identityApi = createApi({
     }),
     updateStaff: build.mutation<StaffMember, Partial<StaffMember> & { id: string }>({
       query: ({ id, ...patch }) => ({
-        url: `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}`,
+        url: `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}`,
         method: "PUT",
         body: patch,
       }),
@@ -175,29 +230,29 @@ export const identityApi = createApi({
     }),
     deactivateStaff: build.mutation<StaffMember, string>({
       query: (id) => ({
-        url: `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/deactivate`,
+        url: `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}/deactivate`,
         method: "POST",
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Staff", id }],
     }),
     staffGrantsFor: build.query<StaffRoleGrant[], string>({
-      query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/grants`,
+      query: (id) => `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}/grants`,
       providesTags: (_r, _e, id) => [{ type: "Staff", id: `GRANTS-${id}` }],
     }),
     reactivateStaff: build.mutation<StaffMember, string>({
       query: (id) => ({
-        url: `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/reactivate`,
+        url: `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}/reactivate`,
         method: "POST",
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Staff", id }],
     }),
     auditLogFor: build.query<StaffAuditEntry[], string>({
-      query: (id) => `${env.apiBaseUrl}/identity-api/staff/${encodeURIComponent(id)}/audit`,
+      query: (id) => `${env.apiBaseUrl}/identity-api/api/staff/${encodeURIComponent(id)}/audit`,
       providesTags: (_r, _e, id) => [{ type: "Staff", id: `AUDIT-${id}` }],
     }),
     resendInvitation: build.mutation<{ ok: true }, string>({
       query: (id) => ({
-        url: `${env.apiBaseUrl}/identity-api/staff/invitations/${encodeURIComponent(id)}/resend`,
+        url: `${env.apiBaseUrl}/identity-api/api/staff/invitations/${encodeURIComponent(id)}/resend`,
         method: "POST",
       }),
     }),

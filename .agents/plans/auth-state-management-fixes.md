@@ -13,8 +13,8 @@
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | A | Selector hardening + 401 exclusion | ✅ Done |
-| B | Centralized `useLogout()` + wiring | ⏸ Pending |
-| C | Session bootstrap | 🔒 Blocked by A |
+| B | Centralized `useLogout()` + wiring | ✅ Done |
+| C | Session bootstrap | ✅ Done |
 | D | Dead-code cleanup | ⏸ Pending |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
@@ -244,14 +244,14 @@ Phase ordering rationale: A is a prerequisite for C (bootstrap needs the 401 exc
 ### Phase B — Centralized `useLogout()` + wiring
 
 **Goal**: Single source of truth for the logout sequence; all surfaces use it.
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-08-22)
 **Deliverables**:
-- [ ] New `src/app/session/useLogout.ts` per §6.3.
-- [ ] New `src/app/session/useLogout.test.tsx` asserting: backend mutation called → `clearCredentials` dispatched → all 5 API caches reset → `setRestaurantId(undefined)` called → navigate to `PATH.LOGIN` with `replace: true`.
-- [ ] `ZoneTopBar.handleLogout` replaced with `const logout = useLogout()`.
-- [ ] `ProfilePage.handleLogout` replaced with `const logout = useLogout()`.
-- [ ] Verify terminal refresh redirect: after `clearCredentials()` in `base.ts`/`apiClient.ts`, `RequireAuth` redirects to `/login`. Add a test if one doesn't exist.
-- [ ] `ZoneTopBar`'s dev/test fallback path (anonymous → `openSignIn`) remains unchanged.
+- [x] New `src/app/session/useLogout.ts` per §6.3.
+- [x] New `src/app/session/useLogout.test.tsx` asserting: backend mutation called → `clearCredentials` dispatched → all 5 API caches reset → `setRestaurantId(undefined)` called → navigate to `PATH.LOGIN` with `replace: true`.
+- [x] `ZoneTopBar.handleLogout` replaced with `const logout = useLogout()`.
+- [x] `ProfilePage.handleLogout` replaced with `const logout = useLogout()`.
+- [x] Verify terminal refresh redirect: after `clearCredentials()` in `base.ts`/`apiClient.ts`, `RequireAuth` redirects to `/login`. (No new test added — the existing routing tests cover this; verified by inspection of the wiring.)
+- [x] `ZoneTopBar`'s dev/test fallback path (anonymous → `openSignIn`) remains unchanged.
 
 **Exit criteria**: Logging out from header or `/profile` purges all RTK Query caches (verify via Redux DevTools), clears `?restaurantId=`, and navigates to `/login`. `pnpm typecheck && pnpm test` green.
 
@@ -260,15 +260,19 @@ Phase ordering rationale: A is a prerequisite for C (bootstrap needs the 401 exc
 ### Phase C — Session bootstrap
 
 **Goal**: Cold start restores the session from the httpOnly refresh cookie.
-**Status**: 🔒 Blocked by Phase A (needs the 401 exclusion so the refresh call doesn't recurse)
+**Status**: ✅ Done (2026-08-22)
 **Deliverables**:
-- [ ] New `src/app/session/SessionBoot.tsx` per §6.5.
-- [ ] Mounted in `StorefrontProvider.tsx` before `{children}`.
-- [ ] Calls `refreshAccessToken()` on mount; dispatches `setCredentials` on success, stays anonymous on failure.
-- [ ] Handles `isActive === false` with terminal cleanup and non-enumerating message.
-- [ ] Branded loading state via `RouteLoadingShell` during the bootstrap call.
-- [ ] Guards against StrictMode double-fire (useRef flag or stable dependency keying).
-- [ ] New `src/app/session/SessionBoot.test.tsx` covering: active user path, deactivated user path, anonymous (no cookie) path, and StrictMode double-mount.
+- [x] New `src/app/session/SessionBoot.tsx` per §6.5.
+- [x] Mounted in `StorefrontProvider.tsx` before `{children}`.
+- [x] Calls `refreshAccessToken()` on mount; dispatches `setCredentials` on success, stays anonymous on failure.
+- [x] Handles `isActive === false` with terminal cleanup and non-enumerating message.
+- [x] Branded loading state via `RouteLoadingShell` during the bootstrap call.
+- [x] Guards against StrictMode double-fire (useRef flag).
+- [x] New `src/app/session/SessionBoot.test.tsx` covering: active user path, deactivated user path, anonymous (no cookie) path, StrictMode double-mount, loading shell rendering, and pre-existing session interaction (6 tests, all green).
+
+**Notes**:
+- Extended `RefreshResponse.user` and `AuthResponse.user` to include `isActive: boolean`. The signal is bootstrap-only — `SessionBoot` strips it before dispatching `setCredentials` (the slice user shape is unchanged).
+- MSW handlers in `src/test/handlers/identity.ts` updated to return `isActive: true`.
 
 **Exit criteria**: With an httpOnly refresh cookie present, hard-refreshing the app shows the authenticated zone without the login flash. Without a cookie, the app settles to anonymous and `RequireAuth` redirects to `/login`. `pnpm typecheck && pnpm test` green.
 
@@ -347,3 +351,18 @@ Phase ordering rationale: A is a prerequisite for C (bootstrap needs the 401 exc
 - `isAuthEndpoint` URL guard added to `dynamicBaseQuery`; login/refresh 401s return untouched.
 - New `src/app/api/base.test.tsx` covering exclusion + retry behaviour (7 tests, all green).
 - 2 pre-existing timeouts in `StaffForm.test.tsx` are unrelated and not fixed here.
+
+### v2.2 (2026-08-22) — Phase B shipped
+- New `src/app/session/useLogout.ts` owns the entire logout sequence: backend call → `clearCredentials` → all 5 RTK Query cache resets → `setRestaurantId(undefined)` → `navigate(PATH.LOGIN, { replace: true })`.
+- `ZoneTopBar` and `ProfilePage` consume the hook. The dev/test fallback path in ZoneTopBar (anonymous → `openSignIn`) is preserved.
+- Behavior change: `ZoneTopBar` logout destination moved from `PATH.HOME` → `PATH.LOGIN`.
+- New `useLogout.test.tsx` (5 tests) covers the side-effect order.
+
+### v2.3 (2026-08-22) — Phase C shipped
+- New `src/app/session/SessionBoot.tsx` rehydrates the session from the httpOnly refresh cookie on cold start.
+- Mounted in `StorefrontProvider` before the router; renders `RouteLoadingShell` until the refresh resolves.
+- Calls `refreshAccessToken()` (Phase A's `isAuthEndpoint` guard is what makes this safe — no recursion).
+- Handles `isActive === false` with `clearCredentials` + a non-enumerating toast; stays anonymous on 401/network errors.
+- StrictMode-safe via `useRef` flag.
+- Extended `RefreshResponse.user` and `AuthResponse.user` with `isActive: boolean`; MSW handlers updated.
+- New `SessionBoot.test.tsx` (6 tests): active / deactivated / anonymous / StrictMode / loading shell / pre-existing session.

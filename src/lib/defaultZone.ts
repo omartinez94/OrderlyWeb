@@ -46,11 +46,10 @@ export const ZONE_ACCESS: Record<"admin" | "kitchen" | "restaurant", readonly Ro
  * state. Inputs are explicit.
  */
 export function defaultZoneForRoles(roles: readonly Role[]): string | null {
-  if (roles.includes("SuperAdmin")) return PATH.ADMIN;
+  if (roles.includes("SuperAdmin") || roles.includes("RestaurantAdmin")) return PATH.ADMIN;
   if (roles.includes("KitchenManager") || roles.includes("KitchenStaff")) return PATH.KITCHEN;
   if (
     roles.includes("Manager") ||
-    roles.includes("RestaurantAdmin") ||
     roles.includes("Waiter") ||
     roles.includes("Cashier") ||
     roles.includes("Host")

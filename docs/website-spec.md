@@ -163,8 +163,8 @@ The frontend hook is `useGrantableRoles()` in `src/features/staff/useGrantableRo
 
 **Login Flow:**
 
-1. User submits email + password to `/api/auth/login` (Identity Service)
-2. Backend returns access token (JWT, 15-min TTL) + sets httpOnly refresh token cookie
+1. User submits email + password to `/connect/token` (Identity Service).
+2. Service responds with `{ access_token, expires_in, id_token }` and sets an `httpOnly` refresh cookie.
 3. Frontend decodes JWT, extracts `roles`, `permissions`, `restaurantId`
 4. User redirected to `/dashboard`
 5. RTK Query attaches access token to all API requests
@@ -344,7 +344,7 @@ The frontend hook is `useGrantableRoles()` in `src/features/staff/useGrantableRo
 #### Identity Service (Port 5007)
 
 ```
-POST   /api/auth/login                    Login
+POST   /connect/token                     Login
 POST   /api/auth/refresh                  Refresh token
 POST   /api/auth/logout                   Logout
 GET    /api/users                         List users (by restaurant)

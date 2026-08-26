@@ -28,9 +28,9 @@ const DEMO_PRESETS: {
   key: "admin" | "kitchen" | "floorManager";
   Icon: typeof Crown;
 }[] = [
-  { email: "admin@acme.com", key: "admin", Icon: Crown },
-  { email: "kitchen@acme.com", key: "kitchen", Icon: ChefHat },
-  { email: "manager@acme.com", key: "floorManager", Icon: Wine },
+  { email: "admin@orderly.com", key: "admin", Icon: Crown },
+  { email: "kitchen@orderly.com", key: "kitchen", Icon: ChefHat },
+  { email: "manager@orderly.com", key: "floorManager", Icon: Wine },
 ];
 
 export interface SignInDialogProps {
@@ -46,7 +46,11 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
 
   const handlePreset = (presetEmail: string) => {
     setEmail(presetEmail);
-    setPassword("password123");
+    // Identity password policy (docs/backend-architecture/architecture.md
+    // §1, line 144): length ≥ 8, digit + non-alphanumeric + upper + lower.
+    // `Admin@123456` is the seeded SuperAdmin credential — satisfies the
+    // policy and matches the docs.
+    setPassword("Admin@123456");
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {

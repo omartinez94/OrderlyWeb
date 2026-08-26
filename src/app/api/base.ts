@@ -95,7 +95,9 @@ function resolveAcceptLanguage(): string {
  */
 export function isAuthEndpoint(args: string | FetchArgs): boolean {
   const url = typeof args === "string" ? args : (args.url ?? "");
-  return url.includes("/auth/login") || url.includes("/auth/refresh");
+  // Both the standard OpenIddict token endpoint and the custom refresh endpoint
+  // must bypass the 401 interceptor.
+  return url.includes("/connect/token") || url.includes("/auth/refresh");
 }
 
 /**

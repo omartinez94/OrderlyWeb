@@ -4,7 +4,7 @@ import type { Role, Permission } from "../types/auth";
 export interface RefreshResponse {
   accessToken: string;
   expiresAt: number;
-  user: { id: string; name: string; email: string; initials: string };
+  user: { id: string; name: string; email: string; initials: string; isActive: boolean };
   roles: readonly Role[];
   permissions: readonly Permission[];
 }
@@ -15,7 +15,7 @@ export async function refreshAccessToken(): Promise<RefreshResponse> {
   if (inFlightRefresh) return inFlightRefresh;
 
   const promise = (async () => {
-    const res = await fetch(`${env.apiBaseUrl}/identity-api/auth/refresh`, {
+    const res = await fetch(`${env.apiBaseUrl}/identity-api/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

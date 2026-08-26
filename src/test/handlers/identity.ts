@@ -12,9 +12,19 @@ import { http, HttpResponse } from "msw";
 const BASE = "http://localhost:6004/identity-api";
 
 export const identityHandlers = [
-  http.post(`${BASE}/auth/login`, async ({ request }) => {
-    const body = (await request.json()) as { email?: string; password?: string };
-    if (!body.email || !body.password) {
+  http.post(`${BASE}/connect/token`, async ({ request }) => {
+    let email, password;
+    if (request.headers.get("Content-Type")?.includes("application/x-www-form-urlencoded")) {
+      const formData = await request.formData();
+      email = formData.get("username") as string;
+      password = formData.get("password") as string;
+    } else {
+      const body = (await request.json().catch(() => ({}))) as any;
+      email = body.email;
+      password = body.password;
+    }
+
+    if (!email || !password) {
       return HttpResponse.json({ message: "Missing credentials" }, { status: 400 });
     }
     return HttpResponse.json({
@@ -25,6 +35,7 @@ export const identityHandlers = [
         name: "Test User",
         email: body.email,
         initials: "TU",
+        isActive: true,
       },
       roles: ["Manager"],
       permissions: [],
@@ -40,6 +51,7 @@ export const identityHandlers = [
         name: "Test User",
         email: "test@example.com",
         initials: "TU",
+        isActive: true,
       },
       roles: ["Manager"],
       permissions: [],

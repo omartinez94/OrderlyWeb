@@ -2,7 +2,7 @@
  * Phase 3 proof — the auth round-trip.
  *
  * Exercises:
- *   1. `useLoginMutation` hits MSW at `/identity-api/api/auth/login`.
+ *   1. `useLoginMutation` hits MSW at `/identity-api/api/connect/token`.
  *   2. The mutation's `onQueryStarted` dispatches `setCredentials`.
  *   3. `selectIsAuthenticated` flips true.
  *   4. `selectDefaultZone` resolves for the Manager role the MSW

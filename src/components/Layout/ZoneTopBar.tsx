@@ -19,7 +19,6 @@ import { useCallback, useMemo, useTransition } from "react";
 import { Header } from "../Header/Header";
 import { openSignIn } from "../SignInDialog";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { clearCredentials } from "../../app/session/sessionSlice";
 import {
   selectAccessibleRestaurants,
   selectNotifications,
@@ -27,7 +26,7 @@ import {
   selectUser,
 } from "../../app/session/headerSelectors";
 import { useRestaurantContext } from "../RestaurantContext/useRestaurantContext";
-import { useLogoutMutation } from "../../app/api/identity";
+import { useLogout } from "../../app/session/useLogout";
 import { useMarkReadMutation, useMarkAllReadMutation } from "../../app/api/notifications";
 import { catalogApi } from "../../app/api/catalog";
 import { ordersApi } from "../../app/api/orders";
@@ -48,9 +47,9 @@ export function ZoneTopBar({ zone }: { zone: Zone }) {
   const { restaurantId, setRestaurantId } = useRestaurantContext();
   const opsCount = useAppSelector((state) => selectOpsCountForZone(state, zone, restaurantId));
 
-  const [logout] = useLogoutMutation();
   const [markRead] = useMarkReadMutation();
   const [markAllRead] = useMarkAllReadMutation();
+  const logout = useLogout();
 
   const currentRestaurant = useMemo(
     () => restaurants.find((r) => r.id === restaurantId),
@@ -93,20 +92,6 @@ export function ZoneTopBar({ zone }: { zone: Zone }) {
     navigate(PATH.PROFILE);
   }, [navigate]);
 
-  const handleLogout = useCallback(async () => {
-    try {
-      await logout().unwrap();
-    } catch {
-      // Logout endpoint failed — fall through to clearing the
-      // session anyway so the user isn't stuck logged in.
-    }
-    dispatch(clearCredentials());
-    // The kitchen SignalR hub stops automatically: SignalRBootGate
-    // re-renders with enabled=false when selectIsAuthenticated
-    // flips, and the effect's cleanup calls hub.stop().
-    navigate(PATH.HOME);
-  }, [dispatch, logout, navigate]);
-
   // If no user is signed in, fall back to the marketing dialog path
   // so the slot buttons stay clickable in dev/test.
   const onProfile = user
@@ -115,7 +100,7 @@ export function ZoneTopBar({ zone }: { zone: Zone }) {
         openSignIn();
       };
   const onLogout = user
-    ? handleLogout
+    ? logout
     : () => {
         toast.info("Sign in to access your profile.", {
           description: "Sessions ship with the auth slice.",

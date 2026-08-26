@@ -10,7 +10,7 @@
  * 2. **Unified 401 refresh** — on a 401 response, a single in-flight
  *    `refreshAccessToken()` Promise is shared by every concurrent
  *    caller (single-flight). The refresh call hits
- *    `${env.apiBaseUrl}/identity-api/auth/refresh`; the refresh
+ *    `${env.apiBaseUrl}/identity-api/api/auth/refresh`; the refresh
  *    token rides on an httpOnly cookie, so the browser sends it
  *    automatically. If the refresh succeeds, the new access token
  *    is stored in Redux and the original request is retried once.

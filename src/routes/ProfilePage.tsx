@@ -23,21 +23,17 @@ import {
   Badge,
 } from "../components/ui";
 import { PATH } from "../router/pathNames";
-import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { useAppSelector } from "../app/hooks";
 import { selectUser, selectRoles, selectPermissions } from "../app/session/sessionSelectors";
 import { selectAccessibleRestaurants } from "../app/session/headerSelectors";
-import { clearCredentials } from "../app/session/sessionSlice";
+import { useLogout } from "../app/session/useLogout";
 
 export function ProfilePage() {
-  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const roles = useAppSelector(selectRoles);
   const permissions = useAppSelector(selectPermissions);
   const restaurants = useAppSelector(selectAccessibleRestaurants);
-
-  const handleLogout = () => {
-    dispatch(clearCredentials());
-  };
+  const handleLogout = useLogout();
 
   if (!user) {
     return null;
@@ -115,7 +111,7 @@ export function ProfilePage() {
           <Button asChild variant="outline" className="border-border-strong">
             <Link to={PATH.HOME}>Back to home</Link>
           </Button>
-          <Button variant="destructive" onClick={handleLogout}>
+          <Button variant="destructive" onClick={() => void handleLogout()}>
             Sign out
           </Button>
         </CardFooter>

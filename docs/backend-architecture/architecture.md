@@ -140,7 +140,7 @@ audit:view
 
 **Lockout & throttling:**
 
-- Lockout 5 failed attempts → 30 min, applied at both `/api/auth/login` and `/connect/token`.
+- Lockout 5 failed attempts → 30 min, applied at `/connect/token`.
 - Password: length ≥ 8, requires digit + non-alphanumeric + upper + lower, unique email.
 - Global fixed-window rate limit: 5 requests / 15 min **per remote IP**.
 
@@ -155,7 +155,7 @@ audit:view
 | Method   | Route                                                                 | Permission               |
 | -------- | --------------------------------------------------------------------- | ------------------------ |
 | POST     | `/api/auth/register`                                                  | public                   |
-| POST     | `/api/auth/login`                                                     | public                   |
+| POST     | `/connect/token`                                                      | public                   |
 | POST     | `/api/auth/logout`                                                    | authenticated            |
 | GET/POST | `/api/users`, `/api/users/{id}`, `…/{id}/roles`, `…/{id}/restaurants` | varies                   |
 | GET/POST | `/api/roles`, `/api/roles/{id}`, `…/{id}/permissions`                 | varies                   |
@@ -652,7 +652,7 @@ record BasketCheckoutEvent : IntegrationEvent
 ### YARP, called from outside the compose network
 
 ```
-https://localhost:6064/identity-api/api/auth/login      # login proxy
+https://localhost:6064/identity-api/connect/token      # login proxy
 http://localhost:6004/catalog-api/api/v1/menu-items     # public catalog proxy
 http://localhost:6004/basket-api/api/v1/baskets/...     # public basket proxy
 http://localhost:6004/ordering-api/api/v1/orders        # public ordering proxy
