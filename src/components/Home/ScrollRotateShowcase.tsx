@@ -34,15 +34,21 @@ function TicketPrepFace({ translate }: FaceProps) {
           <ul className="text-ink-muted space-y-1.5 text-left">
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item1")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item1")}
+              </span>
             </li>
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item2")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item2")}
+              </span>
             </li>
             <li className="flex items-center gap-2">
               <span className="border-border-strong flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border" />
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item3")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item3")}
+              </span>
             </li>
           </ul>
         </div>
@@ -94,19 +100,25 @@ function TicketServedFace({ translate }: FaceProps) {
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item1")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item1")}
+              </span>
             </li>
             <li className="flex items-center gap-2 line-through">
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item2")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item2")}
+              </span>
             </li>
             <li className="flex items-center gap-2 line-through">
               <span className="border-success bg-success/10 text-success flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold">
                 ✓
               </span>
-              <span className="truncate text-[10px]">{translate("home.scrollShowcase.ticket.item3")}</span>
+              <span className="truncate text-[10px]">
+                {translate("home.scrollShowcase.ticket.item3")}
+              </span>
             </li>
           </ul>
         </div>
@@ -115,7 +127,9 @@ function TicketServedFace({ translate }: FaceProps) {
       {/* Ticket footer */}
       <div className="border-border-strong text-ink-subtle mt-2 flex items-center justify-between border-t border-dashed pt-2 font-mono text-[10px] opacity-50">
         <span>KDS: ARCHIVED</span>
-        <span className="text-success font-bold">{translate("home.scrollShowcase.ticket.timeServed")}</span>
+        <span className="text-success font-bold">
+          {translate("home.scrollShowcase.ticket.timeServed")}
+        </span>
       </div>
     </div>
   );

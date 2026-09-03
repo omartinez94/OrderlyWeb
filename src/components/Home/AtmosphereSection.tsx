@@ -36,8 +36,12 @@ export function AtmosphereSection() {
             className="border-primary h-14 w-14 rounded-full border-2 object-cover shadow-lg transition-transform hover:scale-110"
           />
           <div className="text-left">
-            <p className="font-display text-ink text-base font-bold">{translate("home.atmosphere.role")}</p>
-            <p className="text-ink-muted font-sans text-xs">{translate("home.atmosphere.company")}</p>
+            <p className="font-display text-ink text-base font-bold">
+              {translate("home.atmosphere.role")}
+            </p>
+            <p className="text-ink-muted font-sans text-xs">
+              {translate("home.atmosphere.company")}
+            </p>
           </div>
         </div>
       </div>

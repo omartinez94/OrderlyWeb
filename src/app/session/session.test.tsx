@@ -20,11 +20,7 @@ import { useEffect } from "react";
 import { store } from "../store";
 import { useLoginMutation } from "../api/identity";
 import { useAppSelector } from "../hooks";
-import {
-  selectIsAuthenticated,
-  selectDefaultZone,
-  selectRoles,
-} from "./sessionSelectors";
+import { selectIsAuthenticated, selectDefaultZone, selectRoles } from "./sessionSelectors";
 import {
   setCredentials,
   setStatus,

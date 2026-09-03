@@ -32,10 +32,11 @@ You are the implementer for the **Orderly Admin Panel** (`OrderlyWeb/`). You tur
 7. **Multi-restaurant context** — pull `restaurantId` from Redux (`features/restaurant/restaurantSlice.ts`); inject into RTK Query as query param where the backend needs it.
 8. **Run before commit:**
    ```bash
+   pnpm format:check
    pnpm typecheck
    pnpm lint
-   pnpm test
    ```
+   The pre-commit hook (`lefthook`) auto-formats and lints staged files; if it auto-fixed a file, re-review the diff before committing. Run `pnpm test` if your change needs new/updated tests.
 9. **Hand off to `tester`** with a one-paragraph summary: what was built, the routes/pages affected, the RTK Query endpoints added or changed.
 
 ## Stop when

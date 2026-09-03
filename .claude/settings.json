@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/format-on-write.mjs",
+            "timeout": 10,
+            "statusMessage": "Formatting with oxfmt"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Format-on-write hook: runs oxfmt --write on every file mutation by an agent."
+}

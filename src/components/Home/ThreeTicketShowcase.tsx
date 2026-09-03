@@ -369,7 +369,13 @@ function TicketMesh({ scrollProgress }: TicketMeshProps) {
   // Update canvas textures on switches
   useEffect(() => {
     if (texturePrep.image) {
-      drawTicketCanvas(texturePrep.image as HTMLCanvasElement, translate, isDark, "preparing", logoImage);
+      drawTicketCanvas(
+        texturePrep.image as HTMLCanvasElement,
+        translate,
+        isDark,
+        "preparing",
+        logoImage,
+      );
       texturePrep.needsUpdate = true;
     }
     if (textureCompleted.image) {
@@ -676,7 +682,9 @@ export function ThreeTicketShowcase() {
 
               {/* Column 2: Placeholder for WebGL Ticket / Fallback Card */}
               <div className="flex items-center justify-center py-8">
-                {!hasWebGL && <FallbackTicketCard status="preparing" translate={translate} logoSrc={logoSrc} />}
+                {!hasWebGL && (
+                  <FallbackTicketCard status="preparing" translate={translate} logoSrc={logoSrc} />
+                )}
               </div>
             </div>
           </div>
@@ -693,7 +701,9 @@ export function ThreeTicketShowcase() {
             <div className="three-ticket-layout">
               {/* Column 1: Placeholder for WebGL Ticket / Fallback Card */}
               <div className="flex items-center justify-center py-8">
-                {!hasWebGL && <FallbackTicketCard status="completed" translate={translate} logoSrc={logoSrc} />}
+                {!hasWebGL && (
+                  <FallbackTicketCard status="completed" translate={translate} logoSrc={logoSrc} />
+                )}
               </div>
 
               {/* Column 2: Text */}

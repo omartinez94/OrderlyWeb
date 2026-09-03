@@ -1,0 +1,21 @@
+# lefthook.yml
+# Git hooks for Orderly Admin Panel.
+# Runs oxfmt + oxlint on staged files (pre-commit) and Conventional Commits lint (commit-msg).
+# Plan: .agents/plans/shared-conventions/formatting-and-shared-conventions.md §6.3
+
+pre-commit:
+  parallel: true
+  commands:
+    format-staged:
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs,json,css,html,md}"
+      run: pnpm exec oxfmt --write {staged_files}
+      stage_fixed: true
+    lint-staged:
+      glob: "*.{ts,tsx}"
+      run: pnpm exec oxlint {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}

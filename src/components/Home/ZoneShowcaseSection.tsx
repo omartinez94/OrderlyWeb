@@ -114,7 +114,9 @@ export function ZoneShowcaseSection() {
             <h2 className="font-display text-ink text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
               {translate("home.zones.title")}
             </h2>
-            <p className="text-ink-muted mt-4 font-sans text-lg">{translate("home.zones.description")}</p>
+            <p className="text-ink-muted mt-4 font-sans text-lg">
+              {translate("home.zones.description")}
+            </p>
           </div>
         </ScrollReveal>
 

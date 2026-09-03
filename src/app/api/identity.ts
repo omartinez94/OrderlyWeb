@@ -99,33 +99,37 @@ function transformAuthResponse(res: any): AuthResponse {
   // Otherwise, parse the OpenIddict shape:
   const token = res.id_token || res.access_token;
   if (!token) throw new Error("No token returned");
-  
+
   let claims: any = {};
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
-      window.atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+      window
+        .atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(""),
     );
     claims = JSON.parse(jsonPayload);
   } catch (e) {
     console.error("Failed to parse JWT claims", e);
   }
 
-  const roleClaim = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || [];
+  const roleClaim = claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [];
   const roles = Array.isArray(roleClaim) ? roleClaim : [roleClaim];
-  
-  const name = claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '';
-  const email = claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
-  
+
+  const name = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "";
+  const email = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || "";
+
   return {
     accessToken: res.access_token,
-    expiresAt: Date.now() + (res.expires_in * 1000),
+    expiresAt: Date.now() + res.expires_in * 1000,
     user: {
-      id: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || claims.sub || '',
+      id:
+        claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ||
+        claims.sub ||
+        "",
       name,
       email,
       initials: name.substring(0, 2).toUpperCase(),

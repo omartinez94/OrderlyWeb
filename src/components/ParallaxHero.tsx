@@ -226,7 +226,8 @@ export function ParallaxHero() {
           </span>
           <span className="hidden sm:inline">•</span>
           <span className="hidden items-center gap-1 sm:flex">
-            <Flame className="text-accent h-3.5 w-3.5" /> {translate("home.hero.microservicesCount")}
+            <Flame className="text-accent h-3.5 w-3.5" />{" "}
+            {translate("home.hero.microservicesCount")}
           </span>
           <span className="hidden sm:inline">•</span>
           <span>{translate("home.hero.gatewayOnline")}</span>

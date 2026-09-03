@@ -116,13 +116,15 @@ export function LiveTicketSimulator() {
       if (item === "Wild Mushroom Risotto") return translate("home.simulator.tickets.risotto");
       if (item === "Crispy Calamari") return translate("home.simulator.tickets.calamari");
       if (item === "Chardonnay") return translate("home.simulator.tickets.chardonnay");
-      if (item === "Smoked Old Fashioned x2") return translate("home.simulator.tickets.oldFashioned");
+      if (item === "Smoked Old Fashioned x2")
+        return translate("home.simulator.tickets.oldFashioned");
       if (item === "Charcuterie Board") return translate("home.simulator.tickets.charcuterie");
       return item;
     });
 
     let station = ticket.station;
-    if (ticket.station === "Grill & Sides") station = translate("home.simulator.tickets.grillSides");
+    if (ticket.station === "Grill & Sides")
+      station = translate("home.simulator.tickets.grillSides");
     else if (ticket.station === "Hot Line") station = translate("home.simulator.tickets.hotLine");
     else if (ticket.station === "Beverage") station = translate("home.simulator.tickets.beverage");
 
@@ -167,7 +169,9 @@ export function LiveTicketSimulator() {
               ) : (
                 <Play className="h-3.5 w-3.5" />
               )}
-              {isAutoAdvancing ? translate("home.simulator.autoAdvancing") : translate("home.simulator.resumeAuto")}
+              {isAutoAdvancing
+                ? translate("home.simulator.autoAdvancing")
+                : translate("home.simulator.resumeAuto")}
             </Button>
           </div>
         </div>

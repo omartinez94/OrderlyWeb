@@ -16,6 +16,7 @@ Orderly Admin Panel — staff-facing web app for restaurant operators (admin, ki
 - Format: `pnpm format` # oxfmt --write
 - Format check: `pnpm format:check` # oxfmt --check (CI + pre-commit)
 - Typecheck: `pnpm typecheck` # `tsc --noEmit`
+- Install git hooks: `pnpm lefthook:install` # once per clone; registers the pre-commit format/lint hook and the commit-msg Conventional Commits lint
 
 ## Project layout
 
@@ -53,7 +54,21 @@ src/                           # App source (to be scaffolded)
 - **Date & Time Formatting** — Always use `date-fns` via the central utility file [`src/utils/date.ts`](file:///C:/Users/omar_/Source/Repos/kalaa/orderly/OrderlyWeb/src/utils/date.ts) (`formatRelativeTime`, `formatDate`). **Do not** hand-roll custom date/time difference calculations or bring in third-party date packages like `moment` or `dayjs`.
 - Format (oxfmt — see `.oxfmtrc.json`): 2-space indent, **double quotes**, 100-char width, trailing commas, LF line endings, built-in Tailwind class sorting. Editor defaults (`.editorconfig`, `.vscode/settings.json`) match. The agent-side format hook lives in `.claude/settings.json`.
 - Lint (oxlint — see `.oxlintrc.json`): `react`, `typescript`, `oxc` plugins. (`@typescript-eslint`, `react-hooks`, `jsx-a11y` equivalents are tracked in the Shared Conventions plan §6.5; oxfmt class-sort replaces the ESLint style rule.)
-- Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (Phase 2) and CI (`pnpm format:check`) catch anything that slips past.
+- Run `pnpm format` and `pnpm lint` before committing. The pre-commit hook (`lefthook`) and CI (`pnpm format:check`) catch anything that slips past.
+
+## Shared conventions
+
+Every developer and every agent working on this repo must respect the rules below.
+The exact commands and config live in `.oxfmtrc.json`, `.oxlintrc.json`, `lefthook.yml`,
+`commitlint.config.ts`, and `.claude/settings.json`; this section is the _contract_,
+the configs are the _implementation_.
+
+- **Formatting**: `oxfmt` with 2-space indent, **double quotes**, 100-char width, trailing commas, LF line endings. Run `pnpm format` to apply, `pnpm format:check` to verify.
+- **Editor defaults**: `.editorconfig` enforces the rule even outside VS Code. `.vscode/settings.json` enables `editor.formatOnSave` and sets the oxc formatter as the default for `*.ts`/`*.tsx`/`*.json`/`*.css`/`*.html`/`*.md`.
+- **Git hooks**: `lefthook` runs `oxfmt` + `oxlint` on staged files (`pnpm lefthook:install` once per clone to register the hook). `commitlint` enforces Conventional Commits on every commit message.
+- **Agent-side**: every agent file mutation is formatted by the Claude Code `PostToolUse` hook in `.claude/settings.json` (script at `.claude/hooks/format-on-write.mjs`).
+- **CI gate**: PRs that are not formatted, linted, type-checked, and tested fail the `ci` workflow (`.github/workflows/ci.yml`).
+- **Commits**: Conventional Commits — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, plus the extensions in `commitlint.config.ts`. Subject ≤72 chars; body free-form.
 - When creating a new base component it is mandatory to use the skill called Shadcn (/shadcn-ui)
 - **Icons**:
   - All icons **must** come from `lucide-react` — the project's icon library, declared in `package.json`. Import named exports (e.g. `import { ChevronRight } from "lucide-react"`) and size/color them via `className` (e.g. `className="h-4 w-4 text-ink"`).

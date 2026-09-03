@@ -25,9 +25,8 @@ import type { Role, Permission } from "../../types/auth";
 // We use `vi.mock` at the module level so the mock takes effect
 // before SessionBoot imports the real function.
 vi.mock("../../lib/authRefresh", async () => {
-  const actual = await vi.importActual<typeof import("../../lib/authRefresh")>(
-    "../../lib/authRefresh",
-  );
+  const actual =
+    await vi.importActual<typeof import("../../lib/authRefresh")>("../../lib/authRefresh");
   return {
     ...actual,
     refreshAccessToken: vi.fn(),

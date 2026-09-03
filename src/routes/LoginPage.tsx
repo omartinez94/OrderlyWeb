@@ -71,7 +71,8 @@ export function LoginPage() {
       await login({ email, password }).unwrap();
     } catch (err) {
       const message =
-        (err as { data?: { message?: string } }).data?.message ?? translate("login.toastErrorFallback");
+        (err as { data?: { message?: string } }).data?.message ??
+        translate("login.toastErrorFallback");
       toast.error(translate("login.toastErrorTitle"), { description: message });
     }
   };
@@ -125,16 +126,24 @@ export function LoginPage() {
               <div className="login-preview-icon">
                 <Globe className="h-5 w-5" />
               </div>
-              <h3 className="font-display text-sm font-semibold">{translate("hero.featureGlobalTitle")}</h3>
-              <p className="mt-1 text-xs leading-relaxed">{translate("hero.featureGlobalDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">
+                {translate("hero.featureGlobalTitle")}
+              </h3>
+              <p className="mt-1 text-xs leading-relaxed">
+                {translate("hero.featureGlobalDescription")}
+              </p>
             </div>
 
             <div className="login-preview-card">
               <div className="login-preview-icon">
                 <Server className="h-5 w-5" />
               </div>
-              <h3 className="font-display text-sm font-semibold">{translate("hero.featureSlaTitle")}</h3>
-              <p className="mt-1 text-xs leading-relaxed">{translate("hero.featureSlaDescription")}</p>
+              <h3 className="font-display text-sm font-semibold">
+                {translate("hero.featureSlaTitle")}
+              </h3>
+              <p className="mt-1 text-xs leading-relaxed">
+                {translate("hero.featureSlaDescription")}
+              </p>
             </div>
           </div>
         </div>
@@ -183,7 +192,9 @@ export function LoginPage() {
               <h2 className="font-display text-ink text-2xl font-bold tracking-tight">
                 {translate("login.title")}
               </h2>
-              <p className="text-ink-muted text-sm leading-relaxed">{translate("login.subtitle")}</p>
+              <p className="text-ink-muted text-sm leading-relaxed">
+                {translate("login.subtitle")}
+              </p>
             </div>
 
             <form className="space-y-4" onSubmit={onSubmit}>

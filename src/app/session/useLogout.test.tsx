@@ -85,8 +85,16 @@ beforeEach(() => {
 });
 
 function cacheSize(reducerPath: string): { queries: number; mutations: number } {
-  const slice = (store.getState() as unknown as Record<string, { queries: Record<string, unknown>; mutations: Record<string, unknown> }>)[reducerPath];
-  return { queries: Object.keys(slice.queries ?? {}).length, mutations: Object.keys(slice.mutations ?? {}).length };
+  const slice = (
+    store.getState() as unknown as Record<
+      string,
+      { queries: Record<string, unknown>; mutations: Record<string, unknown> }
+    >
+  )[reducerPath];
+  return {
+    queries: Object.keys(slice.queries ?? {}).length,
+    mutations: Object.keys(slice.mutations ?? {}).length,
+  };
 }
 
 describe("useLogout", () => {

@@ -33,7 +33,7 @@ export const identityHandlers = [
       user: {
         id: "u-001",
         name: "Test User",
-        email: body.email,
+        email,
         initials: "TU",
         isActive: true,
       },

@@ -125,7 +125,13 @@ describe("dynamicBaseQuery — 401 interceptor exclusion", () => {
         return HttpResponse.json({
           accessToken: "refreshed-token",
           expiresAt: Date.now() + 60_000,
-          user: { id: "u-001", name: "Test", email: "test@example.com", initials: "T", isActive: true },
+          user: {
+            id: "u-001",
+            name: "Test",
+            email: "test@example.com",
+            initials: "T",
+            isActive: true,
+          },
           roles: ["Manager"],
           permissions: [],
         });
