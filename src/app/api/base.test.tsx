@@ -120,7 +120,7 @@ describe("dynamicBaseQuery — 401 interceptor exclusion", () => {
   it("triggers refresh + retry for a 401 from a non-auth endpoint", async () => {
     let refreshCalls = 0;
     server.use(
-      http.post("*/identity-api/auth/refresh", () => {
+      http.post("*/identity-api/api/auth/refresh", () => {
         refreshCalls++;
         return HttpResponse.json({
           accessToken: "refreshed-token",

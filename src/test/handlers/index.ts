@@ -7,10 +7,14 @@ import { identityHandlers } from "./identity";
 import { catalogHandlers } from "./catalog";
 import { orderHandlers } from "./orders";
 import { notificationHandlers } from "./notifications";
+import { kitchenHandlers } from "./kitchen";
+import { basketHandlers } from "./basket";
 
 export const handlers = [
   ...identityHandlers,
   ...catalogHandlers,
   ...orderHandlers,
   ...notificationHandlers,
+  ...kitchenHandlers,
+  ...basketHandlers,
 ];

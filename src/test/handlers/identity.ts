@@ -10,6 +10,7 @@
 import { http, HttpResponse } from "msw";
 
 const BASE = "http://localhost:6004/identity-api";
+const BASE_API = "http://localhost:6004/identity-api/api";
 
 export const identityHandlers = [
   http.post(`${BASE}/connect/token`, async ({ request }) => {
@@ -57,9 +58,25 @@ export const identityHandlers = [
       permissions: [],
     }),
   ),
+  http.post(`${BASE_API}/auth/refresh`, () =>
+    HttpResponse.json({
+      accessToken: "test-access-token-refreshed",
+      expiresAt: Date.now() + 15 * 60 * 1000,
+      user: {
+        id: "u-001",
+        name: "Test User",
+        email: "test@example.com",
+        initials: "TU",
+        isActive: true,
+      },
+      roles: ["Manager"],
+      permissions: [],
+    }),
+  ),
 
   http.post(`${BASE}/v1/auth/logout`, () => new HttpResponse(null, { status: 204 })),
   http.post(`${BASE}/auth/logout`, () => new HttpResponse(null, { status: 204 })),
+  http.post(`${BASE_API}/auth/logout`, () => new HttpResponse(null, { status: 204 })),
 
   http.get(`${BASE}/users/me`, () =>
     HttpResponse.json({
@@ -107,6 +124,22 @@ export const identityHandlers = [
       active: true,
     });
   }),
+  http.post(`${BASE_API}/staff`, async ({ request }) => {
+    const body = (await request.json()) as Partial<{
+      name: string;
+      email: string;
+      roles: string[];
+      restaurantIds: string[];
+    }>;
+    return HttpResponse.json({
+      id: "staff-new",
+      name: body.name ?? "",
+      email: body.email ?? "",
+      roles: body.roles ?? [],
+      restaurantIds: body.restaurantIds ?? [],
+      active: true,
+    });
+  }),
 
   http.get(`${BASE}/staff`, () =>
     HttpResponse.json([
@@ -128,8 +161,38 @@ export const identityHandlers = [
       },
     ]),
   ),
+  http.get(`${BASE_API}/staff`, () =>
+    HttpResponse.json([
+      {
+        id: "s-001",
+        name: "Maya Okafor",
+        email: "maya@acme.co",
+        roles: ["Manager"],
+        restaurantIds: ["r-001"],
+        active: true,
+      },
+      {
+        id: "s-002",
+        name: "Diego Castro",
+        email: "diego@acme.co",
+        roles: ["Waiter"],
+        restaurantIds: ["r-001"],
+        active: true,
+      },
+    ]),
+  ),
 
   http.get(`${BASE}/staff/:id`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: true,
+    }),
+  ),
+  http.get(`${BASE_API}/staff/:id`, ({ params }) =>
     HttpResponse.json({
       id: params.id,
       name: "Maya Okafor",
@@ -175,16 +238,104 @@ export const identityHandlers = [
       active: true,
     }),
   ),
+  http.post(`${BASE_API}/staff/:id/reactivate`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: true,
+    }),
+  ),
+
+  http.post(`${BASE}/staff/:id/deactivate`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: false,
+    }),
+  ),
+  http.post(`${BASE_API}/staff/:id/deactivate`, ({ params }) =>
+    HttpResponse.json({
+      id: params.id,
+      name: "Maya Okafor",
+      email: "maya@acme.co",
+      roles: ["Manager"],
+      restaurantIds: ["r-001"],
+      active: false,
+    }),
+  ),
 
   // Phase 5: resend-invitation. Always succeeds (the demo
   // doesn't simulate a 410 path here; that flow is exercised by
   // the StaffExpired type guard in `conflict.ts`).
   http.post(`${BASE}/staff/invitations/:id/resend`, () => HttpResponse.json({ ok: true })),
+  http.post(`${BASE_API}/staff/invitations/:id/resend`, () => HttpResponse.json({ ok: true })),
 
   // Phase 4: audit log. The demo staff member has 5 entries —
   // covering create, role grant, restaurant assignment,
   // deactivate, reactivate.
   http.get(`${BASE}/staff/:id/audit`, ({ params }) => {
+    const id = String(params.id);
+    const now = Date.now();
+    return HttpResponse.json([
+      {
+        id: "audit-5",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "reactivate",
+        before: { active: false },
+        after: { active: true },
+        timestamp: new Date(now - 60_000).toISOString(),
+      },
+      {
+        id: "audit-4",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "deactivate",
+        before: { active: true },
+        after: { active: false },
+        timestamp: new Date(now - 2 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-3",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "restaurant-assign",
+        before: { restaurantIds: ["r-001"] },
+        after: { restaurantIds: ["r-001", "r-002"] },
+        timestamp: new Date(now - 24 * 60 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-2",
+        staffId: id,
+        actorId: "u-admin",
+        actorName: "Maya Okafor",
+        action: "role-grant",
+        before: { roles: [] },
+        after: { roles: ["Manager"] },
+        timestamp: new Date(now - 2 * 24 * 60 * 60_000).toISOString(),
+      },
+      {
+        id: "audit-1",
+        staffId: id,
+        actorId: "u-system",
+        actorName: "System",
+        action: "create",
+        before: null,
+        after: { name: "Maya Okafor", roles: ["Manager"] },
+        timestamp: new Date(now - 7 * 24 * 60 * 60_000).toISOString(),
+      },
+    ]);
+  }),
+  http.get(`${BASE_API}/staff/:id/audit`, ({ params }) => {
     const id = String(params.id);
     const now = Date.now();
     return HttpResponse.json([
