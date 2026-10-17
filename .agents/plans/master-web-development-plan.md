@@ -11,11 +11,11 @@
 
 | Phase | Name | Target Deliverable / Domain | Status |
 |:---:|---|---|:---:|
-| **0** | API Gateway & RTK Query Alignment | Cross-cutting / Data Layer (`ordering-api`, `kitchen-api`, `basket-api`, `catalog-api`) | ⏸ Pending |
-| **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | 🔒 Blocked |
-| **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | 🔒 Blocked |
-| **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | 🔒 Blocked |
-| **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | 🔒 Blocked |
+| **0** | API Gateway & RTK Query Alignment | Cross-cutting / Data Layer (`ordering-api`, `kitchen-api`, `basket-api`, `catalog-api`) | ✅ Done |
+| **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | ⏸ Pending |
+| **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | ⏸ Pending |
+| **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | ⏸ Pending |
+| **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | ⏸ Pending |
 | **5** | Operational Analytics, Feedback & Production Hardening | `/site/restaurant/analytics`, `/feedback`, Playwright E2E, a11y & Lighthouse | 🔒 Blocked |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked

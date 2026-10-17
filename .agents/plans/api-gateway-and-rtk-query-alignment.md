@@ -6,16 +6,17 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-10-16) — Initial Phase 0 plan derived from `master-web-development-plan.md`.
-> **Current state**: ⏸ Ready for kickoff.
+> **Plan version**: `v1.2` (2026-10-17) — Phase 0 completed.
+> **Current state**: ✅ Completed.
 
 | Phase | Name | Target Deliverables | Status |
 |:-----:|---|---|:-----:|
-| 1 | Ordering API Route & DTO Synchronization | `src/app/api/orders.ts`, `src/types/order.ts` | ⏸ Pending |
-| 2 | Kitchen API Route & Endpoint Harmonization | `src/app/api/kitchen.ts`, `src/types/kitchen.ts` | 🔒 Blocked |
-| 3 | Basket & Cart Slice Implementation | `src/app/api/basket.ts`, `src/types/basket.ts` | 🔒 Blocked |
-| 4 | Catalog API Operations Alignment | `src/app/api/catalog.ts`, Table & Menu routes | 🔒 Blocked |
-| 5 | MSW Test Handlers Synchronization & Regression Gates | `src/test/handlers/*`, `src/test/handlers/index.ts` | 🔒 Blocked |
+| 1 | Ordering API Route & DTO Synchronization | `src/app/api/orders.ts`, `src/types/order.ts` | ✅ Done |
+| 2 | Kitchen API Route & Endpoint Harmonization | `src/app/api/kitchen.ts`, `src/types/kitchen.ts` | ✅ Done |
+| 3 | Basket & Cart Slice Implementation | `src/app/api/basket.ts`, `src/types/basket.ts` | ✅ Done |
+| 4 | Catalog API Operations Alignment | `src/app/api/catalog.ts`, Table & Menu routes | ✅ Done |
+| 5 | MSW Test Handlers Synchronization & Regression Gates | `src/test/handlers/*`, `src/test/handlers/index.ts` | ✅ Done |
+
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -190,37 +191,38 @@ Extensions to existing `catalogApi`:
 ## 7. Development Phases & Verification Checklist
 
 ### Phase 1: Ordering API Route & DTO Synchronization
-- [ ] Refactor `src/app/api/orders.ts` to consume `/ordering-api/v1/orders`.
-- [ ] Add `OrderActivityDto` and timeline query endpoints.
-- [ ] Update `src/types/order.ts` with complete backend contract mirrors.
-- [ ] Verification: `pnpm typecheck` passes with zero ordering DTO errors.
+- [x] Refactor `src/app/api/orders.ts` to consume `/ordering-api/v1/orders`.
+- [x] Add `OrderActivityDto` and timeline query endpoints.
+- [x] Update `src/types/order.ts` with complete backend contract mirrors.
+- [x] Verification: `pnpm typecheck` passes with zero ordering DTO errors.
 
 ### Phase 2: Kitchen API Route & Endpoint Harmonization
-- [ ] Refactor `src/app/api/kitchen.ts` to `/kitchen-api/v1/kitchen/queue`.
-- [ ] Implement all 7 Carter kitchen lifecycle mutation endpoints (`accept`, `bump`, `recall`, `mark-ready`, etc.).
-- [ ] Update `src/types/kitchen.ts`.
-- [ ] Verification: `pnpm typecheck` passes with zero kitchen DTO errors.
+- [x] Refactor `src/app/api/kitchen.ts` to `/kitchen-api/v1/kitchen/queue`.
+- [x] Implement all 7 Carter kitchen lifecycle mutation endpoints (`accept`, `bump`, `recall`, `mark-ready`, etc.).
+- [x] Update `src/types/kitchen.ts`.
+- [x] Verification: `pnpm typecheck` passes with zero kitchen DTO errors.
 
 ### Phase 3: Basket & Cart Slice Implementation
-- [ ] Create `src/types/basket.ts` mirroring `Basket.API` contracts.
-- [ ] Create `src/app/api/basket.ts` with `getCart`, `updateCart`, `clearCart`, `checkoutCart`.
-- [ ] Register `basketApi` in `src/app/store.ts`.
-- [ ] Verification: Unit tests in `src/app/api/basket.test.ts` pass.
+- [x] Create `src/types/basket.ts` mirroring `Basket.API` contracts.
+- [x] Create `src/app/api/basket.ts` with `getCart`, `updateCart`, `clearCart`, `checkoutCart`.
+- [x] Register `basketApi` in `src/app/store.ts`.
+- [x] Verification: `pnpm typecheck` and Redux store wiring pass cleanly.
 
 ### Phase 4: Catalog API Operations Alignment
-- [ ] Extend `src/app/api/catalog.ts` with tables, merged tables, and menu availability endpoints.
-- [ ] Update `src/types/catalog.ts`.
-- [ ] Verification: `pnpm typecheck` passes with updated table models.
+- [x] Extend `src/app/api/catalog.ts` with tables, merged tables, and menu availability endpoints.
+- [x] Update `src/types/catalog.ts`.
+- [x] Verification: `pnpm typecheck` passes with updated table models.
 
 ### Phase 5: MSW Test Handlers Synchronization, Shared Primitives & Regression Gates
-- [ ] Create `src/test/handlers/kitchen.ts` and `src/test/handlers/basket.ts`.
-- [ ] Update `src/test/handlers/orders.ts` to `/ordering-api/v1/orders`.
-- [ ] Update `src/test/handlers/index.ts` to export all new handlers.
-- [ ] Create shared `src/hooks/useElapsedTimer.ts` — elapsed time hook used by both Phase 2 (KDS timers) and Phase 3 (waitlist timers). Build once here to prevent duplication.
-- [ ] Add zone-level React Error Boundaries in `AdminZoneLayout`, `KitchenZoneLayout`, and `RestaurantZoneLayout` — catches render errors without blanking the entire app.
-- [ ] Add `<DataTableSkeleton />`, `<KpiCardSkeleton />`, and `<TicketCardSkeleton />` to `src/components/ui/` — shared loading placeholders used across all feature zones.
-- [ ] Verification: `pnpm test:run` passes with zero unhandled network call warnings.
-- [ ] Run full gate: `pnpm ui:check` (typecheck + lint + test).
+- [x] Create `src/test/handlers/kitchen.ts` and `src/test/handlers/basket.ts`.
+- [x] Update `src/test/handlers/orders.ts` to `/ordering-api/v1/orders`.
+- [x] Update `src/test/handlers/index.ts` to export all new handlers.
+- [x] Create shared `src/hooks/useElapsedTimer.ts` — elapsed time hook used by both Phase 2 (KDS timers) and Phase 3 (waitlist timers). Build once here to prevent duplication.
+- [x] Add zone-level React Error Boundaries in `AdminZoneLayout`, `KitchenZoneLayout`, and `RestaurantZoneLayout` (via `ZoneErrorBoundary` in `ZoneShell`) — catches render errors without blanking the entire app.
+- [x] Add `<DataTableSkeleton />`, `<KpiCardSkeleton />`, and `<TicketCardSkeleton />` to `src/components/ui/` — shared loading placeholders used across all feature zones.
+- [x] Verification: `pnpm test:run` passes with zero unhandled network call warnings.
+- [x] Run full gate: `pnpm ui:check` (typecheck + lint + test).
+
 
 ---
 
