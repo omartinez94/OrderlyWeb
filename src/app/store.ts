@@ -20,6 +20,7 @@ import { catalogApi } from "./api/catalog";
 import { ordersApi } from "./api/orders";
 import { kitchenApi } from "./api/kitchen";
 import { notificationsApi } from "./api/notifications";
+import { basketApi } from "./api/basket";
 import sessionReducer from "./session/sessionSlice";
 
 export const store = configureStore({
@@ -30,6 +31,7 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [kitchenApi.reducerPath]: kitchenApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
+    [basketApi.reducerPath]: basketApi.reducer,
   },
   middleware: (getDefault) =>
     getDefault().concat(
@@ -38,6 +40,7 @@ export const store = configureStore({
       ordersApi.middleware,
       kitchenApi.middleware,
       notificationsApi.middleware,
+      basketApi.middleware,
     ),
 });
 
