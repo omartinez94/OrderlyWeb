@@ -277,15 +277,15 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Connect keyboard actions to ticket navigation, slot focusing, API bump dispatching, and multi-page board scrolling.
 
-**Status**: 🚧 In Progress
+**Status**: ✅ Complete
 
 **Deliverables**:
-- [ ] Implement `KdsTicketGrid.tsx` with focused slot state (`0` to `7`) and slot number badges (`#1` to `#8`).
-- [ ] Implement page state: max 8 tickets per page; `NEXT_PAGE` / `PREV_PAGE` bump bar actions advance the page. Monospace page indicator (e.g. `Page 1 / 3`) in the KDS header.
-- [ ] Update `TicketCard.tsx` with hotkey action indicators (`[ENTER: Bump]`, `[R: Recall]`).
-- [ ] Connect `BUMP_SELECTED` and `RECALL_LAST` to `useBumpTicketMutation` / `useRecallTicketMutation`.
-- [ ] Arrow and numeric key navigation for slot shifting within current page.
-- [ ] Integrate `useElapsedTimer` from `src/hooks/useElapsedTimer.ts` for ticket elapsed time display.
+- [x] Implement `KdsTicketGrid.tsx` with focused slot state (`0` to `7`) and slot number badges (`#1` to `#8`).
+- [x] Implement page state: max 8 tickets per page; `NEXT_PAGE` / `PREV_PAGE` bump bar actions advance the page. Monospace page indicator (e.g. `Page 1 / 3`) in the KDS header.
+- [x] Update `TicketCard.tsx` with hotkey action indicators (`[ENTER: Bump]`, `[R: Recall]`).
+- [x] Connect `BUMP_SELECTED` and `RECALL_LAST` to `useBumpTicketMutation` / `useRecallTicketMutation`.
+- [x] Arrow and numeric key navigation for slot shifting within current page.
+- [x] Integrate `useElapsedTimer` from `src/hooks/useElapsedTimer.ts` for ticket elapsed time display.
 
 **Exit criteria**: Pressing `1` selects slot 1; pressing `Enter` or clicking Virtual Bump Bar triggers bump mutation against the focused ticket. With 9+ tickets, `PageDown` advances to the second page showing the next 8 slots.
 
@@ -295,7 +295,7 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Deliver zero-asset, low-latency audio feedback via Web Audio API.
 
-**Status**: 🔒 Blocked
+**Status**: 🚧 In Progress
 
 **Deliverables**:
 - [ ] Implement `audioFeedback.ts` synthesizing chime, alert, and error waveforms.

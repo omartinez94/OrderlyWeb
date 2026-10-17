@@ -1,31 +1,24 @@
-import { useTranslation } from "react-i18next";
-import { ExternalLink } from "lucide-react";
-import { Button } from "../../../components/ui";
-import { ZoneSplash } from "../../../components/Layout/ZoneSplash";
-import { openVirtualBumpBar } from "../../../features/kitchen/hardware";
+import { KdsTicketGrid } from "../../../features/kitchen/components/KdsTicketGrid";
+import { useGetKitchenQueueQuery } from "../../../app/api/kitchen";
 
 export function KitchenDashboardPage() {
-  const { t } = useTranslation();
+  const { data: queueResponse, isLoading } = useGetKitchenQueueQuery();
+  const tickets = queueResponse?.data ?? [];
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end px-5 pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => openVirtualBumpBar()}
-          className="gap-2 font-mono text-xs"
-        >
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-          {t("kds:bumpBar.openVirtual", "Open Virtual Bump Bar")}
-        </Button>
-      </div>
-      <ZoneSplash
-        zone="kitchen"
-        title="Order queue"
-        subtitle="Real-time order queue. Mark items ready, bump tickets."
-      />
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">
+      <h1 className="font-display text-ink text-3xl font-bold">Order queue</h1>
+      {isLoading ? (
+        <div className="flex items-center justify-center p-20">
+          <p className="text-ink-muted animate-pulse font-mono text-sm">
+            Loading active tickets...
+          </p>
+        </div>
+      ) : (
+        <KdsTicketGrid tickets={tickets} />
+      )}
     </div>
   );
 }
+
+export default KitchenDashboardPage;

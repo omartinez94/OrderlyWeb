@@ -1,6 +1,7 @@
-import { Clock, CheckCircle2 } from "lucide-react";
+import { Clock, CheckCircle2, RotateCcw } from "lucide-react";
 import { Badge, Button } from "../../../components/ui";
 import { StatusPill, type OrderStatus } from "../../../components/StatusPill/StatusPill";
+import { useElapsedTimer } from "../../../hooks/useElapsedTimer";
 import "./TicketCard.css";
 
 export interface TicketData {
@@ -9,14 +10,18 @@ export interface TicketData {
   items: string[];
   status: OrderStatus;
   elapsed: number;
+  receivedAt?: string | null;
   station: string;
 }
 
-interface TicketCardProps {
+export interface TicketCardProps {
   ticket: TicketData;
   isSelected?: boolean;
+  slotNumber?: number;
   onSelect?: () => void;
   onAdvance?: () => void;
+  onBump?: () => void;
+  onRecall?: () => void;
 }
 
 export function formatElapsed(sec: number): string {
@@ -34,10 +39,21 @@ const STATUS_EMOJI: Record<OrderStatus, string> = {
   served: "✅",
 };
 
-export function TicketCard({ ticket, isSelected = false, onSelect, onAdvance }: TicketCardProps) {
+export function TicketCard({
+  ticket,
+  isSelected = false,
+  slotNumber,
+  onSelect,
+  onAdvance,
+  onBump,
+  onRecall,
+}: TicketCardProps) {
   const isReady = ticket.status === "ready";
   const isServed = ticket.status === "served";
   const isPreparing = ticket.status === "preparing";
+
+  const { formatted: liveElapsed } = useElapsedTimer(ticket.receivedAt);
+  const formattedTime = ticket.receivedAt ? liveElapsed : formatElapsed(ticket.elapsed ?? 0);
 
   return (
     <div
@@ -46,7 +62,7 @@ export function TicketCard({ ticket, isSelected = false, onSelect, onAdvance }: 
         onSelect ? "cursor-pointer" : ""
       } ${isReady ? "ticket-card-ready-glow" : ""} ${
         isSelected
-          ? "border-primary bg-surface-elevated ring-primary/20 scale-[1.02] shadow-xl ring-2"
+          ? "border-primary bg-surface-elevated ring-primary/40 scale-[1.02] shadow-xl ring-2"
           : "border-border-subtle bg-surface-elevated/70 hover:border-border-strong hover:bg-surface-elevated hover:shadow-md"
       }`}
     >
@@ -92,6 +108,18 @@ export function TicketCard({ ticket, isSelected = false, onSelect, onAdvance }: 
       {/* Status bar top indicator */}
       <div className="z-10 mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
+          {slotNumber !== undefined && (
+            <Badge
+              variant={isSelected ? "default" : "secondary"}
+              className={`px-2 py-0.5 font-mono text-xs font-black tracking-wider ${
+                isSelected
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-surface-elevated text-ink-muted border"
+              }`}
+            >
+              #{slotNumber}
+            </Badge>
+          )}
           {isPreparing ? (
             <div className="fire-container">
               <span className="fire-flame fire-flame-1">🔥</span>
@@ -102,12 +130,12 @@ export function TicketCard({ ticket, isSelected = false, onSelect, onAdvance }: 
                 role="img"
                 aria-label="Preparing status"
               >
-                {STATUS_EMOJI[ticket.status]}
+                {STATUS_EMOJI[ticket.status] ?? "🍳"}
               </span>
             </div>
           ) : (
             <span className="apple-emoji-spin text-lg" role="img" aria-label="Status icon">
-              {STATUS_EMOJI[ticket.status]}
+              {STATUS_EMOJI[ticket.status] ?? "🔔"}
             </span>
           )}
           <span className="text-ink font-mono text-sm font-bold">{ticket.id}</span>
@@ -135,26 +163,54 @@ export function TicketCard({ ticket, isSelected = false, onSelect, onAdvance }: 
       </div>
 
       {/* Footer Controls & Live Counter */}
-      <div className="border-border-subtle z-10 mt-6 flex items-center justify-between border-t pt-4">
+      <div className="border-border-subtle z-10 mt-6 flex flex-wrap items-center justify-between gap-2 border-t pt-4">
         <div className="text-ink-muted flex items-center gap-1.5 font-mono text-xs">
           <Clock className="text-accent h-3.5 w-3.5 animate-pulse" />
-          <span>{formatElapsed(ticket.elapsed)}</span>
+          <span>{formattedTime}</span>
         </div>
 
-        {onAdvance && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAdvance();
-            }}
-            className="hover:bg-primary h-8 gap-1 px-3 text-xs font-semibold transition-transform hover:text-white active:scale-95"
-          >
-            Advance
-            <CheckCircle2 className="h-3.5 w-3.5" />
-          </Button>
+        {/* Hotkey Indicators when selected */}
+        {isSelected && (
+          <div className="flex items-center gap-1 rounded border border-emerald-800 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] text-emerald-400">
+            <span className="font-bold">[ENTER: Bump]</span>
+            <span className="opacity-50">·</span>
+            <span className="font-bold text-amber-400">[R: Recall]</span>
+          </div>
         )}
+
+        <div className="flex items-center gap-1.5">
+          {onRecall && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRecall();
+              }}
+              className="h-8 gap-1 px-2.5 text-xs font-semibold text-amber-500 hover:bg-amber-950/40 hover:text-amber-400"
+              aria-label={`Recall ticket ${ticket.id}`}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Recall
+            </Button>
+          )}
+          {(onBump || onAdvance) && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onBump) onBump();
+                else if (onAdvance) onAdvance();
+              }}
+              className="hover:bg-primary h-8 gap-1 px-3 text-xs font-semibold transition-transform hover:text-white active:scale-95"
+              aria-label={`Bump ticket ${ticket.id}`}
+            >
+              Bump
+              <CheckCircle2 className="h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

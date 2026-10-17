@@ -38,12 +38,14 @@ export function isEditableTarget(target: EventTarget | null): boolean {
 
 const DEBOUNCED_ACTIONS: Set<BumpBarAction> = new Set(["BUMP_SELECTED", "RECALL_LAST"]);
 
-export function useBumpBar({
-  onAction,
-  profile = KB9000_DEFAULT_PROFILE,
-  enabled = true,
-  debounceMs = 300,
-}: UseBumpBarOptions) {
+export function useBumpBar(
+  optionsOrHandler: UseBumpBarOptions | ((action: BumpBarAction) => void),
+) {
+  const options: UseBumpBarOptions =
+    typeof optionsOrHandler === "function" ? { onAction: optionsOrHandler } : optionsOrHandler;
+
+  const { onAction, profile = KB9000_DEFAULT_PROFILE, enabled = true, debounceMs = 300 } = options;
+
   const handlerRef = useRef(onAction);
   handlerRef.current = onAction;
 
