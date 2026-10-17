@@ -41,10 +41,64 @@ export const catalogHandlers = [
 
   http.get(`${BASE}/restaurants/:restaurantId/tables`, () =>
     HttpResponse.json([
-      { id: "t-1", restaurantId: "r-001", label: "T1", capacity: 2, section: "Window" },
-      { id: "t-2", restaurantId: "r-001", label: "T2", capacity: 4, section: "Patio" },
+      { id: "t-1", restaurantId: "r-001", tableNumber: "T1", capacity: 2, section: "Window" },
+      { id: "t-2", restaurantId: "r-001", tableNumber: "T2", capacity: 4, section: "Patio" },
     ]),
   ),
+
+  http.get(`${BASE}/v1/restaurants/:restaurantId/tables`, () =>
+    HttpResponse.json({
+      tables: [
+        {
+          id: "t-1",
+          restaurantId: "r-001",
+          tableNumber: "T1",
+          capacity: 2,
+          positionX: 10,
+          positionY: 20,
+          shape: "square",
+          status: "Available",
+        },
+        {
+          id: "t-2",
+          restaurantId: "r-001",
+          tableNumber: "T2",
+          capacity: 4,
+          positionX: 30,
+          positionY: 20,
+          shape: "round",
+          status: "Occupied",
+        },
+      ],
+      totalCount: 2,
+    }),
+  ),
+
+  http.get(`${BASE}/v1/restaurants/:restaurantId/merged-tables`, () =>
+    HttpResponse.json({
+      mergedTables: [
+        {
+          id: "mt-1",
+          parentTableId: "t-1",
+          childTableId: "t-2",
+          isActive: true,
+          mergedAt: "2026-07-28T10:00:00Z",
+          splitAt: null,
+        },
+      ],
+    }),
+  ),
+
+  http.post(`${BASE}/v1/restaurants/:restaurantId/merged-tables`, () =>
+    HttpResponse.json({ id: "mt-new-1" }, { status: 201 }),
+  ),
+
+  http.delete(
+    `${BASE}/v1/restaurants/:restaurantId/merged-tables/:id`,
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
+  http.put(`${BASE}/v1/menu-items/:id`, () => HttpResponse.json({ success: true })),
 
   http.get(`${BASE}/restaurants/:restaurantId/menu`, () =>
     HttpResponse.json({
