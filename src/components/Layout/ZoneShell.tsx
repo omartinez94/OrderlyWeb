@@ -18,6 +18,7 @@
 import { Outlet } from "react-router";
 import { ZoneTopBar } from "./ZoneTopBar";
 import { ZoneSidebar, type SidebarItem } from "./ZoneSidebar";
+import { ZoneErrorBoundary } from "./ZoneErrorBoundary";
 import type { Zone } from "../Header/types";
 
 export function ZoneShell({ zone, items }: { zone: Zone; items: readonly SidebarItem[] }) {
@@ -27,7 +28,9 @@ export function ZoneShell({ zone, items }: { zone: Zone; items: readonly Sidebar
       <div className="grid grid-cols-[auto_1fr]">
         <ZoneSidebar items={items} />
         <main id="main" className="bg-surface min-h-[calc(100vh-64px)]">
-          <Outlet />
+          <ZoneErrorBoundary zoneName={zone}>
+            <Outlet />
+          </ZoneErrorBoundary>
         </main>
       </div>
     </div>
