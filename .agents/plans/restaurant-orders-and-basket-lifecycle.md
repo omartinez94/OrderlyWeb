@@ -221,10 +221,10 @@ OrderlyWeb/src/
 - [x] Verification: Unit tests verify chronological activity rendering in stable order.
 
 ### Phase 4: Order Modification & Item Cancellation Workflows
-- [ ] Implement `OrderActionToolbar.tsx` with role-permission predicates.
-- [ ] Add `CancelOrderDialog.tsx` with mandatory reason validation.
-- [ ] Add item removal/modification flow with manager override gate.
-- [ ] Verification: 409 transition errors properly catch and surface Sonner error toasts.
+- [x] Implement `OrderActionToolbar.tsx` with role-permission predicates.
+- [x] Add `CancelOrderDialog.tsx` with mandatory reason validation.
+- [x] Add item removal/modification flow with manager override gate.
+- [x] Verification: 409 transition errors properly catch and surface Sonner error toasts.
 
 ### Phase 5: Interactive Bill Splitting & Settlement Simulation
 - [ ] Implement `SplitBillAssignment.tsx` supporting Equal and Custom splits.

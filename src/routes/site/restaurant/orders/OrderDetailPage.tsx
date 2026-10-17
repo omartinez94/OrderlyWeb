@@ -15,14 +15,18 @@ import {
   UtensilsCrossed,
   ShoppingBag,
   Bike,
-  Receipt,
   Clock,
   CreditCard,
   AlertCircle,
   Calendar,
 } from "lucide-react";
 import { useGetOrderQuery } from "../../../../app/api/orders";
-import { OrderStatusBadge, OrderItemRow, OrderTimeline } from "../../../../features/orders";
+import {
+  OrderStatusBadge,
+  OrderItemRow,
+  OrderTimeline,
+  OrderActionToolbar,
+} from "../../../../features/orders";
 import { Button, Separator, Skeleton } from "../../../../components/ui";
 import { PATH } from "../../../../router/pathNames";
 import { formatCurrency } from "../../../../utils/currency";
@@ -76,7 +80,6 @@ export function OrderDetailPage() {
   }
 
   const TypeIcon = TYPE_ICONS[order.orderType] ?? UtensilsCrossed;
-  const splitBillUrl = PATH.RESTAURANT_ORDER_SPLIT.replace(":id", order.id);
   const destination =
     order.orderType === "DineIn" && order.tableId
       ? t("list.tableNumber", { number: order.tableId.replace(/^[a-zA-Z]-/, "") })
@@ -113,15 +116,8 @@ export function OrderDetailPage() {
             </div>
           </div>
 
-          {/* Action CTAs */}
-          <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm" className="h-9 gap-1.5 text-xs">
-              <Link to={splitBillUrl}>
-                <Receipt className="text-ink-subtle size-3.5" />
-                <span>{t("detail.splitBill")}</span>
-              </Link>
-            </Button>
-          </div>
+          {/* Action Toolbar */}
+          <OrderActionToolbar order={order} />
         </header>
 
         {/* Two-Column Grid */}
