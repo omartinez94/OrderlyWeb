@@ -106,62 +106,62 @@
 }
 
 :root {
-  /* --- Brand: primary (deep blue-teal) --- */
-  --color-primary: #1f4254;
-  --color-primary-hover: #16303d;
-  --color-primary-foreground: #ffffff;
+  /* --- Sleek Industrial Kitchen: Brand Primary (Raw Gunmetal / Forged Slate) --- */
+  --color-primary: #0f172a;
+  --color-primary-hover: #1e293b;
+  --color-primary-foreground: #f8fafc;
 
-  /* --- Brand: accent (tangerine) --- */
-  --color-accent: #f26a3a;
-  --color-accent-hover: #d8582c;
+  /* --- Brand Accent (High-Heat Induction Orange) --- */
+  --color-accent: #ea580c;
+  --color-accent-hover: #c2410c;
   --color-accent-foreground: #ffffff;
 
-  /* --- Neutral: ink (near-black text) --- */
-  --color-ink: #0e141a;
-  --color-ink-muted: #4a5560;
-  --color-ink-subtle: #7a8590;
+  /* --- Neutral: Ink (Cold Smoked Graphite) --- */
+  --color-ink: #0f172a;
+  --color-ink-muted: #475569;
+  --color-ink-subtle: #64748b;
 
-  /* --- Neutral: surface (sage-tinted page bg) --- */
-  --color-surface: #eff1ed;
-  --color-surface-elevated: #f6f8f4;
+  /* --- Neutral: Surface (Brushed Stainless Steel & Crisp Porcelain) --- */
+  --color-surface: #f1f5f9;
+  --color-surface-elevated: #ffffff;
   --color-surface-overlay: #ffffff;
-  --color-border-subtle: #d8ded5;
-  --color-border-strong: #b8c0b2;
+  --color-border-subtle: #e2e8f0;
+  --color-border-strong: #94a3b8;
 
-  /* --- Service hues (5 stops; the gradient uses 3 of them — see below) --- */
-  --color-service-deep: #1f4254;
-  --color-service-teal: #4a8b98;
-  --color-service-aqua: #7ab89e;
-  --color-service-amber: #e8a340;
-  --color-service-tangerine: #f26a3a;
+  /* --- Service Hues (5-Stop Kitchen Line Sequence) --- */
+  --color-service-deep: #1d4ed8;
+  --color-service-teal: #0284c7;
+  --color-service-aqua: #0d9488;
+  --color-service-amber: #d97706;
+  --color-service-tangerine: #ea580c;
 
-  /* --- Semantic states --- */
-  --color-success: #4a8870;
-  --color-warning: #e8a340;
-  --color-danger: #c84a3a;
-  --color-info: #4a8b98;
+  /* --- Semantic States --- */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #0284c7;
 
   /* --- Gradients: 3 colors max each, two flows --- */
-  /* Cool side: order received flow (deep → teal → aqua) */
+  /* Cool side: order received flow (cold station -> prep line) */
   --gradient-service-cool: linear-gradient(
     90deg,
     var(--color-service-deep) 0%,
     var(--color-service-teal) 50%,
     var(--color-service-aqua) 100%
   );
-  /* Warm side: order ready flow (surface → amber → tangerine) */
+  /* Warm side: order ready flow (range amber -> hot pass induction flame) */
   --gradient-service-warm: linear-gradient(
     90deg,
     var(--color-surface) 0%,
     var(--color-service-amber) 50%,
     var(--color-service-tangerine) 100%
   );
-  /* Brand signature gradient — primary → accent */
+  /* Brand signature gradient — gunmetal steel -> induction flame */
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
 
   /* --- Glows --- */
-  --shadow-glow-primary: 0 0 16px rgba(31, 66, 84, 0.25);
-  --shadow-glow-accent: 0 0 16px rgba(242, 106, 58, 0.3);
+  --shadow-glow-primary: 0 0 16px rgba(15, 23, 42, 0.25);
+  --shadow-glow-accent: 0 0 16px rgba(234, 88, 12, 0.35);
 
   /* --- Type families: two families, two jobs. ---
    *  --font-display : MuseoModerno — titles, display, headline, any
@@ -192,7 +192,7 @@
   --popover-foreground: var(--color-ink);
   --secondary: var(--color-surface-elevated);
   --secondary-foreground: var(--color-ink);
-  --muted: var(--color-surface-elevated);
+  --muted: var(--color-surface);
   --muted-foreground: var(--color-ink-muted);
   --destructive: var(--color-danger);
   --destructive-foreground: var(--color-primary-foreground);
@@ -200,58 +200,49 @@
   --input: var(--color-border-strong);
   --ring: var(--color-primary);
 
-  /* shadcn base radius — aligns with the Orderly "control" radius (8px). */
-  --radius: 0.5rem;
+  /* Machined industrial radius (6px / 0.375rem) */
+  --radius: 0.375rem;
 }
 
 [data-theme="dark"] {
-  /* --- Brand: primary (lifted blue-teal) --- */
-  --color-primary: #4a8b98;
-  --color-primary-hover: #5fa0ae;
-  --color-primary-foreground: #0e141a;
+  /* --- Brand: primary (Precision Cyan-Steel for high contrast) --- */
+  --color-primary: #38bdf8;
+  --color-primary-hover: #7dd3fc;
+  --color-primary-foreground: #0b0f14;
 
-  /* --- Brand: accent (lifted tangerine) --- */
-  --color-accent: #ff8a5a;
-  --color-accent-hover: #ffa478;
-  --color-accent-foreground: #0e141a;
+  /* --- Brand: accent (Electric Searing Induction Flame) --- */
+  --color-accent: #fb923c;
+  --color-accent-hover: #fdba74;
+  --color-accent-foreground: #0b0f14;
 
-  /* --- Neutral: ink (light text in dark) --- */
-  --color-ink: #ecf0f2;
-  --color-ink-muted: #a8b2bc;
-  --color-ink-subtle: #6e7984;
+  /* --- Neutral: ink (Polished Chrome text) --- */
+  --color-ink: #f8fafc;
+  --color-ink-muted: #94a3b8;
+  --color-ink-subtle: #64748b;
 
-  /* --- Neutral: surface tier rhythm ---
-   * Each tier must clear a 6–8% luminance step so the
-   * Card `default / bordered / quiet / surface` hierarchy
-   * reads in dark the same way it does in light.
-   *   surface          : page background (darkest)
-   *   surface-elevated : default card-ground (mid)
-   *   surface-overlay  : modal / popover (lightest)
-   * Previously the three tiers were within ~5% of each other,
-   * which collapsed Card hierarchy in dark. The new values
-   * restore the contrast that the Quiet Workshop rule requires. */
-  --color-surface: #0e141a;
-  --color-surface-elevated: #1a2530;
-  --color-surface-overlay: #232f3d;
-  --color-border-subtle: #1f2a33;
-  --color-border-strong: #2f3d48;
+  /* --- Neutral: Cast Iron & Smoked Titanium Surface --- */
+  --color-surface: #0b0f14;
+  --color-surface-elevated: #141b22;
+  --color-surface-overlay: #1c2530;
+  --color-border-subtle: #212c37;
+  --color-border-strong: #374756;
 
-  /* --- Service hues (lifted for dark contrast) --- */
-  --color-service-deep: #4a8b98;
-  --color-service-teal: #6ba5b0;
-  --color-service-aqua: #98c9b0;
-  --color-service-amber: #f0b560;
-  --color-service-tangerine: #ff8a5a;
+  /* --- Service hues (lifted for dark KDS contrast) --- */
+  --color-service-deep: #60a5fa;
+  --color-service-teal: #38bdf8;
+  --color-service-aqua: #2dd4bf;
+  --color-service-amber: #fbbf24;
+  --color-service-tangerine: #fb923c;
 
   /* --- Semantic states --- */
-  --color-success: #6ba88e;
-  --color-warning: #f0b560;
-  --color-danger: #e87060;
-  --color-info: #6ba5b0;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-info: #38bdf8;
 
-  /* --- Glows (stronger in dark for the KDS effect) --- */
-  --shadow-glow-primary: 0 0 20px rgba(74, 139, 152, 0.45);
-  --shadow-glow-accent: 0 0 20px rgba(255, 138, 90, 0.5);
+  /* --- Glows (induction glow in dark mode) --- */
+  --shadow-glow-primary: 0 0 20px rgba(56, 189, 248, 0.45);
+  --shadow-glow-accent: 0 0 20px rgba(251, 146, 60, 0.5);
 }
 
 /* --- Base / reset --------------------------------------------------------- */

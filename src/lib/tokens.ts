@@ -26,73 +26,73 @@ export type FontToken = keyof typeof fonts;
 
 export const colors = {
   // --- Brand ---
-  primary: "#1F4254",
-  primaryHover: "#16303D",
-  primaryForeground: "#FFFFFF",
+  primary: "#0F172A",
+  primaryHover: "#1E293B",
+  primaryForeground: "#F8FAFC",
 
-  accent: "#F26A3A",
-  accentHover: "#D8582C",
+  accent: "#EA580C",
+  accentHover: "#C2410C",
   accentForeground: "#FFFFFF",
 
   // --- Neutral: ink ---
-  ink: "#0E141A",
-  inkMuted: "#4A5560",
-  inkSubtle: "#7A8590",
+  ink: "#0F172A",
+  inkMuted: "#475569",
+  inkSubtle: "#64748B",
 
-  // --- Neutral: surface (sage-tinted) ---
-  surface: "#EFF1ED",
-  surfaceElevated: "#F6F8F4",
+  // --- Neutral: surface (brushed stainless) ---
+  surface: "#F1F5F9",
+  surfaceElevated: "#FFFFFF",
   surfaceOverlay: "#FFFFFF",
-  borderSubtle: "#D8DED5",
-  borderStrong: "#B8C0B2",
+  borderSubtle: "#E2E8F0",
+  borderStrong: "#94A3B8",
 
   // --- Service hues (status gradient stops) ---
-  serviceDeep: "#1F4254",
-  serviceTeal: "#4A8B98",
-  serviceAqua: "#7AB89E",
-  serviceAmber: "#E8A340",
-  serviceTangerine: "#F26A3A",
+  serviceDeep: "#1D4ED8",
+  serviceTeal: "#0284C7",
+  serviceAqua: "#0D9488",
+  serviceAmber: "#D97706",
+  serviceTangerine: "#EA580C",
 
   // --- Semantic states ---
-  success: "#4A8870",
-  warning: "#E8A340",
-  danger: "#C84A3A",
-  info: "#4A8B98",
+  success: "#059669",
+  warning: "#D97706",
+  danger: "#DC2626",
+  info: "#0284C7",
 } as const;
 
 export const darkColors = {
   // --- Brand (lifted for dark contrast) ---
-  primary: "#4A8B98",
-  primaryHover: "#5FA0AE",
-  primaryForeground: "#0E141A",
+  primary: "#38BDF8",
+  primaryHover: "#7DD3FC",
+  primaryForeground: "#0B0F14",
 
-  accent: "#FF8A5A",
-  accentHover: "#FFA478",
-  accentForeground: "#0E141A",
+  accent: "#FB923C",
+  accentHover: "#FDBA74",
+  accentForeground: "#0B0F14",
 
   // --- Neutral: ink (light text on dark) ---
-  ink: "#ECF0F2",
-  inkMuted: "#A8B2BC",
-  inkSubtle: "#6E7984",
+  ink: "#F8FAFC",
+  inkMuted: "#94A3B8",
+  inkSubtle: "#64748B",
 
-  // --- Neutral: surface (deep near-black) ---
-  surface: "#0E141A",
-  surfaceElevated: "#152028",
-  surfaceOverlay: "#1C2832",
-  borderSubtle: "#1F2A33",
-  borderStrong: "#2F3D48",
+  // --- Neutral: surface (cast iron & smoked carbon) ---
+  surface: "#0B0F14",
+  surfaceElevated: "#141B22",
+  surfaceOverlay: "#1C2530",
+  borderSubtle: "#212C37",
+  borderStrong: "#374756",
 
   // --- Service hues (lifted) ---
-  serviceDeep: "#4A8B98",
-  serviceTeal: "#6BA5B0",
-  serviceAqua: "#98C9B0",
-  serviceAmber: "#F0B560",
-  serviceTangerine: "#FF8A5A",
+  serviceDeep: "#60A5FA",
+  serviceTeal: "#38BDF8",
+  serviceAqua: "#2DD4BF",
+  serviceAmber: "#FBBF24",
+  serviceTangerine: "#FB923C",
 
-  success: "#6BA88E",
-  warning: "#F0B560",
-  danger: "#E87060",
-  info: "#6BA5B0",
+  success: "#34D399",
+  warning: "#FBBF24",
+  danger: "#F87171",
+  info: "#38BDF8",
 } as const;
 
 export type ColorToken = keyof typeof colors;

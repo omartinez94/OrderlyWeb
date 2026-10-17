@@ -2,29 +2,29 @@
 name: Orderly Admin Panel
 description: A staff-facing operations console for restaurant teams — real-time, role-based, three-zone.
 colors:
-  primary: "#1F4254"
-  primary-hover: "#16303D"
-  primary-foreground: "#FFFFFF"
-  accent: "#F26A3A"
-  accent-hover: "#D8582C"
+  primary: "#0F172A"
+  primary-hover: "#1E293B"
+  primary-foreground: "#F8FAFC"
+  accent: "#EA580C"
+  accent-hover: "#C2410C"
   accent-foreground: "#FFFFFF"
-  ink: "#0E141A"
-  ink-muted: "#4A5560"
-  ink-subtle: "#7A8590"
-  surface: "#EFF1ED"
-  surface-elevated: "#F6F8F4"
+  ink: "#0F172A"
+  ink-muted: "#475569"
+  ink-subtle: "#64748B"
+  surface: "#F1F5F9"
+  surface-elevated: "#FFFFFF"
   surface-overlay: "#FFFFFF"
-  border-subtle: "#D8DED5"
-  border-strong: "#B8C0B2"
-  service-deep: "#1F4254"
-  service-teal: "#4A8B98"
-  service-aqua: "#7AB89E"
-  service-amber: "#E8A340"
-  service-tangerine: "#F26A3A"
-  success: "#4A8870"
-  warning: "#E8A340"
-  danger: "#C84A3A"
-  info: "#4A8B98"
+  border-subtle: "#E2E8F0"
+  border-strong: "#94A3B8"
+  service-deep: "#1D4ED8"
+  service-teal: "#0284C7"
+  service-aqua: "#0D9488"
+  service-amber: "#D97706"
+  service-tangerine: "#EA580C"
+  success: "#059669"
+  warning: "#D97706"
+  danger: "#DC2626"
+  info: "#0284C7"
 typography:
   display:
     fontFamily: "'MuseoModerno', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
@@ -55,9 +55,9 @@ typography:
     lineHeight: 1.2
     letterSpacing: "0.04em"
 rounded:
-  control: "8px"
-  card: "12px"
-  panel: "16px"
+  control: "6px"
+  card: "8px"
+  panel: "10px"
   pill: "999px"
 spacing:
   control-y: "0.75rem"
@@ -114,206 +114,143 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Quiet Workshop"**
+**Creative North Star: "The Stainless Line" (Sleek Industrial Kitchen)**
 
-The Quiet Workshop is a tool-first room. Surfaces exist to do work, not to be admired. Nothing on screen competes with the status of an order, the data on a dashboard, or the next action a staff member needs to take. The visual system earns its place by being quiet, accurate, and fast to read in every operating environment — the heat of a kitchen pass, the rush of a floor, the longer sessions of a back office. The product's brand lives in precision, not in personality.
+"The Stainless Line" embodies the surgical precision, high heat, and uncompromising hygiene of a modern Michelin-star culinary line. Surfaces emulate brushed stainless steel, cold-rolled titanium, and cast iron under task lighting. Gone is the muted sage-green palette; in its place is a high-contrast, razor-sharp operational environment engineered for distance readability, fast decisions, and high-heat ticket throughput.
 
-Status is the visual hero. Every screen is engineered so that the state of an order, a table, or a queue can be read at a glance — across the pass, from a cashier's terminal, from a manager's monitor. The five-stop service gradient is not decoration; it is the visual grammar of the order lifecycle (`new` → `acknowledged` → `preparing` → `plating` → `ready`), and it owns those colors exclusively.
+Status is the visual hero. Every screen is engineered so that the state of an order, a station, or a ticket can be read instantly across the pass: cold station blue (`#1D4ED8`), station-accepted cyan (`#0284C7`), range teal (`#0D9488`), sauté amber (`#D97706`), and searing induction flame (`#EA580C`).
 
 **Key Characteristics:**
 
-- **Two themes, both functional.** Light is the day shift; dark is the night shift. Both are first-class, both run by default on `system` preference, and both share the same sage-tinted surface — no pure white anywhere on a content page.
-- **Status is the only thing allowed to shout.** Tilled teal for calm authority, burnt tangerine for warm urgency, a five-step service gradient that maps to the order lifecycle. Every other surface stays out of the way.
-- **Flat by default, lifted for overlays, glowing for emphasis.** Hybrid depth: content surfaces are flat, overlays carry a soft shadow, and only status elements earn the brand glow.
-- **Two type families, no role-swap.** Urbanist carries the body and any long-form text. MuseoModerno carries titles and any text that should contrast with body. The split is the personality — body for living in, title for landing on.
+- **Two high-performance themes.**
+  - **Light Theme (Day Prep & Pass):** Crisp brushed stainless steel (`#F1F5F9`), surgical porcelain cards (`#FFFFFF`), cold smoked graphite ink (`#0F172A`), and machined hairline borders (`#E2E8F0`).
+  - **Dark Theme (Night Shift & Cast Iron):** Deep cast iron carbon (`#0B0F14`), smoked titanium elevated panels (`#141B22`), polished chrome text (`#F8FAFC`), laser-precise cyan primary CTAs (`#38BDF8`), and electric induction flame accents (`#FB923C`).
+- **Machined, industrial geometry.** Tightly chamfered 6px controls and 8px cards replace soft bubbly radii, conveying surgical instrument precision.
+- **Searing heat for urgency.** Induction flame orange is reserved for the active pass, fire orders, and critical CTAs (≤10% of any view).
+- **Two type families with monospace telemetry.** Urbanist for high-efficiency reading; MuseoModerno for impactful station titles; system mono for ticket timers, table tokens, and order IDs.
 
 ## Colors
 
-The palette is a two-voice system: tilled teal for calm authority, burnt tangerine for warm urgency, anchored to a sage-tinted surface and a five-step service gradient that carries the order lifecycle. Every other color in the system is a working surface or a status signal — nothing is decorative.
+The palette is anchored in raw industrial kitchen materials: brushed stainless, titanium sheet, cold cast iron, and induction heat.
 
 ### Primary
 
-- **Tilled Teal** (`#1F4254` / dark `#4A8B98`): The deep blue-teal that carries calm authority. Primary CTAs, active nav state, primary links, the cool side of the service gradient, focus rings. Reads as quiet competence — the color of a hand on a wheel, not a hand on a horn.
-- **Tilled Teal Hover** (`#16303D` / dark `#5FA0AE`): Slightly deeper in light, lifted in dark. The button-press moment.
+- **Gunmetal Steel (Light: `#0F172A`) / Cyan-Steel (Dark: `#38BDF8`):** Uncompromising contrast and clarity. Primary actions, active navigation states, and focus rings.
+- **Primary Hover (`#1E293B` / dark `#7DD3FC`):** Tactile mechanical response on hover/press.
 
-### Secondary
+### Accent
 
-- **Burnt Tangerine** (`#F26A3A` / dark `#FF8A5A`): The single warm voice. Reserved for in-progress states, urgent CTAs, the warm side of the service gradient, and any time the product needs to say "now." Use it sparingly — its rarity is the point.
-- **Burnt Tangerine Hover** (`#D8582C` / dark `#FFA478`): The tangerine pressed.
+- **Induction Flame Orange (`#EA580C` / dark `#FB923C`):** High-heat urgency. Plating, ready tickets, callouts, and urgent CTAs.
+- **Accent Hover (`#C2410C` / dark `#FDBA74`):** Intense ember hover.
 
 ### Neutral
 
-- **Carbon Ink** (`#0E141A` / dark `#ECF0F2`): Body text, the dominant ink. Near-black in light, near-white in dark, with a cool tint in both — never neutral gray.
-- **Muted Ink** (`#4A5560` / dark `#A8B2BC`): Secondary text, descriptions, helper copy, the body of an order card.
-- **Subtle Ink** (`#7A8590` / dark `#6E7984`): Tertiary text, timestamps, "elapsed" labels, anything that should recede.
-- **Sage Linen** (`#EFF1ED` / dark `#0E141A`): The page background. Sage-tinted in light, deep cool in dark. The only off-white surface color in the system.
-- **Sage Linen High** (`#F6F8F4` / dark `#152028`): Elevated cards, panels, anything that needs to lift off the page without shadows.
-- **Linen Overlay** (`#FFFFFF` / dark `#1C2832`): The only true white. Reserved for modals, popovers, and overlays that must sit above everything else.
-- **Linen Edge** (`#D8DED5` / dark `#1F2A33`): Hairline borders, dividers, the quiet edge between two surfaces.
-- **Linen Edge Strong** (`#B8C0B2` / dark `#2F3D48`): Emphasized borders, button outlines in resting state, the edge that says "this is interactive."
+- **Smoked Graphite Ink (`#0F172A` / dark `#F8FAFC`):** Primary text with razor-sharp contrast.
+- **Muted Slate Ink (`#475569` / dark `#94A3B8`):** Descriptions, metadata, and ticket details.
+- **Subtle Wire Ink (`#64748B` / dark `#64748B`):** Timestamps, elapsed time labels, tertiary text.
+- **Stainless Surface (`#F1F5F9` / dark `#0B0F14`):** Page background. Cool brushed steel in light; deep dense cast iron in dark.
+- **Stainless Elevated (`#FFFFFF` / dark `#141B22`):** Cards, station containers, tables.
+- **Stainless Overlay (`#FFFFFF` / dark `#1C2530`):** Modals, popovers, flyouts.
+- **Machined Hairline Border (`#E2E8F0` / dark `#212C37`):** Precision 1px dividers.
+- **Brushed Strong Border (`#94A3B8` / dark `#374756`):** Control perimeters, interactive outlines.
 
-### Service Hues (status / order flow)
+### Service Hues (5-Stop Kitchen Line Sequence)
 
-The five service hues are a closed set. They map 1:1 to order statuses and are the only colors allowed to carry that meaning.
-
-- **Tilled Teal** (`#1F4254` / dark `#4A8B98`) — `new`. The ticket has just landed, untouched.
-- **Hushed Teal** (`#4A8B98` / dark `#6BA5B0`) — `acknowledged`. Someone has claimed it.
-- **Patina Aqua** (`#7AB89E` / dark `#98C9B0`) — `preparing`. In progress, calm.
-- **Saffron Amber** (`#E8A340` / dark `#F0B560`) — `plating`. Almost there.
-- **Burnt Tangerine** (`#F26A3A` / dark `#FF8A5A`) — `ready`. Waiting to be served. The single moment of urgency.
+1. **Cold Station Blue** (`#1D4ED8` / dark `#60A5FA`): New ticket placed, untouched.
+2. **Station Cyan** (`#0284C7` / dark `#38BDF8`): Acknowledged & claimed by line cook.
+3. **Line Teal** (`#0D9488` / dark `#2DD4BF`): In preparation, calm rhythm.
+4. **Range Amber** (`#D97706` / dark `#FBBF24`): Plating & finishing touches.
+5. **Induction Flame** (`#EA580C` / dark `#FB923C`): Ready for runner / hot pass.
 
 ### Semantic States
 
-- **Muted Forest** (`#4A8870` / dark `#6BA88E`) — `success`. Confirmations, completed actions.
-- **Saffron Amber** (`#E8A340` / dark `#F0B560`) — `warning`. Reuses the service amber so the eye recognizes it.
-- **Smoked Brick** (`#C84A3A` / dark `#E87060`) — `danger`. Errors, destructive actions, things that have gone wrong.
-- **Hushed Teal** (`#4A8B98` / dark `#6BA5B0`) — `info`. Reuses the service teal — the system already knows what that color means.
+- **Clean Station Emerald** (`#059669` / dark `#34D399`): Success, verified orders.
+- **Range Amber** (`#D97706` / dark `#FBBF24`): Warnings, modifiers, dietary alerts.
+- **Flame Red** (`#DC2626` / dark `#F87171`): Voids, 86'd items, critical errors.
+- **Console Cyan** (`#0284C7` / dark `#38BDF8`): Info, notices.
 
 ### Gradients
 
-Three gradients, three colors each, two of them are subsets of the service hues.
-
-- **`bg-gradient-service-cool`** — `Tilled Teal → Hushed Teal → Patina Aqua`. The received flow. Default for the KDS calm state, the order queue at rest, anywhere the eye needs to see the journey without urgency.
-- **`bg-gradient-service-warm`** — `Sage Linen → Saffron Amber → Burnt Tangerine`. The ready flow. Default for the KDS urgent state, "your food is on its way" moments, anywhere a status is escalating.
-- **`bg-gradient-primary`** — `Tilled Teal → Burnt Tangerine`. The brand signature. Hero sections, login, the splash. Used once per screen, never as a content background.
+- **`bg-gradient-service-cool`**: Cold Station Blue → Station Cyan → Line Teal.
+- **`bg-gradient-service-warm`**: Surface Stainless → Range Amber → Induction Flame.
+- **`bg-gradient-primary`**: Gunmetal Steel → Induction Flame.
 
 ### Named Rules
 
-**The Service-Flow Rule.** The five service hues (Tilled Teal, Hushed Teal, Patina Aqua, Saffron Amber, Burnt Tangerine) are reserved for order status. They do not appear as decoration, marketing flourishes, or chart series. The order lifecycle owns these colors; everyone else borrows neutral or brand.
-
-**The One-Voice Rule.** Burnt Tangerine appears on ≤10% of any given screen. Its rarity is the point. If tangerine is everywhere, urgency is nowhere.
-
-**The No-Pure-White Rule.** The page background is Sage Linen (`#EFF1ED` / `#0E141A`), never `#FFFFFF`. The only true white in the system is Linen Overlay, reserved for modals and popovers. If a content surface needs to be white, it has earned the right to be a modal.
+**The Service-Flow Rule.** Service hues belong strictly to order status. They never appear as meaningless decoration.
+**The High-Heat Rule.** Induction Flame appears on ≤10% of any screen for maximum contrast and instantaneous glanceability.
+**The Machined-Edge Rule.** Hairline 1px borders define structure cleanly. No fuzzy or muddy drop-shadows on flat work surfaces.
 
 ## Typography
 
-**Display / Headline / Title Font:** **MuseoModerno** (with system-sans fallback for FOIT/FOUT)
-**Body / Description / Long Content Font:** **Urbanist** (with system-sans fallback)
-**Label / Mono Font:** System monospace (`ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`)
-
-**Character:** Two families with a clear job split. **Urbanist** is a clean, modern, geometric sans — it carries descriptions, table cells, helper copy, and any long-form text that the eye has to live in. **MuseoModerno** is a higher-contrast display sans with rounded geometric forms — it carries titles and any text that should contrast with body (display heroes, headlines, card titles, section headers). The two never swap roles. A title never sets in Urbanist; a paragraph never sets in MuseoModerno. System mono is reserved for timestamps, order IDs, time-elapsed counters, and any value that should read as measurement, not as copy.
-
-The fonts ship as Fontsource variable-font packages (`@fontsource-variable/urbanist` and `@fontsource-variable/museomoderno`) and are imported as CSS in `src/main.tsx` (`@fontsource-variable/urbanist/wght.css` and `@fontsource-variable/museomoderno/wght.css`). The variable axis supports weights 100–900 from a single woff2 file per family. Vite bundles the files — no third-party CDN at runtime, no FOUT, no privacy leak. The families are wired into Tailwind through the `--font-display`, `--font-sans` (set to `--font-body`), and `--font-mono` tokens in `src/index.css`. Components reference the tokens via Tailwind's `font-display` / `font-sans` / `font-mono` utilities — no component imports a font directly.
-
-### Hierarchy
-
-- **Display** (**MuseoModerno**, 800 weight, `clamp(2.5rem, 5vw, 3rem)`, line-height 1.1, tracking `-0.02em`): Page-level heroes — the design system title, a restaurant name on the top bar, anything that earns the room. Reserved for surfaces where one number or one word has to land.
-- **Headline** (**MuseoModerno**, 700, 1.5rem, line-height 1.2, tracking `-0.01em`): Section headers, card titles, the lead label on a panel. The dominant text on a screen that is not a hero.
-- **Title** (**MuseoModerno**, 700, 1.125rem, line-height 1.3): Within-card emphasis — the order number on an order card, the staff member's name in a list row.
-- **Body** (**Urbanist**, 400, 0.875rem, line-height 1.55): Description copy, helper text, table cells, long-form content. Measure should stay inside 65–75ch where it can.
-- **Label** (Urbanist 600, 0.75rem, tracking `0.04em`, often uppercase): Small UI text — buttons, table column headers, form labels, status pills. The mono sub-variant (system mono, same size and weight) is reserved for timestamps, order IDs, and measurement readouts.
-
-### Named Rules
-
-**The Two-Family Rule.** Two typefaces, two jobs. **Urbanist** is for descriptions, body copy, and any long-form content. **MuseoModerno** is for titles and any text that should contrast with body (display, headline, title). They never swap roles. A body paragraph in MuseoModerno is a misuse; a card title in Urbanist is a downgrade.
-
-**The Mono-Is-Measurement Rule.** Monospace is reserved for time, IDs, and numeric readouts. Body copy in mono is a costume the system does not wear.
-
-**The No-Raw-Family Rule.** Components do not import or reference a font family directly. They consume the `font-display`, `font-sans`, and `font-mono` Tailwind utilities, which resolve to the `--font-display`, `--font-body`, and `--font-mono` tokens. A component that hard-codes `'Urbanist'` in its style is a bug.
-
-## Layout
-
-The layout is a 12-column grid with a sage-tinted page background, a 6xl max-width container on showcase surfaces, and 1rem (16px) default grid gap. Density adapts by zone: the KDS is generous and touch-first, the back office is dense and data-rich, the floor is a hybrid tuned for fast keyboard and a clean read of the table at hand.
-
-Surfaces stack by tonal layering: Sage Linen (page) → Sage Linen High (elevated card) → Linen Overlay (modal). Each level is one tonal step up — no shadow required to convey the lift on content surfaces.
-
-**Container behavior:** A `max-w-6xl mx-auto` page frame on showcase and content surfaces; full-bleed on KDS and floor boards. The `?restaurantId=` query param is the canonical way to carry restaurant context across URLs; the in-Redux state mirrors it.
-
-**Density:** 1rem default gap, 1.5rem card padding, 2rem panel padding. The KDS uses larger touch targets and wider gutters; the back office uses tighter rows and condensed tables.
-
-**Responsive behavior:** The design system is mobile-web responsive via Tailwind's `repeat(auto-fit, minmax(...))` grid pattern. No mobile-specific layouts are committed yet — when KDS-grade mobile work begins, the touch-target and contrast rules from `PRODUCT.md` carry the design.
+- **Display / Headline / Title:** MuseoModerno (bold geometric presence for station titles and headers).
+- **Body / Content:** Urbanist (clean geometric sans with crisp legibility).
+- **Label / Telemetry:** System monospace (timestamps, ticket elapsed counters, order IDs, table numbers).
 
 ## Elevation & Depth
 
-Elevation is hybrid. Three jobs, three treatments — never mixed.
-
-1. **Content surfaces are flat.** Tonal layering (`Sage Linen` → `Sage Linen High` → `Linen Overlay`) carries the lift. No `box-shadow` on cards, panels, or content rows.
-2. **Overlays lift with shadow + glass.** Modals, popovers, command palettes, and any element that sits on top of a busy surface gets `box-shadow` plus a `backdrop-filter: blur(24–40px)` glass treatment. Glass on a flat single-tone background is invisible — that is by design. Glass is reserved for overlays that actually need it.
-3. **Status earns the glow.** The two brand-glow tokens (`shadow-glow-primary` and `shadow-glow-accent`) are reserved for in-progress states on the KDS — the urgent order that needs the line's attention. They are the only colored shadows in the system.
-
-### Shadow Vocabulary
-
-- **Ambient Overlay** (not yet defined in code, target: `0 8px 24px rgba(14, 20, 26, 0.08)`): Modals, popovers. The single ambient shadow.
-- **Glow Primary** (`0 0 16px rgba(31, 66, 84, 0.25)` light / `0 0 20px rgba(74, 139, 152, 0.45)` dark): Tilled Teal glow. Used for KDS in-progress emphasis.
-- **Glow Accent** (`0 0 16px rgba(242, 106, 58, 0.3)` light / `0 0 20px rgba(255, 138, 90, 0.5)` dark): Burnt Tangerine glow. Used for KDS ready-to-serve emphasis — the one moment the system is allowed to shout.
-
-### Named Rules
-
-**The Flat-By-Default Rule.** Content surfaces are flat at rest. Shadow appears only as a response to state (overlay, modal, focus), never as decoration on a card.
-
-**The Glow-Belongs-To-Status Rule.** The brand glow is the status's voice. It is not used on buttons, icons, or marketing surfaces. A glowing button is a status pill, not a CTA.
+1. **Flat & Machined Surfaces.** Tonal steps define hierarchy without artificial drop shadows.
+2. **Subtle Inset Highlights.** Dark mode panels leverage hairline inset borders (`rgba(255, 255, 255, 0.05)`) mimicking chamfered metallic edges.
+3. **Induction Glows.** Glow is strictly reserved for urgent/hot-pass KDS orders (`shadow-glow-accent`) and active station focus (`shadow-glow-primary`).
 
 ## Shapes
 
-The form language is softly rounded everywhere. There are no sharp corners in the system. Radii cluster into four steps, each tied to a role.
-
-- **Control** (8px / 0.5rem) — buttons, inputs, small interactive controls. Compact, tactile, the radius of a fingertip.
-- **Card** (12px / 0.75rem) — elevated cards, glass panels, surfaces that hold structured content. The default surface radius.
-- **Panel** (16px / 1rem) — large panels, section blocks, gradient showcases. The radius that frames a room.
-- **Pill** (999px) — status pills, tags, anything that should read as a chip. Fully rounded, never softened.
-
-**Borders** are hairlines. 1px solid in `Linen Edge` for default separation, `Linen Edge Strong` for interactive emphasis. No 2px+ borders on content. The `border-left` / `border-right` accent stripe is reserved for status sidebars (e.g. a column in the KDS where every row carries a thin teal or tangerine left rail to read urgency at a glance) — never decorative on cards.
+- **Control:** 6px (0.375rem) — machined, tactile, precision feel.
+- **Card:** 8px (0.5rem) — structured order tickets and data cards.
+- **Control:** 6px (0.375rem) — machined, tactile, precision feel.
+- **Card:** 8px (0.5rem) — structured order tickets and data cards.
+- **Panel:** 10px (0.625rem) — section containers and operational bays.
+- **Pill:** 999px — ticket badges, station pills.
 
 ## Components
 
 ### Buttons
 
-- **Shape:** Softly rounded control radius (8px / 0.5rem).
-- **Primary:** Tilled Teal ground, white label. Hover deepens to Tilled Teal Hover. Used for the single affirmative action on a screen — submit, save, send.
-- **Accent:** Burnt Tangerine ground, white label. Hover deepens to Burnt Tangerine Hover. Used sparingly — the moment the system needs urgency in a CTA (e.g. "Mark Ready", "Send to Kitchen").
-- **Outline:** Transparent ground, Linen Edge Strong border, Carbon Ink label. Hover lifts the ground to Sage Linen High and the border to Tilled Teal. The secondary action.
-- **Ghost:** Transparent ground, Muted Ink label. Hover lifts the ground to Sage Linen High and the label to Carbon Ink. The tertiary action — cancel, dismiss, anything that should not compete with the primary.
-- **States:** All buttons transition color in 150ms ease. Active state uses `transform: scale(0.96)`. Focus-visible uses a 2px Tilled Teal outline with 2px offset.
+- **Shape:** Machined control radius (6px / 0.375rem) with crisp tactile response.
+- **Primary:** Gunmetal Steel (`#0F172A`) in light mode; high-contrast Cyan-Steel (`#38BDF8`) in dark mode. Used for the single affirmative action on a screen — submit, save, fire order.
+- **Accent:** High-heat Induction Orange (`#EA580C` light / `#FB923C` dark). Used for high-heat kitchen actions — "Fire Ticket", "Mark Ready".
+- **Outline:** Transparent ground, Brushed Strong border, Smoked Graphite label.
+- **Ghost:** Transparent ground, Muted Slate label. Tertiary action — cancel, dismiss.
+- **States:** 150ms ease transition. Active state uses `transform: scale(0.97)` for mechanical tactile feedback. Focus-visible uses a 2px Gunmetal/Cyan ring with 2px offset.
 
-### Status Pill
+### Status Pill / Badge
 
-- **Shape:** Fully rounded pill (999px). 0.25rem / 0.7rem padding.
-- **Style:** 12% tint of the service hue as the background, the full service hue as the foreground (text + dot), and a 28–34% tint as the 1px border. The pill never uses the service hue at full opacity — it whispers the status, it does not shout.
-- **Dot:** 0.5rem / 8px filled circle in the foreground color, 0.4rem gap to the label. Optional via the `hideDot` prop.
-- **States:** Six status variants — `new` (Tilled Teal), `acknowledged` (Hushed Teal), `preparing` (Patina Aqua), `plating` (Saffron Amber), `ready` (Burnt Tangerine), `served` (Muted Ink, terminal). The `served` state is the only one that uses the neutral palette, signaling completion.
+- **Shape:** Fully rounded pill (999px) or precision ticket badge.
+- **Style:** 12% tint of the service hue as background, full service hue foreground, 30% border.
+- **Dot:** 0.5rem (8px) filled LED indicator.
+- **States:** Six status variants: `new` (Cold Station Blue), `acknowledged` (Station Cyan), `preparing` (Line Teal), `plating` (Range Amber), `ready` (Induction Flame), `served` (Muted Slate).
 
 ### Card / Container
 
-- **Corner Style:** Card radius (12px / 0.75rem).
-- **Background:** Sage Linen High. No shadow.
-- **Border:** Optional 1px Linen Edge Strong for emphasized cards (default off).
-- **Internal Padding:** 1.5rem / 24px default, 2rem on showcase panels.
-- **Internal Hierarchy:** Title in Tilled Teal (700) at the top, body in Muted Ink below, status or action in the footer.
+- **Corner Style:** Machined card radius (8px / 0.5rem).
+- **Background:** Crisp Stainless Elevated (`#FFFFFF` light / `#141B22` dark) with hairline border (`#E2E8F0` / `#212C37`).
+- **Internal Padding:** 1.5rem default.
+- **Internal Hierarchy:** Title in `text-ink font-bold` or `text-primary font-bold` at the top, telemetry/elapsed timer in monospace, content in `text-ink-muted`.
 
 ### Theme Toggle
 
-- **Shape:** 8px radius, 2.25rem / 36px square. The single small interactive control that is not a button.
-- **Style:** Sage Linen High ground, Carbon Ink icon, Linen Edge border. Hover lifts the ground to Linen Overlay and the border to Linen Edge Strong.
-- **Icon:** Inline sun (in dark mode) or moon (in light mode), 18px. No icon library.
-- **Motion:** Active state uses `transform: scale(0.96)`. Transitions are 150ms for color, 100ms for transform.
+- **Shape:** 6px radius, 2.25rem / 36px square.
+- **Style:** Stainless Elevated ground, Smoked Graphite icon, Hairline border. Hover lifts to Stainless Overlay with Strong border.
 
 ### Navigation
 
-- **Top Bar (built):** Six-slot composition at `src/components/Header/`. Restaurant name + switcher on the left, breadcrumb center-left, ops badge (floor and kitchen only) center-right, then notifications bell, theme toggle, and user menu on the right. Sage Linen ground, hairline Linen Edge bottom border, fixed at the top of every zone layout. The bell and ops badge subscribe to live state (Redux + RTK Query + SignalR) once the wiring layer lands. The component is a controlled prop API today; mock data lives in `src/components/Header/mockData.ts` for the design-system showcase. Implementation and full surface brief at `.impeccable/surfaces/header.md`.
-- **Zone Sidebars (declared, not yet built):** Each zone has its own sidebar; switching zones replaces the sidebar entirely. Sage Linen High ground, 240px width, Linen Edge right border. Active item: Tilled Teal label, Linen Edge Strong left rail. Inactive item: Muted Ink label.
+- **Top Bar:** Fixed at the top of every zone layout. Crisp brushed stainless ground (`#F1F5F9` light / `#0B0F14` dark) with 1px hairline bottom border (`#E2E8F0` / `#212C37`).
+- **Zone Sidebars:** Stainless elevated surface, 240px width, hairline right border. Active item: Primary label with subtle left indicator rail.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** consume colors by semantic name (`bg-primary`, `text-ink`, `border-border-subtle`) via Tailwind utilities. Components reference tokens, not raw hex.
-- **Do** use Burnt Tangerine sparingly — on ≤10% of any given screen. Reserve it for urgency: in-progress states, "Mark Ready" CTAs, the ready flow gradient.
-- **Do** let the service hue gradient tell the order story. Cool gradient (Tilled Teal → Hushed Teal → Patina Aqua) for received/acknowledged/preparing. Warm gradient (Sage Linen → Saffron Amber → Burnt Tangerine) for plating/ready.
-- **Do** layer surfaces by tone, not by shadow. Sage Linen (page) → Sage Linen High (card) → Linen Overlay (modal). One tonal step up, no shadow.
-- **Do** reach for glass effects on overlays that sit on busy backgrounds. Glass on a flat single-tone background is invisible; do not force it.
-- **Do** set body, descriptions, and long-form content in **Urbanist**; set titles, display, headline, and any contrasting text in **MuseoModerno**. The two never swap roles.
-- **Do** consume fonts via the `font-display` / `font-sans` / `font-mono` Tailwind utilities (which resolve to the `--font-display` / `--font-body` / `--font-mono` tokens). Do not reference a font family directly inside a component.
-- **Do** keep body measure inside 65–75ch where it can.
-- **Do** treat the five service hues as a closed set owned by order status. They do not appear in charts, illustrations, or marketing.
+- **Do** consume colors by semantic name (`bg-primary`, `text-ink`, `border-border-subtle`) via Tailwind utilities.
+- **Do** use Induction Flame Orange sparingly — on ≤10% of any given screen.
+- **Do** let the service hue sequence tell the kitchen story: Cold Station Blue → Station Cyan → Line Teal → Range Amber → Induction Flame.
+- **Do** layer surfaces by tone and crisp hairline borders rather than heavy fuzzy drop shadows.
+- **Do** use monospace for time, tickets, table numbers, and quantities.
+- **Do** maintain high contrast in both day shift (light) and night shift (dark) environments.
 
 ### Don't:
 
-- **Don't** use pure white on a content page. The page background is Sage Linen (`#EFF1ED` light / `#0E141A` dark). Reserve `#FFFFFF` / `#1C2832` for Linen Overlay — modals and popovers only.
-- **Don't** put Burnt Tangerine on a button unless the action is urgent. A tangerine CTA must earn the right to shout.
-- **Don't** use colored shadows on buttons, icons, or marketing surfaces. The brand glow is the status's voice.
-- **Don't** set body copy in **MuseoModerno** or titles in **Urbanist**. The two families have one job each. **The Two-Family Rule** binds the role split.
-- **Don't** introduce a third typeface. Two families is the system. A third is a different visual world, not a refinement.
-- **Don't** put a 1px+ colored `border-left` or `border-right` on cards, list items, callouts, or alerts as decoration. The only allowed colored rail is the sidebar active-item indicator.
-- **Don't** split the source of truth. If a color is in `colors.X` in the frontmatter, the CSS variable and the TypeScript constant point to the same value. Tokens are the contract.
-- **Don't** use `style={{}}` for static styling on JSX. Reach for a Tailwind utility or a class in a colocated `.css` file. The only acceptable inline-style exception is dynamic values that cannot be expressed in CSS (e.g. computed transforms, refs to `getBoundingClientRect()`).
-- **Don't** invent a typography hierarchy outside the five-step scale. Display, Headline, Title, Body, Label — no seventh step.
+- **Don't** reintroduce muddy olive/sage tones. Surfaces are clean brushed stainless steel and cast iron.
+- **Don't** use bubbly, oversized border radii. Keep corners machined and tight (6px–8px).
+- **Don't** use colored drop-shadows except for the active station glow and hot-pass urgency glow.
+- **Don't** set body copy in MuseoModerno or titles in Urbanist. The Two-Family Rule binds the role split.

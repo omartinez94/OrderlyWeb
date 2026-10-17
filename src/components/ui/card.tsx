@@ -35,21 +35,19 @@ import { cn } from "@/lib/utils";
  */
 const cardVariants = cva(
   // `isolate` makes each Card its own stacking context so a sibling
-  // Card cannot bleed into the next (the detector caught an overlay
-  // bug in the Layout section where the AspectRatio card's centered
-  // marker was reading on top of the ScrollArea card's lines).
-  "flex flex-col gap-6 rounded-xl py-6 text-card-foreground isolate",
+  // Card cannot bleed into the next.
+  "flex flex-col gap-6 rounded-lg py-6 text-card-foreground isolate transition-colors duration-150",
   {
     variants: {
       variant: {
-        default: "bg-card",
-        bordered: "bg-card border border-border-strong",
+        default: "bg-card border border-border-subtle shadow-xs",
+        bordered: "bg-card border border-border-strong shadow-xs",
         quiet: "bg-transparent border border-border-subtle",
-        surface: "bg-surface",
+        surface: "bg-surface border border-transparent",
         glass: "glass",
         // Deprecated alias for `surface` — kept so the existing
         // showcase and tests do not break. Prefer `surface`.
-        muted: "bg-surface",
+        muted: "bg-surface border border-transparent",
       },
     },
     defaultVariants: {

@@ -38,24 +38,24 @@ const buttonVariants = cva(
     "disabled:pointer-events-none disabled:opacity-50",
     "aria-disabled:pointer-events-none aria-disabled:opacity-50",
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
-    "active:scale-[0.96] cursor-pointer",
+    "active:scale-[0.97] cursor-pointer",
     // Action-state tint. The consumer sets `data-state="busy"`
     // (pending action) or `data-state="success"` (action completed)
-    // directly; CSS does the rest. No shadow — the Flat-By-Default
-    // Rule still binds.
+    // directly; CSS does the rest.
     "data-[state=busy]:cursor-progress data-[state=busy]:opacity-80",
     "data-[state=success]:bg-success data-[state=success]:text-primary-foreground data-[state=success]:hover:bg-success/90",
   ],
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary-hover",
-        accent: "bg-accent text-accent-foreground hover:bg-accent-hover",
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs",
+        accent: "bg-accent text-accent-foreground hover:bg-accent-hover shadow-xs",
         outline:
           "border border-border-strong bg-transparent text-ink hover:bg-surface-elevated hover:border-primary hover:text-primary",
         ghost: "bg-transparent text-ink-muted hover:bg-surface-elevated hover:text-ink",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border-subtle",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
