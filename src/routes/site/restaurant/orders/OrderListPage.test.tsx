@@ -3,13 +3,14 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router";
+import { axe } from "jest-axe";
 import { store } from "../../../../app/store";
 import { renderWithI18n } from "../../../../test/i18n-wrapper";
 import { OrderListPage } from "./OrderListPage";
 
 describe("OrderListPage", () => {
   it("renders live orders from orderingApi through MSW handler", async () => {
-    renderWithI18n(
+    const { container } = renderWithI18n(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/site/restaurant/orders"]}>
           <OrderListPage />
@@ -27,6 +28,9 @@ describe("OrderListPage", () => {
     });
 
     expect(screen.getByText("$15.12")).toBeInTheDocument();
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("filters orders by search query", async () => {

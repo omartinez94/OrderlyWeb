@@ -234,9 +234,9 @@ OrderlyWeb/src/
 - [x] Verification: Unit test verifies that sum of split amounts equals total order amount.
 
 ### Phase 6: Bilingual Verification & Visual Regression Sweeps
-- [ ] Populate all order translation keys in `src/locales/en/orders.json` and `es/orders.json`.
-- [ ] Run automated axe-core accessibility audit on all four order routes.
-- [ ] Execute `pnpm ui:check` (typecheck + lint + unit tests).
+- [x] Populate all order translation keys in `src/locales/en/orders.json` and `es/orders.json`.
+- [x] Run automated axe-core accessibility audit on all four order routes.
+- [x] Execute `pnpm ui:check` (typecheck + lint + unit tests).
 
 ---
 

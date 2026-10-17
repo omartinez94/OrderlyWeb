@@ -163,9 +163,9 @@ export function CatalogItemPicker({
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <h4 className="text-ink group-hover:text-primary line-clamp-2 font-sans text-sm font-semibold transition-colors">
+                    <h3 className="text-ink group-hover:text-primary line-clamp-2 font-sans text-sm font-semibold transition-colors">
                       {item.name}
-                    </h4>
+                    </h3>
                   </div>
                   {isSoldOut && (
                     <Badge variant="destructive" className="mt-2 px-1.5 py-0 text-[10px]">

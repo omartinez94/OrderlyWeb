@@ -3,13 +3,14 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router";
+import { axe } from "jest-axe";
 import { store } from "../../../../app/store";
 import { renderWithI18n } from "../../../../test/i18n-wrapper";
 import { OrderNewPage } from "./OrderNewPage";
 
 describe("OrderNewPage", () => {
   it("renders POS catalog and pre-populates table from URL query params", async () => {
-    renderWithI18n(
+    const { container } = renderWithI18n(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={["/site/restaurant/orders/new?tableId=t-1&orderType=DineIn&guestCount=4"]}
@@ -28,6 +29,9 @@ describe("OrderNewPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Margherita")).toBeInTheDocument();
     });
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("adds item to draft and triggers checkout", async () => {

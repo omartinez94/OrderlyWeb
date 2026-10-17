@@ -191,7 +191,7 @@ export function CartSidebar({
         {items.length === 0 ? (
           <div className="text-ink-muted flex h-full flex-col items-center justify-center py-10 text-center">
             <ShoppingBag className="text-ink-subtle/70 size-8" />
-            <h4 className="text-ink mt-2 text-sm font-semibold">{t("create.emptyCart")}</h4>
+            <h3 className="text-ink mt-2 text-sm font-semibold">{t("create.emptyCart")}</h3>
             <p className="text-ink-subtle mt-1 max-w-[200px] text-xs">
               {t("create.emptyCartDesc")}
             </p>

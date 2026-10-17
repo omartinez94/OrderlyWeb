@@ -171,6 +171,7 @@ export function OrderNewPage() {
               mobileTab === "cart" ? "hidden lg:block" : "block"
             }`}
           >
+            <h2 className="sr-only">Menu Catalog</h2>
             <CatalogItemPicker
               restaurantId={effectiveRestaurantId}
               onSelectItem={handleSelectItem}
@@ -185,6 +186,7 @@ export function OrderNewPage() {
             }`}
           >
             <div className="sticky top-6">
+              <h2 className="sr-only">Order Cart</h2>
               <CartSidebar
                 restaurantId={effectiveRestaurantId}
                 orderType={orderType}
