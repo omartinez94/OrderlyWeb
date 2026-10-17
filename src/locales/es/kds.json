@@ -31,5 +31,21 @@
     "table": "Mesa {{number}}",
     "items_one": "{{count}} artículo",
     "items_other": "{{count}} artículos"
+  },
+  "wakeLock": {
+    "deniedBanner": "Prevención de suspensión de pantalla no disponible — la pantalla podría apagarse.",
+    "enabled": "Pantalla siempre activa",
+    "disabled": "Pantalla activa desactivada"
+  },
+  "bumpBar": {
+    "openVirtual": "Abrir Bump Bar Virtual",
+    "virtualTitle": "Simulador Bump Bar KB9000",
+    "bump": "DESPACHAR",
+    "recall": "RECUPERAR",
+    "summary": "RESUMEN",
+    "prevPage": "ANTERIOR",
+    "nextPage": "SIGUIENTE",
+    "hold": "RETENER",
+    "slot": "SLOT {{number}}"
   }
 }

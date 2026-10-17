@@ -32,5 +32,21 @@
     "table": "Table {{number}}",
     "items_one": "{{count}} item",
     "items_other": "{{count}} items"
+  },
+  "wakeLock": {
+    "deniedBanner": "Screen lock prevention unavailable — display may sleep.",
+    "enabled": "Screen WakeLock Active",
+    "disabled": "Screen WakeLock Inactive"
+  },
+  "bumpBar": {
+    "openVirtual": "Open Virtual Bump Bar",
+    "virtualTitle": "KB9000 Bump Bar Simulator",
+    "bump": "BUMP",
+    "recall": "RECALL",
+    "summary": "SUMMARY",
+    "prevPage": "PREV",
+    "nextPage": "NEXT",
+    "hold": "HOLD",
+    "slot": "SLOT {{number}}"
   }
 }

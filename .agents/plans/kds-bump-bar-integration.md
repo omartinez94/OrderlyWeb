@@ -243,15 +243,15 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Deliver typed input resolution engine that seamlessly aggregates physical USB keypresses and inter-window virtual bump bar events.
 
-**Status**: ⏸ Pending
+**Status**: ✅ Complete
 
 **Deliverables**:
-- [ ] Define `BumpBarAction` union, `BumpBarProfile`, and `BumpBarChannelMessage` Zod schema in `types.ts`.
-- [ ] Implement `bumpBarProfiles.ts` with Logic Controls KB9000 (Enter/Ctrl, NumpadSubtract, 1-8) and Numpad presets.
-- [ ] Implement `bumpBarChannel.ts` with `publishBumpAction` and `subscribeBumpAction` helpers.
-- [ ] Implement `useBumpBar` hook combining window `keydown` capture with `BroadcastChannel`.
-- [ ] Add `kds:wakeLock.deniedBanner` and `kds:wakeLock.enabled` / `kds:wakeLock.disabled` i18n keys to `en/kds.json` and `es/kds.json`.
-- [ ] Vitest unit tests verifying key resolution, debounce, and channel message handling.
+- [x] Define `BumpBarAction` union, `BumpBarProfile`, and `BumpBarChannelMessage` Zod schema in `types.ts`.
+- [x] Implement `bumpBarProfiles.ts` with Logic Controls KB9000 (Enter/Ctrl, NumpadSubtract, 1-8) and Numpad presets.
+- [x] Implement `bumpBarChannel.ts` with `publishBumpAction` and `subscribeBumpAction` helpers.
+- [x] Implement `useBumpBar` hook combining window `keydown` capture with `BroadcastChannel`.
+- [x] Add `kds:wakeLock.deniedBanner` and `kds:wakeLock.enabled` / `kds:wakeLock.disabled` i18n keys to `en/kds.json` and `es/kds.json`.
+- [x] Vitest unit tests verifying key resolution, debounce, and channel message handling.
 
 **Exit criteria**: `pnpm test src/features/kitchen/hardware/useBumpBar.test.ts` passes with 100% assertion coverage.
 
@@ -261,7 +261,7 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Build a standalone, non-resizable popup route replicating the physical Logic Controls KB9000 membrane bar.
 
-**Status**: 🔒 Blocked
+**Status**: 🚧 In Progress
 
 **Deliverables**:
 - [ ] Create route `/site/kitchen/virtual-bumpbar` in `src/router/zones/kitchen.tsx`.
