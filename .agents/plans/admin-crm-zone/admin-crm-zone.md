@@ -505,6 +505,9 @@ export const ADMIN_SIDEBAR_ITEMS: readonly SidebarItem[] = [
 ];
 ```
 
+> [!NOTE]
+> **Brand context indicator in the admin header**: When a SuperAdmin navigates to any `/admin/brands/:id/*` route, the page header (not the sidebar) must show the active brand name and logo as a breadcrumb — e.g. `Admin > Brands > Acme Corp`. This is a header-level indicator powered by `useBrandContext` (reads `?brandId` from URL or `:id` from the route params), NOT a global top-bar switcher. A top-bar brand switcher is deferred — the breadcrumb provides sufficient context for V1.
+
 ### 6.5 i18n key catalog
 
 `src/locales/{en,es}/admin.json` — extend the `admin` namespace (do not add `crm`).
@@ -517,6 +520,7 @@ admin:
                   contactPhone, cuisine, website, logo,
                   status: { active, inactive, archived },
                   archive, archiveConfirmTitle, archiveConfirmBody,
+                  staffUnavailableBanner,
                   tabs: { overview, restaurants, staff, settings, audit } }
   brandForm:    { create, edit, sections: { basic, contact, branding },
                   validation: { nameRequired, slugPattern, invalidEmail } }
@@ -763,8 +767,9 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 **Status**: 🔒 Blocked
 
 **Backend prerequisites:**
-- [ ] `GET /identity-api/users?brandId={id}` — Identity must support filtering staff by brand (joining Brand → Restaurant → UserRestaurant → User)
-- [ ] Audit tab depends on Phase 3 backend; if deferred, show placeholder
+- [ ] `GET /identity-api/users?brandId={id}` — Identity must support filtering staff by brand (joining Brand → Restaurant → UserRestaurant → User).
+  - **Stub strategy if backend is not ready**: `BrandStaffPage` renders `<ZoneSplash />` with an informational banner (`t("admin:brands.staffUnavailableBanner")`: "Staff list by brand is not yet available — view staff from the Restaurants tab."). The page does NOT render an empty table or an error state.
+- [ ] Audit tab depends on Phase 3 backend; if deferred, show placeholder.
 
 **Deliverables**:
 
@@ -992,6 +997,11 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 ## Changelog
 
 > Append a new entry every time the plan's `Plan version` field is bumped.
+
+### v2.2 (2026-10-17) — Gap Analysis Incorporation
+- Added brand staff fallback stub strategy for when `GET /identity-api/users?brandId=` is not yet deployed.
+- Added brand context breadcrumb indicator spec for `/admin/brands/:id/*` routes.
+- Added `staffUnavailableBanner` i18n key to brands catalog.
 
 ### v2.1 (2026-08-08) — UX review and Impeccable design mandates
 - **Impeccable Design Mandates**: Added UX review findings to §10.5 restricting the use of service hues for CRM entities, emphasizing flat cards, and enforcing typography rules for empty states and KPI tiles.

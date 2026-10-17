@@ -6,16 +6,15 @@
 
 ## Status
 
-> **Plan version**: `v2.0` (2026-08-22) — collapsed 9 phases into 4 atomic phases; replaced `history.replaceState` redirect with `RequireAuth` reliance; clarified bootstrap uses `/auth/refresh`; closed Phase 7 (already documented).
-> **Source of drift**: `auth-state-management.md` v2.0 marked ✅ Done via `app-foundation-completion` v1.6 + `identity-hardening` v1.4. Retroactive audit revealed 5 critical and 2 medium gaps still open.
-> **Current state**: ⏸ Pending — ready to execute.
+> **Plan version**: `v2.4` (2026-10-16) — Phase D complete: removed dead `AccessToken` interface, direct imports for `setCredentials` and `clearCredentials`, naming decision documented in `sessionSlice.ts`.
+> **Current state**: ✅ Done — all phases completed.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | A | Selector hardening + 401 exclusion | ✅ Done |
 | B | Centralized `useLogout()` + wiring | ✅ Done |
 | C | Session bootstrap | ✅ Done |
-| D | Dead-code cleanup | ⏸ Pending |
+| D | Dead-code cleanup | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -281,12 +280,12 @@ Phase ordering rationale: A is a prerequisite for C (bootstrap needs the 401 exc
 ### Phase D — Dead-code cleanup
 
 **Goal**: Cosmetic alignment with the spec.
-**Status**: ⏸ Pending
+**Status**: ✅ Done (2026-10-16)
 **Deliverables**:
-- [ ] Remove dead `AccessToken` interface from `apiClient.ts` (never imported anywhere).
-- [ ] Remove unnecessary import aliases (`setCredentials as setSessionCredentials`, `clearCredentials as clearSessionCredentials`) in `apiClient.ts` — import directly.
-- [ ] Add a comment in `sessionSlice.ts` documenting the naming decision (`setCredentials` not `setSessionCredentials`).
-- [ ] Verify no stale aliases remain: `grep` for `setSessionCredentials` returns only the comment.
+- [x] Remove dead `AccessToken` interface from `apiClient.ts` (never imported anywhere).
+- [x] Remove unnecessary import aliases (`setCredentials as setSessionCredentials`, `clearCredentials as clearSessionCredentials`) in `apiClient.ts` — import directly.
+- [x] Add a comment in `sessionSlice.ts` documenting the naming decision (`setCredentials` not `setSessionCredentials`).
+- [x] Verify no stale aliases remain: `grep` for `setSessionCredentials` returns only the comment.
 
 **Exit criteria**: `pnpm typecheck && pnpm lint && pnpm test` green. No dead exports.
 
@@ -366,3 +365,9 @@ Phase ordering rationale: A is a prerequisite for C (bootstrap needs the 401 exc
 - StrictMode-safe via `useRef` flag.
 - Extended `RefreshResponse.user` and `AuthResponse.user` with `isActive: boolean`; MSW handlers updated.
 - New `SessionBoot.test.tsx` (6 tests): active / deactivated / anonymous / StrictMode / loading shell / pre-existing session.
+
+### v2.4 (2026-10-16) — Phase D shipped & Plan archived
+- Removed unused `AccessToken` interface from `src/lib/apiClient.ts`.
+- Removed `setSessionCredentials` and `clearSessionCredentials` import aliases in `src/lib/apiClient.ts` to consume `setCredentials` and `clearCredentials` directly.
+- Added architectural naming note to `src/app/session/sessionSlice.ts`.
+- Verified 0 type errors, 0 linter errors, and 100% test pass on session tests. Plan marked ✅ Done.
