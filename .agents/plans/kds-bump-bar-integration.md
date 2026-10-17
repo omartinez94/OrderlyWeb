@@ -295,13 +295,13 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Deliver zero-asset, low-latency audio feedback via Web Audio API.
 
-**Status**: 🚧 In Progress
+**Status**: ✅ Complete
 
 **Deliverables**:
-- [ ] Implement `audioFeedback.ts` synthesizing chime, alert, and error waveforms.
-- [ ] Wire audio feedback into bump success, bump rejection, and incoming SignalR `OrderReceived` events.
-- [ ] Provide volume control and mute toggle with browser autoplay unlock.
-- [ ] Vitest component tests verifying oscillator lifecycle.
+- [x] Implement `audioFeedback.ts` synthesizing chime, alert, and error waveforms.
+- [x] Wire audio feedback into bump success, bump rejection, and incoming SignalR `OrderReceived` events.
+- [x] Provide volume control and mute toggle with browser autoplay unlock.
+- [x] Vitest component tests verifying oscillator lifecycle.
 
 **Exit criteria**: Triggering bump emits dual-tone chime without network requests for `.wav`/`.mp3` files.
 
@@ -311,7 +311,7 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Provide station-level key testing, preset selection, and end-to-end verification.
 
-**Status**: 🔒 Blocked
+**Status**: 🚧 In Progress
 
 **Deliverables**:
 - [ ] Add Hardware Configuration section in `KitchenSettingsPage.tsx`.

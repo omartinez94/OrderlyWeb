@@ -1,11 +1,18 @@
 import { useState, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../../components/ui";
 import { TicketCard, type TicketData } from "./TicketCard";
 import { useBumpBar } from "../hardware/useBumpBar";
 import { openVirtualBumpBar } from "../hardware/openVirtualBumpBar";
+import {
+  playBumpChime,
+  playRecallTone,
+  playErrorBuzzer,
+  isAudioMuted,
+  setAudioMuted,
+} from "../hardware/audioFeedback";
 import { useBumpOrderMutation, useRecallOrderMutation } from "../../../app/api/kitchen";
 import type { KitchenTicketDto } from "../../../types/kitchen";
 
@@ -56,6 +63,15 @@ export function KdsTicketGrid({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number>(0);
   const [lastBumpedId, setLastBumpedId] = useState<string | null>(null);
+  const [muted, setMuted] = useState<boolean>(() => isAudioMuted());
+
+  const toggleMute = useCallback(() => {
+    setMuted((prev) => {
+      const next = !prev;
+      setAudioMuted(next);
+      return next;
+    });
+  }, []);
 
   const [bumpOrderMutation] = useBumpOrderMutation();
   const [recallOrderMutation] = useRecallOrderMutation();
@@ -72,6 +88,7 @@ export function KdsTicketGrid({
 
   const handleBump = useCallback(
     async (ticketId: string) => {
+      playBumpChime();
       setLastBumpedId(ticketId);
       if (onBumpOrder) {
         onBumpOrder(ticketId);
@@ -91,9 +108,11 @@ export function KdsTicketGrid({
     async (ticketId?: string) => {
       const targetId = ticketId || lastBumpedId;
       if (!targetId) {
+        playErrorBuzzer();
         toast.info(t("kds:bumpBar.noTicketToRecall", "No recently bumped ticket to recall"));
         return;
       }
+      playRecallTone();
       if (onRecallOrder) {
         onRecallOrder(targetId);
       } else {
@@ -141,6 +160,8 @@ export function KdsTicketGrid({
             const target = currentTickets[selectedSlotIndex];
             if (target) {
               handleBump(target.id);
+            } else {
+              playErrorBuzzer();
             }
             break;
           }
@@ -228,6 +249,22 @@ export function KdsTicketGrid({
               <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
           </div>
+
+          {/* Audio Mute/Unmute Toggle */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleMute}
+            className="h-9 w-9 p-0"
+            aria-label={muted ? "Unmute audio" : "Mute audio"}
+          >
+            {muted ? (
+              <VolumeX className="text-ink-muted h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Volume2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+            )}
+          </Button>
 
           {/* Launcher Button for Virtual Bump Bar Popup */}
           <Button

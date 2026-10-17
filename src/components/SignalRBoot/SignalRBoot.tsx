@@ -19,6 +19,7 @@ import { ordersApi } from "../../app/api/orders";
 import { kitchenApi } from "../../app/api/kitchen";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectAccessToken } from "../../app/session/sessionSelectors";
+import { playNewOrderAlert } from "../../features/kitchen/hardware/audioFeedback";
 
 export interface SignalRBootProps {
   /** Set true once the session slice reports `authenticated`. */
@@ -36,6 +37,7 @@ function dispatchOrderReceived(
   dispatch: ReturnType<typeof useAppDispatch>,
   event: KitchenHubEventMap["OrderReceived"],
 ): void {
+  playNewOrderAlert();
   // Invalidate the kitchen queue for this restaurant so the next
   // render pulls fresh data.
   dispatch(
