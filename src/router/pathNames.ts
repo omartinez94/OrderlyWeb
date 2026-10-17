@@ -71,6 +71,12 @@ export const QUERY_PARAM = {
   BRAND_ID: "brandId",
   ROLE: "role",
   QUERY: "q",
+  STATUS: "status",
+  ORDER_TYPE: "orderType",
+  PAGE: "page",
+  PAGE_SIZE: "pageSize",
+  TABLE_ID: "tableId",
+  GUEST_COUNT: "guestCount",
   /** Legacy alias preserved for the showcase + dev surfaces. */
   SHOWCASE: "showcase",
 } as const;

@@ -1,18 +1,62 @@
 {
   "list": {
     "title": "Pedidos",
-    "subtitle_one": "{{count}} pedido hoy",
-    "subtitle_other": "{{count}} pedidos hoy",
+    "subtitle": "{{count}} pedidos en total",
+    "subtitle_one": "{{count}} pedido en total",
+    "subtitle_other": "{{count}} pedidos en total",
+    "newOrder": "Nuevo pedido",
+    "searchPlaceholder": "Buscar por nº de pedido, cliente, mesa...",
+    "clearSearch": "Limpiar búsqueda",
+    "allStatuses": "Todos los estados",
+    "allTypes": "Todos los tipos",
+    "tableHeaderOrder": "Nº Pedido",
+    "tableHeaderType": "Tipo",
+    "tableHeaderDestination": "Mesa / Cliente",
+    "tableHeaderStatus": "Estado",
+    "tableHeaderItems": "Artículos",
+    "tableHeaderTime": "Hora",
+    "tableHeaderTotal": "Total",
+    "tableHeaderActions": "Acciones",
+    "itemsCount": "{{count}} artículos",
+    "itemsCount_one": "{{count}} artículo",
+    "itemsCount_other": "{{count}} artículos",
+    "tableNumber": "Mesa {{number}}",
+    "viewDetails": "Ver detalles",
+    "emptyTitle": "No se encontraron pedidos",
+    "emptyDescription": "Prueba ajustar la búsqueda o los filtros para encontrar lo que buscas.",
+    "emptyReset": "Restablecer filtros",
+    "paginationShowing": "Mostrando {{from}}-{{to}} de {{total}} pedidos",
+    "paginationPrev": "Anterior",
+    "paginationNext": "Siguiente",
+    "rowsPerPage": "Filas por página",
     "filterAll": "Todos",
     "filterOpen": "Abiertos",
     "filterReady": "Listos",
     "filterClosed": "Cerrados"
   },
+  "types": {
+    "DineIn": "En salón",
+    "Takeout": "Para llevar",
+    "Delivery": "Delivery"
+  },
   "status": {
+    "Ordering": "Borrador",
+    "Pending": "Nuevo",
+    "Confirmed": "Confirmado",
+    "Preparing": "En preparación",
+    "Ready": "Listo",
+    "Delivered": "Entregado",
+    "Completed": "Completado",
+    "Cancelled": "Cancelado",
+    "OnHold": "En espera",
     "open": "Abierto",
     "ready": "Listo",
     "closed": "Cerrado",
-    "cancelled": "Cancelado"
+    "cancelled": "Cancelado",
+    "new": "Nuevo",
+    "acknowledged": "Confirmado",
+    "plating": "Emplatando",
+    "served": "Entregado"
   },
   "create": {
     "title": "Nuevo pedido",
@@ -20,7 +64,12 @@
     "guests": "Comensales",
     "addItem": "Agregar artículo",
     "submit": "Crear pedido",
-    "submitting": "Creando…"
+    "submitting": "Creando…",
+    "sendToKitchen": "Enviar a cocina"
+  },
+  "checkout": {
+    "sending": "Enviando a cocina…",
+    "delayedWarning": "La creación del pedido está demorando más de lo esperado. Consulta la lista en unos momentos."
   },
   "detail": {
     "items": "Artículos",
@@ -28,7 +77,9 @@
     "tax": "Impuesto",
     "tip": "Propina",
     "total": "Total",
-    "splitBill": "Dividir cuenta"
+    "splitBill": "Dividir cuenta",
+    "timeline": "Cronología de actividades",
+    "cancelOrder": "Cancelar pedido"
   },
   "split": {
     "title": "Dividir cuenta",

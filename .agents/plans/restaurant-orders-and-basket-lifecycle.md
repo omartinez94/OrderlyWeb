@@ -11,8 +11,8 @@
 
 | Phase | Name | Target Deliverables | Status |
 |:-----:|---|---|:-----:|
-| 1 | Order List View & Multi-Filter Query Engine | `/site/restaurant/orders`, `OrderListTable`, filter chips | ⏸ Pending |
-| 2 | Smart Order & Basket Creator | `/site/restaurant/orders/new`, catalog picker, cart sidebar | 🔒 Blocked |
+| 1 | Order List View & Multi-Filter Query Engine | `/site/restaurant/orders`, `OrderListTable`, filter chips | ✅ Done |
+| 2 | Smart Order & Basket Creator | `/site/restaurant/orders/new`, catalog picker, cart sidebar | ⏸ Pending |
 | 3 | Order Detail View & Chronological Activity Feed | `/site/restaurant/orders/:id`, `OrderTimeline`, item actions | 🔒 Blocked |
 | 4 | Order Modification & Item Cancellation Workflows | Status gating, item removal, manager approval dialog | 🔒 Blocked |
 | 5 | Interactive Bill Splitting & Settlement Simulation | `/site/restaurant/orders/:id/split-bill`, receipt modal | 🔒 Blocked |
@@ -201,10 +201,10 @@ OrderlyWeb/src/
 ## 7. Development Phases & Verification Checklist
 
 ### Phase 1: Order List View & Multi-Filter Query Engine
-- [ ] Implement `OrderListTable.tsx` and `OrderStatusBadge.tsx` with 5-stop service hues.
-- [ ] Implement `OrderFilterBar.tsx` and URL query hook `useOrderFilters.ts`.
-- [ ] Mount in `src/routes/site/restaurant/OrderListPage.tsx` replacing `ZoneSplash`.
-- [ ] Verification: `pnpm test:run src/features/orders/components/OrderListTable.test.tsx` passes.
+- [x] Implement `OrderListTable.tsx` and `OrderStatusBadge.tsx` with 5-stop service hues.
+- [x] Implement `OrderFilterBar.tsx` and URL query hook `useOrderFilters.ts`.
+- [x] Mount in `src/routes/site/restaurant/OrderListPage.tsx` replacing `ZoneSplash`.
+- [x] Verification: `pnpm test:run src/features/orders/components/OrderListTable.test.tsx` passes.
 
 ### Phase 2: Smart Order & Basket Creator
 - [ ] Build `CatalogItemPicker.tsx` and `ItemModifierModal.tsx`.

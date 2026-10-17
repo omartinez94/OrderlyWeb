@@ -1,19 +1,62 @@
 {
   "list": {
     "title": "Orders",
-    "subtitle": "{{count}} order today",
-    "subtitle_one": "{{count}} order today",
-    "subtitle_other": "{{count}} orders today",
+    "subtitle": "{{count}} orders total",
+    "subtitle_one": "{{count}} order total",
+    "subtitle_other": "{{count}} orders total",
+    "newOrder": "New Order",
+    "searchPlaceholder": "Search by order #, customer, table...",
+    "clearSearch": "Clear search",
+    "allStatuses": "All Statuses",
+    "allTypes": "All Types",
+    "tableHeaderOrder": "Order #",
+    "tableHeaderType": "Type",
+    "tableHeaderDestination": "Table / Customer",
+    "tableHeaderStatus": "Status",
+    "tableHeaderItems": "Items",
+    "tableHeaderTime": "Time",
+    "tableHeaderTotal": "Total",
+    "tableHeaderActions": "Actions",
+    "itemsCount": "{{count}} items",
+    "itemsCount_one": "{{count}} item",
+    "itemsCount_other": "{{count}} items",
+    "tableNumber": "Table {{number}}",
+    "viewDetails": "View details",
+    "emptyTitle": "No orders found",
+    "emptyDescription": "Try adjusting your search or filters to find what you're looking for.",
+    "emptyReset": "Reset filters",
+    "paginationShowing": "Showing {{from}}-{{to}} of {{total}} orders",
+    "paginationPrev": "Previous",
+    "paginationNext": "Next",
+    "rowsPerPage": "Rows per page",
     "filterAll": "All",
     "filterOpen": "Open",
     "filterReady": "Ready",
     "filterClosed": "Closed"
   },
+  "types": {
+    "DineIn": "Dine In",
+    "Takeout": "Takeout",
+    "Delivery": "Delivery"
+  },
   "status": {
+    "Ordering": "Draft",
+    "Pending": "New",
+    "Confirmed": "Confirmed",
+    "Preparing": "Preparing",
+    "Ready": "Ready",
+    "Delivered": "Delivered",
+    "Completed": "Completed",
+    "Cancelled": "Cancelled",
+    "OnHold": "On Hold",
     "open": "Open",
     "ready": "Ready",
     "closed": "Closed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "new": "New",
+    "acknowledged": "Acknowledged",
+    "plating": "Plating",
+    "served": "Served"
   },
   "create": {
     "title": "New order",
@@ -21,7 +64,12 @@
     "guests": "Guests",
     "addItem": "Add item",
     "submit": "Create order",
-    "submitting": "Creating…"
+    "submitting": "Creating…",
+    "sendToKitchen": "Send to Kitchen"
+  },
+  "checkout": {
+    "sending": "Sending to Kitchen…",
+    "delayedWarning": "Order creation is taking longer than expected. Check the orders list momentarily."
   },
   "detail": {
     "items": "Items",
@@ -29,7 +77,9 @@
     "tax": "Tax",
     "tip": "Tip",
     "total": "Total",
-    "splitBill": "Split bill"
+    "splitBill": "Split bill",
+    "timeline": "Activity Timeline",
+    "cancelOrder": "Cancel Order"
   },
   "split": {
     "title": "Split bill",
