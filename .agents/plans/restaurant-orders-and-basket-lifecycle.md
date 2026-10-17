@@ -215,10 +215,10 @@ OrderlyWeb/src/
 - [x] Verification: Order creation fires `checkoutCart` with `Idempotency-Key` header AND poller correctly transitions to order detail on success.
 
 ### Phase 3: Order Detail View & Chronological Activity Feed
-- [ ] Build `OrderDetailPage.tsx` with header metadata and item prep status indicators.
-- [ ] Implement `OrderTimeline.tsx` consuming `order.activities` array.
-- [ ] Add item status tags and seat allocation readouts.
-- [ ] Verification: Unit tests verify chronological activity rendering in stable order.
+- [x] Build `OrderDetailPage.tsx` with header metadata and item prep status indicators.
+- [x] Implement `OrderTimeline.tsx` consuming `order.activities` array.
+- [x] Add item status tags and seat allocation readouts.
+- [x] Verification: Unit tests verify chronological activity rendering in stable order.
 
 ### Phase 4: Order Modification & Item Cancellation Workflows
 - [ ] Implement `OrderActionToolbar.tsx` with role-permission predicates.
