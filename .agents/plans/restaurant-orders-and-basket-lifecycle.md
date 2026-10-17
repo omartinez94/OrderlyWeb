@@ -12,8 +12,8 @@
 | Phase | Name | Target Deliverables | Status |
 |:-----:|---|---|:-----:|
 | 1 | Order List View & Multi-Filter Query Engine | `/site/restaurant/orders`, `OrderListTable`, filter chips | ✅ Done |
-| 2 | Smart Order & Basket Creator | `/site/restaurant/orders/new`, catalog picker, cart sidebar | ⏸ Pending |
-| 3 | Order Detail View & Chronological Activity Feed | `/site/restaurant/orders/:id`, `OrderTimeline`, item actions | 🔒 Blocked |
+| 2 | Smart Order & Basket Creator | `/site/restaurant/orders/new`, catalog picker, cart sidebar | ✅ Done |
+| 3 | Order Detail View & Chronological Activity Feed | `/site/restaurant/orders/:id`, `OrderTimeline`, item actions | ⏸ Pending |
 | 4 | Order Modification & Item Cancellation Workflows | Status gating, item removal, manager approval dialog | 🔒 Blocked |
 | 5 | Interactive Bill Splitting & Settlement Simulation | `/site/restaurant/orders/:id/split-bill`, receipt modal | 🔒 Blocked |
 | 6 | Bilingual Verification & Visual Regression Sweeps | en/es i18n keys, `pnpm test`, jest-axe audit | 🔒 Blocked |
@@ -207,12 +207,12 @@ OrderlyWeb/src/
 - [x] Verification: `pnpm test:run src/features/orders/components/OrderListTable.test.tsx` passes.
 
 ### Phase 2: Smart Order & Basket Creator
-- [ ] Build `CatalogItemPicker.tsx` and `ItemModifierModal.tsx`.
-- [ ] Build `CartSidebar.tsx` wired to `useOrderDraft` hook and `basketApi`.
-- [ ] Implement `useCheckoutPoller.ts` — polls for order after outbox checkout; shows animated pending state; navigates on success or shows delayed-warning toast on 10s timeout.
-- [ ] Support URL query pre-population (`tableId`, `orderType`).
-- [ ] Mount in `src/routes/site/restaurant/OrderCreatePage.tsx`.
-- [ ] Verification: Order creation fires `checkoutCart` with `Idempotency-Key` header AND poller correctly transitions to order detail on success.
+- [x] Build `CatalogItemPicker.tsx` and `ItemModifierModal.tsx`.
+- [x] Build `CartSidebar.tsx` wired to `useOrderDraft` hook and `basketApi`.
+- [x] Implement `useCheckoutPoller.ts` — polls for order after outbox checkout; shows animated pending state; navigates on success or shows delayed-warning toast on 10s timeout.
+- [x] Support URL query pre-population (`tableId`, `orderType`).
+- [x] Mount in `src/routes/site/restaurant/OrderCreatePage.tsx`.
+- [x] Verification: Order creation fires `checkoutCart` with `Idempotency-Key` header AND poller correctly transitions to order detail on success.
 
 ### Phase 3: Order Detail View & Chronological Activity Feed
 - [ ] Build `OrderDetailPage.tsx` with header metadata and item prep status indicators.
