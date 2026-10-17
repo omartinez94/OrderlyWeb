@@ -1,114 +1,211 @@
 /**
  * ordersApi — order CRUD, status mutations, modification approval,
- * split-bill. Tag the cache by `restaurantId` so the restaurant
- * switcher can invalidate by tag.
+ * split-bill, and activity timelines.
  *
- * Status filter list types mirror `docs/website-spec.md` §5.4.
+ * Aligned with .NET 10 Carter Minimal API at `/ordering-api/v1/orders`.
+ * Tags cache by `restaurantId` so the restaurant switcher invalidates by tag.
  */
 
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { dynamicBaseQuery } from "./base";
 import { env } from "../../lib/env";
-import type { OrderStatus } from "../../types/order";
+import type {
+  OrderDto,
+  OrderActivityDto,
+  PaginatedResult,
+  BackendOrderStatus,
+} from "../../types/order";
 
-export interface Order {
-  id: string;
-  restaurantId: string;
-  tableId: string;
-  status: OrderStatus;
-  items: OrderItem[];
-  totalCents: number;
-  openedAt: string;
-  updatedAt: string;
+export type { OrderDto } from "../../types/order";
+
+// Backward-compatible alias for existing consumers
+export type Order = OrderDto;
+
+export interface GetOrdersParams {
+  restaurantId?: string;
+  pageIndex?: number;
+  pageSize?: number;
+  status?: BackendOrderStatus;
+  orderType?: string;
+  tableId?: string;
+  customerId?: string;
 }
 
-export interface OrderItem {
-  id: string;
-  menuItemId: string;
-  name: string;
-  qty: number;
-  priceCents: number;
+export interface GetOrdersResponse {
+  orders: PaginatedResult<OrderDto>;
+}
+
+export interface GetOrderByIdResponse {
+  order: OrderDto;
+}
+
+export interface GetOrderActivitiesParams {
+  orderId: string;
+  type?: string;
+  from?: string;
+  to?: string;
+  pageIndex?: number;
+  pageSize?: number;
+}
+
+export interface GetOrderActivitiesResponse {
+  activities: PaginatedResult<OrderActivityDto>;
 }
 
 export interface CreateOrderRequest {
-  restaurantId: string;
-  tableId: string;
-  items: Array<{ menuItemId: string; qty: number }>;
+  order: OrderDto;
 }
 
-export interface SplitBillRequest {
-  orderId: string;
-  payers: Array<{ name: string; itemIds: string[] }>;
+export interface CreateOrderResponse {
+  id: string;
 }
 
-export interface ProposeModificationRequest {
-  orderId: string;
-  add: Array<{ menuItemId: string; qty: number }>;
-  remove: Array<{ itemId: string }>;
+export interface CancelOrderRequest {
+  id: string;
+  reason: string;
 }
 
 export const ordersApi = createApi({
   reducerPath: "ordersApi",
   baseQuery: dynamicBaseQuery,
   endpoints: (build) => ({
-    getOrders: build.query<Order[], { restaurantId: string; status?: OrderStatus[] }>({
-      query: ({ restaurantId, status }) => {
-        const qs = new URLSearchParams({ restaurantId });
-        if (status?.length) qs.set("status", status.join(","));
-        return `${env.apiBaseUrl}/order-api/orders?${qs.toString()}`;
+    getOrders: build.query<GetOrdersResponse, GetOrdersParams | void>({
+      query: (params) => {
+        const qs = new URLSearchParams();
+        if (params?.pageIndex !== undefined) qs.set("pageIndex", String(params.pageIndex));
+        if (params?.pageSize !== undefined) qs.set("pageSize", String(params.pageSize));
+        if (params?.status) qs.set("status", params.status);
+        if (params?.orderType) qs.set("orderType", params.orderType);
+        if (params?.tableId) qs.set("tableId", params.tableId);
+        if (params?.customerId) qs.set("customerId", params.customerId);
+        const queryStr = qs.toString();
+        return `${env.apiBaseUrl}/ordering-api/v1/orders${queryStr ? `?${queryStr}` : ""}`;
       },
-      providesTags: (result, _e, { restaurantId }) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: "Orders" as const, id })),
-              { type: "Orders" as const, id: `LIST-${restaurantId}` },
-            ]
-          : [{ type: "Orders" as const, id: `LIST-${restaurantId}` }],
+      providesTags: (result, _e, params) => {
+        const restaurantId = params?.restaurantId;
+        const items = result?.orders.data ?? [];
+        return [
+          ...items.map(({ id }) => ({ type: "Orders" as const, id })),
+          { type: "Orders" as const, id: restaurantId ? `LIST-${restaurantId}` : "LIST" },
+        ];
+      },
     }),
-    getOrder: build.query<Order, string>({
-      query: (id) => `${env.apiBaseUrl}/order-api/orders/${encodeURIComponent(id)}`,
+
+    getOrder: build.query<OrderDto, string>({
+      query: (id) => `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}`,
+      transformResponse: (response: GetOrderByIdResponse) => response.order,
       providesTags: (_r, _e, id) => [{ type: "Orders", id }],
     }),
-    createOrder: build.mutation<Order, CreateOrderRequest>({
+
+    getOrderActivities: build.query<PaginatedResult<OrderActivityDto>, GetOrderActivitiesParams>({
+      query: ({ orderId, ...rest }) => {
+        const qs = new URLSearchParams();
+        if (rest.type) qs.set("type", rest.type);
+        if (rest.from) qs.set("from", rest.from);
+        if (rest.to) qs.set("to", rest.to);
+        if (rest.pageIndex !== undefined) qs.set("pageIndex", String(rest.pageIndex));
+        if (rest.pageSize !== undefined) qs.set("pageSize", String(rest.pageSize));
+        const queryStr = qs.toString();
+        return `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(orderId)}/activities${
+          queryStr ? `?${queryStr}` : ""
+        }`;
+      },
+      transformResponse: (response: GetOrderActivitiesResponse) => response.activities,
+      providesTags: (_r, _e, { orderId }) => [{ type: "Orders", id: `ACTIVITIES-${orderId}` }],
+    }),
+
+    createOrder: build.mutation<CreateOrderResponse, CreateOrderRequest>({
       query: (body) => ({
-        url: `${env.apiBaseUrl}/order-api/orders`,
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders`,
         method: "POST",
         body,
       }),
-      invalidatesTags: (_r, _e, { restaurantId }) => [
-        { type: "Orders", id: `LIST-${restaurantId}` },
+      invalidatesTags: (_result, _e, { order }) => [
+        { type: "Orders", id: `LIST-${order.restaurantId}` },
+        { type: "Orders", id: "LIST" },
       ],
     }),
-    updateOrderStatus: build.mutation<Order, { id: string; status: OrderStatus }>({
-      query: ({ id, status }) => ({
-        url: `${env.apiBaseUrl}/order-api/orders/${encodeURIComponent(id)}/status`,
+
+    cancelOrder: build.mutation<void, CancelOrderRequest>({
+      query: ({ id, reason }) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}/cancel`,
         method: "POST",
-        body: { status },
+        body: { reason },
       }),
-      invalidatesTags: (_r, _e, { id }) => [{ type: "Orders", id }],
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: "Orders", id },
+        { type: "Orders", id: `ACTIVITIES-${id}` },
+      ],
     }),
-    proposeModification: build.mutation<Order, ProposeModificationRequest>({
-      query: ({ orderId, ...body }) => ({
-        url: `${env.apiBaseUrl}/order-api/orders/${encodeURIComponent(orderId)}/modifications`,
+
+    confirmOrder: build.mutation<void, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}/confirm`,
         method: "POST",
-        body,
       }),
-      invalidatesTags: (_r, _e, { orderId }) => [{ type: "Orders", id: orderId }],
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Orders", id },
+        { type: "Orders", id: `ACTIVITIES-${id}` },
+      ],
     }),
-    approveModification: build.mutation<Order, { orderId: string; modificationId: string }>({
-      query: ({ orderId, modificationId }) => ({
-        url: `${env.apiBaseUrl}/order-api/orders/${encodeURIComponent(orderId)}/modifications/${encodeURIComponent(modificationId)}/approve`,
+
+    startOrderPrep: build.mutation<void, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}/start-prep`,
         method: "POST",
       }),
-      invalidatesTags: (_r, _e, { orderId }) => [{ type: "Orders", id: orderId }],
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Orders", id },
+        { type: "Orders", id: `ACTIVITIES-${id}` },
+      ],
     }),
-    splitBill: build.mutation<Order, SplitBillRequest>({
-      query: ({ orderId, ...body }) => ({
-        url: `${env.apiBaseUrl}/order-api/orders/${encodeURIComponent(orderId)}/split-bill`,
+
+    markOrderReady: build.mutation<void, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}/mark-ready`,
         method: "POST",
-        body,
       }),
-      invalidatesTags: (_r, _e, { orderId }) => [{ type: "Orders", id: orderId }],
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Orders", id },
+        { type: "Orders", id: `ACTIVITIES-${id}` },
+      ],
+    }),
+
+    markOrderDelivered: build.mutation<void, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(id)}/mark-delivered`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Orders", id },
+        { type: "Orders", id: `ACTIVITIES-${id}` },
+      ],
+    }),
+
+    startItemPrep: build.mutation<void, { orderId: string; itemId: string }>({
+      query: ({ orderId, itemId }) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(
+          orderId,
+        )}/items/${encodeURIComponent(itemId)}/start-prep`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, { orderId }) => [
+        { type: "Orders", id: orderId },
+        { type: "Orders", id: `ACTIVITIES-${orderId}` },
+      ],
+    }),
+
+    markItemReady: build.mutation<void, { orderId: string; itemId: string }>({
+      query: ({ orderId, itemId }) => ({
+        url: `${env.apiBaseUrl}/ordering-api/v1/orders/${encodeURIComponent(
+          orderId,
+        )}/items/${encodeURIComponent(itemId)}/mark-ready`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, { orderId }) => [
+        { type: "Orders", id: orderId },
+        { type: "Orders", id: `ACTIVITIES-${orderId}` },
+      ],
     }),
   }),
   tagTypes: ["Orders"],
@@ -117,9 +214,13 @@ export const ordersApi = createApi({
 export const {
   useGetOrdersQuery,
   useGetOrderQuery,
+  useGetOrderActivitiesQuery,
   useCreateOrderMutation,
-  useUpdateOrderStatusMutation,
-  useProposeModificationMutation,
-  useApproveModificationMutation,
-  useSplitBillMutation,
+  useCancelOrderMutation,
+  useConfirmOrderMutation,
+  useStartOrderPrepMutation,
+  useMarkOrderReadyMutation,
+  useMarkOrderDeliveredMutation,
+  useStartItemPrepMutation,
+  useMarkItemReadyMutation,
 } = ordersApi;

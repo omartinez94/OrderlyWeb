@@ -98,7 +98,9 @@ export const selectAccessibleRestaurants = createSelector(
  * Without an active `restaurantId` the count is 0.
  */
 interface OrdersCacheQueryState {
-  data?: Array<{ restaurantId: string; status: OrderStatus }>;
+  data?:
+    | Array<{ restaurantId: string; status: OrderStatus }>
+    | { orders?: { data?: Array<{ restaurantId: string; status: OrderStatus }> } };
 }
 interface OrdersCache {
   queries: Record<string, OrdersCacheQueryState | undefined>;
@@ -112,23 +114,35 @@ function getOrdersForRestaurant(
   const cache = (state as unknown as { ordersApi?: OrdersCache }).ordersApi;
   if (!cache) return [];
   for (const q of Object.values(cache.queries)) {
-    const data = q?.data;
-    if (Array.isArray(data)) {
-      return data.filter((o) => o.restaurantId === restaurantId);
+    const rawData = q?.data;
+    if (Array.isArray(rawData)) {
+      return rawData.filter((o) => o.restaurantId === restaurantId);
+    }
+    if (
+      rawData &&
+      typeof rawData === "object" &&
+      "orders" in rawData &&
+      Array.isArray(rawData.orders?.data)
+    ) {
+      return rawData.orders.data.filter((o) => o.restaurantId === restaurantId);
     }
   }
   return [];
 }
 
-const IN_PROGRESS_RESTAURANT: ReadonlySet<OrderStatus> = new Set<OrderStatus>([
+const IN_PROGRESS_RESTAURANT: ReadonlySet<string> = new Set<string>([
   "acknowledged",
   "preparing",
   "plating",
+  "Confirmed",
+  "Preparing",
 ]);
-const IN_PROGRESS_KITCHEN: ReadonlySet<OrderStatus> = new Set<OrderStatus>([
+const IN_PROGRESS_KITCHEN: ReadonlySet<string> = new Set<string>([
   "preparing",
   "plating",
   "ready",
+  "Preparing",
+  "Ready",
 ]);
 
 export const selectOpsCountForZone = (
