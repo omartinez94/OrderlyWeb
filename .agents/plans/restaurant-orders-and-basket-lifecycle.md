@@ -227,11 +227,11 @@ OrderlyWeb/src/
 - [x] Verification: 409 transition errors properly catch and surface Sonner error toasts.
 
 ### Phase 5: Interactive Bill Splitting & Settlement Simulation
-- [ ] Implement `SplitBillAssignment.tsx` supporting Equal and Custom splits.
-- [ ] Implement `useSplitBill.ts` with cent-balanced rounding logic.
-- [ ] Implement `ReceiptModal.tsx` with clean print styling.
-- [ ] Mount in `src/routes/site/restaurant/OrderSplitBillPage.tsx`.
-- [ ] Verification: Unit test verifies that sum of split amounts equals total order amount.
+- [x] Implement `SplitBillAssignment.tsx` supporting Equal and Custom splits.
+- [x] Implement `useSplitBill.ts` with cent-balanced rounding logic.
+- [x] Implement `ReceiptModal.tsx` with clean print styling.
+- [x] Mount in `src/routes/site/restaurant/OrderSplitBillPage.tsx`.
+- [x] Verification: Unit test verifies that sum of split amounts equals total order amount.
 
 ### Phase 6: Bilingual Verification & Visual Regression Sweeps
 - [ ] Populate all order translation keys in `src/locales/en/orders.json` and `es/orders.json`.

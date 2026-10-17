@@ -8,3 +8,5 @@ export * from "./OrderTimeline";
 export * from "./OrderItemRow";
 export * from "./CancelOrderDialog";
 export * from "./OrderActionToolbar";
+export * from "./ReceiptModal";
+export * from "./SplitBillAssignment";
