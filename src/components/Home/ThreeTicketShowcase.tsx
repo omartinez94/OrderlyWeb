@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useTranslate } from "../../hooks/useTranslate";
-import { Check } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
-import { useScrollProgress } from "../../hooks/useScrollProgress";
 import "./ThreeTicketShowcase.css";
 
 // ============================================
@@ -472,103 +470,16 @@ function TicketMesh({ scrollProgress }: TicketMeshProps) {
   );
 }
 
-interface TimelineStepProps {
-  title: string;
-  description: string;
-  time?: string;
-  status: "completed" | "active" | "pending";
-  isLast?: boolean;
-  align?: "left" | "right";
-}
-
-function TimelineStep({
-  title,
-  description,
-  time,
-  status,
-  isLast,
-  align = "left",
-}: TimelineStepProps) {
-  const isRight = align === "right";
-
-  return (
-    <div
-      className={`relative flex flex-col pb-5 last:pb-0 ${
-        isRight ? "items-start pr-0 pl-7 md:items-end md:pr-7 md:pl-0" : "items-start pr-0 pl-7"
-      }`}
-    >
-      {/* Connector line */}
-      {!isLast && (
-        <div
-          className={`absolute top-5.5 bottom-0 w-[2px] ${
-            status === "completed" ? "bg-success/50" : "bg-border-subtle"
-          } ${isRight ? "right-auto left-2 md:right-2 md:left-auto" : "right-auto left-2"}`}
-        />
-      )}
-
-      {/* Circle indicator */}
-      <div
-        className={`absolute top-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border shadow-sm transition-all duration-300 ${
-          status === "completed"
-            ? "border-success bg-success/15 text-success"
-            : status === "active"
-              ? "border-accent bg-accent/15 text-accent animate-pulse"
-              : "border-border-strong bg-surface-elevated text-ink-subtle"
-        } ${isRight ? "right-auto left-0 md:right-0 md:left-auto" : "right-auto left-0"}`}
-      >
-        {status === "completed" ? (
-          <Check className="h-2.5 w-2.5" />
-        ) : status === "active" ? (
-          <div className="bg-accent h-1.5 w-1.5 rounded-full" />
-        ) : (
-          <div className="bg-border-strong h-1 w-1 rounded-full" />
-        )}
-      </div>
-
-      {/* Text Content */}
-      <div
-        className={`flex flex-col ${isRight ? "items-start text-left md:items-end md:text-right" : "items-start text-left"}`}
-      >
-        <div className="flex items-baseline gap-2">
-          {isRight ? (
-            <>
-              {time && (
-                <span className="text-ink-subtle order-2 font-mono text-[10px] font-medium md:order-1">
-                  {time}
-                </span>
-              )}
-              <span
-                className={`order-1 text-sm font-bold md:order-2 ${
-                  status === "pending" ? "text-ink-muted font-semibold" : "text-primary"
-                }`}
-              >
-                {title}
-              </span>
-            </>
-          ) : (
-            <>
-              <span
-                className={`text-sm font-bold ${
-                  status === "pending" ? "text-ink-muted font-semibold" : "text-primary"
-                }`}
-              >
-                {title}
-              </span>
-              {time && (
-                <span className="text-ink-subtle font-mono text-[10px] font-medium">{time}</span>
-              )}
-            </>
-          )}
-        </div>
-        <span className="text-ink-muted mt-0.5 text-xs font-medium">{description}</span>
-      </div>
-    </div>
-  );
-}
-
 export function ThreeTicketShowcase() {
   const translate = useTranslate("common");
-  const { ref, progress } = useScrollProgress();
+  const containerRef = useRef<HTMLElement>(null);
+  const [stage, setStage] = useState<0 | 1>(0);
+  const [progress, setProgress] = useState(0);
+  const isAnimatingRef = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
+  const progressRef = useRef(0);
+  progressRef.current = progress;
+
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const tealColor = isDark ? "#4A8B98" : "#1F4254";
@@ -583,15 +494,250 @@ export function ThreeTicketShowcase() {
         (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
       );
       setHasWebGL(supportsWebGL);
-    } catch (e) {
+    } catch {
       setHasWebGL(false);
     }
   }, []);
 
+  const animateToProgress = useCallback((target: number, duration = 650) => {
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      setProgress(target);
+      return;
+    }
+
+    isAnimatingRef.current = true;
+    const startTime = performance.now();
+    const startProgress = progressRef.current;
+    const diff = target - startProgress;
+
+    const easeInOutCubic = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      const eased = easeInOutCubic(t);
+      const nextVal = startProgress + diff * eased;
+      setProgress(nextVal);
+
+      if (t < 1) {
+        animationFrameRef.current = requestAnimationFrame(step);
+      } else {
+        setProgress(target);
+        animationFrameRef.current = null;
+        setTimeout(() => {
+          isAnimatingRef.current = false;
+        }, 150);
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(step);
+  }, []);
+
+  const goToStage = useCallback((targetStage: 0 | 1) => {
+    setStage(targetStage);
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const containerTop = window.scrollY + rect.top;
+    const runway = container.offsetHeight - window.innerHeight;
+    const targetY = targetStage === 0 ? containerTop : containerTop + runway;
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    animateToProgress(stage === 0 ? 0 : 1);
+  }, [stage, animateToProgress]);
+
+  // Wheel handling: single scroll smoothly transitions stages along the runway
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 15) return;
+
+      const rect = container.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const runway = container.offsetHeight - viewportHeight;
+      const containerTop = window.scrollY + rect.top;
+
+      // Active inside the runway zone: from entering the section (rect.top <= 140)
+      // to the bottom of the runway (rect.top >= -runway - 20)
+      const isInsideRunway = rect.top <= 140 && rect.top >= -runway - 20;
+
+      if (!isInsideRunway) return;
+
+      if (isAnimatingRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.deltaY > 0) {
+        // Scrolling Down:
+        if (stage === 0) {
+          // If at stage 0, advance to stage 1 and smoothly glide window down the runway
+          e.preventDefault();
+          isAnimatingRef.current = true;
+          setStage(1);
+          window.scrollTo({ top: containerTop + runway, behavior: "smooth" });
+          setTimeout(() => {
+            isAnimatingRef.current = false;
+          }, 650);
+        }
+        // If already at stage 1 and at runway bottom, do NOT preventDefault!
+        // The browser natively and smoothly continues scrolling into the next section.
+      } else {
+        // Scrolling Up:
+        if (stage === 1) {
+          // If at stage 1, return to stage 0 and smoothly glide window up to runway top
+          e.preventDefault();
+          isAnimatingRef.current = true;
+          setStage(0);
+          window.scrollTo({ top: containerTop, behavior: "smooth" });
+          setTimeout(() => {
+            isAnimatingRef.current = false;
+          }, 650);
+        }
+        // If already at stage 0 and at runway top, do NOT preventDefault!
+        // The browser natively and smoothly continues scrolling into the previous section.
+      }
+    };
+
+    const handleScroll = () => {
+      if (isAnimatingRef.current) return;
+      const rect = container.getBoundingClientRect();
+      const runway = container.offsetHeight - window.innerHeight;
+      if (runway <= 0) return;
+      const scrolled = -rect.top;
+      const p = Math.min(1, Math.max(0, scrolled / runway));
+      if (p <= 0.35 && stage !== 0) {
+        setStage(0);
+      } else if (p >= 0.65 && stage !== 1) {
+        setStage(1);
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [stage]);
+
+  // Touch handling: single swipe moves between stages along the runway
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let touchStartY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const rect = container.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const runway = container.offsetHeight - viewportHeight;
+      const containerTop = window.scrollY + rect.top;
+      const isInsideRunway = rect.top <= 140 && rect.top >= -runway - 20;
+      if (!isInsideRunway) return;
+
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffY = touchStartY - touchEndY;
+
+      if (Math.abs(diffY) < 35 || isAnimatingRef.current) return;
+
+      if (diffY > 0) {
+        if (stage === 0) {
+          isAnimatingRef.current = true;
+          setStage(1);
+          window.scrollTo({ top: containerTop + runway, behavior: "smooth" });
+          setTimeout(() => {
+            isAnimatingRef.current = false;
+          }, 650);
+        }
+      } else {
+        if (stage === 1) {
+          isAnimatingRef.current = true;
+          setStage(0);
+          window.scrollTo({ top: containerTop, behavior: "smooth" });
+          setTimeout(() => {
+            isAnimatingRef.current = false;
+          }, 650);
+        }
+      }
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    container.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [stage]);
+
   return (
-    <section ref={ref} className="three-ticket-showcase-container">
+    <section ref={containerRef} className="three-ticket-showcase-container">
       {/* Sticky viewport covering the active scroll state */}
       <div className="three-ticket-sticky">
+        {/* Dynamic Ambient Station Atmosphere */}
+        <div
+          className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out"
+          style={{
+            background:
+              stage === 0
+                ? "radial-gradient(circle 540px at 72% 50%, rgba(242, 106, 58, 0.12), transparent 70%), radial-gradient(circle 600px at 20% 30%, rgba(31, 66, 84, 0.14), transparent 70%)"
+                : "radial-gradient(circle 540px at 28% 50%, rgba(5, 150, 105, 0.14), transparent 70%), radial-gradient(circle 600px at 80% 30%, rgba(31, 66, 84, 0.14), transparent 70%)",
+          }}
+        />
+
+        {/* Precision Architectural Grid Pattern */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.22] dark:opacity-[0.28]"
+          style={{
+            backgroundImage: "radial-gradient(var(--color-border-strong) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+            maskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
+          }}
+        />
+
+        {/* Giant Editorial Watermark */}
+        <div
+          className="pointer-events-none absolute top-1/2 left-1/2 font-mono text-7xl font-black tracking-tighter whitespace-nowrap uppercase opacity-[0.035] transition-all duration-700 ease-out select-none sm:text-8xl md:text-9xl dark:opacity-[0.055]"
+          style={{
+            transform: `translate(-50%, -50%) scale(${1 + (progress - 0.5) * 0.04})`,
+          }}
+        >
+          {stage === 0
+            ? translate("home.threeTicketShowcase.watermark1")
+            : translate("home.threeTicketShowcase.watermark2")}
+        </div>
+
+        {/* Horizontal Guide Rails mimicking kitchen conveyor corridor */}
+        <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-between px-6 opacity-30 select-none">
+          <div className="border-border-strong w-full border-t border-dashed" />
+          <div className="border-border-strong text-ink-subtle mx-4 shrink-0 rounded border px-2.5 py-0.5 font-mono text-[9px] font-bold tracking-widest uppercase">
+            {stage === 0 ? "STATION 01 // HOT LINE" : "STATION 02 // PASS QC"}
+          </div>
+          <div className="border-border-strong w-full border-t border-dashed" />
+        </div>
+
         {/* Full-screen overlay canvas */}
         {hasWebGL && (
           <div className="three-canvas-container">
@@ -616,7 +762,7 @@ export function ThreeTicketShowcase() {
         <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
           {/* Section 1: Active KDS Preparation */}
           <div
-            className="absolute inset-0 flex items-center transition-all duration-100 ease-out"
+            className="absolute inset-0 flex items-center transition-all duration-150 ease-out"
             style={{
               opacity: Math.max(0, 1 - progress * 2.5),
               transform: `translateY(-${progress * 40}px)`,
@@ -625,56 +771,51 @@ export function ThreeTicketShowcase() {
           >
             <div className="three-ticket-layout">
               {/* Column 1: Text */}
-              <div className="three-text-content bg-surface/90 border-border-subtle/50 pointer-events-auto max-w-lg rounded-2xl border p-6 backdrop-blur-md md:max-w-none md:border-none md:bg-transparent md:p-0 md:backdrop-blur-none">
-                <span className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
-                  {translate("home.threeTicketShowcase.badge")}
-                </span>
-                <h2 className="font-display text-primary mt-2 text-3xl font-bold tracking-tight md:text-4xl">
+              <div className="three-text-content pointer-events-auto max-w-xl">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+                    <span className="bg-accent relative inline-flex h-2 w-2 rounded-full" />
+                  </span>
+                  <span className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
+                    {translate("home.threeTicketShowcase.stage1Badge")}
+                  </span>
+                </div>
+
+                <h2 className="font-display text-primary mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
                   {translate("home.threeTicketShowcase.heading")}
                 </h2>
-                <p className="text-ink-muted mt-4 font-sans text-base leading-relaxed">
+
+                <p className="text-ink-muted mt-4 max-w-xl font-sans text-lg leading-relaxed font-medium sm:text-xl">
                   {translate("home.threeTicketShowcase.description")}
                 </p>
 
-                {/* Timeline Section */}
-                <div className="mt-8 flex w-full max-w-sm flex-col">
-                  <h3 className="text-primary mb-4 text-xs font-bold tracking-wider uppercase">
-                    {translate("home.threeTicketShowcase.timelineTitle")}
-                  </h3>
-                  <div className="flex flex-col">
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step1Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step1Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step1Time")}
-                      status="completed"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step2Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step2Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step2Time")}
-                      status="completed"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step3Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step3Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step3Time")}
-                      status="active"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step4Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step4Desc")}
-                      status="pending"
-                      isLast
-                    />
+                {/* Telemetry Stat Cards */}
+                <div className="mt-8 grid max-w-md grid-cols-2 gap-4">
+                  <div className="border-border-subtle bg-surface-elevated/70 rounded-xl border p-4 shadow-xs backdrop-blur-sm">
+                    <div className="text-ink font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">
+                      {translate("home.threeTicketShowcase.stage1Stat1Value")}
+                    </div>
+                    <div className="text-ink-muted mt-1 font-mono text-xs font-semibold tracking-wider uppercase">
+                      {translate("home.threeTicketShowcase.stage1Stat1Label")}
+                    </div>
+                  </div>
+                  <div className="border-border-subtle bg-surface-elevated/70 rounded-xl border p-4 shadow-xs backdrop-blur-sm">
+                    <div className="text-ink font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">
+                      {translate("home.threeTicketShowcase.stage1Stat2Value")}
+                    </div>
+                    <div className="text-ink-muted mt-1 font-mono text-xs font-semibold tracking-wider uppercase">
+                      {translate("home.threeTicketShowcase.stage1Stat2Label")}
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-6 flex items-center gap-3 font-mono text-xs">
-                  <span className="bg-service-aqua/10 text-service-aqua border-service-aqua/20 rounded-full border px-2.5 py-1">
+                  <span className="bg-service-aqua/10 text-service-aqua border-service-aqua/20 rounded-full border px-3 py-1 font-bold">
                     {translate("home.threeTicketShowcase.ticket.status")}
                   </span>
                   <span className="text-ink-subtle">•</span>
-                  <span className="text-ink-muted">
+                  <span className="text-ink-muted font-bold">
                     {translate("home.threeTicketShowcase.ticket.table")}
                   </span>
                 </div>
@@ -691,7 +832,7 @@ export function ThreeTicketShowcase() {
 
           {/* Section 2: Served & Completed */}
           <div
-            className="absolute inset-0 flex items-center transition-all duration-100 ease-out"
+            className="absolute inset-0 flex items-center transition-all duration-150 ease-out"
             style={{
               opacity: Math.max(0, (progress - 0.6) * 2.5),
               transform: `translateY(${(1 - progress) * 40}px)`,
@@ -707,64 +848,88 @@ export function ThreeTicketShowcase() {
               </div>
 
               {/* Column 2: Text */}
-              <div className="three-text-content bg-surface/90 border-border-subtle/50 pointer-events-auto flex max-w-lg flex-col rounded-2xl border p-6 text-left backdrop-blur-md md:max-w-none md:items-end md:border-none md:bg-transparent md:p-0 md:text-right md:backdrop-blur-none">
-                <span className="text-success font-mono text-xs font-bold tracking-widest uppercase">
-                  {translate("home.scrollShowcase.served.label")}
-                </span>
-                <h2 className="font-display text-primary mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-                  {translate("home.scrollShowcase.served.title")}
+              <div className="three-text-content pointer-events-auto flex max-w-xl flex-col text-left md:ml-auto md:items-end md:text-right">
+                <div className="flex items-center gap-2 md:justify-end">
+                  <span className="bg-success h-2 w-2 rounded-full" />
+                  <span className="text-success font-mono text-xs font-bold tracking-widest uppercase">
+                    {translate("home.threeTicketShowcase.stage2Badge")}
+                  </span>
+                </div>
+
+                <h2 className="font-display text-primary mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
+                  {translate("home.threeTicketShowcase.stage2Title")}
                 </h2>
-                <p className="text-ink-muted mt-4 font-sans text-base leading-relaxed">
-                  {translate("home.scrollShowcase.served.description")}
+
+                <p className="text-ink-muted mt-4 max-w-xl font-sans text-lg leading-relaxed font-medium sm:text-xl">
+                  {translate("home.threeTicketShowcase.stage2Description")}
                 </p>
 
-                {/* Timeline Section (no header) */}
-                <div className="mt-8 flex w-full max-w-sm flex-col">
-                  <div className="flex flex-col">
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step1Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step1Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step1Time")}
-                      status="completed"
-                      align="right"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step2Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step2Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step2Time")}
-                      status="completed"
-                      align="right"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step3Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step3Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step3Time")}
-                      status="completed"
-                      align="right"
-                    />
-                    <TimelineStep
-                      title={translate("home.threeTicketShowcase.timeline.step4Title")}
-                      description={translate("home.threeTicketShowcase.timeline.step4Desc")}
-                      time={translate("home.threeTicketShowcase.timeline.step4Time")}
-                      status="completed"
-                      isLast
-                      align="right"
-                    />
+                {/* Telemetry Stat Cards */}
+                <div className="mt-8 grid w-full max-w-md grid-cols-2 gap-4 md:ml-auto">
+                  <div className="border-border-subtle bg-surface-elevated/70 rounded-xl border p-4 text-left shadow-xs backdrop-blur-sm">
+                    <div className="text-success font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">
+                      {translate("home.threeTicketShowcase.stage2Stat1Value")}
+                    </div>
+                    <div className="text-ink-muted mt-1 font-mono text-xs font-semibold tracking-wider uppercase">
+                      {translate("home.threeTicketShowcase.stage2Stat1Label")}
+                    </div>
+                  </div>
+                  <div className="border-border-subtle bg-surface-elevated/70 rounded-xl border p-4 text-left shadow-xs backdrop-blur-sm">
+                    <div className="text-ink font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">
+                      {translate("home.threeTicketShowcase.stage2Stat2Value")}
+                    </div>
+                    <div className="text-ink-muted mt-1 font-mono text-xs font-semibold tracking-wider uppercase">
+                      {translate("home.threeTicketShowcase.stage2Stat2Label")}
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-6 flex items-center gap-3 font-mono text-xs">
-                  <span className="bg-success/10 text-success border-success/20 rounded-full border px-2.5 py-1 font-bold">
+                  <span className="bg-success/10 text-success border-success/20 rounded-full border px-3 py-1 font-bold">
                     {translate("home.threeTicketShowcase.ticket.statusCompleted")}
                   </span>
                   <span className="text-ink-subtle">•</span>
-                  <span className="text-ink-muted">
+                  <span className="text-ink-muted font-bold">
                     {translate("home.threeTicketShowcase.ticket.archivedTag")}
                   </span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Interactive Stage Indicator Pills */}
+        <div
+          className="bg-surface-elevated/90 border-border-strong/60 shadow-elevation-card absolute bottom-6 left-1/2 z-20 flex -translate-x-[50%] items-center gap-1.5 rounded-full border p-1.5 backdrop-blur-md"
+          role="tablist"
+          aria-label="Ticket stage selector"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={stage === 0}
+            onClick={() => goToStage(0)}
+            className={`cursor-pointer rounded-full px-3.5 py-1.5 font-mono text-xs font-bold transition-all duration-200 ${
+              stage === 0
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "text-ink-muted hover:text-ink hover:bg-surface"
+            }`}
+          >
+            01 {translate("home.threeTicketShowcase.stage1Badge")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={stage === 1}
+            onClick={() => goToStage(1)}
+            className={`cursor-pointer rounded-full px-3.5 py-1.5 font-mono text-xs font-bold transition-all duration-200 ${
+              stage === 1
+                ? "bg-success text-white shadow-xs"
+                : "text-ink-muted hover:text-ink hover:bg-surface"
+            }`}
+          >
+            02 {translate("home.threeTicketShowcase.stage2Badge")}
+          </button>
         </div>
       </div>
     </section>

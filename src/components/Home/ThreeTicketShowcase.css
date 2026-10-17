@@ -1,7 +1,7 @@
 .three-ticket-showcase-container {
   position: relative;
   width: 100%;
-  min-height: 150vh; /* Shorter scroll runway for faster transitions */
+  min-height: 200vh;
   background-color: var(--color-surface);
 }
 
@@ -9,6 +9,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
+  min-height: 640px;
   width: 100%;
   overflow: hidden;
 }
