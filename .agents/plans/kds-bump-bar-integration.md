@@ -261,13 +261,13 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Build a standalone, non-resizable popup route replicating the physical Logic Controls KB9000 membrane bar.
 
-**Status**: 🚧 In Progress
+**Status**: ✅ Complete
 
 **Deliverables**:
-- [ ] Create route `/site/kitchen/virtual-bumpbar` in `src/router/zones/kitchen.tsx`.
-- [ ] Implement `VirtualBumpBarPad.tsx` rendering the physical 24-key tactile layout (slots 1–8, Bump, Recall, Next, Prev, Summary, Hold).
-- [ ] Add "Open Virtual Bump Bar" launcher button to `KitchenDashboardPage.tsx` opening at `840x220` (`resizable=no`).
-- [ ] Connect clicks/touch on virtual buttons to `publishBumpAction` over `BroadcastChannel`.
+- [x] Create route `/site/kitchen/virtual-bumpbar` in `src/router/zones/kitchen.tsx`.
+- [x] Implement `VirtualBumpBarPad.tsx` rendering the physical 24-key tactile layout (slots 1–8, Bump, Recall, Next, Prev, Summary, Hold).
+- [x] Add "Open Virtual Bump Bar" launcher button to `KitchenDashboardPage.tsx` opening at `840x220` (`resizable=no`).
+- [x] Connect clicks/touch on virtual buttons to `publishBumpAction` over `BroadcastChannel`.
 
 **Exit criteria**: Clicking "BUMP" in the popup window triggers the bump handler in the main KDS window via `BroadcastChannel`.
 
@@ -277,7 +277,7 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Connect keyboard actions to ticket navigation, slot focusing, API bump dispatching, and multi-page board scrolling.
 
-**Status**: 🔒 Blocked
+**Status**: 🚧 In Progress
 
 **Deliverables**:
 - [ ] Implement `KdsTicketGrid.tsx` with focused slot state (`0` to `7`) and slot number badges (`#1` to `#8`).

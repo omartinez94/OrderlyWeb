@@ -43,6 +43,7 @@ export const PATH = {
   // Kitchen zone children.
   KITCHEN_ORDER_DETAIL: "/site/kitchen/order/:id",
   KITCHEN_SETTINGS: "/site/kitchen/settings",
+  KITCHEN_VIRTUAL_BUMPBAR: "/site/kitchen/virtual-bumpbar",
 
   // Restaurant zone children.
   RESTAURANT_ORDERS: "/site/restaurant/orders",

@@ -40,6 +40,8 @@ import { HomePage } from "../routes/HomePage";
 import { NotFoundPage } from "../routes/NotFoundPage";
 import { LoginPage } from "../routes/LoginPage";
 import { ProfilePage } from "../routes/ProfilePage";
+import { GuardedPage } from "../components/RouteGuards/GuardedPage";
+import { VirtualBumpBarPage } from "../routes/site/kitchen/VirtualBumpBarPage";
 import { PATH } from "./pathNames";
 import adminZone from "./zones/adminZone";
 import kitchenZone from "./zones/kitchenZone";
@@ -79,6 +81,14 @@ export const routes = [
         ),
       },
       { ...adminZone, path: PATH.ADMIN.slice(1) },
+      {
+        path: PATH.KITCHEN_VIRTUAL_BUMPBAR.slice(1),
+        Component: () => (
+          <GuardedPage allow="kitchen">
+            <VirtualBumpBarPage />
+          </GuardedPage>
+        ),
+      },
       { ...kitchenZone, path: PATH.KITCHEN.slice(1) },
       { ...restaurantZone, path: PATH.RESTAURANT.slice(1) },
       { path: PATH.NOT_FOUND, Component: NotFoundPage },
