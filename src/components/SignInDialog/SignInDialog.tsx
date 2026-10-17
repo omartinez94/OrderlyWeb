@@ -13,24 +13,29 @@
  */
 
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { useTranslate } from "../../hooks/useTranslate";
-import { ChefHat, Crown, Wine } from "lucide-react";
+import { ChefHat, Crown, ShieldCheck, Wine } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { PasswordInput } from "../ui/password-input";
 import { useLoginMutation } from "../../app/api/identity";
+import { defaultZoneForRoles } from "../../lib/defaultZone";
+import { PATH } from "../../router/pathNames";
 import { toast } from "../ui/sonner";
 
 const DEMO_PRESETS: {
   email: string;
-  key: "admin" | "kitchen" | "floorManager";
+  password: string;
+  key: "admin" | "kitchen" | "floorManager" | "restaurantAdmin";
   Icon: typeof Crown;
 }[] = [
-  { email: "admin@orderly.com", key: "admin", Icon: Crown },
-  { email: "kitchen@orderly.com", key: "kitchen", Icon: ChefHat },
-  { email: "manager@orderly.com", key: "floorManager", Icon: Wine },
+  { email: "admin@orderly.com", password: "Admin@123456", key: "admin", Icon: Crown },
+  { email: "kitchen@acme.com", password: "Password123!", key: "kitchen", Icon: ChefHat },
+  { email: "manager@acme.com", password: "Password123!", key: "floorManager", Icon: Wine },
+  { email: "admin@acme.com", password: "Password123!", key: "restaurantAdmin", Icon: ShieldCheck },
 ];
 
 export interface SignInDialogProps {
@@ -43,21 +48,23 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
   const [password, setPassword] = useState("");
   const [login, { isLoading }] = useLoginMutation();
   const translate = useTranslate("auth");
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handlePreset = (presetEmail: string) => {
-    setEmail(presetEmail);
-    // Identity password policy (docs/backend-architecture/architecture.md
-    // §1, line 144): length ≥ 8, digit + non-alphanumeric + upper + lower.
-    // `Admin@123456` is the seeded SuperAdmin credential — satisfies the
-    // policy and matches the docs.
-    setPassword("Admin@123456");
+  const handlePreset = (preset: (typeof DEMO_PRESETS)[number]) => {
+    setEmail(preset.email);
+    setPassword(preset.password);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!email || !password) return;
     try {
-      await login({ email, password }).unwrap();
+      const auth = await login({ email, password }).unwrap();
+      const targetZone = defaultZoneForRoles(auth.roles);
+      if (targetZone && (location.pathname === PATH.HOME || location.pathname === "/")) {
+        navigate(targetZone, { replace: true });
+      }
       onOpenChange(false);
     } catch (err) {
       const message = (err as { data?: { message?: string } }).data?.message ?? "Sign-in failed";
@@ -111,17 +118,20 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
             {translate("demoPresets.title", "Quick Demo Roles")}
           </p>
           <div className="flex flex-wrap gap-2">
-            {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => handlePreset(presetEmail)}
-                className="border-border-subtle bg-surface hover:bg-surface-elevated text-ink flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{translate(`demoPresets.${key}`)}</span>
-              </button>
-            ))}
+            {DEMO_PRESETS.map((preset) => {
+              const { key, Icon } = preset;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => handlePreset(preset)}
+                  className="border-border-subtle bg-surface hover:bg-surface-elevated text-ink flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{translate(`demoPresets.${key}`)}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 

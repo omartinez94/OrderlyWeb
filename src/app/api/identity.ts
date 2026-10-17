@@ -92,15 +92,16 @@ export interface StaffAuditEntry {
   reason?: string;
 }
 
-function transformAuthResponse(res: any): AuthResponse {
+function transformAuthResponse(res: unknown): AuthResponse {
+  const r = res as Record<string, unknown>;
   // If the backend already returns the custom shape, use it:
-  if (res.user && res.accessToken) return res as AuthResponse;
+  if (r.user && r.accessToken) return res as AuthResponse;
 
   // Otherwise, parse the OpenIddict shape:
-  const token = res.id_token || res.access_token;
+  const token = (r.id_token || r.access_token) as string | undefined;
   if (!token) throw new Error("No token returned");
 
-  let claims: any = {};
+  let claims: Record<string, unknown> = {};
   try {
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -111,32 +112,65 @@ function transformAuthResponse(res: any): AuthResponse {
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
         .join(""),
     );
-    claims = JSON.parse(jsonPayload);
+    claims = JSON.parse(jsonPayload) as Record<string, unknown>;
   } catch (e) {
     console.error("Failed to parse JWT claims", e);
   }
 
-  const roleClaim = claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [];
-  const roles = Array.isArray(roleClaim) ? roleClaim : [roleClaim];
+  const parseListClaim = (value: unknown): string[] => {
+    if (Array.isArray(value)) return value.map(String);
+    if (typeof value === "string" && value.length > 0) return [value];
+    return [];
+  };
 
-  const name = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "";
-  const email = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || "";
+  const rawRoles = [
+    ...parseListClaim(claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]),
+    ...parseListClaim(claims["role"]),
+  ];
+  const roles = (
+    rawRoles.length > 0 ? Array.from(new Set(rawRoles)) : []
+  ) as readonly import("../../types/auth").Role[];
+
+  const rawPermissions = parseListClaim(claims["permissions"] ?? claims["permission"]);
+  const permissions = (
+    rawPermissions.length > 0 ? Array.from(new Set(rawPermissions)) : []
+  ) as readonly import("../../types/auth").Permission[];
+
+  const name =
+    (typeof claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] === "string"
+      ? claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+      : undefined) ??
+    (typeof claims["name"] === "string" ? claims["name"] : "") ??
+    "";
+
+  const email =
+    (typeof claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ===
+    "string"
+      ? claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]
+      : undefined) ??
+    (typeof claims["email"] === "string" ? claims["email"] : "") ??
+    "";
+
+  const id =
+    (typeof claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ===
+    "string"
+      ? claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+      : undefined) ??
+    (typeof claims["sub"] === "string" ? claims["sub"] : "") ??
+    "";
 
   return {
-    accessToken: res.access_token,
-    expiresAt: Date.now() + res.expires_in * 1000,
+    accessToken: (r.access_token as string) ?? "",
+    expiresAt: Date.now() + Number(r.expires_in ?? 0) * 1000,
     user: {
-      id:
-        claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ||
-        claims.sub ||
-        "",
+      id,
       name,
       email,
-      initials: name.substring(0, 2).toUpperCase(),
+      initials: name.length >= 2 ? name.substring(0, 2).toUpperCase() : name.toUpperCase() || "U",
       isActive: true,
     },
     roles,
-    permissions: [],
+    permissions,
   };
 }
 
@@ -158,7 +192,7 @@ export const identityApi = createApi({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
-      transformResponse: (res: any) => transformAuthResponse(res),
+      transformResponse: (res: unknown) => transformAuthResponse(res),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -173,7 +207,7 @@ export const identityApi = createApi({
         url: `${env.apiBaseUrl}/identity-api/api/auth/refresh`,
         method: "POST",
       }),
-      transformResponse: (res: any) => transformAuthResponse(res),
+      transformResponse: (res: unknown) => transformAuthResponse(res),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -185,7 +219,7 @@ export const identityApi = createApi({
     }),
     logout: build.mutation<void, void>({
       query: () => ({
-        url: `${env.apiBaseUrl}/identity-api/api/auth/logout`,
+        url: `${env.apiBaseUrl}/identity-api/v1/auth/logout`,
         method: "POST",
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {

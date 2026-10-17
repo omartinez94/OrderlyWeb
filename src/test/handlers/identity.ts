@@ -58,6 +58,7 @@ export const identityHandlers = [
     }),
   ),
 
+  http.post(`${BASE}/v1/auth/logout`, () => new HttpResponse(null, { status: 204 })),
   http.post(`${BASE}/auth/logout`, () => new HttpResponse(null, { status: 204 })),
 
   http.get(`${BASE}/users/me`, () =>

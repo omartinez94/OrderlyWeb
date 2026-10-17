@@ -39,12 +39,14 @@ import "./LoginPage.css";
 
 const DEMO_PRESETS: {
   email: string;
-  key: "admin" | "kitchen" | "floorManager";
+  password: string;
+  key: "admin" | "kitchen" | "floorManager" | "restaurantAdmin";
   Icon: typeof Crown;
 }[] = [
-  { email: "admin@orderly.com", key: "admin", Icon: Crown },
-  { email: "kitchen@orderly.com", key: "kitchen", Icon: ChefHat },
-  { email: "manager@orderly.com", key: "floorManager", Icon: Wine },
+  { email: "admin@orderly.com", password: "Admin@123456", key: "admin", Icon: Crown },
+  { email: "kitchen@acme.com", password: "Password123!", key: "kitchen", Icon: ChefHat },
+  { email: "manager@acme.com", password: "Password123!", key: "floorManager", Icon: Wine },
+  { email: "admin@acme.com", password: "Password123!", key: "restaurantAdmin", Icon: ShieldCheck },
 ];
 
 export function LoginPage() {
@@ -77,14 +79,9 @@ export function LoginPage() {
     }
   };
 
-  const handlePreset = (presetEmail: string) => {
-    setEmail(presetEmail);
-    // Identity password policy (docs/backend-architecture/architecture.md
-    // §1, line 144): length ≥ 8, digit + non-alphanumeric + upper + lower.
-    // "password123" failed on upper + non-alphanumeric and produced 401.
-    // `Admin@123456` is the seeded SuperAdmin credential — satisfies the
-    // policy and matches the docs.
-    setPassword("Admin@123456");
+  const handlePreset = (preset: (typeof DEMO_PRESETS)[number]) => {
+    setEmail(preset.email);
+    setPassword(preset.password);
   };
 
   return (
@@ -266,17 +263,20 @@ export function LoginPage() {
                 {translate("demoPresets.title")}
               </p>
               <div className="flex flex-wrap gap-2">
-                {DEMO_PRESETS.map(({ email: presetEmail, key, Icon }) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => handlePreset(presetEmail)}
-                    className="login-preset-pill"
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{translate(`demoPresets.${key}`)}</span>
-                  </button>
-                ))}
+                {DEMO_PRESETS.map((preset) => {
+                  const { key, Icon } = preset;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => handlePreset(preset)}
+                      className="login-preset-pill"
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                      <span>{translate(`demoPresets.${key}`)}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

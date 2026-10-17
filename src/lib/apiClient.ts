@@ -41,25 +41,8 @@
 
 import { env } from "./env";
 import { store } from "../app/store";
-import {
-  setCredentials as setSessionCredentials,
-  clearCredentials as clearSessionCredentials,
-} from "../app/session/sessionSlice";
+import { setCredentials, clearCredentials } from "../app/session/sessionSlice";
 import i18n, { LANGUAGE_STORAGE_KEY, isSupportedLanguage } from "./i18n";
-import type { Role } from "../types/auth";
-import type { Permission } from "../types/auth";
-
-/**
- * Access token shape stored in the session slice.
- */
-export interface AccessToken {
-  token: string;
-  expiresAt: number;
-  user: { id: string; name: string; email: string; initials: string };
-  roles: readonly Role[];
-  permissions: readonly Permission[];
-}
-
 import { refreshAccessToken, type RefreshResponse } from "./authRefresh";
 
 /**
@@ -76,7 +59,7 @@ function readAccessToken(): string | null {
  */
 function writeAccessToken(next: RefreshResponse): void {
   store.dispatch(
-    setSessionCredentials({
+    setCredentials({
       accessToken: next.accessToken,
       expiresAt: next.expiresAt,
       user: next.user,
@@ -84,13 +67,6 @@ function writeAccessToken(next: RefreshResponse): void {
       permissions: next.permissions,
     }),
   );
-}
-
-/**
- * Clears credentials on terminal auth failure.
- */
-function clearCredentials(): void {
-  store.dispatch(clearSessionCredentials());
 }
 
 /**
@@ -174,7 +150,7 @@ export async function apiFetch<T = unknown>(
       const json = await refreshAccessToken();
       writeAccessToken(json);
     } catch {
-      clearCredentials();
+      store.dispatch(clearCredentials());
       throw new ApiError(401, "Unauthorized");
     }
     return apiFetch<T>(path, { ...options, _refreshAttempted: true });

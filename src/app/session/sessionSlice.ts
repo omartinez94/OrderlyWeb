@@ -16,7 +16,7 @@
  *
  * Reducers:
  *   - setStatus(status)            — flips the auth lifecycle state
- *   - setCredentials(payload)      — stores token + user + roles
+ *   - setCredentials(payload)      — stores token + user + roles (named `setCredentials` directly rather than `setSessionCredentials`)
  *   - clearCredentials()           — wipes everything; used by logout
  *
  * The slice is intentionally tiny. Async work (login / refresh) lives

@@ -1,9 +1,19 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "./router";
 import { store } from "../app/store";
+import { setCredentials } from "../app/session/sessionSlice";
+import type { Role, Permission } from "../types/auth";
+
+const SEED_ADMIN = {
+  accessToken: "test-access-token",
+  expiresAt: Date.now() + 15 * 60 * 1000,
+  user: { id: "u-001", name: "Super Admin", email: "admin@orderly.com", initials: "SA" },
+  roles: ["SuperAdmin", "KitchenManager"] as readonly Role[],
+  permissions: [] as readonly Permission[],
+};
 
 function renderWithRoute(initialEntry: string) {
   const router = createMemoryRouter(routes, { initialEntries: [initialEntry] });
@@ -15,6 +25,9 @@ function renderWithRoute(initialEntry: string) {
 }
 
 describe("router", () => {
+  beforeEach(() => {
+    store.dispatch(setCredentials(SEED_ADMIN));
+  });
   afterEach(() => cleanup());
 
   describe("/home", () => {
