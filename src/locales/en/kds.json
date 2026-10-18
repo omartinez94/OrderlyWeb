@@ -48,5 +48,25 @@
     "nextPage": "NEXT",
     "hold": "HOLD",
     "slot": "SLOT {{number}}"
+  },
+  "settings": {
+    "title": "KDS settings",
+    "subtitle": "Station hardware profiles, bump bar calibration, and audio feedback.",
+    "audioTitle": "Audio feedback",
+    "audioDesc": "Synthesized acoustic signals for bumps, recalls, and new tickets.",
+    "volume": "Master volume",
+    "mute": "Mute all sounds",
+    "testAudio": "Test Chime",
+    "wakeLockTitle": "Screen wake lock",
+    "wakeLockDesc": "Keep screen awake continuously during kitchen operating hours.",
+    "wakeLockToggle": "Prevent screen sleep",
+    "hardwareTitle": "Hardware bump bar profile",
+    "hardwareDesc": "Select commercial USB HID keypad profile or test keyboard inputs.",
+    "activeProfile": "Active profile",
+    "testMatrixTitle": "Live scan code key tester",
+    "testMatrixDesc": "Press any physical bump bar key or virtual simulator button to verify input capture.",
+    "lastCaptured": "Last captured:",
+    "noneCaptured": "Press any key to test...",
+    "resetDefaults": "Reset to defaults"
   }
 }

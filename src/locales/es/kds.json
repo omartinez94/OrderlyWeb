@@ -47,5 +47,25 @@
     "nextPage": "SIGUIENTE",
     "hold": "RETENER",
     "slot": "SLOT {{number}}"
+  },
+  "settings": {
+    "title": "Configuración KDS",
+    "subtitle": "Perfiles de hardware, calibración de bump bar y alertas auditivas.",
+    "audioTitle": "Alertas auditivas",
+    "audioDesc": "Señales acústicas sintetizadas para despachos, recuperaciones y nuevos pedidos.",
+    "volume": "Volumen general",
+    "mute": "Silenciar sonidos",
+    "testAudio": "Probar sonido",
+    "wakeLockTitle": "Bloqueo de suspensión de pantalla",
+    "wakeLockDesc": "Mantener la pantalla siempre encendida durante el horario de cocina.",
+    "wakeLockToggle": "Prevenir suspensión de pantalla",
+    "hardwareTitle": "Perfil de hardware bump bar",
+    "hardwareDesc": "Seleccionar perfil de teclado USB HID comercial o probar entradas de teclado.",
+    "activeProfile": "Perfil activo",
+    "testMatrixTitle": "Probador en vivo de teclas y scan codes",
+    "testMatrixDesc": "Presione cualquier tecla física del bump bar o botón virtual para verificar la captura.",
+    "lastCaptured": "Última captura:",
+    "noneCaptured": "Presione una tecla para probar...",
+    "resetDefaults": "Restablecer valores"
   }
 }

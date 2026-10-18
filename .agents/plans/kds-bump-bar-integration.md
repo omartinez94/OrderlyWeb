@@ -6,16 +6,16 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-10-11) — `MINOR` increments after each phase completion; `MAJOR` is reserved for breaking restructures of the plan itself.
-> **Current state**: ⏸ Not started
+> **Plan version**: `v1.2` (2026-10-17) — All 5 phases completed and verified.
+> **Current state**: ✅ Completed
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
-| 1 | Unified Input Engine (`useBumpBar`) & `BroadcastChannel` Protocol | ⏸ Pending |
-| 2 | Standalone Virtual Bump Bar Popup (`/site/kitchen/virtual-bumpbar`) | 🔒 Blocked |
-| 3 | Active Ticket Grid Selection & Visual Hotkey Indicators | 🔒 Blocked |
-| 4 | Audio Feedback Engine (Web Audio API Synthesizer) | 🔒 Blocked |
-| 5 | Station Hardware Profiles, Calibration UI & E2E Verification | 🔒 Blocked |
+| 1 | Unified Input Engine (`useBumpBar`) & `BroadcastChannel` Protocol | ✅ Complete |
+| 2 | Standalone Virtual Bump Bar Popup (`/site/kitchen/virtual-bumpbar`) | ✅ Complete |
+| 3 | Active Ticket Grid Selection, Hotkey Badges & Board Pagination | ✅ Complete |
+| 4 | Audio Feedback Engine (Web Audio API Synthesizer) | ✅ Complete |
+| 5 | Station Hardware Profiles, Calibration UI & E2E Verification | ✅ Complete |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -311,14 +311,14 @@ export function useBumpBar(handler: (action: BumpBarAction) => void) {
 
 **Goal**: Provide station-level key testing, preset selection, and end-to-end verification.
 
-**Status**: 🚧 In Progress
+**Status**: ✅ Complete
 
 **Deliverables**:
-- [ ] Add Hardware Configuration section in `KitchenSettingsPage.tsx`.
-- [ ] Implement interactive "Bump Bar Key Test" widget that highlights keys when pressed on physical hardware or virtual bar.
-- [ ] Persist settings in `localStorage` with fallback to default profile.
-- [ ] Playwright test simulating physical bump bar input sequences and virtual popup interaction.
-- [ ] Run full test suite: `pnpm ui:check`.
+- [x] Add Hardware Configuration section in `KitchenSettingsPage.tsx`.
+- [x] Implement interactive "Bump Bar Key Test" widget that highlights keys when pressed on physical hardware or virtual bar.
+- [x] Persist settings in `localStorage` with fallback to default profile.
+- [x] Playwright test simulating physical bump bar input sequences and virtual popup interaction.
+- [x] Run full test suite: `pnpm ui:check`.
 
 **Exit criteria**: Playwright tests pass; `pnpm ui:check` exits with code 0.
 
