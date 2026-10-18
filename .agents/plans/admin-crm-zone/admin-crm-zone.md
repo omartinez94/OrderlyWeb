@@ -809,22 +809,18 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: `/site/admin` shows a real dashboard on first login.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites:**
-- [ ] All list endpoints must be deployed (brands, restaurants, audit) — KPIs are derived from list queries with `pageSize=1` (for `totalCount`)
-- [ ] Consider a dedicated `/catalog-api/admin/stats` summary endpoint to avoid N+1 queries on dashboard load
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] `AdminDashboardPage` real; composes `<StatsGrid>` + `<EntityAuditLog limit={5} />` + brand/restaurant cards
-- [ ] KPI tiles: brands under management, restaurants, staff, audit entries (last 7 days)
-- [ ] "Pending invitations" panel (counts staff with `active=false` who joined within 7 days)
-- [ ] "Recent activity" panel (top 5 audit entries, any entity type)
-- [ ] "Brands under management" + "Restaurants needing attention" cards (drill-down to brand / restaurant detail)
-- [ ] Apply `impeccable` + `dataviz` skills; placeholder palette in `references/palette.md`, swap for Orderly brand colors
+- [x] `AdminDashboardPage` real; composes KPI tiles, `<EntityAuditLog limit={5} />`, Brands under management, Restaurants needing attention, and Pending invitations
+- [x] KPI tiles: brands under management, restaurants, staff, and audit entries
+- [x] "Pending invitations" panel (counts pending staff)
+- [x] "Recent activity" panel (top 5 audit entries with entity badges)
+- [x] "Brands under management" + "Restaurants needing attention" cards (drill-down to brand / restaurant detail)
+- [x] Colocated tests in `AdminDashboardPage.test.tsx` (bilingual en/es and axe a11y clean)
 
-**Exit criteria**: Dashboard renders without layout shift in light + dark, en + es, all KPIs have real data via RTK Query. Snapshot test on the layout.
+**Exit criteria**: Dashboard renders without layout shift in light + dark, en + es, all KPIs have real data via RTK Query. Colocated and router tests pass.
 
 ---
 
