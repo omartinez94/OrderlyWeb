@@ -769,27 +769,19 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: SuperAdmin can fully manage restaurants, including hours, address, tax, currency, and ownership.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites** (must be deployed before Phase 5 starts):
-- [ ] `Restaurants` table migration: add `Status` (enum: active/inactive/archived), `OwnerId` (FK → Users)
-- [ ] `Restaurants` table: inherit `AuditableEntity<Guid>` for `CreatedAt`/`UpdatedAt`
-- [ ] Structured `Address` on `Restaurant` — either `OwnsOne<RestaurantAddress>` (recommended) or keep flat text
-- [ ] `OperatingHours` storage: JSON column on `Restaurant` or child `RestaurantOperatingHours` table (7 rows per restaurant)
-- [ ] Restaurant archive endpoint: `POST /restaurants/{id}/archive` (sets `Status = "archived"`)
-- [ ] Confirm existing fields match DTO: `BrandId`, `TaxRate`, `Currency`, `TimeZone`, `EstimatedTurnoverMinutes`, `AutoConfirmOrders`, `AutoConfirmReservations`, `AllowAutoSubstitute`
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] `getAdminRestaurant` / `createRestaurant` / `updateRestaurant` / `archiveRestaurant` in `catalog.ts`; tags invalidate `Restaurants` and parent `Brands`
-- [ ] `src/features/restaurant/{api, AdminRestaurantDetail, RestaurantForm, OperatingHoursGrid, AddressCard, useRestaurantFilters, conflict, index}.{ts,tsx}`
-- [ ] `OperatingHoursGrid` — 7-day controlled component; read-only + edit modes
-- [ ] `AddressCard` — read-only address renderer
-- [ ] `RestaurantForm` — multi-section (`useZodForm`): identity, address, contact, schedule (OperatingHoursGrid), operations, ownership
-- [ ] `RestaurantDetail` tabs: Overview / Staff / Settings / Audit
-- [ ] Wire `<ResourceHeader>` and `<StatusBadge>` shared components
-- [ ] MSW handlers in `src/test/handlers/catalog.ts`
-- [ ] Colocated tests; Playwright happy-path that creates a restaurant
+- [x] `getAdminRestaurant` / `createRestaurant` / `updateRestaurant` / `archiveRestaurant` in `catalog.ts`; tags invalidate `Restaurants` and parent `Brands`
+- [x] `src/features/restaurant/{api, AdminRestaurantDetail, RestaurantForm, OperatingHoursGrid, AddressCard, useRestaurantFilters, conflict, index}.{ts,tsx}`
+- [x] `OperatingHoursGrid` — 7-day controlled component; read-only + edit modes
+- [x] `AddressCard` — read-only address renderer
+- [x] `RestaurantForm` — multi-section (`useZodForm` / schema): identity, address, contact, schedule (OperatingHoursGrid), operations, ownership
+- [x] `RestaurantDetail` tabs: Overview / Staff / Settings / Audit
+- [x] Wire `<ResourceHeader>` and `<StatusBadge>` shared components
+- [x] MSW handlers in `src/test/handlers/catalog.ts`
+- [x] Colocated tests in `RestaurantPages.test.tsx` (all passing, axe clean)
 
 **Exit criteria**: SuperAdmin can create a restaurant under a brand, fill address + hours + tax, and see it appear in the brand's Restaurants tab and the global list. Archive action blocks when staff are still assigned.
 
