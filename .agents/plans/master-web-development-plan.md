@@ -6,15 +6,15 @@
 
 ## Status
 
-> **Plan version**: `v1.1` (2026-10-16) — Restructured with microservice alignment (`Basket.API`, `Catalog.API`, `Ordering.API`, `Kitchen.API`), child plan synchronization, and anticipatory UX specifications.
-> **Current state**: 🚧 Phase 0, 1, and 2 completed. Phase 3 & 4 ready for kickoff.
+> **Plan version**: `v1.2` (2026-10-18) — Completed Phase 3 (Catalog, Floor Plan, Reservations & Queue Operations). Unblocked Phase 4 & prepared Phase 5 prerequisites.
+> **Current state**: 🚧 Phase 0, 1, 2, and 3 completed. Phase 4 ready for kickoff.
 
 | Phase | Name | Target Deliverable / Domain | Status |
 |:---:|---|---|:---:|
 | **0** | API Gateway & RTK Query Alignment | Cross-cutting / Data Layer (`ordering-api`, `kitchen-api`, `basket-api`, `catalog-api`) | ✅ Done |
 | **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | ✅ Done |
 | **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | ✅ Done |
-| **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | ⏸ Pending |
+| **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | ✅ Done |
 | **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | ⏸ Pending |
 | **5** | Operational Analytics, Feedback & Production Hardening | `/site/restaurant/analytics`, `/feedback`, Playwright E2E, a11y & Lighthouse | 🔒 Blocked |
 
@@ -174,16 +174,16 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 **Goal**: Provide operational floor management, dining room seating, waitlist orchestration, and 86'd inventory controls.
 **Target Zone**: `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue`
 **Deliverables**:
-- [ ] **Menu Availability Manager (`/site/restaurant/menu`)**:
+- [x] **Menu Availability Manager (`/site/restaurant/menu`)**:
   - Catalog browser by Category and Sub-category.
   - 86'd Out-of-Stock instant toggle (invalidates menu cache across terminals).
   - Temporary price modifier and ingredient substitution indicator.
-- [ ] **Interactive Dining Floor Plan (`/site/restaurant/tables`)**:
+- [x] **Interactive Dining Floor Plan (`/site/restaurant/tables`)**:
   - Visual table layout grid reflecting Table position (X/Y), capacity, and shape.
   - Table state indicators: `Available`, `Occupied`, `Reserved`, `Needs Cleaning`.
   - Merged tables support (`MergedTables` cluster visualization).
   - Quick actions: One-tap party seating, click-through to active order, or "New Order" shortcut.
-- [ ] **Walk-In Queue & Reservations (`/site/restaurant/queue`, `/reservations`)**:
+- [x] **Walk-In Queue & Reservations (`/site/restaurant/queue`, `/reservations`)**:
   - Live waitlist with party size, quoted wait time, and notification status.
   - Reservation calendar with check-in, seat, and no-show actions (aligned with Catalog Hangfire background jobs).
 **Exit Criteria**: 86'd items immediately disable in the Order Creation menu; seating a party from the floor plan navigates to Order Creation with table pre-selected.

@@ -14,6 +14,10 @@ import type {
   MenuCategory,
   MenuItem,
   TableStatus,
+  ReservationDto,
+  ReservationStatus,
+  QueuePartyDto,
+  QueuePartyStatus,
 } from "../../types/catalog";
 
 export type * from "../../types/catalog";
@@ -53,6 +57,47 @@ export interface UpdateMenuItemAvailabilityRequest {
   id: string;
   isAvailable: boolean;
   restaurantId?: string;
+}
+
+export interface UpdateTableStatusRequest {
+  restaurantId: string;
+  tableId: string;
+  status: TableStatus;
+}
+
+export interface CreateReservationRequest {
+  restaurantId: string;
+  guestName: string;
+  partySize: number;
+  reservationTime: string;
+  tableNumber?: string | null;
+  tableId?: string | null;
+  contactPhone?: string | null;
+  specialRequests?: string | null;
+}
+
+export interface UpdateReservationStatusRequest {
+  restaurantId: string;
+  reservationId: string;
+  status: ReservationStatus;
+  tableNumber?: string | null;
+  tableId?: string | null;
+}
+
+export interface AddToQueueRequest {
+  restaurantId: string;
+  guestName: string;
+  partySize: number;
+  phone: string;
+  quotedWaitMinutes: number;
+}
+
+export interface UpdateQueueStatusRequest {
+  restaurantId: string;
+  partyId: string;
+  status: QueuePartyStatus;
+  allocatedTableId?: string | null;
+  allocatedTableNumber?: string | null;
 }
 
 export const catalogApi = createApi({
@@ -177,8 +222,103 @@ export const catalogApi = createApi({
         }
       },
     }),
+
+    updateTableStatus: build.mutation<void, UpdateTableStatusRequest>({
+      query: ({ restaurantId, tableId, status }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/tables/${encodeURIComponent(tableId)}/status`,
+        method: "PUT",
+        body: { status },
+      }),
+      invalidatesTags: (_r, _e, { restaurantId }) => [
+        { type: "Tables", id: `LIST-${restaurantId}` },
+      ],
+    }),
+
+    getReservations: build.query<ReservationDto[], { restaurantId: string; date?: string }>({
+      query: ({ restaurantId, date }) => {
+        const qs = date ? `?date=${encodeURIComponent(date)}` : "";
+        return `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/reservations${qs}`;
+      },
+      providesTags: (_r, _e, { restaurantId }) => [
+        { type: "Reservations", id: `LIST-${restaurantId}` },
+      ],
+    }),
+
+    createReservation: build.mutation<ReservationDto, CreateReservationRequest>({
+      query: ({ restaurantId, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/reservations`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { restaurantId }) => [
+        { type: "Reservations", id: `LIST-${restaurantId}` },
+      ],
+    }),
+
+    updateReservationStatus: build.mutation<void, UpdateReservationStatusRequest>({
+      query: ({ restaurantId, reservationId, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/reservations/${encodeURIComponent(reservationId)}/status`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { restaurantId }) => [
+        { type: "Reservations", id: `LIST-${restaurantId}` },
+        { type: "Tables", id: `LIST-${restaurantId}` },
+      ],
+    }),
+
+    getQueue: build.query<QueuePartyDto[], { restaurantId: string }>({
+      query: ({ restaurantId }) =>
+        `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(restaurantId)}/queue`,
+      providesTags: (_r, _e, { restaurantId }) => [{ type: "Queue", id: `LIST-${restaurantId}` }],
+    }),
+
+    addToQueue: build.mutation<QueuePartyDto, AddToQueueRequest>({
+      query: ({ restaurantId, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/queue`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { restaurantId }) => [
+        { type: "Queue", id: `LIST-${restaurantId}` },
+      ],
+    }),
+
+    updateQueueStatus: build.mutation<void, UpdateQueueStatusRequest>({
+      query: ({ restaurantId, partyId, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/queue/${encodeURIComponent(partyId)}/status`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { restaurantId }) => [
+        { type: "Queue", id: `LIST-${restaurantId}` },
+        { type: "Tables", id: `LIST-${restaurantId}` },
+      ],
+    }),
   }),
-  tagTypes: ["Restaurants", "Tables", "MergedTables", "Menu", "Brands", "AdminSettings", "Audit"],
+  tagTypes: [
+    "Restaurants",
+    "Tables",
+    "MergedTables",
+    "Menu",
+    "Brands",
+    "AdminSettings",
+    "Audit",
+    "Reservations",
+    "Queue",
+  ],
 });
 
 export const {
@@ -190,4 +330,11 @@ export const {
   useSplitTablesMutation,
   useGetMenuQuery,
   useUpdateMenuItemAvailabilityMutation,
+  useUpdateTableStatusMutation,
+  useGetReservationsQuery,
+  useCreateReservationMutation,
+  useUpdateReservationStatusMutation,
+  useGetQueueQuery,
+  useAddToQueueMutation,
+  useUpdateQueueStatusMutation,
 } = catalogApi;

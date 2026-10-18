@@ -5,18 +5,28 @@
     "subtitle_one": "{{count}} table",
     "subtitle_other": "{{count}} tables",
     "status": {
+      "all": "All Tables",
       "available": "Available",
       "occupied": "Occupied",
       "reserved": "Reserved",
-      "cleaning": "Cleaning"
+      "cleaning": "Needs Cleaning"
     },
     "seats": "Seats",
     "guests_one": "{{count}} guest",
     "guests_other": "{{count}} guests"
   },
   "reservations": {
-    "title": "Reservations",
-    "new": "New reservation",
+    "title": "Table Reservations & Calendar",
+    "subtitle": "Review guest bookings, meal period shifts, check-in arrivals, and table allocations.",
+    "new": "New Reservation",
+    "refresh": "Refresh",
+    "allShifts": "All Shifts",
+    "lunch": "Lunch (11:30 – 15:30)",
+    "dinner": "Dinner (17:00 – 22:30)",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "seated": "Seated",
+    "total": "Total",
     "name": "Guest name",
     "party": "Party size",
     "time": "Time",
@@ -39,5 +49,22 @@
     "noItemsFound": "No menu items found",
     "noItemsMatchFilter": "Try adjusting your category filter or search query.",
     "refresh": "Refresh Menu"
+  },
+  "queue": {
+    "title": "Walk-In Guest Waitlist",
+    "subtitle": "Monitor arrival queues, track quoted wait times, and seat parties when tables become available.",
+    "addWalkIn": "Add Walk-In",
+    "guestName": "Guest Name",
+    "partySize": "Party Size",
+    "phone": "Contact Phone",
+    "quotedWait": "Quoted Wait (min)",
+    "notify": "Notify",
+    "seat": "Seat",
+    "noShow": "No Show",
+    "waiting": "Waiting",
+    "notified": "SMS Notified",
+    "seated": "Seated",
+    "empty": "The walk-in queue is currently empty.",
+    "refresh": "Refresh"
   }
 }

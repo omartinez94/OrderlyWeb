@@ -6,17 +6,17 @@
 
 ## Status
 
-> **Plan version**: `v1.0` (2026-10-16) — Initial Phase 3 plan derived from `master-web-development-plan.md`.
-> **Current state**: 🚧 Phase 1 completed; Phase 2 ready for kickoff.
+> **Plan version**: `v1.2` (2026-10-18) — Completed Phase 3 execution across all 6 subphases.
+> **Current state**: ✅ All 6 sub-phases completed, tested, and verified.
 
 | Phase | Name | Target Deliverables | Status |
 |:-----:|---|---|:-----:|
 | 1 | Menu Catalog & Instant 86'd Inventory Management | `/site/restaurant/menu`, availability toggle, category tabs | ✅ Done |
-| 2 | Interactive Dining Floor Plan & Table Grid | `/site/restaurant/tables`, X/Y spatial grid, status indicators | ⏸ Pending |
-| 3 | Table Clustering & Merged Tables Operations | Merged table parent-child associations, cluster cards | 🔒 Blocked |
-| 4 | Walk-In Queue & Guest Waitlist Management | `/site/restaurant/queue`, SMS notification triggers | 🔒 Blocked |
-| 5 | Reservation Calendar & Seating Coordination | `/site/restaurant/reservations`, check-in, no-show actions | 🔒 Blocked |
-| 6 | Bilingual Verification & Visual Regression Sweeps | en/es i18n keys, `pnpm test`, jest-axe audit | 🔒 Blocked |
+| 2 | Interactive Dining Floor Plan & Table Grid | `/site/restaurant/tables`, X/Y spatial grid, status indicators | ✅ Done |
+| 3 | Table Clustering & Merged Tables Operations | Merged table parent-child associations, cluster cards | ✅ Done |
+| 4 | Walk-In Queue & Guest Waitlist Management | `/site/restaurant/queue`, SMS notification triggers | ✅ Done |
+| 5 | Reservation Calendar & Seating Coordination | `/site/restaurant/reservations`, check-in, no-show actions | ✅ Done |
+| 6 | Bilingual Verification & Visual Regression Sweeps | en/es i18n keys, `pnpm test`, jest-axe audit | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -183,40 +183,46 @@ OrderlyWeb/src/
 - [x] Verification: Toggling an item 86'd immediately invalidates `Menu` tags and updates card status.
 
 ### Phase 2: Interactive Dining Floor Plan & Table Grid
-- [ ] Build `FloorPlanGrid.tsx` and `TableCard.tsx` supporting `Square`, `Round`, and `Booth` shapes.
-- [ ] Implement occupancy color states and status filter buttons.
-- [ ] Mount in `src/routes/site/restaurant/TablesPage.tsx`.
-- [ ] Verification: Table card click routing correctly branches between Order Creation and Order Detail.
+- [x] Build `FloorPlanGrid.tsx` and `TableCard.tsx` supporting `Square`, `Round`, and `Booth` shapes.
+- [x] Implement occupancy color states and status filter buttons.
+- [x] Mount in `src/routes/site/restaurant/TablesPage.tsx`.
+- [x] Verification: Table card click routing correctly branches between Order Creation and Order Detail.
 
 ### Phase 3: Table Clustering & Merged Tables Operations
-- [ ] Build `MergedTableGroup.tsx` rendering visual boundaries around merged tables.
-- [ ] Implement merge table dialog: select two adjacent available tables → dispatches `mergeTables` RTK mutation (`POST /catalog-api/v1/restaurants/{id}/merged-tables`).
-- [ ] Implement split (unmerge) action on merged cluster card → dispatches `splitTables` mutation (`DELETE /catalog-api/v1/restaurants/{id}/merged-tables/{mergedTableId}`).
+- [x] Build `MergedTableGroup.tsx` rendering visual boundaries around merged tables.
+- [x] Implement merge table dialog: select two adjacent available tables → dispatches `mergeTables` RTK mutation (`POST /catalog-api/v1/restaurants/{id}/merged-tables`).
+- [x] Implement split (unmerge) action on merged cluster card → dispatches `splitTables` mutation (`DELETE /catalog-api/v1/restaurants/{id}/merged-tables/{mergedTableId}`).
 
 > [!NOTE]
 > Both `MergeTables` and `SplitTables` Carter endpoints are **confirmed present** in `Catalog.API` and their RTK mutations are defined in Phase 0. This sub-phase is RTK wiring + UI only.
 
-- [ ] Verification: Merged tables display combined capacity correctly; splitting restores individual table status.
+- [x] Verification: Merged tables display combined capacity correctly; splitting restores individual table status.
 
 ### Phase 4: Walk-In Queue & Guest Waitlist Management
-- [ ] Build `WaitlistTable.tsx` and `AddWalkInDialog.tsx`.
-- [ ] Implement live elapsed wait timers using `date-fns`.
-- [ ] Mount in `src/routes/site/restaurant/QueuePage.tsx`.
-- [ ] Verification: Seating a waitlist party updates queue status and frees capacity.
+- [x] Build `WaitlistTable.tsx` and `AddWalkInDialog.tsx`.
+- [x] Implement live elapsed wait timers using `date-fns`.
+- [x] Mount in `src/routes/site/restaurant/QueuePage.tsx`.
+- [x] Verification: Seating a waitlist party updates queue status and frees capacity.
 
 ### Phase 5: Reservation Calendar & Seating Coordination
-- [ ] Build `ReservationList.tsx` and check-in workflows.
-- [ ] Mount in `src/routes/site/restaurant/ReservationsPage.tsx`.
-- [ ] Verification: Check-in actions properly transition status to Confirmed.
+- [x] Build `ReservationList.tsx` and check-in workflows.
+- [x] Mount in `src/routes/site/restaurant/ReservationsPage.tsx`.
+- [x] Verification: Check-in actions properly transition status to Confirmed.
 
 ### Phase 6: Bilingual Verification & Visual Regression Sweeps
-- [ ] Populate all floor plan, menu, and waitlist keys in `src/locales/en/restaurant.json` and `es/restaurant.json`.
-- [ ] Run automated axe-core accessibility audit across all four routes.
-- [ ] Execute `pnpm ui:check` (typecheck + lint + unit tests).
+- [x] Populate all floor plan, menu, and waitlist keys in `src/locales/en/restaurant.json` and `es/restaurant.json`.
+- [x] Run automated axe-core accessibility audit across all four routes.
+- [x] Execute `pnpm ui:check` (typecheck + lint + unit tests).
 
 ---
 
 ## Changelog
+
+### v1.2 (2026-10-18) — Phase 3 Complete
+- Completed dining floor plan (`/site/restaurant/tables`), table status management, and table clustering/merging dialogs.
+- Completed walk-in waitlist queue (`/site/restaurant/queue`) and SMS/table allocation dialogs.
+- Completed reservation calendar and seating management (`/site/restaurant/reservations`).
+- Full bilingual coverage (`en` / `es`) with zero a11y violations across all routes (367 passing tests).
 
 ### v1.1 (2026-10-17) — Gap Analysis Incorporation
 - Added `useElapsedTimer` shared hook import directive (prevents duplication with Phase 2).

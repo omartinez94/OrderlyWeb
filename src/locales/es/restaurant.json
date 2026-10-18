@@ -4,18 +4,28 @@
     "subtitle_one": "{{count}} mesa",
     "subtitle_other": "{{count}} mesas",
     "status": {
+      "all": "Todas las mesas",
       "available": "Disponible",
       "occupied": "Ocupada",
       "reserved": "Reservada",
-      "cleaning": "Limpiando"
+      "cleaning": "Limpieza necesaria"
     },
     "seats": "Asientos",
     "guests_one": "{{count}} comensal",
     "guests_other": "{{count}} comensales"
   },
   "reservations": {
-    "title": "Reservas",
-    "new": "Nueva reserva",
+    "title": "Reservas de Mesas y Calendario",
+    "subtitle": "Revisa reservas de clientes, turnos de comida, registros de llegada y mesas asignadas.",
+    "new": "Nueva Reserva",
+    "refresh": "Actualizar",
+    "allShifts": "Todos los Turnos",
+    "lunch": "Almuerzo (11:30 – 15:30)",
+    "dinner": "Cena (17:00 – 22:30)",
+    "confirmed": "Confirmada",
+    "pending": "Pendiente",
+    "seated": "Sentada",
+    "total": "Total",
     "name": "Nombre del comensal",
     "party": "Tamaño del grupo",
     "time": "Hora",
@@ -38,5 +48,22 @@
     "noItemsFound": "No se encontraron productos",
     "noItemsMatchFilter": "Intenta ajustar el filtro de categoría o la búsqueda.",
     "refresh": "Actualizar Menú"
+  },
+  "queue": {
+    "title": "Lista de Espera",
+    "subtitle": "Monitorea la fila de llegada, tiempos estimados y asigna mesas disponibles.",
+    "addWalkIn": "Agregar a la Fila",
+    "guestName": "Nombre del Comensal",
+    "partySize": "Tamaño del Grupo",
+    "phone": "Teléfono de Contacto",
+    "quotedWait": "Espera Estimada (min)",
+    "notify": "Notificar",
+    "seat": "Sentar",
+    "noShow": "No Asistió",
+    "waiting": "En Espera",
+    "notified": "SMS Notificado",
+    "seated": "Sentado",
+    "empty": "La lista de espera está vacía actualmente.",
+    "refresh": "Actualizar"
   }
 }

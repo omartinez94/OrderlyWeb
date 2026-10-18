@@ -91,7 +91,7 @@ export interface AdminAuditEntry {
   reason?: string;
 }
 
-export type TableStatus = "Available" | "Occupied" | "Reserved";
+export type TableStatus = "Available" | "Occupied" | "Reserved" | "Needs Cleaning";
 
 export interface Table {
   id: string;
@@ -114,6 +114,39 @@ export interface MergedTableDto {
   isActive: boolean;
   mergedAt: string;
   splitAt?: string | null;
+}
+
+export type ReservationStatus = "pending" | "confirmed" | "seated" | "cancelled";
+
+export interface ReservationDto {
+  id: string;
+  restaurantId: string;
+  guestName: string;
+  partySize: number;
+  reservationTime: string;
+  tableNumber?: string | null;
+  tableId?: string | null;
+  status: ReservationStatus;
+  specialRequests?: string | null;
+  contactPhone?: string | null;
+  createdAt: string;
+}
+
+export type QueuePartyStatus = "waiting" | "notified" | "seated" | "cancelled";
+
+export interface QueuePartyDto {
+  id: string;
+  restaurantId: string;
+  guestName: string;
+  partySize: number;
+  phone: string;
+  quotedWaitMinutes: number;
+  createdAt: string;
+  status: QueuePartyStatus;
+  notifiedAt?: string | null;
+  seatedAt?: string | null;
+  allocatedTableId?: string | null;
+  allocatedTableNumber?: string | null;
 }
 
 export type MenuItemStatus = "available" | "sold_out" | "hidden";
