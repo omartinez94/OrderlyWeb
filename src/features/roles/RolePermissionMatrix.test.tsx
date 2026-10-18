@@ -3,7 +3,7 @@ import { screen } from "@testing-library/react";
 import { axe } from "jest-axe";
 import { renderWithI18n } from "../../test/i18n-wrapper";
 import { RolePermissionMatrix } from "./RolePermissionMatrix";
-import { ROLE_PERMISSIONS, type Role } from "../../types/auth";
+import { ROLE_PERMISSIONS } from "../../types/auth";
 
 describe("RolePermissionMatrix", () => {
   it("renders table with all 8 roles and permissions", () => {

@@ -10,7 +10,10 @@
       "restaurants": "Restaurants",
       "staff": "Staff",
       "audit": "Audit entries"
-    }
+    },
+    "brandsUnderManagement": "Brands under management",
+    "restaurantsAttention": "Restaurants needing attention",
+    "noAttentionNeeded": "All restaurants are operating normally."
   },
   "brands": {
     "title": "Brands",

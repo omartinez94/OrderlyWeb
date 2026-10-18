@@ -10,7 +10,10 @@
       "restaurants": "Restaurantes",
       "staff": "Personal",
       "audit": "Entradas de auditoría"
-    }
+    },
+    "brandsUnderManagement": "Marcas bajo gestión",
+    "restaurantsAttention": "Restaurantes que requieren atención",
+    "noAttentionNeeded": "Todos los restaurantes operan con normalidad."
   },
   "brands": {
     "title": "Marcas",

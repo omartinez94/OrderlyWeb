@@ -55,7 +55,7 @@ describe("router", () => {
     it("renders the admin dashboard for SuperAdmin", async () => {
       renderWithRoute("/site/admin");
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "Admin dashboard" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
       });
     });
 
@@ -141,7 +141,7 @@ describe("router", () => {
     it("redirects / to /site/admin for SuperAdmin", async () => {
       renderWithRoute("/");
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "Admin dashboard" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
       });
     });
   });
