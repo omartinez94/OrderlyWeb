@@ -3,7 +3,13 @@
  */
 
 import { http, HttpResponse } from "msw";
-import type { Table, ReservationDto, QueuePartyDto, CatalogBrand } from "../../types/catalog";
+import type {
+  Table,
+  ReservationDto,
+  QueuePartyDto,
+  CatalogBrand,
+  AdminAuditEntry,
+} from "../../types/catalog";
 
 const BASE = "http://localhost:6004/catalog-api";
 
@@ -49,6 +55,110 @@ export let mockBrands: CatalogBrand[] = [
     active: false,
     createdAt: "2026-03-10T09:00:00Z",
     updatedAt: "2026-05-18T16:45:00Z",
+  },
+];
+
+export let mockAuditEntries: AdminAuditEntry[] = [
+  {
+    id: "audit-c-1",
+    entityType: "brand",
+    entityId: "b-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "create",
+    before: null,
+    after: { name: "Acme Hospitality Group", slug: "acme-hospitality" },
+    timestamp: "2026-01-15T08:00:00Z",
+    reason: "Initial brand creation",
+  },
+  {
+    id: "audit-c-2",
+    entityType: "brand",
+    entityId: "b-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "update",
+    before: { contactPhone: null },
+    after: { contactPhone: "+1 (555) 019-2834" },
+    timestamp: "2026-06-20T12:00:00Z",
+  },
+  {
+    id: "audit-c-3",
+    entityType: "brand",
+    entityId: "b-003",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "archive",
+    before: { active: true },
+    after: { active: false },
+    timestamp: "2026-05-18T16:45:00Z",
+    reason: "Location closed indefinitely",
+  },
+  {
+    id: "audit-c-4",
+    entityType: "restaurant",
+    entityId: "r-001",
+    actorId: "u-admin",
+    actorName: "Alex Rivera",
+    action: "create",
+    before: null,
+    after: { name: "Acme Bistro — Downtown" },
+    timestamp: "2026-02-10T09:00:00Z",
+  },
+  {
+    id: "audit-s-1",
+    entityType: "staff",
+    entityId: "s-001",
+    actorId: "u-system",
+    actorName: "System",
+    action: "create",
+    before: null,
+    after: { name: "Maya Okafor", roles: ["Manager"] },
+    timestamp: "2026-03-01T10:00:00Z",
+  },
+  {
+    id: "audit-s-2",
+    entityType: "staff",
+    entityId: "s-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "role-grant",
+    before: { roles: [] },
+    after: { roles: ["Manager"] },
+    timestamp: "2026-03-02T10:00:00Z",
+  },
+  {
+    id: "audit-s-3",
+    entityType: "staff",
+    entityId: "s-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "restaurant-assign",
+    before: { restaurantIds: ["r-001"] },
+    after: { restaurantIds: ["r-001", "r-002"] },
+    timestamp: "2026-03-03T10:00:00Z",
+  },
+  {
+    id: "audit-s-4",
+    entityType: "staff",
+    entityId: "s-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "deactivate",
+    before: { active: true },
+    after: { active: false },
+    timestamp: "2026-03-04T10:00:00Z",
+  },
+  {
+    id: "audit-s-5",
+    entityType: "staff",
+    entityId: "s-001",
+    actorId: "u-admin",
+    actorName: "Maya Okafor",
+    action: "reactivate",
+    before: { active: false },
+    after: { active: true },
+    timestamp: "2026-03-05T10:00:00Z",
   },
 ];
 
@@ -400,6 +510,110 @@ export const resetMockCatalogState = () => {
       updatedAt: "2026-05-18T16:45:00Z",
     },
   ];
+
+  mockAuditEntries = [
+    {
+      id: "audit-c-1",
+      entityType: "brand",
+      entityId: "b-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "create",
+      before: null,
+      after: { name: "Acme Hospitality Group", slug: "acme-hospitality" },
+      timestamp: "2026-01-15T08:00:00Z",
+      reason: "Initial brand creation",
+    },
+    {
+      id: "audit-c-2",
+      entityType: "brand",
+      entityId: "b-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "update",
+      before: { contactPhone: null },
+      after: { contactPhone: "+1 (555) 019-2834" },
+      timestamp: "2026-06-20T12:00:00Z",
+    },
+    {
+      id: "audit-c-3",
+      entityType: "brand",
+      entityId: "b-003",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "archive",
+      before: { active: true },
+      after: { active: false },
+      timestamp: "2026-05-18T16:45:00Z",
+      reason: "Location closed indefinitely",
+    },
+    {
+      id: "audit-c-4",
+      entityType: "restaurant",
+      entityId: "r-001",
+      actorId: "u-admin",
+      actorName: "Alex Rivera",
+      action: "create",
+      before: null,
+      after: { name: "Acme Bistro — Downtown" },
+      timestamp: "2026-02-10T09:00:00Z",
+    },
+    {
+      id: "audit-s-1",
+      entityType: "staff",
+      entityId: "s-001",
+      actorId: "u-system",
+      actorName: "System",
+      action: "create",
+      before: null,
+      after: { name: "Maya Okafor", roles: ["Manager"] },
+      timestamp: "2026-03-01T10:00:00Z",
+    },
+    {
+      id: "audit-s-2",
+      entityType: "staff",
+      entityId: "s-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "role-grant",
+      before: { roles: [] },
+      after: { roles: ["Manager"] },
+      timestamp: "2026-03-02T10:00:00Z",
+    },
+    {
+      id: "audit-s-3",
+      entityType: "staff",
+      entityId: "s-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "restaurant-assign",
+      before: { restaurantIds: ["r-001"] },
+      after: { restaurantIds: ["r-001", "r-002"] },
+      timestamp: "2026-03-03T10:00:00Z",
+    },
+    {
+      id: "audit-s-4",
+      entityType: "staff",
+      entityId: "s-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "deactivate",
+      before: { active: true },
+      after: { active: false },
+      timestamp: "2026-03-04T10:00:00Z",
+    },
+    {
+      id: "audit-s-5",
+      entityType: "staff",
+      entityId: "s-001",
+      actorId: "u-admin",
+      actorName: "Maya Okafor",
+      action: "reactivate",
+      before: { active: false },
+      after: { active: true },
+      timestamp: "2026-03-05T10:00:00Z",
+    },
+  ];
 };
 
 export const resetMockMenuItems = resetMockCatalogState;
@@ -409,6 +623,7 @@ export const catalogHandlers = [
     HttpResponse.json([
       {
         id: "r-001",
+        brandId: "b-001",
         name: "Acme Bistro — Downtown",
         cuisine: "Italian",
         city: "Brooklyn",
@@ -417,6 +632,7 @@ export const catalogHandlers = [
       },
       {
         id: "r-002",
+        brandId: "b-001",
         name: "Acme Bistro — Marina",
         cuisine: "Italian",
         city: "San Francisco",
@@ -667,5 +883,45 @@ export const catalogHandlers = [
     brand.active = false;
     brand.updatedAt = new Date().toISOString();
     return HttpResponse.json({ success: true });
+  }),
+
+  // Phase 3: Generic Audit Endpoints
+  http.get(`${BASE}/audit/:entityType/:entityId`, ({ params }) => {
+    const { entityType, entityId } = params;
+    const matches = mockAuditEntries.filter(
+      (e) =>
+        e.entityType.toLowerCase() === String(entityType).toLowerCase() &&
+        e.entityId === String(entityId),
+    );
+    return HttpResponse.json(matches);
+  }),
+
+  http.get(`${BASE}/audit`, ({ request }) => {
+    const url = new URL(request.url);
+    const entityType = url.searchParams.get("entityType");
+    const entityId = url.searchParams.get("entityId");
+    const actorId = url.searchParams.get("actorId");
+    const since = url.searchParams.get("since");
+    const until = url.searchParams.get("until");
+
+    let results = [...mockAuditEntries];
+    if (entityType) {
+      results = results.filter((e) => e.entityType.toLowerCase() === entityType.toLowerCase());
+    }
+    if (entityId) {
+      results = results.filter((e) => e.entityId === entityId);
+    }
+    if (actorId) {
+      results = results.filter((e) => e.actorId === actorId);
+    }
+    if (since) {
+      const sinceDate = new Date(since).getTime();
+      results = results.filter((e) => new Date(e.timestamp).getTime() >= sinceDate);
+    }
+    if (until) {
+      const untilDate = new Date(until).getTime();
+      results = results.filter((e) => new Date(e.timestamp).getTime() <= untilDate);
+    }
+    return HttpResponse.json(results);
   }),
 ];

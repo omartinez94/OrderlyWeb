@@ -34,6 +34,7 @@
     "archiveConfirmTitle": "¿Archivar esta marca?",
     "archiveConfirmBody": "La marca dejará de aparecer en las listas activas.",
     "empty": "Aún no hay marcas. Crea una marca para comenzar.",
+    "staffUnavailableBanner": "La lista de personal por marca aún no está disponible — consulte el personal desde la pestaña Restaurantes.",
     "tabs": {
       "overview": "Resumen",
       "restaurants": "Restaurantes",
@@ -63,6 +64,7 @@
     "new": "Nuevo restaurante",
     "name": "Nombre",
     "brand": "Marca",
+    "cuisine": "Cocina",
     "city": "Ciudad",
     "country": "País",
     "status": {

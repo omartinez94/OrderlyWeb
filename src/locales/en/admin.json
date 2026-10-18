@@ -34,6 +34,7 @@
     "archiveConfirmTitle": "Archive this brand?",
     "archiveConfirmBody": "The brand will no longer appear in active brand lists.",
     "empty": "No brands yet. Create a brand to get started.",
+    "staffUnavailableBanner": "Staff list by brand is not yet available — view staff from the Restaurants tab.",
     "tabs": {
       "overview": "Overview",
       "restaurants": "Restaurants",
@@ -63,6 +64,7 @@
     "new": "New restaurant",
     "name": "Name",
     "brand": "Brand",
+    "cuisine": "Cuisine",
     "city": "City",
     "country": "Country",
     "status": {

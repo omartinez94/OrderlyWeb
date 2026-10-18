@@ -20,9 +20,19 @@ import type {
   ReservationStatus,
   QueuePartyDto,
   QueuePartyStatus,
+  AuditEntityType,
+  AdminAuditEntry,
 } from "../../types/catalog";
 
 export type * from "../../types/catalog";
+
+export interface ListAuditParams {
+  entityType?: AuditEntityType;
+  entityId?: string;
+  actorId?: string;
+  since?: string;
+  until?: string;
+}
 
 export interface ListBrandsParams {
   q?: string;
@@ -393,6 +403,33 @@ export const catalogApi = createApi({
         { type: "Restaurants", id: "LIST" },
       ],
     }),
+
+    // Generic Audit Endpoints (Phase 3)
+    auditFor: build.query<AdminAuditEntry[], { entityType: AuditEntityType; entityId: string }>({
+      query: ({ entityType, entityId }) =>
+        `${env.apiBaseUrl}/catalog-api/audit/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`,
+      providesTags: (_r, _e, { entityId }) => [{ type: "Audit", id: entityId }],
+    }),
+
+    listAudit: build.query<AdminAuditEntry[], ListAuditParams | void>({
+      query: (params) => {
+        const qs = new URLSearchParams();
+        if (params && params.entityType) qs.set("entityType", params.entityType);
+        if (params && params.entityId) qs.set("entityId", params.entityId);
+        if (params && params.actorId) qs.set("actorId", params.actorId);
+        if (params && params.since) qs.set("since", params.since);
+        if (params && params.until) qs.set("until", params.until);
+        const queryStr = qs.toString();
+        return `${env.apiBaseUrl}/catalog-api/audit${queryStr ? `?${queryStr}` : ""}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Audit" as const, id })),
+              { type: "Audit" as const, id: "LIST" },
+            ]
+          : [{ type: "Audit" as const, id: "LIST" }],
+    }),
   }),
   tagTypes: [
     "Restaurants",
@@ -428,4 +465,6 @@ export const {
   useCreateBrandMutation,
   useUpdateBrandMutation,
   useArchiveBrandMutation,
+  useAuditForQuery,
+  useListAuditQuery,
 } = catalogApi;

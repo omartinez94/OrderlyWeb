@@ -76,21 +76,6 @@ export interface AdminSettings {
   featureFlags: Record<string, boolean>;
 }
 
-export type AuditEntityType = "brand" | "restaurant" | "staff";
-
-export interface AdminAuditEntry {
-  id: string;
-  entityType: AuditEntityType;
-  entityId: string;
-  actorId: string;
-  actorName: string;
-  action: string;
-  before: Record<string, unknown> | null;
-  after: Record<string, unknown> | null;
-  timestamp: string;
-  reason?: string;
-}
-
 export type TableStatus = "Available" | "Occupied" | "Reserved" | "Needs Cleaning";
 
 export interface Table {
@@ -169,4 +154,19 @@ export interface MenuCategory {
   restaurantId: string;
   name: string;
   position: number;
+}
+
+export type AuditEntityType = "brand" | "restaurant" | "staff";
+
+export interface AdminAuditEntry {
+  id: string;
+  entityType: AuditEntityType;
+  entityId: string;
+  actorId: string;
+  actorName: string;
+  action: string;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  timestamp: string;
+  reason?: string;
 }
