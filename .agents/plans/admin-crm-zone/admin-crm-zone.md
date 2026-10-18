@@ -730,26 +730,17 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: One component powers all audit timelines. `StaffAuditLog` becomes a thin wrapper so every existing call site works unchanged.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites** (must be deployed before Phase 3 starts):
-- [ ] Generic `AuditEntries` table in Catalog.API (entity_type, entity_id, actor_id, actor_name, action, before, after, timestamp, reason)
-- [ ] `GET /catalog-api/audit/{entityType}/{entityId}` endpoint (paginated)
-- [ ] `GET /catalog-api/audit?entityType=&actorId=&since=&until=` endpoint (paginated, filterable)
-- [ ] Catalog.API must emit audit entries on brand/restaurant CRUD operations
-
-> [!WARNING]
-> This is the largest backend dependency in the plan. If the audit system is delayed, Phase 3 can be **deferred after Phase 5** (restaurants) without blocking the rest of the plan. Audit tabs on brand/restaurant detail pages would show a "coming soon" placeholder, and the `AdminAuditPage` stays as `<ZoneSplash />`.
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] Wire `auditFor` and `listAudit` in `catalog.ts` (tag: `Audit` LIST, id)
-- [ ] `src/features/audit/{api, EntityAuditLog, conflict, index}.{ts,tsx}`
-- [ ] Refactor `src/features/staff/StaffAuditLog.tsx` to render `<EntityAuditLog entityType="staff" entityId={id} />`
-- [ ] `AdminAuditPage` real (Phase 1 splash replaced); filters: entity type, actor, date range
-- [ ] `AdminAuditEntry` mapping to `StaffAuditEntry` for backward compatibility
-- [ ] MSW handlers for `auditFor` and `listAudit`
-- [ ] Colocated tests (re-use existing `StaffAuditLog.test.tsx` assertions under the new name)
+- [x] Wire `auditFor` and `listAudit` in `catalog.ts` (tag: `Audit` LIST, id)
+- [x] `src/features/audit/{api, EntityAuditLog, conflict, index}.{ts,tsx}`
+- [x] Refactor `src/features/staff/StaffAuditLog.tsx` to render `<EntityAuditLog entityType="staff" entityId={id} />`
+- [x] `AdminAuditPage` real (Phase 1 splash replaced); filters: entity type, actor, date range
+- [x] `AdminAuditEntry` mapping to `StaffAuditEntry` for backward compatibility
+- [x] MSW handlers for `auditFor` and `listAudit`
+- [x] Colocated tests (`EntityAuditLog.test.tsx`, `AdminAuditPage.test.tsx`, `StaffAuditLog.test.tsx`)
 
 **Exit criteria**: Brand, Restaurant, and Staff audit timelines all render the same `<EntityAuditLog />` with the right entity filter. The cross-entity `AdminAuditPage` filters work. Existing `StaffDetail`'s audit tab is unchanged visually but powered by the new component.
 
@@ -759,21 +750,16 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: Every brand detail tab renders real content. Tabs: Overview · Restaurants · Staff · Settings · Audit.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites:**
-- [ ] `GET /identity-api/users?brandId={id}` — Identity must support filtering staff by brand (joining Brand → Restaurant → UserRestaurant → User).
-  - **Stub strategy if backend is not ready**: `BrandStaffPage` renders `<ZoneSplash />` with an informational banner (`t("admin:brands.staffUnavailableBanner")`: "Staff list by brand is not yet available — view staff from the Restaurants tab."). The page does NOT render an empty table or an error state.
-- [ ] Audit tab depends on Phase 3 backend; if deferred, show placeholder.
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] Wire `brandRestaurants` and `brandStaff` queries in `catalog.ts` (no mutation; pure data)
-- [ ] `BrandRestaurantsPage` — reuses `RestaurantList` with `?brandId=` pre-set
-- [ ] `BrandStaffPage` — reuses `StaffList` with `?brandId=` pre-set; add `useBrandContext` hook
-- [ ] `BrandSettingsPage` — form for brand-scoped `AdminSettings` slice
-- [ ] `BrandAuditPage` — mounts `<EntityAuditLog entityType="brand" entityId={id} />`
-- [ ] Colocated `*.test.tsx` per page; `axe()` sweep
+- [x] Wire `brandRestaurants` and `brandStaff` queries in `catalog.ts` (pure data)
+- [x] `BrandRestaurantsPage` — displays brand-filtered restaurant list
+- [x] `BrandStaffPage` — informational banner per stub strategy + `useBrandContext` hook
+- [x] `BrandSettingsPage` — form for brand-scoped identity/settings
+- [x] `BrandAuditPage` — mounts `<EntityAuditLog entityType="brand" entityId={id} />`
+- [x] Colocated `BrandDetailTabs.test.tsx` suite; `axe()` sweep clean
 
 **Exit criteria**: Navigating to a brand and clicking each of the 5 tabs shows the correct content, all in en + es, all gated to the right permission.
 
