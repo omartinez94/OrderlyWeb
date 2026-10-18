@@ -5,14 +5,14 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "./router";
 import { store } from "../app/store";
 import { setCredentials } from "../app/session/sessionSlice";
-import type { Role, Permission } from "../types/auth";
+import { ROLE_PERMISSIONS, type Role } from "../types/auth";
 
 const SEED_ADMIN = {
   accessToken: "test-access-token",
   expiresAt: Date.now() + 15 * 60 * 1000,
   user: { id: "u-001", name: "Super Admin", email: "admin@orderly.com", initials: "SA" },
   roles: ["SuperAdmin", "KitchenManager"] as readonly Role[],
-  permissions: [] as readonly Permission[],
+  permissions: ROLE_PERMISSIONS.SuperAdmin,
 };
 
 function renderWithRoute(initialEntry: string) {
@@ -73,17 +73,17 @@ describe("router", () => {
       });
     });
 
-    it("renders the new-brand splash at /site/admin/brands/new", async () => {
+    it("renders the new-brand page at /site/admin/brands/new", async () => {
       renderWithRoute("/site/admin/brands/new");
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "New brand" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Create brand" })).toBeInTheDocument();
       });
     });
 
-    it("renders the brand detail splash at /site/admin/brands/:id", async () => {
-      renderWithRoute("/site/admin/brands/abc");
+    it("renders the brand detail page at /site/admin/brands/:id", async () => {
+      renderWithRoute("/site/admin/brands/b-001");
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "Brand overview" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Acme Hospitality Group" })).toBeInTheDocument();
       });
     });
 

@@ -3,9 +3,54 @@
  */
 
 import { http, HttpResponse } from "msw";
-import type { Table, ReservationDto, QueuePartyDto } from "../../types/catalog";
+import type { Table, ReservationDto, QueuePartyDto, CatalogBrand } from "../../types/catalog";
 
 const BASE = "http://localhost:6004/catalog-api";
+
+export let mockBrands: CatalogBrand[] = [
+  {
+    id: "b-001",
+    name: "Acme Hospitality Group",
+    slug: "acme-hospitality",
+    description: "Premier dining and casual bistro experiences across the East Coast.",
+    logoUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=128&q=80",
+    contactEmail: "contact@acme.com",
+    contactPhone: "+1 (555) 019-2834",
+    cuisineType: "Italian",
+    websiteUrl: "https://acme-hospitality.example.com",
+    active: true,
+    createdAt: "2026-01-15T08:00:00Z",
+    updatedAt: "2026-06-20T12:00:00Z",
+  },
+  {
+    id: "b-002",
+    name: "Cantina Del Sol",
+    slug: "cantina-del-sol",
+    description: "Authentic wood-fired regional Mexican culinary collective.",
+    logoUrl: null,
+    contactEmail: "hola@cantinadelsol.com",
+    contactPhone: "+1 (555) 782-9911",
+    cuisineType: "Mexican",
+    websiteUrl: "https://cantinadelsol.example.com",
+    active: true,
+    createdAt: "2026-02-01T10:30:00Z",
+    updatedAt: "2026-07-10T14:15:00Z",
+  },
+  {
+    id: "b-003",
+    name: "Sakura Omakase",
+    slug: "sakura-omakase",
+    description: "Traditional Edomae sushi and artisanal Japanese sake lounge.",
+    logoUrl: null,
+    contactEmail: "reservations@sakuraomakase.com",
+    contactPhone: "+1 (555) 431-8890",
+    cuisineType: "Japanese",
+    websiteUrl: "https://sakuraomakase.example.com",
+    active: false,
+    createdAt: "2026-03-10T09:00:00Z",
+    updatedAt: "2026-05-18T16:45:00Z",
+  },
+];
 
 export const mockMenuCategories = [
   { id: "c-pizza", restaurantId: "r-001", name: "Pizza", position: 1 },
@@ -310,6 +355,51 @@ export const resetMockCatalogState = () => {
       splitAt: null,
     },
   ];
+
+  mockBrands = [
+    {
+      id: "b-001",
+      name: "Acme Hospitality Group",
+      slug: "acme-hospitality",
+      description: "Premier dining and casual bistro experiences across the East Coast.",
+      logoUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=128&q=80",
+      contactEmail: "contact@acme.com",
+      contactPhone: "+1 (555) 019-2834",
+      cuisineType: "Italian",
+      websiteUrl: "https://acme-hospitality.example.com",
+      active: true,
+      createdAt: "2026-01-15T08:00:00Z",
+      updatedAt: "2026-06-20T12:00:00Z",
+    },
+    {
+      id: "b-002",
+      name: "Cantina Del Sol",
+      slug: "cantina-del-sol",
+      description: "Authentic wood-fired regional Mexican culinary collective.",
+      logoUrl: null,
+      contactEmail: "hola@cantinadelsol.com",
+      contactPhone: "+1 (555) 782-9911",
+      cuisineType: "Mexican",
+      websiteUrl: "https://cantinadelsol.example.com",
+      active: true,
+      createdAt: "2026-02-01T10:30:00Z",
+      updatedAt: "2026-07-10T14:15:00Z",
+    },
+    {
+      id: "b-003",
+      name: "Sakura Omakase",
+      slug: "sakura-omakase",
+      description: "Traditional Edomae sushi and artisanal Japanese sake lounge.",
+      logoUrl: null,
+      contactEmail: "reservations@sakuraomakase.com",
+      contactPhone: "+1 (555) 431-8890",
+      cuisineType: "Japanese",
+      websiteUrl: "https://sakuraomakase.example.com",
+      active: false,
+      createdAt: "2026-03-10T09:00:00Z",
+      updatedAt: "2026-05-18T16:45:00Z",
+    },
+  ];
 };
 
 export const resetMockMenuItems = resetMockCatalogState;
@@ -476,6 +566,106 @@ export const catalogHandlers = [
       if (body.status === "notified") party.notifiedAt = new Date().toISOString();
       if (body.status === "seated") party.seatedAt = new Date().toISOString();
     }
+    return HttpResponse.json({ success: true });
+  }),
+
+  // Brands CRUD (Phase 2)
+  http.get(`${BASE}/brands`, ({ request }) => {
+    const url = new URL(request.url);
+    const q = url.searchParams.get("q")?.toLowerCase();
+    const activeParam = url.searchParams.get("active");
+
+    let result = [...mockBrands];
+    if (activeParam !== null) {
+      const activeBool = activeParam === "true";
+      result = result.filter((b) => b.active === activeBool);
+    }
+    if (q) {
+      result = result.filter(
+        (b) =>
+          b.name.toLowerCase().includes(q) ||
+          b.slug.toLowerCase().includes(q) ||
+          b.cuisineType.toLowerCase().includes(q),
+      );
+    }
+    return HttpResponse.json(result);
+  }),
+
+  http.get(`${BASE}/brands/:id`, ({ params }) => {
+    const brand = mockBrands.find((b) => b.id === params.id);
+    if (!brand) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    return HttpResponse.json(brand);
+  }),
+
+  http.post(`${BASE}/brands`, async ({ request }) => {
+    const body = (await request.json()) as any;
+    // Conflict check for duplicate slug
+    if (mockBrands.some((b) => b.slug.toLowerCase() === body.slug.toLowerCase())) {
+      return HttpResponse.json(
+        {
+          code: "BRAND_DUPLICATE_SLUG",
+          message: "A brand with this slug already exists.",
+        },
+        { status: 409 },
+      );
+    }
+
+    const newBrand: CatalogBrand = {
+      id: `b-${Date.now()}`,
+      name: body.name,
+      slug: body.slug,
+      description: body.description ?? null,
+      logoUrl: body.logoUrl ?? null,
+      contactEmail: body.contactEmail,
+      contactPhone: body.contactPhone ?? null,
+      cuisineType: body.cuisineType,
+      websiteUrl: body.websiteUrl ?? null,
+      active: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockBrands.push(newBrand);
+    return HttpResponse.json(newBrand, { status: 201 });
+  }),
+
+  http.put(`${BASE}/brands/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as any;
+    const index = mockBrands.findIndex((b) => b.id === params.id);
+    if (index === -1) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    // Check slug uniqueness across other brands
+    if (
+      mockBrands.some((b) => b.id !== params.id && b.slug.toLowerCase() === body.slug.toLowerCase())
+    ) {
+      return HttpResponse.json(
+        {
+          code: "BRAND_DUPLICATE_SLUG",
+          message: "A brand with this slug already exists.",
+        },
+        { status: 409 },
+      );
+    }
+
+    const updated: CatalogBrand = {
+      ...mockBrands[index],
+      ...body,
+      updatedAt: new Date().toISOString(),
+    };
+    mockBrands[index] = updated;
+    return HttpResponse.json(updated);
+  }),
+
+  http.post(`${BASE}/brands/:id/archive`, ({ params }) => {
+    const brand = mockBrands.find((b) => b.id === params.id);
+    if (!brand) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    brand.active = false;
+    brand.updatedAt = new Date().toISOString();
     return HttpResponse.json({ success: true });
   }),
 ];

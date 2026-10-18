@@ -9,6 +9,8 @@ import { dynamicBaseQuery } from "./base";
 import { env } from "../../lib/env";
 import type {
   CatalogRestaurant,
+  CatalogBrand,
+  CuisineType,
   Table,
   MergedTableDto,
   MenuCategory,
@@ -21,6 +23,34 @@ import type {
 } from "../../types/catalog";
 
 export type * from "../../types/catalog";
+
+export interface ListBrandsParams {
+  q?: string;
+  active?: boolean;
+}
+
+export interface CreateBrandRequest {
+  name: string;
+  slug: string;
+  description?: string | null;
+  contactEmail: string;
+  contactPhone?: string | null;
+  cuisineType: CuisineType;
+  websiteUrl?: string | null;
+  logoUrl?: string | null;
+}
+
+export interface UpdateBrandRequest {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  contactEmail: string;
+  contactPhone?: string | null;
+  cuisineType: CuisineType;
+  websiteUrl?: string | null;
+  logoUrl?: string | null;
+}
 
 export interface GetTablesParams {
   restaurantId: string;
@@ -307,6 +337,62 @@ export const catalogApi = createApi({
         { type: "Tables", id: `LIST-${restaurantId}` },
       ],
     }),
+
+    // Brands CRUD (Phase 2)
+    listBrands: build.query<CatalogBrand[], ListBrandsParams | void>({
+      query: (params) => {
+        const qs = new URLSearchParams();
+        if (params && params.q) qs.set("q", params.q);
+        if (params && params.active !== undefined) qs.set("active", String(params.active));
+        const queryStr = qs.toString();
+        return `${env.apiBaseUrl}/catalog-api/brands${queryStr ? `?${queryStr}` : ""}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Brands" as const, id })),
+              { type: "Brands" as const, id: "LIST" },
+            ]
+          : [{ type: "Brands" as const, id: "LIST" }],
+    }),
+
+    getBrand: build.query<CatalogBrand, string>({
+      query: (id) => `${env.apiBaseUrl}/catalog-api/brands/${encodeURIComponent(id)}`,
+      providesTags: (_r, _e, id) => [{ type: "Brands", id }],
+    }),
+
+    createBrand: build.mutation<CatalogBrand, CreateBrandRequest>({
+      query: (body) => ({
+        url: `${env.apiBaseUrl}/catalog-api/brands`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Brands", id: "LIST" }],
+    }),
+
+    updateBrand: build.mutation<CatalogBrand, UpdateBrandRequest>({
+      query: ({ id, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/brands/${encodeURIComponent(id)}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: "Brands", id },
+        { type: "Brands", id: "LIST" },
+      ],
+    }),
+
+    archiveBrand: build.mutation<{ success: boolean }, string>({
+      query: (id) => ({
+        url: `${env.apiBaseUrl}/catalog-api/brands/${encodeURIComponent(id)}/archive`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Brands", id },
+        { type: "Brands", id: "LIST" },
+        { type: "Restaurants", id: "LIST" },
+      ],
+    }),
   }),
   tagTypes: [
     "Restaurants",
@@ -337,4 +423,9 @@ export const {
   useGetQueueQuery,
   useAddToQueueMutation,
   useUpdateQueueStatusMutation,
+  useListBrandsQuery,
+  useGetBrandQuery,
+  useCreateBrandMutation,
+  useUpdateBrandMutation,
+  useArchiveBrandMutation,
 } = catalogApi;
