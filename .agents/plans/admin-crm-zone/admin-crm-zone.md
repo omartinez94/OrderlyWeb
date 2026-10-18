@@ -791,21 +791,15 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: SuperAdmin can view the role × permission matrix and edit global settings.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites:**
-- [ ] `AdminSettings` singleton aggregate in Catalog.API + `GET/PUT /catalog-api/settings` endpoints
-
-> [!TIP]
-> This phase can be **split**: the `RolePermissionMatrix` (read-only, reads `ROLE_PERMISSIONS` from `types/auth.ts`) has **zero backend dependencies** and can ship immediately. The `AdminSettingsForm` depends on the backend `AdminSettings` entity and can be deferred.
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] `getAdminSettings` / `updateAdminSettings` in `catalog.ts`; tag: `AdminSettings` GLOBAL
-- [ ] `src/features/roles/{RolePermissionMatrix, index}.{tsx,ts}` — read-only table
-- [ ] `src/features/settings/{AdminSettingsForm, index}.{tsx,ts}` — global settings form
-- [ ] `AdminRolesPage` real; `AdminSettingsPage` real (existing placeholder replaced)
-- [ ] MSW handlers; colocated tests
+- [x] `getAdminSettings` / `updateAdminSettings` in `catalog.ts`; tag: `AdminSettings` GLOBAL
+- [x] `src/features/roles/{RolePermissionMatrix, index}.{tsx,ts}` — read-only table
+- [x] `src/features/settings/{AdminSettingsForm, settingsSchema, index}.{tsx,ts}` — global settings form
+- [x] `AdminRolesPage` real; `AdminSettingsPage` real (existing placeholder replaced)
+- [x] MSW handlers; colocated tests (`RolePermissionMatrix.test.tsx`, `AdminRolesPage.test.tsx`, `AdminSettingsPage.test.tsx`)
 
 **Exit criteria**: `/admin/roles` shows the 8×16 matrix. `/admin/settings` saves a global config and persists across reload. RestaurantAdmin does not see either page in the sidebar.
 
