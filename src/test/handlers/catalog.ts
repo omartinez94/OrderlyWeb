@@ -10,6 +10,7 @@ import type {
   CatalogBrand,
   AdminAuditEntry,
   AdminRestaurantDetail,
+  AdminSettings,
 } from "../../types/catalog";
 
 const BASE = "http://localhost:6004/catalog-api";
@@ -139,6 +140,23 @@ export let mockAdminRestaurants: AdminRestaurantDetail[] = [
     updatedAt: "2026-07-01T09:15:00Z",
   },
 ];
+
+export let mockAdminSettings: AdminSettings = {
+  defaultTimezone: "America/New_York",
+  defaultCurrency: "USD",
+  defaultTaxRate: 0.08875,
+  reservationReminderMinutes: 60,
+  maxReservationPartySize: 12,
+  enableAutoSubstitute: true,
+  emailFromAddress: "noreply@orderly.hospitality.com",
+  supportContactUrl: "https://support.orderly.hospitality.com",
+  featureFlags: {
+    kdsAudioEnabled: true,
+    splitBillEnabled: true,
+    virtualBumpBarEnabled: true,
+    tableMergeEnabled: true,
+  },
+};
 
 export let mockAuditEntries: AdminAuditEntry[] = [
   {
@@ -777,6 +795,23 @@ export const resetMockCatalogState = () => {
       updatedAt: "2026-07-01T09:15:00Z",
     },
   ];
+
+  mockAdminSettings = {
+    defaultTimezone: "America/New_York",
+    defaultCurrency: "USD",
+    defaultTaxRate: 0.08875,
+    reservationReminderMinutes: 60,
+    maxReservationPartySize: 12,
+    enableAutoSubstitute: true,
+    emailFromAddress: "noreply@orderly.hospitality.com",
+    supportContactUrl: "https://support.orderly.hospitality.com",
+    featureFlags: {
+      kdsAudioEnabled: true,
+      splitBillEnabled: true,
+      virtualBumpBarEnabled: true,
+      tableMergeEnabled: true,
+    },
+  };
 };
 
 export const resetMockMenuItems = resetMockCatalogState;
@@ -1143,5 +1178,16 @@ export const catalogHandlers = [
       results = results.filter((e) => new Date(e.timestamp).getTime() <= untilDate);
     }
     return HttpResponse.json(results);
+  }),
+
+  // Phase 6: Global Admin Settings Endpoints
+  http.get(`${BASE}/settings`, () => {
+    return HttpResponse.json(mockAdminSettings);
+  }),
+
+  http.put(`${BASE}/settings`, async ({ request }) => {
+    const body = (await request.json()) as AdminSettings;
+    mockAdminSettings = { ...mockAdminSettings, ...body };
+    return HttpResponse.json(mockAdminSettings);
   }),
 ];

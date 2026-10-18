@@ -26,6 +26,7 @@ import type {
   AdminRestaurantAddress,
   RestaurantStatus,
   OperatingHoursDay,
+  AdminSettings,
 } from "../../types/catalog";
 
 export type * from "../../types/catalog";
@@ -500,6 +501,21 @@ export const catalogApi = createApi({
         ...(brandId ? [{ type: "Brands" as const, id: brandId }] : []),
       ],
     }),
+
+    // Global Admin Settings Endpoints (Phase 6)
+    getAdminSettings: build.query<AdminSettings, void>({
+      query: () => `${env.apiBaseUrl}/catalog-api/settings`,
+      providesTags: [{ type: "AdminSettings", id: "GLOBAL" }],
+    }),
+
+    updateAdminSettings: build.mutation<AdminSettings, AdminSettings>({
+      query: (body) => ({
+        url: `${env.apiBaseUrl}/catalog-api/settings`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: [{ type: "AdminSettings", id: "GLOBAL" }],
+    }),
   }),
   tagTypes: [
     "Restaurants",
@@ -521,6 +537,8 @@ export const {
   useCreateRestaurantMutation,
   useUpdateRestaurantMutation,
   useArchiveRestaurantMutation,
+  useGetAdminSettingsQuery,
+  useUpdateAdminSettingsMutation,
   useGetTablesQuery,
   useGetMergedTablesQuery,
   useMergeTablesMutation,

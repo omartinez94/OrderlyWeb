@@ -173,6 +173,9 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Manage defaults used across the admin CRM.",
+    "description": "Global identity, defaults, reservation rules, and platform feature flags.",
+    "saveSuccess": "Platform settings saved successfully.",
+    "saveError": "Failed to update platform settings.",
     "sections": {
       "defaults": "Defaults",
       "reservations": "Reservations",

@@ -173,6 +173,9 @@
   "settings": {
     "title": "Ajustes",
     "subtitle": "Gestiona los valores predeterminados del CRM administrativo.",
+    "description": "Identidad global, valores predeterminados, reglas de reserva e indicadores de funciones.",
+    "saveSuccess": "Los ajustes de la plataforma se guardaron correctamente.",
+    "saveError": "Error al actualizar los ajustes de la plataforma.",
     "sections": {
       "defaults": "Valores predeterminados",
       "reservations": "Reservas",
