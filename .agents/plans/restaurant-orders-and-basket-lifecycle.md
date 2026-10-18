@@ -13,10 +13,10 @@
 |:-----:|---|---|:-----:|
 | 1 | Order List View & Multi-Filter Query Engine | `/site/restaurant/orders`, `OrderListTable`, filter chips | ✅ Done |
 | 2 | Smart Order & Basket Creator | `/site/restaurant/orders/new`, catalog picker, cart sidebar | ✅ Done |
-| 3 | Order Detail View & Chronological Activity Feed | `/site/restaurant/orders/:id`, `OrderTimeline`, item actions | ⏸ Pending |
-| 4 | Order Modification & Item Cancellation Workflows | Status gating, item removal, manager approval dialog | 🔒 Blocked |
-| 5 | Interactive Bill Splitting & Settlement Simulation | `/site/restaurant/orders/:id/split-bill`, receipt modal | 🔒 Blocked |
-| 6 | Bilingual Verification & Visual Regression Sweeps | en/es i18n keys, `pnpm test`, jest-axe audit | 🔒 Blocked |
+| 3 | Order Detail View & Chronological Activity Feed | `/site/restaurant/orders/:id`, `OrderTimeline`, item actions | ✅ Done |
+| 4 | Order Modification & Item Cancellation Workflows | Status gating, item removal, manager approval dialog | ✅ Done |
+| 5 | Interactive Bill Splitting & Settlement Simulation | `/site/restaurant/orders/:id/split-bill`, receipt modal | ✅ Done |
+| 6 | Bilingual Verification & Visual Regression Sweeps | en/es i18n keys, `pnpm test`, jest-axe audit | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 

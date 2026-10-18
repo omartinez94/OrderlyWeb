@@ -7,13 +7,13 @@
 ## Status
 
 > **Plan version**: `v1.1` (2026-10-16) — Restructured with microservice alignment (`Basket.API`, `Catalog.API`, `Ordering.API`, `Kitchen.API`), child plan synchronization, and anticipatory UX specifications.
-> **Current state**: ⏸ Ready for Phase 0 kickoff.
+> **Current state**: 🚧 Phase 0, 1, and 2 completed. Phase 3 & 4 ready for kickoff.
 
 | Phase | Name | Target Deliverable / Domain | Status |
 |:---:|---|---|:---:|
 | **0** | API Gateway & RTK Query Alignment | Cross-cutting / Data Layer (`ordering-api`, `kitchen-api`, `basket-api`, `catalog-api`) | ✅ Done |
-| **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | ⏸ Pending |
-| **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | ⏸ Pending |
+| **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | ✅ Done |
+| **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | ✅ Done |
 | **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | ⏸ Pending |
 | **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | ⏸ Pending |
 | **5** | Operational Analytics, Feedback & Production Hardening | `/site/restaurant/analytics`, `/feedback`, Playwright E2E, a11y & Lighthouse | 🔒 Blocked |
