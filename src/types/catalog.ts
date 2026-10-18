@@ -38,7 +38,7 @@ export interface OperatingHoursDay {
 
 export interface AdminRestaurantAddress {
   line1: string;
-  line2: string | null;
+  line2?: string | null;
   city: string;
   region: string;
   postalCode: string;

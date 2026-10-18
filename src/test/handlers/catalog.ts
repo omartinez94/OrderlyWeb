@@ -9,6 +9,7 @@ import type {
   QueuePartyDto,
   CatalogBrand,
   AdminAuditEntry,
+  AdminRestaurantDetail,
 } from "../../types/catalog";
 
 const BASE = "http://localhost:6004/catalog-api";
@@ -55,6 +56,87 @@ export let mockBrands: CatalogBrand[] = [
     active: false,
     createdAt: "2026-03-10T09:00:00Z",
     updatedAt: "2026-05-18T16:45:00Z",
+  },
+];
+
+export let mockAdminRestaurants: AdminRestaurantDetail[] = [
+  {
+    id: "r-001",
+    brandId: "b-001",
+    name: "Acme Bistro — Downtown",
+    cuisine: "Italian",
+    city: "Brooklyn",
+    country: "US",
+    active: true,
+    status: "active",
+    ownerId: "u-admin",
+    address: {
+      line1: "123 Main St",
+      line2: "Suite 4B",
+      city: "Brooklyn",
+      region: "NY",
+      postalCode: "11201",
+      country: "US",
+    },
+    phone: "+1 (555) 019-2834",
+    email: "downtown@acme.com",
+    timezone: "America/New_York",
+    currency: "USD",
+    taxRate: 0.08875,
+    estimatedTurnoverMinutes: 90,
+    autoConfirmReservations: true,
+    autoConfirmOrders: true,
+    allowAutoSubstitute: false,
+    operatingHours: [
+      { dayOfWeek: 0, open: "10:00", close: "22:00" },
+      { dayOfWeek: 1, open: "11:00", close: "22:00" },
+      { dayOfWeek: 2, open: "11:00", close: "22:00" },
+      { dayOfWeek: 3, open: "11:00", close: "22:00" },
+      { dayOfWeek: 4, open: "11:00", close: "23:00" },
+      { dayOfWeek: 5, open: "11:00", close: "23:00" },
+      { dayOfWeek: 6, open: "10:00", close: "23:00" },
+    ],
+    createdAt: "2026-02-01T10:00:00Z",
+    updatedAt: "2026-06-15T14:30:00Z",
+  },
+  {
+    id: "r-002",
+    brandId: "b-001",
+    name: "Acme Bistro — Marina",
+    cuisine: "Italian",
+    city: "San Francisco",
+    country: "US",
+    active: true,
+    status: "active",
+    ownerId: "u-admin",
+    address: {
+      line1: "456 Marina Blvd",
+      line2: null,
+      city: "San Francisco",
+      region: "CA",
+      postalCode: "94123",
+      country: "US",
+    },
+    phone: "+1 (555) 782-9911",
+    email: "marina@acme.com",
+    timezone: "America/Los_Angeles",
+    currency: "USD",
+    taxRate: 0.085,
+    estimatedTurnoverMinutes: 75,
+    autoConfirmReservations: false,
+    autoConfirmOrders: true,
+    allowAutoSubstitute: true,
+    operatingHours: [
+      { dayOfWeek: 0, open: "11:00", close: "21:00" },
+      { dayOfWeek: 1, open: null, close: null },
+      { dayOfWeek: 2, open: "11:00", close: "21:00" },
+      { dayOfWeek: 3, open: "11:00", close: "21:00" },
+      { dayOfWeek: 4, open: "11:00", close: "22:00" },
+      { dayOfWeek: 5, open: "11:00", close: "22:00" },
+      { dayOfWeek: 6, open: "11:00", close: "22:00" },
+    ],
+    createdAt: "2026-03-01T11:00:00Z",
+    updatedAt: "2026-07-01T09:15:00Z",
   },
 ];
 
@@ -614,44 +696,182 @@ export const resetMockCatalogState = () => {
       timestamp: "2026-03-05T10:00:00Z",
     },
   ];
-};
 
-export const resetMockMenuItems = resetMockCatalogState;
-
-export const catalogHandlers = [
-  http.get(`${BASE}/restaurants`, () =>
-    HttpResponse.json([
-      {
-        id: "r-001",
-        brandId: "b-001",
-        name: "Acme Bistro — Downtown",
-        cuisine: "Italian",
-        city: "Brooklyn",
-        country: "US",
-        active: true,
-      },
-      {
-        id: "r-002",
-        brandId: "b-001",
-        name: "Acme Bistro — Marina",
-        cuisine: "Italian",
-        city: "San Francisco",
-        country: "US",
-        active: true,
-      },
-    ]),
-  ),
-
-  http.get(`${BASE}/restaurants/:id`, ({ params }) =>
-    HttpResponse.json({
-      id: params.id,
+  mockAdminRestaurants = [
+    {
+      id: "r-001",
+      brandId: "b-001",
       name: "Acme Bistro — Downtown",
       cuisine: "Italian",
       city: "Brooklyn",
       country: "US",
       active: true,
-    }),
-  ),
+      status: "active",
+      ownerId: "u-admin",
+      address: {
+        line1: "123 Main St",
+        line2: "Suite 4B",
+        city: "Brooklyn",
+        region: "NY",
+        postalCode: "11201",
+        country: "US",
+      },
+      phone: "+1 (555) 019-2834",
+      email: "downtown@acme.com",
+      timezone: "America/New_York",
+      currency: "USD",
+      taxRate: 0.08875,
+      estimatedTurnoverMinutes: 90,
+      autoConfirmReservations: true,
+      autoConfirmOrders: true,
+      allowAutoSubstitute: false,
+      operatingHours: [
+        { dayOfWeek: 0, open: "10:00", close: "22:00" },
+        { dayOfWeek: 1, open: "11:00", close: "22:00" },
+        { dayOfWeek: 2, open: "11:00", close: "22:00" },
+        { dayOfWeek: 3, open: "11:00", close: "22:00" },
+        { dayOfWeek: 4, open: "11:00", close: "23:00" },
+        { dayOfWeek: 5, open: "11:00", close: "23:00" },
+        { dayOfWeek: 6, open: "10:00", close: "23:00" },
+      ],
+      createdAt: "2026-02-01T10:00:00Z",
+      updatedAt: "2026-06-15T14:30:00Z",
+    },
+    {
+      id: "r-002",
+      brandId: "b-001",
+      name: "Acme Bistro — Marina",
+      cuisine: "Italian",
+      city: "San Francisco",
+      country: "US",
+      active: true,
+      status: "active",
+      ownerId: "u-admin",
+      address: {
+        line1: "456 Marina Blvd",
+        line2: null,
+        city: "San Francisco",
+        region: "CA",
+        postalCode: "94123",
+        country: "US",
+      },
+      phone: "+1 (555) 782-9911",
+      email: "marina@acme.com",
+      timezone: "America/Los_Angeles",
+      currency: "USD",
+      taxRate: 0.085,
+      estimatedTurnoverMinutes: 75,
+      autoConfirmReservations: false,
+      autoConfirmOrders: true,
+      allowAutoSubstitute: true,
+      operatingHours: [
+        { dayOfWeek: 0, open: "11:00", close: "21:00" },
+        { dayOfWeek: 1, open: null, close: null },
+        { dayOfWeek: 2, open: "11:00", close: "21:00" },
+        { dayOfWeek: 3, open: "11:00", close: "21:00" },
+        { dayOfWeek: 4, open: "11:00", close: "22:00" },
+        { dayOfWeek: 5, open: "11:00", close: "22:00" },
+        { dayOfWeek: 6, open: "11:00", close: "22:00" },
+      ],
+      createdAt: "2026-03-01T11:00:00Z",
+      updatedAt: "2026-07-01T09:15:00Z",
+    },
+  ];
+};
+
+export const resetMockMenuItems = resetMockCatalogState;
+
+export const catalogHandlers = [
+  http.get(`${BASE}/restaurants`, () => {
+    return HttpResponse.json(
+      mockAdminRestaurants.map((r) => ({
+        id: r.id,
+        brandId: r.brandId,
+        name: r.name,
+        cuisine: r.cuisine,
+        city: r.city,
+        country: r.country,
+        active: r.active,
+      })),
+    );
+  }),
+
+  http.get(`${BASE}/restaurants/:id`, ({ params }) => {
+    const found = mockAdminRestaurants.find((r) => r.id === params.id);
+    if (!found) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    return HttpResponse.json(found);
+  }),
+
+  http.post(`${BASE}/restaurants`, async ({ request }) => {
+    const body = (await request.json()) as any;
+    const newRestaurant: AdminRestaurantDetail = {
+      id: `r-${Date.now()}`,
+      brandId: body.brandId,
+      name: body.name,
+      cuisine: body.cuisine,
+      city: body.address.city,
+      country: body.address.country,
+      active: body.status !== "archived",
+      status: body.status ?? "active",
+      ownerId: body.ownerId ?? null,
+      address: body.address,
+      phone: body.phone ?? null,
+      email: body.email ?? null,
+      timezone: body.timezone,
+      currency: body.currency,
+      taxRate: body.taxRate,
+      estimatedTurnoverMinutes: body.estimatedTurnoverMinutes ?? 90,
+      autoConfirmReservations: body.autoConfirmReservations ?? true,
+      autoConfirmOrders: body.autoConfirmOrders ?? true,
+      allowAutoSubstitute: body.allowAutoSubstitute ?? false,
+      operatingHours: body.operatingHours ?? [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockAdminRestaurants.push(newRestaurant);
+    return HttpResponse.json(newRestaurant, { status: 201 });
+  }),
+
+  http.put(`${BASE}/restaurants/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as any;
+    const index = mockAdminRestaurants.findIndex((r) => r.id === params.id);
+    if (index === -1) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    const updated: AdminRestaurantDetail = {
+      ...mockAdminRestaurants[index],
+      ...body,
+      city: body.address?.city ?? mockAdminRestaurants[index].city,
+      country: body.address?.country ?? mockAdminRestaurants[index].country,
+      active: body.status ? body.status !== "archived" : mockAdminRestaurants[index].active,
+      updatedAt: new Date().toISOString(),
+    };
+    mockAdminRestaurants[index] = updated;
+    return HttpResponse.json(updated);
+  }),
+
+  http.post(`${BASE}/restaurants/:id/archive`, ({ params }) => {
+    const restaurant = mockAdminRestaurants.find((r) => r.id === params.id);
+    if (!restaurant) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    // Block archive if demo simulated staff assignment exists (e.g. if params.id === "r-blocked")
+    if (params.id === "r-blocked") {
+      return HttpResponse.json(
+        {
+          code: "RESTAURANT_HAS_ACTIVE_STAFF",
+          message: "Cannot archive restaurant with active staff assigned.",
+        },
+        { status: 409 },
+      );
+    }
+    restaurant.status = "archived";
+    restaurant.active = false;
+    restaurant.updatedAt = new Date().toISOString();
+    return HttpResponse.json({ success: true });
+  }),
 
   http.get(`${BASE}/restaurants/:restaurantId/tables`, () => HttpResponse.json(mockTables)),
 

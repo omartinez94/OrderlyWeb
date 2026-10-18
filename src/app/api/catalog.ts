@@ -22,6 +22,10 @@ import type {
   QueuePartyStatus,
   AuditEntityType,
   AdminAuditEntry,
+  AdminRestaurantDetail,
+  AdminRestaurantAddress,
+  RestaurantStatus,
+  OperatingHoursDay,
 } from "../../types/catalog";
 
 export type * from "../../types/catalog";
@@ -60,6 +64,29 @@ export interface UpdateBrandRequest {
   cuisineType: CuisineType;
   websiteUrl?: string | null;
   logoUrl?: string | null;
+}
+
+export interface CreateRestaurantRequest {
+  name: string;
+  brandId: string;
+  cuisine: string;
+  ownerId?: string | null;
+  address: AdminRestaurantAddress;
+  phone?: string | null;
+  email?: string | null;
+  timezone: string;
+  currency: string;
+  taxRate: number;
+  operatingHours: OperatingHoursDay[];
+  estimatedTurnoverMinutes: number;
+  autoConfirmReservations: boolean;
+  autoConfirmOrders: boolean;
+  allowAutoSubstitute: boolean;
+  status: RestaurantStatus;
+}
+
+export interface UpdateRestaurantRequest extends CreateRestaurantRequest {
+  id: string;
 }
 
 export interface GetTablesParams {
@@ -430,6 +457,49 @@ export const catalogApi = createApi({
             ]
           : [{ type: "Audit" as const, id: "LIST" }],
     }),
+
+    // Admin Restaurant Endpoints (Phase 5)
+    getAdminRestaurant: build.query<AdminRestaurantDetail, string>({
+      query: (id) => `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}`,
+      providesTags: (_r, _e, id) => [{ type: "Restaurants", id }],
+    }),
+
+    createRestaurant: build.mutation<AdminRestaurantDetail, CreateRestaurantRequest>({
+      query: (body) => ({
+        url: `${env.apiBaseUrl}/catalog-api/restaurants`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { brandId }) => [
+        { type: "Restaurants", id: "LIST" },
+        { type: "Brands", id: brandId },
+      ],
+    }),
+
+    updateRestaurant: build.mutation<AdminRestaurantDetail, UpdateRestaurantRequest>({
+      query: ({ id, ...body }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id, brandId }) => [
+        { type: "Restaurants", id },
+        { type: "Restaurants", id: "LIST" },
+        { type: "Brands", id: brandId },
+      ],
+    }),
+
+    archiveRestaurant: build.mutation<{ success: boolean }, { id: string; brandId?: string }>({
+      query: ({ id }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}/archive`,
+        method: "POST",
+      }),
+      invalidatesTags: (_r, _e, { id, brandId }) => [
+        { type: "Restaurants", id },
+        { type: "Restaurants", id: "LIST" },
+        ...(brandId ? [{ type: "Brands" as const, id: brandId }] : []),
+      ],
+    }),
   }),
   tagTypes: [
     "Restaurants",
@@ -447,6 +517,10 @@ export const catalogApi = createApi({
 export const {
   useGetRestaurantsQuery,
   useGetRestaurantQuery,
+  useGetAdminRestaurantQuery,
+  useCreateRestaurantMutation,
+  useUpdateRestaurantMutation,
+  useArchiveRestaurantMutation,
   useGetTablesQuery,
   useGetMergedTablesQuery,
   useMergeTablesMutation,
