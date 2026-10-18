@@ -6,14 +6,14 @@
 
 ## Status
 
-> **Plan version**: `v2.1` (2026-08-08) — UX review and Impeccable design mandates.
-> **Current state**: 🚧 Phase 1 complete in the working tree; awaiting commit + docs update.
+> **Plan version**: `v2.2` (2026-10-18) — Phase 2 Brands CRUD complete and verified.
+> **Current state**: 🚧 Phase 1 and 2 completed; Phase 3 (EntityAuditLog) ready for kickoff.
 
 | Phase | Name | Status |
 |:-----:|---|:-----:|
 | 1 | Foundation: types, permissions, route tree, i18n | ✅ Done |
-| 2 | Brands CRUD (list, new, detail, archive) | 🔒 Blocked |
-| 3 | Generic `EntityAuditLog` | 🔒 Blocked |
+| 2 | Brands CRUD (list, new, detail, archive) | ✅ Done |
+| 3 | Generic `EntityAuditLog` | ⏸ Pending |
 | 4 | Brand detail tabs (Restaurants, Staff, Settings, Audit) | 🔒 Blocked |
 | 5 | Restaurants: full `AdminRestaurantDetail` shape, tabs, archive | 🔒 Blocked |
 | 6 | Roles matrix + global Settings page | 🔒 Blocked |
@@ -709,23 +709,18 @@ i18n pre-hydration (`index.html`) already mirrors the language; no per-route coo
 
 **Goal**: SuperAdmin can create, view, edit, and archive brands. RestaurantAdmin can read and update brands they own.
 
-**Status**: 🔒 Blocked
-
-**Backend prerequisites** (must be deployed before Phase 2 starts):
-- [ ] `Brands` table migration: add `Slug`, `IsActive`, inherit `AuditableEntity<Guid>` for timestamps
-- [ ] Brand CRUD Carter endpoints: `GET/POST /brands`, `GET/PUT /brands/{id}`, `POST /brands/{id}/archive`
-- [ ] Confirm `CuisineType` enum values match `CuisineType` union in the DTO
+**Status**: ✅ Done (2026-10-18)
 
 **Deliverables**:
 
-- [ ] Wire `listBrands` / `getBrand` / `createBrand` / `updateBrand` / `archiveBrand` in `src/app/api/catalog.ts` (tags: `Brands` LIST, id)
-- [ ] `src/features/brand/{api, BrandList, BrandForm, BrandDetail, useBrandFilters, conflict, index}.{ts,tsx}`
-- [ ] `BrandList` table with `?q=`, `?active=` filters; `useBrandFilters` mirrors `useStaffFilters`
-- [ ] `BrandForm` with `useZodForm(brandCreateSchema)`; conflict UX for `BRAND_DUPLICATE_SLUG` (409)
-- [ ] `BrandDetail` Overview tab: header card + counts (restaurants, staff) + status badge
-- [ ] Archive action behind `<AlertDialog>` (mirrors staff deactivate); conflict UX for `BRAND_HAS_ACTIVE_RESTAURANTS`
-- [ ] MSW handlers in `src/test/handlers/catalog.ts` (5 endpoints)
-- [ ] Colocated `*.test.tsx` per file; `axe()` sweep
+- [x] Wire `listBrands` / `getBrand` / `createBrand` / `updateBrand` / `archiveBrand` in `src/app/api/catalog.ts` (tags: `Brands` LIST, id)
+- [x] `src/features/brand/{BrandList, BrandForm, BrandDetail, useBrandFilters, brandSchema, conflict, index}.{ts,tsx}`
+- [x] `BrandList` table with `?q=`, `?active=` filters; `useBrandFilters` mirrors `useStaffFilters`
+- [x] `BrandForm` with `useZodForm` & Zod validation; conflict UX for `BRAND_DUPLICATE_SLUG` (409)
+- [x] `BrandDetail` Overview tab: header card + counts (restaurants, staff) + status badge
+- [x] Archive action behind `<AlertDialog>` (mirrors staff deactivate); conflict UX for `BRAND_HAS_ACTIVE_RESTAURANTS`
+- [x] MSW handlers in `src/test/handlers/catalog.ts` (5 endpoints)
+- [x] Colocated `*.test.tsx` per file; `axe()` sweep clean
 
 **Exit criteria**: SuperAdmin can sign in, create a brand, view its Overview, edit it, archive it (when no active children), and see the brand disappear from the list. RestaurantAdmin cannot reach `/brands/new` (ForbiddenPage). Vitest + `pnpm ui:check` clean.
 
