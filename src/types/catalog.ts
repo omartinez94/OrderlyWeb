@@ -125,6 +125,10 @@ export interface MenuItem {
   name: string;
   priceCents: number;
   status: MenuItemStatus;
+  description?: string;
+  imageUrl?: string;
+  ingredientWarning?: string;
+  autoSubstituted?: boolean;
 }
 
 export interface MenuCategory {

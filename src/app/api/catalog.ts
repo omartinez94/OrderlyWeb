@@ -52,6 +52,7 @@ export interface SplitTablesRequest {
 export interface UpdateMenuItemAvailabilityRequest {
   id: string;
   isAvailable: boolean;
+  restaurantId?: string;
 }
 
 export const catalogApi = createApi({
@@ -141,7 +142,10 @@ export const catalogApi = createApi({
     >({
       query: ({ restaurantId }) =>
         `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(restaurantId)}/menu`,
-      providesTags: (_r, _e, { restaurantId }) => [{ type: "Menu", id: `MENU-${restaurantId}` }],
+      providesTags: (_r, _e, { restaurantId }) => [
+        { type: "Menu", id: `MENU-${restaurantId}` },
+        { type: "Menu", id: "LIST" },
+      ],
     }),
 
     updateMenuItemAvailability: build.mutation<void, UpdateMenuItemAvailabilityRequest>({
@@ -150,7 +154,28 @@ export const catalogApi = createApi({
         method: "PUT",
         body: { isAvailable },
       }),
-      invalidatesTags: [{ type: "Menu", id: "LIST" }],
+      invalidatesTags: (_r, _e, arg) => [
+        { type: "Menu", id: "LIST" },
+        ...(arg.restaurantId ? [{ type: "Menu" as const, id: `MENU-${arg.restaurantId}` }] : []),
+      ],
+      async onQueryStarted({ id, isAvailable, restaurantId }, { dispatch, queryFulfilled }) {
+        let patchResult: { undo: () => void } | undefined;
+        if (restaurantId) {
+          patchResult = dispatch(
+            catalogApi.util.updateQueryData("getMenu", { restaurantId }, (draft) => {
+              const item = draft.items.find((i) => i.id === id);
+              if (item) {
+                item.status = isAvailable ? "available" : "sold_out";
+              }
+            }),
+          );
+        }
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult?.undo();
+        }
+      },
     }),
   }),
   tagTypes: ["Restaurants", "Tables", "MergedTables", "Menu", "Brands", "AdminSettings", "Audit"],

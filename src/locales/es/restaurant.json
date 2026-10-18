@@ -20,5 +20,23 @@
     "party": "Tamaño del grupo",
     "time": "Hora",
     "submit": "Crear reserva"
+  },
+  "menu": {
+    "title": "Disponibilidad del Menú",
+    "subtitle": "Gestiona los productos del catálogo, monitorea límites de ingredientes y cambia el estado de 86.",
+    "searchPlaceholder": "Buscar productos o ingredientes...",
+    "allCategories": "Todas las Categorías",
+    "totalItems": "Total de Productos",
+    "available": "Disponible",
+    "soldOut": "Agotado / 86",
+    "hidden": "Oculto",
+    "autoSubstituted": "Sustituido Automáticamente",
+    "lowStock": "Stock Bajo",
+    "toggleAria": "Cambiar disponibilidad de {{name}}",
+    "statusUpdated": "{{name}} marcado como {{status}}",
+    "statusUpdateFailed": "Error al actualizar la disponibilidad de {{name}}",
+    "noItemsFound": "No se encontraron productos",
+    "noItemsMatchFilter": "Intenta ajustar el filtro de categoría o la búsqueda.",
+    "refresh": "Actualizar Menú"
   }
 }

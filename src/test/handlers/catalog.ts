@@ -6,6 +6,96 @@ import { http, HttpResponse } from "msw";
 
 const BASE = "http://localhost:6004/catalog-api";
 
+export const mockMenuCategories = [
+  { id: "c-pizza", restaurantId: "r-001", name: "Pizza", position: 1 },
+  { id: "c-pasta", restaurantId: "r-001", name: "Pasta", position: 2 },
+  { id: "c-drinks", restaurantId: "r-001", name: "Beverages", position: 3 },
+];
+
+export let mockMenuItems = [
+  {
+    id: "m-1",
+    restaurantId: "r-001",
+    categoryId: "c-pizza",
+    name: "Margherita",
+    priceCents: 1400,
+    status: "available",
+    description: "San Marzano tomatoes, fresh mozzarella, basil",
+  },
+  {
+    id: "m-2",
+    restaurantId: "r-001",
+    categoryId: "c-pizza",
+    name: "Pepperoni Piccante",
+    priceCents: 1650,
+    status: "sold_out",
+    description: "Spicy pepperoni, mozzarella, chili honey",
+    ingredientWarning: "Pepperoni low stock",
+  },
+  {
+    id: "m-3",
+    restaurantId: "r-001",
+    categoryId: "c-pasta",
+    name: "Rigatoni Carbonara",
+    priceCents: 1800,
+    status: "available",
+    description: "Guanciale, pecorino romano, egg yolk",
+    autoSubstituted: true,
+  },
+  {
+    id: "m-4",
+    restaurantId: "r-001",
+    categoryId: "c-drinks",
+    name: "San Pellegrino",
+    priceCents: 450,
+    status: "available",
+    description: "Sparkling natural mineral water",
+  },
+];
+
+export const resetMockMenuItems = () => {
+  mockMenuItems = [
+    {
+      id: "m-1",
+      restaurantId: "r-001",
+      categoryId: "c-pizza",
+      name: "Margherita",
+      priceCents: 1400,
+      status: "available",
+      description: "San Marzano tomatoes, fresh mozzarella, basil",
+    },
+    {
+      id: "m-2",
+      restaurantId: "r-001",
+      categoryId: "c-pizza",
+      name: "Pepperoni Piccante",
+      priceCents: 1650,
+      status: "sold_out",
+      description: "Spicy pepperoni, mozzarella, chili honey",
+      ingredientWarning: "Pepperoni low stock",
+    },
+    {
+      id: "m-3",
+      restaurantId: "r-001",
+      categoryId: "c-pasta",
+      name: "Rigatoni Carbonara",
+      priceCents: 1800,
+      status: "available",
+      description: "Guanciale, pecorino romano, egg yolk",
+      autoSubstituted: true,
+    },
+    {
+      id: "m-4",
+      restaurantId: "r-001",
+      categoryId: "c-drinks",
+      name: "San Pellegrino",
+      priceCents: 450,
+      status: "available",
+      description: "Sparkling natural mineral water",
+    },
+  ];
+};
+
 export const catalogHandlers = [
   http.get(`${BASE}/restaurants`, () =>
     HttpResponse.json([
@@ -98,24 +188,19 @@ export const catalogHandlers = [
     () => new HttpResponse(null, { status: 204 }),
   ),
 
-  http.put(`${BASE}/v1/menu-items/:id`, () => HttpResponse.json({ success: true })),
+  http.put(`${BASE}/v1/menu-items/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as { isAvailable?: boolean };
+    const item = mockMenuItems.find((i) => i.id === params.id);
+    if (item && body.isAvailable !== undefined) {
+      item.status = body.isAvailable ? "available" : "sold_out";
+    }
+    return HttpResponse.json({ success: true });
+  }),
 
   http.get(`${BASE}/restaurants/:restaurantId/menu`, () =>
     HttpResponse.json({
-      categories: [
-        { id: "c-pizza", restaurantId: "r-001", name: "Pizza", position: 1 },
-        { id: "c-pasta", restaurantId: "r-001", name: "Pasta", position: 2 },
-      ],
-      items: [
-        {
-          id: "m-1",
-          restaurantId: "r-001",
-          categoryId: "c-pizza",
-          name: "Margherita",
-          priceCents: 1400,
-          status: "available",
-        },
-      ],
+      categories: mockMenuCategories,
+      items: mockMenuItems,
     }),
   ),
 ];

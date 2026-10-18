@@ -21,5 +21,23 @@
     "party": "Party size",
     "time": "Time",
     "submit": "Create reservation"
+  },
+  "menu": {
+    "title": "Menu Availability",
+    "subtitle": "Manage catalog items, monitor ingredient limits, and toggle instant 86'd status.",
+    "searchPlaceholder": "Search menu items or ingredients...",
+    "allCategories": "All Categories",
+    "totalItems": "Total Items",
+    "available": "Available",
+    "soldOut": "86'd / Sold Out",
+    "hidden": "Hidden",
+    "autoSubstituted": "Auto-Substituted",
+    "lowStock": "Low Stock",
+    "toggleAria": "Toggle availability for {{name}}",
+    "statusUpdated": "{{name}} marked as {{status}}",
+    "statusUpdateFailed": "Failed to update availability for {{name}}",
+    "noItemsFound": "No menu items found",
+    "noItemsMatchFilter": "Try adjusting your category filter or search query.",
+    "refresh": "Refresh Menu"
   }
 }

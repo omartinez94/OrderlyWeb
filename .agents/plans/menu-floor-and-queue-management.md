@@ -7,12 +7,12 @@
 ## Status
 
 > **Plan version**: `v1.0` (2026-10-16) — Initial Phase 3 plan derived from `master-web-development-plan.md`.
-> **Current state**: ⏸ Ready for kickoff (depends on Phase 0 API alignment).
+> **Current state**: 🚧 Phase 1 completed; Phase 2 ready for kickoff.
 
 | Phase | Name | Target Deliverables | Status |
 |:-----:|---|---|:-----:|
-| 1 | Menu Catalog & Instant 86'd Inventory Management | `/site/restaurant/menu`, availability toggle, category tabs | ⏸ Pending |
-| 2 | Interactive Dining Floor Plan & Table Grid | `/site/restaurant/tables`, X/Y spatial grid, status indicators | 🔒 Blocked |
+| 1 | Menu Catalog & Instant 86'd Inventory Management | `/site/restaurant/menu`, availability toggle, category tabs | ✅ Done |
+| 2 | Interactive Dining Floor Plan & Table Grid | `/site/restaurant/tables`, X/Y spatial grid, status indicators | ⏸ Pending |
 | 3 | Table Clustering & Merged Tables Operations | Merged table parent-child associations, cluster cards | 🔒 Blocked |
 | 4 | Walk-In Queue & Guest Waitlist Management | `/site/restaurant/queue`, SMS notification triggers | 🔒 Blocked |
 | 5 | Reservation Calendar & Seating Coordination | `/site/restaurant/reservations`, check-in, no-show actions | 🔒 Blocked |
@@ -177,10 +177,10 @@ OrderlyWeb/src/
 ## 7. Development Phases & Verification Checklist
 
 ### Phase 1: Menu Catalog & Instant 86'd Inventory Management
-- [ ] Build `MenuAvailabilityGrid.tsx` and `CategoryTabList.tsx`.
-- [ ] Connect instant toggle to `updateMenuItemAvailability` mutation with optimistic updates.
-- [ ] Mount in `src/routes/site/restaurant/MenuPage.tsx`.
-- [ ] Verification: Toggling an item 86'd immediately invalidates `Menu` tags and updates card status.
+- [x] Build `MenuAvailabilityGrid.tsx` and `CategoryTabList.tsx`.
+- [x] Connect instant toggle to `updateMenuItemAvailability` mutation with optimistic updates.
+- [x] Mount in `src/routes/site/restaurant/MenuPage.tsx`.
+- [x] Verification: Toggling an item 86'd immediately invalidates `Menu` tags and updates card status.
 
 ### Phase 2: Interactive Dining Floor Plan & Table Grid
 - [ ] Build `FloorPlanGrid.tsx` and `TableCard.tsx` supporting `Square`, `Round`, and `Booth` shapes.
