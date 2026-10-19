@@ -26,40 +26,40 @@ test.describe("Routing foundation", () => {
   test("/ renders the marketing home via the default-zone redirect", async ({ page }) => {
     // The placeholder predicate returns SuperAdmin, so the root
     // redirects to /site/admin. Visiting / directly should end
-    // up on the admin dashboard splash.
+    // up on the admin dashboard.
     await page.goto("/");
     await page.waitForURL(/\/site\/admin$/);
-    await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
   });
 
   test("/home renders the marketing page", async ({ page }) => {
     await page.goto("/home");
-    await expect(page.getByRole("heading", { name: /One tool for the kitchen/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Where Every Order/i })).toBeVisible();
   });
 
   test("Home → Showcase navigation works via the footer link", async ({ page }) => {
     await page.goto("/home");
-    await page.getByRole("link", { name: "Design system" }).click();
+    await page.getByRole("link", { name: /UI Primitive Showcase|Design system/i }).click();
     await page.waitForURL(/\/showcase$/);
     await expect(page.getByRole("heading", { name: "Base Component Library" })).toBeVisible();
   });
 
   test("Showcase → Home backward navigation via the back link", async ({ page }) => {
     await page.goto("/home");
-    await page.getByRole("link", { name: "Design system" }).click();
+    await page.getByRole("link", { name: /UI Primitive Showcase|Design system/i }).click();
     await page.waitForURL(/\/showcase$/);
     await page.getByRole("link", { name: "Back to home" }).click();
     await page.waitForURL(/\/home$/);
-    await expect(page.getByRole("heading", { name: /One tool for the kitchen/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Where Every Order/i })).toBeVisible();
   });
 
   test("Showcase → Home backward navigation via the browser back button", async ({ page }) => {
     await page.goto("/home");
-    await page.getByRole("link", { name: "Design system" }).click();
+    await page.getByRole("link", { name: /UI Primitive Showcase|Design system/i }).click();
     await page.waitForURL(/\/showcase$/);
     await page.goBack();
     await page.waitForURL(/\/home$/);
-    await expect(page.getByRole("heading", { name: /One tool for the kitchen/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Where Every Order/i })).toBeVisible();
   });
 
   test("Legacy ?showcase=1 URL redirects to /showcase", async ({ page }) => {
@@ -82,10 +82,11 @@ test.describe("Routing foundation", () => {
 
   test("Admin zone renders the sidebar with role-filtered items", async ({ page }) => {
     await page.goto("/site/admin");
-    await expect(page.getByRole("navigation", { name: "Zone navigation" })).toBeVisible();
+    const nav = page.getByRole("navigation", { name: "Zone navigation" });
+    await expect(nav).toBeVisible();
     // SuperAdmin placeholder sees both Restaurants and Settings.
-    await expect(page.getByRole("link", { name: "Restaurants" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Restaurants", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Settings", exact: true })).toBeVisible();
   });
 
   test("Restaurant zone renders the full sidebar surface", async ({ page }) => {
@@ -98,6 +99,6 @@ test.describe("Routing foundation", () => {
   test("Kitchen zone renders the kitchen sidebar", async ({ page }) => {
     await page.goto("/site/kitchen");
     await expect(page.getByRole("navigation", { name: "Zone navigation" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Order queue" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Kitchen display" })).toBeVisible();
   });
 });

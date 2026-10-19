@@ -22,35 +22,33 @@
  */
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuthPredicate } from "../RouteGuards/useAuthPredicate";
 import { PATH, QUERY_PARAM } from "../../router/pathNames";
 import { defaultZoneForRoles } from "../../lib/defaultZone";
 import { HomePage } from "../../routes/HomePage";
 
 export function RootRedirect(): React.ReactElement | null {
+  const [searchParams] = useSearchParams();
   const predicate = useAuthPredicate();
   const navigate = useNavigate();
 
   const roles = predicate.roles;
   const isAuthenticated = predicate.isAuthenticated;
+  const isShowcase = searchParams.get(QUERY_PARAM.SHOWCASE) === "1";
 
   useEffect(() => {
-    // Legacy `?showcase=1` URL → preserve by redirecting to /showcase.
-    if (typeof window !== "undefined") {
-      const flag = new URLSearchParams(window.location.search).get(QUERY_PARAM.SHOWCASE);
-      if (flag === "1") {
-        navigate(PATH.SHOWCASE, { replace: true });
-        return;
-      }
+    if (isShowcase) {
+      navigate(PATH.SHOWCASE, { replace: true });
+      return;
     }
 
     if (!isAuthenticated) return;
     const target = defaultZoneForRoles(roles);
     if (target) navigate(target, { replace: true });
-  }, [isAuthenticated, roles, navigate]);
+  }, [isShowcase, isAuthenticated, roles, navigate]);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isShowcase) {
     return <HomePage />;
   }
 

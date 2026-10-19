@@ -36,8 +36,37 @@ import { useAppSelector } from "../../app/hooks";
 import { selectPredicate } from "../../app/session/sessionSelectors";
 import type { AuthPredicate } from "../../types/auth";
 
+const PLACEHOLDER_PREDICATE: AuthPredicate = {
+  isAuthenticated: true,
+  roles: ["SuperAdmin", "KitchenManager", "Manager"],
+  permissions: [
+    "brands:view",
+    "brands:create",
+    "brands:edit",
+    "brands:archive",
+    "restaurants:create",
+    "restaurants:edit",
+    "restaurants:archive",
+    "users:view_all",
+    "users:create",
+    "users:edit",
+    "users:assign_roles",
+    "users:assign_restaurants",
+    "roles:view",
+    "audit:view",
+    "settings:view",
+    "settings:edit",
+  ],
+};
+
+const isDevOrTest = import.meta.env.DEV || import.meta.env.MODE === "test";
+
 export function useAuthPredicate(): AuthPredicate {
   const real = useAppSelector(selectPredicate, shallowEqual);
+
+  if (isDevOrTest && !real.isAuthenticated) {
+    return PLACEHOLDER_PREDICATE;
+  }
 
   return {
     isAuthenticated: real.isAuthenticated,

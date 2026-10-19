@@ -107,7 +107,7 @@ export function EntityAuditLog({
         </h2>
         {showEntityBadge && entityType && (
           <Badge variant="outline" className="text-xs capitalize">
-            {t(`auditLog.entityLabels.${entityType}`, { defaultValue: entityType })}
+            {t(`auditLog.entityLabels.${entityType.toLowerCase()}`, { defaultValue: entityType })}
           </Badge>
         )}
       </div>
@@ -128,7 +128,7 @@ export function EntityAuditLog({
                 <div className="flex items-center gap-2">
                   {showEntityBadge && !entityType && currentEntityType && (
                     <Badge variant="outline" className="font-mono text-[10px] uppercase">
-                      {t(`auditLog.entityLabels.${currentEntityType}`, {
+                      {t(`auditLog.entityLabels.${currentEntityType.toLowerCase()}`, {
                         defaultValue: currentEntityType,
                       })}
                     </Badge>

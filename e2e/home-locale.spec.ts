@@ -11,7 +11,7 @@ import { test, expect } from "./fixtures/withLocale";
  */
 test.describe("Marketing home page language toggle", () => {
   test("home page renders in English by default", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/home");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     // Scope to <header> so we don't collide with sign-in CTAs deeper
     // in the page (hero, jumbotron, footer).
@@ -19,7 +19,7 @@ test.describe("Marketing home page language toggle", () => {
   });
 
   test("clicking ES in the language toggle flips the home page to Spanish", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/home");
     await expect(page.locator("header").getByRole("button", { name: "Sign in" })).toBeVisible();
 
     // Open the LanguageToggle (globe icon) — its accessible name is
