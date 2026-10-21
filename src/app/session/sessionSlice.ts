@@ -26,7 +26,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Role, Permission } from "../../types/auth";
 
-export type SessionStatus = "idle" | "authenticating" | "authenticated" | "expired";
+export const SessionStatus = {
+  Idle: "idle",
+  Authenticating: "authenticating",
+  Authenticated: "authenticated",
+  Expired: "expired",
+} as const;
+
+export type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus];
 
 export interface SessionUser {
   id: string;

@@ -24,6 +24,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import type { AuthPredicate } from "../../types/auth";
 import { defaultZoneForRoles } from "../../lib/defaultZone";
+import { SessionStatus } from "./sessionSlice";
 
 export const selectAccessToken = (state: RootState): string | null => state.session.accessToken;
 
@@ -44,7 +45,7 @@ export const selectPermissions = (state: RootState) => state.session.permissions
  * "authenticated" with no profile.
  */
 export const selectIsAuthenticated = (state: RootState): boolean =>
-  state.session.status === "authenticated" && state.session.user !== null;
+  state.session.status === SessionStatus.Authenticated && state.session.user !== null;
 
 /**
  * Memoized auth predicate. Reference-stable until `roles` or
