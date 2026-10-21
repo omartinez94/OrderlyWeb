@@ -12,27 +12,44 @@
  * if a translation is missing in development.
  */
 
+import {
+  LayoutDashboard,
+  Building2,
+  Store,
+  Users,
+  ShieldCheck,
+  KeyRound,
+  Settings,
+} from "lucide-react";
 import { ZoneShell } from "../../../components/Layout/ZoneShell";
 import type { SidebarItem } from "../../../components/Layout/ZoneSidebar";
 import { PATH } from "../../../router/pathNames";
 
 export const ADMIN_SIDEBAR_ITEMS: readonly SidebarItem[] = [
-  { to: PATH.ADMIN, label: "Dashboard", labelKey: "admin:dashboard.title" },
-  { to: PATH.ADMIN_BRANDS, label: "Brands", labelKey: "admin:brands.title" },
+  { to: PATH.ADMIN, label: "Dashboard", labelKey: "admin:dashboard.title", icon: LayoutDashboard },
+  { to: PATH.ADMIN_BRANDS, label: "Brands", labelKey: "admin:brands.title", icon: Building2 },
   {
     to: PATH.ADMIN_RESTAURANTS,
     label: "Restaurants",
     labelKey: "admin:restaurants.title",
     roles: ["SuperAdmin"],
+    icon: Store,
   },
-  { to: PATH.ADMIN_STAFF, label: "Staff", labelKey: "admin:staff.title" },
-  { to: PATH.ADMIN_AUDIT, label: "Audit", labelKey: "admin:audit.title" },
-  { to: PATH.ADMIN_ROLES, label: "Roles", labelKey: "admin:roles.title", roles: ["SuperAdmin"] },
+  { to: PATH.ADMIN_STAFF, label: "Staff", labelKey: "admin:staff.title", icon: Users },
+  { to: PATH.ADMIN_AUDIT, label: "Audit", labelKey: "admin:audit.title", icon: ShieldCheck },
+  {
+    to: PATH.ADMIN_ROLES,
+    label: "Roles",
+    labelKey: "admin:roles.title",
+    roles: ["SuperAdmin"],
+    icon: KeyRound,
+  },
   {
     to: PATH.ADMIN_SETTINGS,
     label: "Settings",
     labelKey: "admin:settings.title",
     roles: ["SuperAdmin"],
+    icon: Settings,
   },
 ];
 

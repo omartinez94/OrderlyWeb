@@ -17,7 +17,8 @@
 
 import { Outlet } from "react-router";
 import { ZoneTopBar } from "./ZoneTopBar";
-import { ZoneSidebar, type SidebarItem } from "./ZoneSidebar";
+import { ZoneDock } from "./ZoneDock";
+import type { SidebarItem } from "./ZoneSidebar";
 import { ZoneErrorBoundary } from "./ZoneErrorBoundary";
 import type { Zone } from "../Header/types";
 
@@ -25,13 +26,13 @@ export function ZoneShell({ zone, items }: { zone: Zone; items: readonly Sidebar
   return (
     <div className="bg-surface text-ink min-h-screen font-sans antialiased">
       <ZoneTopBar zone={zone} />
-      <div className="grid grid-cols-[auto_1fr]">
-        <ZoneSidebar items={items} />
-        <main id="main" className="bg-surface min-h-[calc(100vh-64px)]">
+      <div className="relative w-full">
+        <main id="main" className="bg-surface min-h-[calc(100vh-64px)] pb-28">
           <ZoneErrorBoundary zoneName={zone}>
             <Outlet />
           </ZoneErrorBoundary>
         </main>
+        <ZoneDock zone={zone} items={items} />
       </div>
     </div>
   );

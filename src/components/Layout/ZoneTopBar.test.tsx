@@ -90,4 +90,16 @@ describe("Header live wiring (ZoneTopBar)", () => {
       expect(s?.session.status).toBe("idle");
     });
   });
+
+  it("loads and displays accessible restaurants in breadcrumb and switcher", async () => {
+    store.dispatch(setCredentials(CREDENTIALS));
+    const { getAllByText, queryByText } = renderWithStore();
+
+    await waitFor(() => {
+      expect(queryByText("Loading…")).toBeNull();
+      expect(queryByText("No restaurant")).toBeNull();
+      const matches = getAllByText("Acme Bistro — Downtown");
+      expect(matches).toHaveLength(2);
+    });
+  });
 });

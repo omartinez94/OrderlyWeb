@@ -19,6 +19,7 @@
  * (Vercel rule `js-set-map-lookups`.)
  */
 
+import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router";
 import { useTranslate } from "../../hooks/useTranslate";
 import type { Role } from "../../types/auth";
@@ -37,7 +38,11 @@ export interface SidebarItem {
   detail?: string;
   /** Roles allowed to see this item. Empty / omitted = visible to all. */
   roles?: readonly Role[];
+  /** Optional Lucide icon for dock and visual navigation. */
+  icon?: LucideIcon;
 }
+
+export type DockItem = SidebarItem;
 
 export function ZoneSidebar({ items }: { items: readonly SidebarItem[] }) {
   const predicate = useAuthPredicate();

@@ -27,8 +27,13 @@ import {
 } from "../../app/session/headerSelectors";
 import { useRestaurantContext } from "../RestaurantContext/useRestaurantContext";
 import { useLogout } from "../../app/session/useLogout";
-import { useMarkReadMutation, useMarkAllReadMutation } from "../../app/api/notifications";
-import { catalogApi } from "../../app/api/catalog";
+import {
+  useMarkReadMutation,
+  useMarkAllReadMutation,
+  useGetNotificationsQuery,
+} from "../../app/api/notifications";
+import { catalogApi, useGetRestaurantsQuery } from "../../app/api/catalog";
+import { useUserRestaurantsQuery } from "../../app/api/identity";
 import { ordersApi } from "../../app/api/orders";
 import { kitchenApi } from "../../app/api/kitchen";
 import { useNavigateWithTransition } from "../../hooks/useNavigateWithTransition";
@@ -42,20 +47,28 @@ export function ZoneTopBar({ zone }: { zone: Zone }) {
   const [, startTransition] = useTransition();
 
   const user = useAppSelector(selectUser);
+
+  // Subscribe to live queries so the RTK Query cache populates for header selectors
+  useUserRestaurantsQuery(undefined, { skip: !user });
+  useGetRestaurantsQuery();
+  useGetNotificationsQuery({ unreadOnly: false }, { skip: !user });
+
   const restaurants = useAppSelector(selectAccessibleRestaurants);
   const notifications = useAppSelector(selectNotifications);
   const { restaurantId, setRestaurantId } = useRestaurantContext();
-  const opsCount = useAppSelector((state) => selectOpsCountForZone(state, zone, restaurantId));
+
+  const currentRestaurant = useMemo(
+    () => restaurants.find((r) => r.id === restaurantId) ?? restaurants[0],
+    [restaurants, restaurantId],
+  );
+  const currentRestaurantId = currentRestaurant?.id ?? "r-001";
+  const opsCount = useAppSelector((state) =>
+    selectOpsCountForZone(state, zone, currentRestaurantId),
+  );
 
   const [markRead] = useMarkReadMutation();
   const [markAllRead] = useMarkAllReadMutation();
   const logout = useLogout();
-
-  const currentRestaurant = useMemo(
-    () => restaurants.find((r) => r.id === restaurantId),
-    [restaurants, restaurantId],
-  );
-  const currentRestaurantId = currentRestaurant?.id ?? restaurants[0]?.id ?? "r-001";
 
   const handleRestaurantChange = useCallback(
     (id: string) => {

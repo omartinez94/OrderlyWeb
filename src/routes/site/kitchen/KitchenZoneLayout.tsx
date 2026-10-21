@@ -8,12 +8,13 @@
  * dedicated full-screen styling lands with the KDS feature.
  */
 
+import { ChefHat, Settings } from "lucide-react";
 import { ZoneShell } from "../../../components/Layout/ZoneShell";
 import type { SidebarItem } from "../../../components/Layout/ZoneSidebar";
 
 export const KITCHEN_SIDEBAR_ITEMS: readonly SidebarItem[] = [
-  { to: "/site/kitchen", label: "Order queue", labelKey: "kds:queue.title" },
-  { to: "/site/kitchen/settings", label: "Settings" },
+  { to: "/site/kitchen", label: "Order queue", labelKey: "kds:queue.title", icon: ChefHat },
+  { to: "/site/kitchen/settings", label: "Settings", icon: Settings },
 ];
 
 export function KitchenZoneLayout() {
