@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
@@ -36,20 +36,21 @@ function normalizeTicket(t: KitchenTicketDto | TicketData): TicketData {
   }
   const dto = t as KitchenTicketDto;
   return {
-    id: dto.orderNumber || dto.id,
+    id: dto.id || dto.orderNumber,
+    orderNumber: dto.orderNumber,
     table: dto.notes ? dto.notes : `Ticket #${dto.orderNumber || dto.id.slice(0, 6)}`,
-    items: dto.items.map((i) => `${i.quantity}x ${i.menuItemName}`),
+    items: (dto.items ?? []).map((i) => `${i.quantity}x ${i.menuItemName || "Item"}`),
     status:
-      dto.status === "New"
+      dto.status === "New" || (dto.status as unknown) === 0
         ? "new"
-        : dto.status === "InProgress"
+        : dto.status === "InProgress" || (dto.status as unknown) === 1
           ? "preparing"
-          : dto.status === "Ready"
+          : dto.status === "Ready" || (dto.status as unknown) === 2
             ? "ready"
             : "served",
     elapsed: 0,
     receivedAt: dto.receivedAt,
-    station: dto.items[0]?.stationId ? `Station ${dto.items[0].stationId}` : "Line 1",
+    station: dto.items?.[0]?.stationId ? `Station ${dto.items[0].stationId}` : "Line 1",
   };
 }
 
@@ -85,6 +86,13 @@ export function KdsTicketGrid({
     const start = (activePage - 1) * pageSize;
     return normalizedTickets.slice(start, start + pageSize);
   }, [normalizedTickets, activePage, pageSize]);
+
+  // Ensure selected slot stays bounded when tickets are bumped or removed
+  useEffect(() => {
+    if (currentTickets.length > 0 && selectedSlotIndex >= currentTickets.length) {
+      setSelectedSlotIndex(Math.max(0, currentTickets.length - 1));
+    }
+  }, [currentTickets.length, selectedSlotIndex]);
 
   const handleBump = useCallback(
     async (ticketId: string) => {
@@ -156,8 +164,36 @@ export function KdsTicketGrid({
           case "SLOT_8":
             if (currentTickets.length > 7) setSelectedSlotIndex(7);
             break;
+          case "NEXT_SLOT":
+            if (currentTickets.length > 0) {
+              if (selectedSlotIndex + 1 < currentTickets.length) {
+                setSelectedSlotIndex((prev) => prev + 1);
+              } else if (currentPage < totalPages) {
+                setCurrentPage((p) => p + 1);
+                setSelectedSlotIndex(0);
+              } else {
+                setSelectedSlotIndex(0);
+              }
+            }
+            break;
+          case "PREV_SLOT":
+            if (currentTickets.length > 0) {
+              if (selectedSlotIndex > 0) {
+                setSelectedSlotIndex((prev) => prev - 1);
+              } else if (currentPage > 1) {
+                setCurrentPage((p) => p - 1);
+                setSelectedSlotIndex(Math.max(0, pageSize - 1));
+              } else {
+                setSelectedSlotIndex(currentTickets.length - 1);
+              }
+            }
+            break;
           case "BUMP_SELECTED": {
-            const target = currentTickets[selectedSlotIndex];
+            const safeIndex =
+              currentTickets.length === 0
+                ? -1
+                : Math.min(selectedSlotIndex, currentTickets.length - 1);
+            const target = safeIndex >= 0 ? currentTickets[safeIndex] : undefined;
             if (target) {
               handleBump(target.id);
             } else {
@@ -184,7 +220,15 @@ export function KdsTicketGrid({
             break;
         }
       },
-      [currentTickets, selectedSlotIndex, currentPage, totalPages, handleBump, handleRecall],
+      [
+        currentTickets,
+        selectedSlotIndex,
+        currentPage,
+        totalPages,
+        pageSize,
+        handleBump,
+        handleRecall,
+      ],
     ),
   );
 

@@ -77,8 +77,20 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
   ];
 
   const row2Keys: PadKeyDef[] = [
-    { id: "f1", fallbackLabel: "F1", hotkey: "—", variant: "inactive" },
-    { id: "f2", fallbackLabel: "F2", hotkey: "—", variant: "inactive" },
+    {
+      id: "prevSlot",
+      action: "PREV_SLOT",
+      fallbackLabel: "◀",
+      hotkey: "←",
+      variant: "function",
+    },
+    {
+      id: "nextSlot",
+      action: "NEXT_SLOT",
+      fallbackLabel: "▶",
+      hotkey: "→",
+      variant: "function",
+    },
     { id: "f3", fallbackLabel: "F3", hotkey: "—", variant: "inactive" },
     { id: "f4", fallbackLabel: "F4", hotkey: "—", variant: "inactive" },
     { id: "f5", fallbackLabel: "F5", hotkey: "—", variant: "inactive" },

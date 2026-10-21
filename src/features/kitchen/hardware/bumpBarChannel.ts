@@ -13,6 +13,27 @@ import {
 
 export const BUMP_BAR_CHANNEL_NAME = "orderly-kds-bumpbar";
 
+let senderChannel: BroadcastChannel | null = null;
+
+function getSenderChannel(): BroadcastChannel | null {
+  if (typeof BroadcastChannel === "undefined") return null;
+  if (!senderChannel) {
+    senderChannel = new BroadcastChannel(BUMP_BAR_CHANNEL_NAME);
+  }
+  return senderChannel;
+}
+
+export function closeSenderChannel(): void {
+  if (senderChannel) {
+    try {
+      senderChannel.close();
+    } catch {
+      // Ignore if already closed
+    }
+    senderChannel = null;
+  }
+}
+
 /**
  * Publishes a typed BumpBarAction across the BroadcastChannel.
  */
@@ -20,7 +41,8 @@ export function publishBumpAction(
   action: BumpBarAction,
   source: "virtual-popup" | "hardware-bridge" = "virtual-popup",
 ): void {
-  if (typeof BroadcastChannel === "undefined") return;
+  const channel = getSenderChannel();
+  if (!channel) return;
 
   const rawMessage = {
     type: "BUMP_ACTION",
@@ -35,9 +57,7 @@ export function publishBumpAction(
     return;
   }
 
-  const channel = new BroadcastChannel(BUMP_BAR_CHANNEL_NAME);
   channel.postMessage(parsed.data);
-  channel.close();
 }
 
 /**

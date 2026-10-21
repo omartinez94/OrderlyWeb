@@ -6,6 +6,7 @@ import "./TicketCard.css";
 
 export interface TicketData {
   id: string;
+  orderNumber?: string;
   table: string;
   items: string[];
   status: OrderStatus;
@@ -138,7 +139,9 @@ export function TicketCard({
               {STATUS_EMOJI[ticket.status] ?? "🔔"}
             </span>
           )}
-          <span className="text-ink font-mono text-sm font-bold">{ticket.id}</span>
+          <span className="text-ink font-mono text-sm font-bold">
+            {ticket.orderNumber || ticket.id}
+          </span>
         </div>
         <StatusPill status={ticket.status} />
       </div>

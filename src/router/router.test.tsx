@@ -119,6 +119,46 @@ describe("router", () => {
         { timeout: 3000 },
       );
     });
+
+    it("renders the kitchen order queue for KitchenStaff", async () => {
+      store.dispatch(
+        setCredentials({
+          accessToken: "staff-token",
+          expiresAt: Date.now() + 15 * 60 * 1000,
+          user: { id: "u-ks", name: "Kitchen Cook", email: "cook@orderly.com", initials: "KC" },
+          roles: ["KitchenStaff"],
+          permissions: [],
+        }),
+      );
+      renderWithRoute("/site/kitchen");
+      await waitFor(
+        () => {
+          expect(screen.getByRole("heading", { name: "Order queue" })).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
+    });
+
+    it("renders the virtual bump bar simulator for KitchenStaff", async () => {
+      store.dispatch(
+        setCredentials({
+          accessToken: "staff-token",
+          expiresAt: Date.now() + 15 * 60 * 1000,
+          user: { id: "u-ks", name: "Kitchen Cook", email: "cook@orderly.com", initials: "KC" },
+          roles: ["KitchenStaff"],
+          permissions: [],
+        }),
+      );
+      renderWithRoute("/site/kitchen/virtual-bumpbar");
+      await waitFor(
+        () => {
+          expect(
+            screen.getByRole("main", { name: /KB9000 Bump Bar Simulator/i }),
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
+    });
   });
 
   describe("/site/restaurant", () => {
@@ -142,6 +182,22 @@ describe("router", () => {
       renderWithRoute("/");
       await waitFor(() => {
         expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
+      });
+    });
+
+    it("redirects / to /site/kitchen for KitchenStaff", async () => {
+      store.dispatch(
+        setCredentials({
+          accessToken: "staff-token",
+          expiresAt: Date.now() + 15 * 60 * 1000,
+          user: { id: "u-ks", name: "Kitchen Cook", email: "cook@orderly.com", initials: "KC" },
+          roles: ["KitchenStaff"],
+          permissions: [],
+        }),
+      );
+      renderWithRoute("/");
+      await waitFor(() => {
+        expect(screen.getByRole("heading", { name: "Order queue" })).toBeInTheDocument();
       });
     });
   });

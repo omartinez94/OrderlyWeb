@@ -99,4 +99,28 @@ describe("KdsTicketGrid", () => {
 
     expect(onBump).toHaveBeenCalledWith("ORD-2002");
   });
+
+  it("navigates slots with arrow keys and bumps on Enter", async () => {
+    const onBump = vi.fn();
+    const tickets = makeTickets(4);
+
+    renderWithI18n(
+      <Provider store={store}>
+        <KdsTicketGrid tickets={tickets} onBumpOrder={onBump} />
+      </Provider>,
+      "en",
+    );
+
+    // Press ArrowRight to move from slot 1 to slot 2
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { code: "ArrowRight", key: "ArrowRight" }));
+    });
+
+    // Press Enter to bump the focused slot 2 (ORD-2002)
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { code: "Enter", key: "Enter" }));
+    });
+
+    expect(onBump).toHaveBeenCalledWith("ORD-2002");
+  });
 });

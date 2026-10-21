@@ -35,6 +35,8 @@ export const KB9000_DEFAULT_PROFILE: BumpBarProfile = {
     { key: "PageDown", code: "PageDown", action: "NEXT_PAGE", label: "NEXT" },
     { key: "ArrowUp", code: "ArrowUp", action: "PREV_PAGE", label: "PREV" },
     { key: "PageUp", code: "PageUp", action: "PREV_PAGE", label: "PREV" },
+    { key: "ArrowRight", code: "ArrowRight", action: "NEXT_SLOT", label: "NEXT TICKET" },
+    { key: "ArrowLeft", code: "ArrowLeft", action: "PREV_SLOT", label: "PREV TICKET" },
     { key: "0", code: "Digit0", action: "ITEM_PREP_TOGGLE", label: "ITEM" },
     { key: "i", code: "KeyI", action: "ITEM_PREP_TOGGLE", label: "ITEM" },
     { key: "I", code: "KeyI", action: "ITEM_PREP_TOGGLE", label: "ITEM" },
@@ -60,6 +62,8 @@ export const NUMPAD_PROFILE: BumpBarProfile = {
     { key: "-", code: "NumpadSubtract", action: "RECALL_LAST", label: "RECALL" },
     { key: "+", code: "NumpadAdd", action: "NEXT_PAGE", label: "NEXT" },
     { key: ".", code: "NumpadDecimal", action: "PREV_PAGE", label: "PREV" },
+    { key: "ArrowRight", code: "ArrowRight", action: "NEXT_SLOT", label: "NEXT TICKET" },
+    { key: "ArrowLeft", code: "ArrowLeft", action: "PREV_SLOT", label: "PREV TICKET" },
     { key: "0", code: "Numpad0", action: "SUMMARY_COUNTS", label: "SUMM" },
   ],
 };

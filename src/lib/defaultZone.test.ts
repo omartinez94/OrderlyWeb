@@ -59,6 +59,10 @@ describe("canAccessZone", () => {
     expect(canAccessZone("admin", ["KitchenStaff"])).toBe(false);
   });
 
+  it("KitchenStaff can access kitchen", () => {
+    expect(canAccessZone("kitchen", ["KitchenStaff"])).toBe(true);
+  });
+
   it("KitchenManager can access kitchen", () => {
     expect(canAccessZone("kitchen", ["KitchenManager"])).toBe(true);
   });

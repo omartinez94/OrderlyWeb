@@ -9,7 +9,13 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { dynamicBaseQuery } from "./base";
 import { env } from "../../lib/env";
-import type { KitchenTicketDto, KitchenQueueResponse } from "../../types/kitchen";
+import type {
+  KitchenTicketDto,
+  KitchenTicketItemDto,
+  KitchenQueueResponse,
+  KitchenTicketStatus,
+  KitchenItemStatus,
+} from "../../types/kitchen";
 
 export interface GetKitchenQueueParams {
   restaurantId?: string;
@@ -28,6 +34,94 @@ export interface KitchenItemActionRequest {
   itemId: string;
 }
 
+function mapTicketStatus(status: unknown): KitchenTicketStatus {
+  if (status === 0 || status === "0" || status === "New") return "New";
+  if (status === 1 || status === "1" || status === "InProgress") return "InProgress";
+  if (status === 2 || status === "2" || status === "Ready") return "Ready";
+  if (status === 3 || status === "3" || status === "Bumped") return "Bumped";
+  if (status === 4 || status === "4" || status === "Cancelled") return "Cancelled";
+  return "New";
+}
+
+function mapItemStatus(status: unknown): KitchenItemStatus {
+  if (status === 0 || status === "0" || status === "Pending") return "Pending";
+  if (status === 1 || status === "1" || status === "Preparing") return "Preparing";
+  if (status === 2 || status === "2" || status === "Ready") return "Ready";
+  return "Pending";
+}
+
+function normalizeKitchenItem(i: Record<string, unknown>): KitchenTicketItemDto {
+  return {
+    id: String(i.id ?? i.Id ?? ""),
+    orderItemId: String(i.orderItemId ?? i.OrderItemId ?? ""),
+    menuItemId: String(i.menuItemId ?? i.MenuItemId ?? ""),
+    menuItemName: String(i.menuItemName ?? i.MenuItemName ?? "Item"),
+    quantity: Number(i.quantity ?? i.Quantity ?? 1),
+    unitPrice: Number(i.unitPrice ?? i.UnitPrice ?? 0),
+    selectedVariations: (i.selectedVariations ?? i.SelectedVariations ?? []) as string[],
+    customizations: (i.customizations ?? i.Customizations ?? []) as string[],
+    specialInstructions: (i.specialInstructions ?? i.SpecialInstructions ?? null) as string | null,
+    seatNumber: (i.seatNumber ?? i.SeatNumber ?? null) as number | null,
+    status: mapItemStatus(i.status ?? i.Status),
+    startedAt:
+      typeof (i.startedAt ?? i.StartedAt) === "string" ? String(i.startedAt ?? i.StartedAt) : null,
+    readyAt: typeof (i.readyAt ?? i.ReadyAt) === "string" ? String(i.readyAt ?? i.ReadyAt) : null,
+    stationId: (i.stationId ?? i.StationId ?? null) as string | null,
+  };
+}
+
+export function normalizeKitchenTicket(t: Record<string, unknown>): KitchenTicketDto {
+  const rawReceivedAt = t.receivedAt ?? t.ReceivedAt;
+  const receivedAt = typeof rawReceivedAt === "string" ? rawReceivedAt : new Date().toISOString();
+  const rawItems = (t.items ?? t.Items ?? []) as Record<string, unknown>[];
+  return {
+    id: String(t.id ?? t.Id ?? ""),
+    restaurantId: String(t.restaurantId ?? t.RestaurantId ?? ""),
+    customerId: String(t.customerId ?? t.CustomerId ?? ""),
+    orderNumber: String(t.orderNumber ?? t.OrderNumber ?? ""),
+    status: mapTicketStatus(t.status ?? t.Status),
+    receivedAt,
+    startedAt:
+      typeof (t.startedAt ?? t.StartedAt) === "string" ? String(t.startedAt ?? t.StartedAt) : null,
+    readyAt: typeof (t.readyAt ?? t.ReadyAt) === "string" ? String(t.readyAt ?? t.ReadyAt) : null,
+    bumpedAt:
+      typeof (t.bumpedAt ?? t.BumpedAt) === "string" ? String(t.bumpedAt ?? t.BumpedAt) : null,
+    cancelledAt:
+      typeof (t.cancelledAt ?? t.CancelledAt) === "string"
+        ? String(t.cancelledAt ?? t.CancelledAt)
+        : null,
+    cancellationReason: (t.cancellationReason ?? t.CancellationReason ?? null) as string | null,
+    confirmedByUserId: (t.confirmedByUserId ?? t.ConfirmedByUserId ?? null) as string | null,
+    cancelledByUserId: (t.cancelledByUserId ?? t.CancelledByUserId ?? null) as string | null,
+    notes: String(t.notes ?? t.Notes ?? ""),
+    estimatedPrepTimeMinutes: Number(
+      t.estimatedPrepTimeMinutes ?? t.EstimatedPrepTimeMinutes ?? 15,
+    ),
+    items: Array.isArray(rawItems) ? rawItems.map(normalizeKitchenItem) : [],
+  };
+}
+
+export function normalizeKitchenQueueResponse(response: unknown): KitchenQueueResponse {
+  if (!response || typeof response !== "object") {
+    return { pageIndex: 1, pageSize: 50, count: 0, data: [] };
+  }
+  const r = response as Record<string, unknown>;
+  const rawData = (r.data ?? r.Data ?? (Array.isArray(response) ? response : [])) as Record<
+    string,
+    unknown
+  >[];
+  const pageIndex = Number(r.pageIndex ?? r.PageIndex ?? 1);
+  const pageSize = Number(r.pageSize ?? r.PageSize ?? 50);
+  const count = Number(r.count ?? r.Count ?? (Array.isArray(rawData) ? rawData.length : 0));
+
+  return {
+    pageIndex,
+    pageSize,
+    count,
+    data: Array.isArray(rawData) ? rawData.map(normalizeKitchenTicket) : [],
+  };
+}
+
 export const kitchenApi = createApi({
   reducerPath: "kitchenApi",
   baseQuery: dynamicBaseQuery,
@@ -42,6 +136,7 @@ export const kitchenApi = createApi({
         const queryStr = qs.toString();
         return `${env.apiBaseUrl}/kitchen-api/v1/kitchen/queue${queryStr ? `?${queryStr}` : ""}`;
       },
+      transformResponse: (response: unknown) => normalizeKitchenQueueResponse(response),
       providesTags: (result, _e, params) => {
         const restaurantId = params?.restaurantId;
         const tickets = result?.data ?? [];
@@ -54,6 +149,8 @@ export const kitchenApi = createApi({
 
     getTicketDetail: build.query<KitchenTicketDto, string>({
       query: (id) => `${env.apiBaseUrl}/kitchen-api/v1/kitchen/tickets/${encodeURIComponent(id)}`,
+      transformResponse: (response: unknown) =>
+        normalizeKitchenTicket(response as Record<string, unknown>),
       providesTags: (_r, _e, id) => [{ type: "KitchenQueue", id }],
     }),
 

@@ -16,6 +16,8 @@ export const BUMP_BAR_ACTIONS = [
   "SLOT_6",
   "SLOT_7",
   "SLOT_8",
+  "NEXT_SLOT",
+  "PREV_SLOT",
   "BUMP_SELECTED",
   "RECALL_LAST",
   "SUMMARY_COUNTS",

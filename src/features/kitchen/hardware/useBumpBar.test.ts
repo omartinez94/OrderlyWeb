@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useBumpBar, isEditableTarget } from "./useBumpBar";
 import { NUMPAD_PROFILE, resolveKeyToAction } from "./bumpBarProfiles";
-import { publishBumpAction } from "./bumpBarChannel";
+import { publishBumpAction, closeSenderChannel } from "./bumpBarChannel";
 
 describe("bumpBarProfiles", () => {
   it("resolves KB9000 scan codes accurately", () => {
@@ -17,6 +17,8 @@ describe("bumpBarProfiles", () => {
     expect(resolveKeyToAction({ code: "PageDown" })).toBe("NEXT_PAGE");
     expect(resolveKeyToAction({ code: "ArrowUp" })).toBe("PREV_PAGE");
     expect(resolveKeyToAction({ code: "PageUp" })).toBe("PREV_PAGE");
+    expect(resolveKeyToAction({ code: "ArrowRight" })).toBe("NEXT_SLOT");
+    expect(resolveKeyToAction({ code: "ArrowLeft" })).toBe("PREV_SLOT");
     expect(resolveKeyToAction({ code: "KeyH" })).toBe("HOLD_ORDER");
     expect(resolveKeyToAction({ code: "KeyI" })).toBe("ITEM_PREP_TOGGLE");
   });
@@ -26,6 +28,8 @@ describe("bumpBarProfiles", () => {
     expect(resolveKeyToAction({ code: "NumpadEnter" }, NUMPAD_PROFILE)).toBe("BUMP_SELECTED");
     expect(resolveKeyToAction({ code: "NumpadAdd" }, NUMPAD_PROFILE)).toBe("NEXT_PAGE");
     expect(resolveKeyToAction({ code: "NumpadDecimal" }, NUMPAD_PROFILE)).toBe("PREV_PAGE");
+    expect(resolveKeyToAction({ code: "ArrowRight" }, NUMPAD_PROFILE)).toBe("NEXT_SLOT");
+    expect(resolveKeyToAction({ code: "ArrowLeft" }, NUMPAD_PROFILE)).toBe("PREV_SLOT");
   });
 
   it("returns null for unbound keys", () => {
@@ -93,6 +97,7 @@ describe("useBumpBar", () => {
   });
 
   afterEach(() => {
+    closeSenderChannel();
     globalThis.BroadcastChannel = originalBroadcastChannel;
   });
 
