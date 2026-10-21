@@ -6,8 +6,8 @@
 
 ## Status
 
-> **Plan version**: `v1.2` (2026-10-18) — Completed Phase 3 (Catalog, Floor Plan, Reservations & Queue Operations). Unblocked Phase 4 & prepared Phase 5 prerequisites.
-> **Current state**: 🚧 Phase 0, 1, 2, and 3 completed. Phase 4 ready for kickoff.
+> **Plan version**: `v1.3` (2026-10-20) — Completed Phase 5 (Operational Analytics, Customer Feedback & Production Hardening).
+> **Current state**: ✅ All Phases 0 through 5 Complete.
 
 | Phase | Name | Target Deliverable / Domain | Status |
 |:---:|---|---|:---:|
@@ -15,8 +15,8 @@
 | **1** | Restaurant Operations: Orders & Basket Lifecycle | `/site/restaurant/orders/*`, Token-bound Cart & Checkout | ✅ Done |
 | **2** | Real-Time KDS & Bump Bar Hardware Ecosystem | `/site/kitchen/*`, SignalR Hub, Virtual Bump Bar (`BroadcastChannel`) | ✅ Done |
 | **3** | Catalog, Floor Plan, Reservations & Queue Operations | `/site/restaurant/menu`, `/tables`, `/reservations`, `/queue` | ✅ Done |
-| **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | ⏸ Pending |
-| **5** | Operational Analytics, Feedback & Production Hardening | `/site/restaurant/analytics`, `/feedback`, Playwright E2E, a11y & Lighthouse | 🔒 Blocked |
+| **4** | Multi-Brand Admin CRM & Governance | `/site/admin/*` (Brands, Restaurants, Staff, Roles, Audit, Settings) | ✅ Done |
+| **5** | Operational Analytics, Feedback & Production Hardening | `/site/restaurant/analytics`, `/feedback`, Playwright E2E, a11y & Lighthouse | ✅ Done |
 
 > **Legend**: ✅ Done · 🚧 In progress · ⏸ Pending · 🔒 Blocked
 
@@ -107,14 +107,14 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 **Child Plan**: [`api-gateway-and-rtk-query-alignment.md`](file:///C:/Users/omar_/Source/Repos/kalaa/orderly/OrderlyWeb/.agents/plans/api-gateway-and-rtk-query-alignment.md)
 **Target Areas**: `src/app/api/orders.ts`, `kitchen.ts`, `basket.ts`, `catalog.ts`, `src/test/handlers/*`.
 **Deliverables**:
-- [ ] Fix Ordering API routes: Map to `${env.apiBaseUrl}/ordering-api/v1/orders`.
-- [ ] Fix Kitchen API routes: Map to `${env.apiBaseUrl}/kitchen-api/v1/kitchen/queue` and command paths (`/accept`, `/bump`, `/recall`, `/mark-ready`).
-- [ ] Implement `basketApi` slice: **⚠️ Highest effort** — net-new file. Support token-bound `GET /basket-api/v1/cart`, `PUT /basket-api/v1/cart`, `DELETE /basket-api/v1/cart`, `POST /basket-api/v1/cart/checkout` with `Idempotency-Key` header and ETag caching.
-- [ ] Standardize Catalog API routes: Align Tables (`/catalog-api/v1/restaurants/{id}/tables`), Reservations, and Menu item availability endpoints. Add `mergeTables` / `splitTables` mutations (backend endpoints already exist in `Catalog.API`).
-- [ ] Align MSW test handlers for all aligned routes.
-- [ ] Create shared `src/hooks/useElapsedTimer.ts` — shared elapsed time hook for KDS timers (Phase 2) and waitlist timers (Phase 3).
-- [ ] Add zone-level React Error Boundaries to `AdminZoneLayout`, `KitchenZoneLayout`, `RestaurantZoneLayout`.
-- [ ] Add shared loading skeletons to `src/components/ui/`: `DataTableSkeleton`, `KpiCardSkeleton`, `TicketCardSkeleton`.
+- [x] Fix Ordering API routes: Map to `${env.apiBaseUrl}/ordering-api/v1/orders`.
+- [x] Fix Kitchen API routes: Map to `${env.apiBaseUrl}/kitchen-api/v1/kitchen/queue` and command paths (`/accept`, `/bump`, `/recall`, `/mark-ready`).
+- [x] Implement `basketApi` slice: **⚠️ Highest effort** — net-new file. Support token-bound `GET /basket-api/v1/cart`, `PUT /basket-api/v1/cart`, `DELETE /basket-api/v1/cart`, `POST /basket-api/v1/cart/checkout` with `Idempotency-Key` header and ETag caching.
+- [x] Standardize Catalog API routes: Align Tables (`/catalog-api/v1/restaurants/{id}/tables`), Reservations, and Menu item availability endpoints. Add `mergeTables` / `splitTables` mutations (backend endpoints already exist in `Catalog.API`).
+- [x] Align MSW test handlers for all aligned routes.
+- [x] Create shared `src/hooks/useElapsedTimer.ts` — shared elapsed time hook for KDS timers (Phase 2) and waitlist timers (Phase 3).
+- [x] Add zone-level React Error Boundaries to `AdminZoneLayout`, `KitchenZoneLayout`, `RestaurantZoneLayout`.
+- [x] Add shared loading skeletons to `src/components/ui/`: `DataTableSkeleton`, `KpiCardSkeleton`, `TicketCardSkeleton`.
 **Exit Criteria**: `pnpm test:run` passes with zero unhandled MSW route warnings.
 
 ---
@@ -126,20 +126,20 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 - Employs `Basket.API` for order composition and coupon discounts before converting to confirmed `Ordering.API` orders.
 - Solves missing backend `SplitBill` Carter endpoint by implementing client-side bill calculation and sequential bill settlement.
 **Deliverables**:
-- [ ] **Order List (`/site/restaurant/orders`)**:
+- [x] **Order List (`/site/restaurant/orders`)**:
   - Live order queue with multi-filter bar (Status chips, Order Type, Table #, Date range).
   - 5-stop service hue status badges (`New` Blue → `Confirmed` Cyan → `Preparing` Teal → `Plating` Amber → `Ready` Induction Flame).
   - Chronological search and pagination.
-- [ ] **Smart Order Creator (`/site/restaurant/orders/new`)**:
+- [x] **Smart Order Creator (`/site/restaurant/orders/new`)**:
   - Auto-binding of Table ID and guest defaults from floor plan routing.
   - Category-based catalog item selector with quick modifiers and item-specific notes.
   - Cart sidebar powered by `basketApi` with running discount deductions.
   - Submission triggers atomic checkout with client-generated UUID v4 `Idempotency-Key`.
-- [ ] **Order Detail & Timeline (`/site/restaurant/orders/:id`)**:
+- [x] **Order Detail & Timeline (`/site/restaurant/orders/:id`)**:
   - Order header with monetary breakdown, seat numbers, and customer metadata.
   - Chronological activity timeline powered by `order_activities` feed (stamped with correlation IDs).
   - Modification workflow: add/cancel items based on status gating (`Pending`/`Confirmed`).
-- [ ] **Bill Splitting & Settlement (`/site/restaurant/orders/:id/split-bill`)**:
+- [x] **Bill Splitting & Settlement (`/site/restaurant/orders/:id/split-bill`)**:
   - Interactive multi-payer assignment (Equal split vs Custom by item/seat).
   - Real-time balance check (sum of splits equals total amount).
   - Payment settlement simulation (Cash, Card, Room Charge) with receipt generation.
@@ -152,18 +152,18 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 **Target Zone**: `/site/kitchen/*`
 **Synchronized Plan**: Incorporates [`kds-bump-bar-integration.md`](file:///C:/Users/omar_/Source/Repos/kalaa/orderly/OrderlyWeb/.agents/plans/kds-bump-bar-integration.md).
 **Deliverables**:
-- [ ] **KDS Live Board (`/site/kitchen`)**:
+- [x] **KDS Live Board (`/site/kitchen`)**:
   - Kanban ticket grid grouped by status (`New`, `Preparing`, `Ready`).
   - SignalR hub listener on `${VITE_SIGNALR_URL}/hubs/kitchen`: handles `OrderReceived`, `ItemStateChanged`, `OrderReady`, `OrderBumped`, `OrderCancelled`.
   - Monospace elapsed timers with progressive urgency styling (alert pulsing > prep target).
   - Full-screen Kiosk mode with Screen WakeLock API toggle.
-- [ ] **Dual-Channel Bump Bar Engine**:
+- [x] **Dual-Channel Bump Bar Engine**:
   - Physical USB HID keyboard listener (`useBumpBar`) supporting KB9000 scan codes.
   - Standalone Virtual Bump Bar window (`/site/kitchen/virtual-bumpbar`) communicating via `BroadcastChannel("orderly-kds-bumpbar")`.
   - Visual hotkey slot badges (`#1` through `#8`) and keyboard navigation.
-- [ ] **Audio Feedback Engine**:
+- [x] **Audio Feedback Engine**:
   - Web Audio API synthesizer generating low-latency (<5ms) synthesized chimes and error tones.
-- [ ] **Ticket Detail & Station Config (`/site/kitchen/settings`)**:
+- [x] **Ticket Detail & Station Config (`/site/kitchen/settings`)**:
   - Station routing (Grill, Salad, Fryer, Expedite).
   - Hardware calibration and bump bar profile selector (KB9000 vs Numpad).
 **Exit Criteria**: Orders placed in Restaurant zone appear on KDS in real time without refresh and can be bumped via physical keyboard or virtual bump bar popup.
@@ -195,18 +195,18 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 **Target Zone**: `/site/admin/*`
 **Synchronized Plan**: Incorporates [`admin-crm-zone.md`](file:///C:/Users/omar_/Source/Repos/kalaa/orderly/OrderlyWeb/.agents/plans/admin-crm-zone/admin-crm-zone.md) (v2.2).
 **Deliverables**:
-- [ ] **Executive Admin Dashboard (`/site/admin`)**:
+- [x] **Executive Admin Dashboard (`/site/admin`)**:
   - System KPIs: Total Active Locations, Platform Gross Volume, Open Staff Accounts, System Health probes (`/live` & `/ready`).
   - Note: "Platform Gross Volume" KPI depends on analytics endpoints shipped in Phase 5 — stub with a "Coming soon" tile until then.
-- [ ] **Brand Management (`/site/admin/brands/*`)**:
+- [x] **Brand Management (`/site/admin/brands/*`)**:
   - First-class Brand entity CRUD (Name, Logo URL, Cuisine, Default Currencies).
   - Multi-tab Brand detail: Overview, Associated Restaurants, Assigned Staff, Settings, Audit.
-- [ ] **Restaurant Location Governance (`/site/admin/restaurants/*`)**:
+- [x] **Restaurant Location Governance (`/site/admin/restaurants/*`)**:
   - Location detail: physical address, operating hours, tax rate, estimated turnover minutes, auto-confirm flags.
-- [ ] **Enterprise Staff, Roles & Audit (`/site/admin/roles`, `/audit`)**:
+- [x] **Enterprise Staff, Roles & Audit (`/site/admin/roles`, `/audit`)**:
   - Roles × Permissions matrix viewer (displaying 25 seeded permissions).
   - Generic `<EntityAuditLog>` component powering Brand, Restaurant, and Staff audit trails.
-- [ ] **Notification Bell (`/site/admin` header)**:
+- [x] **Notification Bell (`/site/admin` header)**:
   - Wire the existing `src/app/api/notifications.ts` slice to the header notification dropdown. This slice is currently orphaned — this is the phase that gives it a UI owner.
 **Exit Criteria**: SuperAdmin can create a new brand and restaurant location, configure operational settings, and inspect security audit trails.
 
@@ -216,14 +216,14 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 **Goal**: Deliver data intelligence for restaurant managers and complete end-to-end quality validation.
 **Target Zone**: `/site/restaurant/analytics`, `/feedback`, Cross-cutting E2E
 **Deliverables**:
-- [ ] **Operations Analytics Dashboard (`/site/restaurant/analytics`)**:
+- [x] **Operations Analytics Dashboard (`/site/restaurant/analytics`)**:
   - Hourly volume distribution (Recharts bar chart).
   - Category sales breakdown (Donut chart).
   - Ticket fulfillment speed & station bottleneck metrics (`OrderTimingAnalytics`).
-- [ ] **Customer Feedback & Reward Portal (`/site/restaurant/feedback`)**:
+- [x] **Customer Feedback & Reward Portal (`/site/restaurant/feedback`)**:
   - Feedback rating stream (1–5 stars) with comments.
   - Auto-generated reward code tracking (Discount Service integration).
-- [ ] **Production Quality Hardening**:
+- [x] **Production Quality Hardening**:
   - Automated Playwright E2E suite covering:
     1. Waiter creates order on table.
     2. Real-time ticket pops on KDS.
@@ -263,6 +263,13 @@ Deliver a responsive, anticipatory, and real-time operational web application:
 ---
 
 ## Changelog
+
+### v1.3 (2026-10-20) — Phase 5 Completed (All Phases 0–5 Complete)
+- Delivered Operational Analytics Dashboard with Recharts bar and donut charts, KPI cards, and station speed telemetry.
+- Delivered Customer Feedback Sentiment Portal with CSAT gauge, rating breakdown, and reward voucher tracking.
+- Shipped automated bilingual Playwright E2E test suites (`order-to-kitchen.spec.ts`, `floor-to-order.spec.ts`, `analytics-feedback.spec.ts`).
+- Added deterministic mock API layer (`e2e/fixtures/mockApi.ts`) and test documentation (`e2e/README.md`).
+- Verified WCAG 2.1 AA accessibility compliance across all routes via AxeBuilder.
 
 ### v1.2 (2026-10-17) — Gap Analysis Incorporation
 - Added Phase 0 child plan link (`api-gateway-and-rtk-query-alignment.md`).
