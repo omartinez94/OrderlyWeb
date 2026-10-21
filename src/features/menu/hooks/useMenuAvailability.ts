@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "../../../components/ui";
 import { useGetMenuQuery, useUpdateMenuItemAvailabilityMutation } from "../../../app/api/catalog";
-import type { MenuItem } from "../../../types/catalog";
+import { MenuItemStatus, type MenuItem } from "../../../types/catalog";
 
 export interface UseMenuAvailabilityOptions {
   restaurantId: string;
@@ -28,7 +28,7 @@ export function useMenuAvailability({ restaurantId }: UseMenuAvailabilityOptions
   // Overall metrics
   const totalCount = allItems.length;
   const availableCount = useMemo(
-    () => allItems.filter((i) => i.status === "available").length,
+    () => allItems.filter((i) => i.status === MenuItemStatus.Available).length,
     [allItems],
   );
   const soldOutCount = totalCount - availableCount;
@@ -51,7 +51,7 @@ export function useMenuAvailability({ restaurantId }: UseMenuAvailabilityOptions
   }, [allItems, selectedCategoryId, searchQuery]);
 
   const toggleAvailability = async (item: MenuItem) => {
-    const nextAvailable = item.status !== "available";
+    const nextAvailable = item.status !== MenuItemStatus.Available;
     const statusLabel = nextAvailable ? t("menu.available") : t("menu.soldOut");
 
     try {

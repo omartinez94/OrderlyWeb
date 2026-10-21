@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, Badge, Button, Input } from "../../../components/ui";
 import { cn } from "../../../lib/utils";
-import type { ReservationDto, MealPeriod } from "../types/reservation";
+import { ReservationStatus, type ReservationDto, type MealPeriod } from "../types/reservation";
 
 export interface ReservationListProps {
   reservations: ReservationDto[];
@@ -48,7 +48,7 @@ export function ReservationList({
 
   const getStatusBadge = (status: ReservationDto["status"]) => {
     switch (status) {
-      case "pending":
+      case ReservationStatus.Pending:
         return (
           <Badge
             variant="outline"
@@ -58,7 +58,7 @@ export function ReservationList({
             Pending Check-In
           </Badge>
         );
-      case "confirmed":
+      case ReservationStatus.Confirmed:
         return (
           <Badge
             variant="outline"
@@ -68,7 +68,7 @@ export function ReservationList({
             Confirmed
           </Badge>
         );
-      case "seated":
+      case ReservationStatus.Seated:
         return (
           <Badge
             variant="outline"
@@ -78,7 +78,7 @@ export function ReservationList({
             Seated
           </Badge>
         );
-      case "cancelled":
+      case ReservationStatus.Cancelled:
         return (
           <Badge
             variant="outline"
@@ -186,8 +186,8 @@ export function ReservationList({
           className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
           {reservations.map((res) => {
-            const isPending = res.status === "pending";
-            const isConfirmed = res.status === "confirmed";
+            const isPending = res.status === ReservationStatus.Pending;
+            const isConfirmed = res.status === ReservationStatus.Confirmed;
 
             return (
               <Card
@@ -197,8 +197,9 @@ export function ReservationList({
                   "relative flex flex-col justify-between overflow-hidden transition-all duration-200 shadow-xs",
                   isConfirmed && "border-emerald-500/40 bg-emerald-500/5",
                   isPending && "border-amber-500/40 bg-amber-500/5",
-                  res.status === "seated" && "opacity-75 bg-surface-elevated/40",
-                  res.status === "cancelled" && "opacity-50 line-through bg-surface-elevated/20",
+                  res.status === ReservationStatus.Seated && "opacity-75 bg-surface-elevated/40",
+                  res.status === ReservationStatus.Cancelled &&
+                    "opacity-50 line-through bg-surface-elevated/20",
                 )}
               >
                 <CardContent className="flex flex-1 flex-col gap-3 p-4">
@@ -281,19 +282,20 @@ export function ReservationList({
                       </Button>
                     )}
 
-                    {res.status !== "cancelled" && res.status !== "seated" && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        disabled={isUpdating}
-                        onClick={() => onCancel(res)}
-                        aria-label={`Cancel reservation for ${res.guestName}`}
-                        className="text-ink-subtle hover:text-destructive text-xs"
-                      >
-                        Cancel
-                      </Button>
-                    )}
+                    {res.status !== ReservationStatus.Cancelled &&
+                      res.status !== ReservationStatus.Seated && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          disabled={isUpdating}
+                          onClick={() => onCancel(res)}
+                          aria-label={`Cancel reservation for ${res.guestName}`}
+                          className="text-ink-subtle hover:text-destructive text-xs"
+                        >
+                          Cancel
+                        </Button>
+                      )}
                   </div>
                 </CardContent>
               </Card>

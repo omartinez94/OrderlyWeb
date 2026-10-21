@@ -11,7 +11,7 @@ import { Search, Plus, SlidersHorizontal, UtensilsCrossed } from "lucide-react";
 import { useGetMenuQuery } from "../../../app/api/catalog";
 import { Input, Skeleton, Badge } from "../../../components/ui";
 import { formatCurrency } from "../../../utils/currency";
-import type { MenuItem } from "../../../types/catalog";
+import { MenuItemStatus, type MenuItem } from "../../../types/catalog";
 import { cn } from "../../../lib/utils";
 
 export interface CatalogItemPickerProps {
@@ -143,7 +143,8 @@ export function CatalogItemPicker({
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {filteredItems.map((item) => {
-            const isSoldOut = item.status === "sold_out" || item.status === "hidden";
+            const isSoldOut =
+              item.status === MenuItemStatus.SoldOut || item.status === MenuItemStatus.Hidden;
             const formattedPrice = formatCurrency(item.priceCents / 100, currency, i18n.language);
 
             return (

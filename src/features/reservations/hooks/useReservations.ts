@@ -8,7 +8,7 @@ import {
   useGetTablesQuery,
   useUpdateTableStatusMutation,
 } from "../../../app/api/catalog";
-import type { ReservationDto } from "../../../types/catalog";
+import { TableStatus, ReservationStatus, type ReservationDto } from "../../../types/catalog";
 import type { MealPeriod, CreateReservationFormData } from "../types/reservation";
 
 export interface UseReservationsOptions {
@@ -77,15 +77,15 @@ export function useReservations({ restaurantId }: UseReservationsOptions) {
   // Status counts
   const totalCount = reservations.length;
   const confirmedCount = useMemo(
-    () => reservations.filter((r) => r.status === "confirmed").length,
+    () => reservations.filter((r) => r.status === ReservationStatus.Confirmed).length,
     [reservations],
   );
   const pendingCount = useMemo(
-    () => reservations.filter((r) => r.status === "pending").length,
+    () => reservations.filter((r) => r.status === ReservationStatus.Pending).length,
     [reservations],
   );
   const seatedCount = useMemo(
-    () => reservations.filter((r) => r.status === "seated").length,
+    () => reservations.filter((r) => r.status === ReservationStatus.Seated).length,
     [reservations],
   );
 
@@ -98,7 +98,7 @@ export function useReservations({ restaurantId }: UseReservationsOptions) {
       await updateReservationStatusMutation({
         restaurantId,
         reservationId: reservation.id,
-        status: "confirmed",
+        status: ReservationStatus.Confirmed,
         tableId: tableId ?? reservation.tableId,
         tableNumber: tableNumber ?? reservation.tableNumber,
       }).unwrap();
@@ -115,14 +115,14 @@ export function useReservations({ restaurantId }: UseReservationsOptions) {
       await updateReservationStatusMutation({
         restaurantId,
         reservationId: reservation.id,
-        status: "seated",
+        status: ReservationStatus.Seated,
       }).unwrap();
 
       if (reservation.tableId) {
         await updateTableStatusMutation({
           restaurantId,
           tableId: reservation.tableId,
-          status: "Occupied",
+          status: TableStatus.Occupied,
         }).unwrap();
       }
 
@@ -141,7 +141,7 @@ export function useReservations({ restaurantId }: UseReservationsOptions) {
       await updateReservationStatusMutation({
         restaurantId,
         reservationId: reservation.id,
-        status: "cancelled",
+        status: ReservationStatus.Cancelled,
       }).unwrap();
 
       toast.info(`Reservation for ${reservation.guestName} cancelled.`);

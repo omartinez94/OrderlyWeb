@@ -7,7 +7,12 @@ import {
   useGetTablesQuery,
   useUpdateTableStatusMutation,
 } from "../../../app/api/catalog";
-import type { Table, QueuePartyDto } from "../../../types/catalog";
+import {
+  TableStatus,
+  QueuePartyStatus,
+  type Table,
+  type QueuePartyDto,
+} from "../../../types/catalog";
 import type { AddWalkInFormData } from "../types/queue";
 
 export interface UseWaitlistOptions {
@@ -38,21 +43,32 @@ export function useWaitlist({ restaurantId }: UseWaitlistOptions) {
   // Sort: active parties first (waiting, notified) by createdAt ascending, then seated/cancelled
   const sortedQueue = useMemo(() => {
     return [...queue].sort((a, b) => {
-      const activeA = a.status === "waiting" || a.status === "notified";
-      const activeB = b.status === "waiting" || b.status === "notified";
+      const activeA =
+        a.status === QueuePartyStatus.Waiting || a.status === QueuePartyStatus.Notified;
+      const activeB =
+        b.status === QueuePartyStatus.Waiting || b.status === QueuePartyStatus.Notified;
       if (activeA && !activeB) return -1;
       if (!activeA && activeB) return 1;
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   }, [queue]);
 
-  const waitingCount = useMemo(() => queue.filter((p) => p.status === "waiting").length, [queue]);
-  const notifiedCount = useMemo(() => queue.filter((p) => p.status === "notified").length, [queue]);
-  const seatedCount = useMemo(() => queue.filter((p) => p.status === "seated").length, [queue]);
+  const waitingCount = useMemo(
+    () => queue.filter((p) => p.status === QueuePartyStatus.Waiting).length,
+    [queue],
+  );
+  const notifiedCount = useMemo(
+    () => queue.filter((p) => p.status === QueuePartyStatus.Notified).length,
+    [queue],
+  );
+  const seatedCount = useMemo(
+    () => queue.filter((p) => p.status === QueuePartyStatus.Seated).length,
+    [queue],
+  );
 
   // Available tables suitable for seating
   const availableTables = useMemo(
-    () => tables.filter((t) => (t.status ?? "Available") === "Available"),
+    () => tables.filter((t) => (t.status ?? TableStatus.Available) === TableStatus.Available),
     [tables],
   );
 
@@ -74,7 +90,7 @@ export function useWaitlist({ restaurantId }: UseWaitlistOptions) {
       await updateQueueStatusMutation({
         restaurantId,
         partyId: party.id,
-        status: "notified",
+        status: QueuePartyStatus.Notified,
       }).unwrap();
       toast.success(
         `SMS notification sent to ${party.guestName} (${party.phone}): "Your table is ready!"`,
@@ -89,7 +105,7 @@ export function useWaitlist({ restaurantId }: UseWaitlistOptions) {
       await updateQueueStatusMutation({
         restaurantId,
         partyId: party.id,
-        status: "seated",
+        status: QueuePartyStatus.Seated,
         allocatedTableId: table.id,
         allocatedTableNumber: table.tableNumber,
       }).unwrap();
@@ -97,7 +113,7 @@ export function useWaitlist({ restaurantId }: UseWaitlistOptions) {
       await updateTableStatusMutation({
         restaurantId,
         tableId: table.id,
-        status: "Occupied",
+        status: TableStatus.Occupied,
       }).unwrap();
 
       toast.success(`${party.guestName} seated at Table ${table.tableNumber}.`);
@@ -112,7 +128,7 @@ export function useWaitlist({ restaurantId }: UseWaitlistOptions) {
       await updateQueueStatusMutation({
         restaurantId,
         partyId: party.id,
-        status: "cancelled",
+        status: QueuePartyStatus.Cancelled,
       }).unwrap();
       toast.info(`${party.guestName} marked as No Show / Removed.`);
     } catch {

@@ -1,6 +1,7 @@
-import type { QueuePartyDto, QueuePartyStatus } from "../../../types/catalog";
+import { QueuePartyStatus, type QueuePartyDto } from "../../../types/catalog";
 
-export type { QueuePartyDto, QueuePartyStatus };
+export { QueuePartyStatus };
+export type { QueuePartyDto };
 
 export interface AddWalkInFormData {
   guestName: string;

@@ -1,6 +1,7 @@
-import type { ReservationDto, ReservationStatus } from "../../../types/catalog";
+import { ReservationStatus, type ReservationDto } from "../../../types/catalog";
 
-export type { ReservationDto, ReservationStatus };
+export { ReservationStatus };
+export type { ReservationDto };
 
 export type MealPeriod = "all" | "lunch" | "dinner";
 

@@ -11,7 +11,7 @@ import {
   Button,
 } from "../../../components/ui";
 import { cn } from "../../../lib/utils";
-import type { QueuePartyDto } from "../types/queue";
+import { QueuePartyStatus, type QueuePartyDto } from "../types/queue";
 
 export interface WaitlistTableProps {
   queue: QueuePartyDto[];
@@ -108,7 +108,9 @@ export function WaitlistTable({
             </TableRow>
           ) : (
             queue.map((party, index) => {
-              const isActive = party.status === "waiting" || party.status === "notified";
+              const isActive =
+                party.status === QueuePartyStatus.Waiting ||
+                party.status === QueuePartyStatus.Notified;
 
               return (
                 <TableRow
@@ -207,7 +209,7 @@ export function WaitlistTable({
                         </>
                       )}
 
-                      {party.status === "seated" && party.allocatedTableNumber && (
+                      {party.status === QueuePartyStatus.Seated && party.allocatedTableNumber && (
                         <span className="text-ink-subtle font-mono text-xs font-semibold">
                           Table {party.allocatedTableNumber}
                         </span>

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "../../../components/ui";
 import { cn } from "../../../lib/utils";
-import type { MenuCategory, MenuItem } from "../../../types/catalog";
+import { MenuItemStatus, type MenuCategory, type MenuItem } from "../../../types/catalog";
 
 export interface CategoryTabListProps {
   categories: MenuCategory[];
@@ -26,7 +26,7 @@ export function CategoryTabList({
     for (const item of items) {
       const current = map.get(item.categoryId) ?? { total: 0, soldOut: 0 };
       current.total += 1;
-      if (item.status === "sold_out") {
+      if (item.status === MenuItemStatus.SoldOut) {
         current.soldOut += 1;
       }
       map.set(item.categoryId, current);
@@ -35,7 +35,10 @@ export function CategoryTabList({
     return map;
   }, [items]);
 
-  const totalSoldOut = useMemo(() => items.filter((i) => i.status === "sold_out").length, [items]);
+  const totalSoldOut = useMemo(
+    () => items.filter((i) => i.status === MenuItemStatus.SoldOut).length,
+    [items],
+  );
 
   return (
     <div

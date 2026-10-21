@@ -4,7 +4,7 @@ import { Card, CardContent, Badge, Input, Button, Switch, Skeleton } from "../..
 import { IngredientWarningBadge } from "./IngredientWarningBadge";
 import { formatCurrency } from "../../../utils/currency";
 import { cn } from "../../../lib/utils";
-import type { MenuCategory, MenuItem } from "../../../types/catalog";
+import { MenuItemStatus, type MenuCategory, type MenuItem } from "../../../types/catalog";
 
 export interface MenuAvailabilityGridProps {
   items: MenuItem[];
@@ -97,7 +97,7 @@ export function MenuAvailabilityGrid({
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           {items.map((item) => {
-            const isAvailable = item.status === "available";
+            const isAvailable = item.status === MenuItemStatus.Available;
             const categoryName = categoryMap.get(item.categoryId) ?? "";
 
             return (

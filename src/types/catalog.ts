@@ -28,7 +28,13 @@ export interface CatalogBrand {
   updatedAt: string;
 }
 
-export type RestaurantStatus = "active" | "inactive" | "archived";
+export const RestaurantStatus = {
+  Active: "active",
+  Inactive: "inactive",
+  Archived: "archived",
+} as const;
+
+export type RestaurantStatus = (typeof RestaurantStatus)[keyof typeof RestaurantStatus];
 
 export interface OperatingHoursDay {
   dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -76,7 +82,14 @@ export interface AdminSettings {
   featureFlags: Record<string, boolean>;
 }
 
-export type TableStatus = "Available" | "Occupied" | "Reserved" | "Needs Cleaning";
+export const TableStatus = {
+  Available: "Available",
+  Occupied: "Occupied",
+  Reserved: "Reserved",
+  NeedsCleaning: "Needs Cleaning",
+} as const;
+
+export type TableStatus = (typeof TableStatus)[keyof typeof TableStatus];
 
 export interface Table {
   id: string;
@@ -101,7 +114,14 @@ export interface MergedTableDto {
   splitAt?: string | null;
 }
 
-export type ReservationStatus = "pending" | "confirmed" | "seated" | "cancelled";
+export const ReservationStatus = {
+  Pending: "pending",
+  Confirmed: "confirmed",
+  Seated: "seated",
+  Cancelled: "cancelled",
+} as const;
+
+export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus];
 
 export interface ReservationDto {
   id: string;
@@ -117,7 +137,14 @@ export interface ReservationDto {
   createdAt: string;
 }
 
-export type QueuePartyStatus = "waiting" | "notified" | "seated" | "cancelled";
+export const QueuePartyStatus = {
+  Waiting: "waiting",
+  Notified: "notified",
+  Seated: "seated",
+  Cancelled: "cancelled",
+} as const;
+
+export type QueuePartyStatus = (typeof QueuePartyStatus)[keyof typeof QueuePartyStatus];
 
 export interface QueuePartyDto {
   id: string;
@@ -134,7 +161,13 @@ export interface QueuePartyDto {
   allocatedTableNumber?: string | null;
 }
 
-export type MenuItemStatus = "available" | "sold_out" | "hidden";
+export const MenuItemStatus = {
+  Available: "available",
+  SoldOut: "sold_out",
+  Hidden: "hidden",
+} as const;
+
+export type MenuItemStatus = (typeof MenuItemStatus)[keyof typeof MenuItemStatus];
 
 export interface MenuItem {
   id: string;
