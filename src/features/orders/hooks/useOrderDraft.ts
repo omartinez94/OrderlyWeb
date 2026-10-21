@@ -19,7 +19,7 @@ import type {
   BasketItemCustomization,
   BasketCheckoutDto,
 } from "../../../types/basket";
-import type { OrderType, PaymentMethod } from "../../../types/order";
+import { PaymentMethod, type OrderType } from "../../../types/order";
 
 export interface AddItemOptions {
   menuItemId: number;
@@ -187,7 +187,7 @@ export function useOrderDraft(restaurantId: string) {
         cardNumber: "4242424242424242",
         expiration: "12/29",
         cvv: "123",
-        paymentMethod: details.paymentMethod || "CreditCard",
+        paymentMethod: details.paymentMethod || PaymentMethod.CreditCard,
       };
 
       return checkoutCartMutation({

@@ -9,7 +9,7 @@
 import { useCallback } from "react";
 import { useSearchParams } from "react-router";
 import { QUERY_PARAM } from "../../../router/pathNames";
-import type { BackendOrderStatus, OrderType } from "../../../types/order";
+import { BackendOrderStatus, OrderType } from "../../../types/order";
 
 export interface OrderFilters {
   status: BackendOrderStatus | undefined;
@@ -25,19 +25,8 @@ export interface OrderFilters {
   resetFilters: () => void;
 }
 
-const VALID_STATUSES: readonly BackendOrderStatus[] = [
-  "Ordering",
-  "Pending",
-  "Confirmed",
-  "Preparing",
-  "Ready",
-  "Delivered",
-  "Completed",
-  "Cancelled",
-  "OnHold",
-];
-
-const VALID_TYPES: readonly OrderType[] = ["DineIn", "Takeout", "Delivery"];
+const VALID_STATUSES: readonly BackendOrderStatus[] = Object.values(BackendOrderStatus);
+const VALID_TYPES: readonly OrderType[] = Object.values(OrderType);
 
 function isValidStatus(value: string | null): value is BackendOrderStatus {
   return value !== null && (VALID_STATUSES as readonly string[]).includes(value);

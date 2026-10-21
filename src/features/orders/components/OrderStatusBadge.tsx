@@ -16,7 +16,7 @@
 
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../lib/utils";
-import type { BackendOrderStatus, OrderStatus } from "../../../types/order";
+import { BackendOrderStatus, OrderStatus } from "../../../types/order";
 
 export interface OrderStatusBadgeProps {
   status: BackendOrderStatus | OrderStatus;
@@ -31,31 +31,31 @@ interface StatusStyleConfig {
 
 const STATUS_STYLES: Record<string, StatusStyleConfig> = {
   // Service Hue 1: Cold Station Blue
-  Pending: {
+  [BackendOrderStatus.Pending]: {
     badge: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30",
     dot: "bg-blue-600 dark:bg-blue-400",
   },
-  new: {
+  [OrderStatus.New]: {
     badge: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30",
     dot: "bg-blue-600 dark:bg-blue-400",
   },
 
   // Service Hue 2: Station Cyan
-  Confirmed: {
+  [BackendOrderStatus.Confirmed]: {
     badge: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30",
     dot: "bg-sky-600 dark:bg-sky-400",
   },
-  acknowledged: {
+  [OrderStatus.Acknowledged]: {
     badge: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30",
     dot: "bg-sky-600 dark:bg-sky-400",
   },
 
   // Service Hue 3: Line Teal
-  Preparing: {
+  [BackendOrderStatus.Preparing]: {
     badge: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30",
     dot: "bg-teal-600 dark:bg-teal-400",
   },
-  preparing: {
+  [OrderStatus.Preparing]: {
     badge: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30",
     dot: "bg-teal-600 dark:bg-teal-400",
   },
@@ -65,35 +65,35 @@ const STATUS_STYLES: Record<string, StatusStyleConfig> = {
     badge: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
     dot: "bg-amber-600 dark:bg-amber-400",
   },
-  plating: {
+  [OrderStatus.Plating]: {
     badge: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
     dot: "bg-amber-600 dark:bg-amber-400",
   },
-  OnHold: {
+  [BackendOrderStatus.OnHold]: {
     badge: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
     dot: "bg-amber-600 dark:bg-amber-400",
   },
 
   // Service Hue 5: Induction Flame (Urgency)
-  Ready: {
+  [BackendOrderStatus.Ready]: {
     badge: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/30",
     dot: "bg-orange-600 dark:bg-orange-400 animate-pulse",
   },
-  ready: {
+  [OrderStatus.Ready]: {
     badge: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/30",
     dot: "bg-orange-600 dark:bg-orange-400 animate-pulse",
   },
 
   // Clean Station Emerald: Terminal Success
-  Delivered: {
+  [BackendOrderStatus.Delivered]: {
     badge: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
     dot: "bg-emerald-600 dark:bg-emerald-400",
   },
-  Completed: {
+  [BackendOrderStatus.Completed]: {
     badge: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
     dot: "bg-emerald-600 dark:bg-emerald-400",
   },
-  served: {
+  [OrderStatus.Served]: {
     badge: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
     dot: "bg-emerald-600 dark:bg-emerald-400",
   },
@@ -103,7 +103,7 @@ const STATUS_STYLES: Record<string, StatusStyleConfig> = {
   },
 
   // Flame Red: Voids & Cancellations
-  Cancelled: {
+  [BackendOrderStatus.Cancelled]: {
     badge: "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/30",
     dot: "bg-red-600 dark:bg-red-400",
   },
@@ -113,7 +113,7 @@ const STATUS_STYLES: Record<string, StatusStyleConfig> = {
   },
 
   // Neutral Gunmetal: Draft / Ordering
-  Ordering: {
+  [BackendOrderStatus.Ordering]: {
     badge: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30",
     dot: "bg-slate-600 dark:bg-slate-400",
   },

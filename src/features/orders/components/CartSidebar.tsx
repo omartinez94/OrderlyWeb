@@ -23,7 +23,7 @@ import { Button, Input, Separator } from "../../../components/ui";
 import { useGetTablesQuery } from "../../../app/api/catalog";
 import { formatCurrency } from "../../../utils/currency";
 import type { useOrderDraft } from "../hooks/useOrderDraft";
-import type { OrderType } from "../../../types/order";
+import { OrderType } from "../../../types/order";
 import { cn } from "../../../lib/utils";
 
 export interface CartSidebarProps {
@@ -95,10 +95,10 @@ export function CartSidebar({
         <div className="border-border-subtle bg-surface-elevated grid grid-cols-3 gap-1 rounded-lg border p-1">
           <button
             type="button"
-            onClick={() => onOrderTypeChange("DineIn")}
+            onClick={() => onOrderTypeChange(OrderType.DineIn)}
             className={cn(
               "flex items-center justify-center gap-1.5 rounded-md py-1.5 text-xs font-medium transition-colors",
-              orderType === "DineIn"
+              orderType === OrderType.DineIn
                 ? "bg-primary text-primary-foreground font-semibold shadow-xs"
                 : "text-ink-muted hover:text-ink hover:bg-surface",
             )}
@@ -108,10 +108,10 @@ export function CartSidebar({
           </button>
           <button
             type="button"
-            onClick={() => onOrderTypeChange("Takeout")}
+            onClick={() => onOrderTypeChange(OrderType.Takeout)}
             className={cn(
               "flex items-center justify-center gap-1.5 rounded-md py-1.5 text-xs font-medium transition-colors",
-              orderType === "Takeout"
+              orderType === OrderType.Takeout
                 ? "bg-primary text-primary-foreground font-semibold shadow-xs"
                 : "text-ink-muted hover:text-ink hover:bg-surface",
             )}
@@ -121,10 +121,10 @@ export function CartSidebar({
           </button>
           <button
             type="button"
-            onClick={() => onOrderTypeChange("Delivery")}
+            onClick={() => onOrderTypeChange(OrderType.Delivery)}
             className={cn(
               "flex items-center justify-center gap-1.5 rounded-md py-1.5 text-xs font-medium transition-colors",
-              orderType === "Delivery"
+              orderType === OrderType.Delivery
                 ? "bg-primary text-primary-foreground font-semibold shadow-xs"
                 : "text-ink-muted hover:text-ink hover:bg-surface",
             )}
@@ -135,7 +135,7 @@ export function CartSidebar({
         </div>
 
         {/* Table & Guest Count Row (for Dine In) */}
-        {orderType === "DineIn" && (
+        {orderType === OrderType.DineIn && (
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-1 items-center gap-2">
               <label

@@ -42,10 +42,39 @@ export const OrderStatus = {
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
-export type OrderType = "DineIn" | "Takeout" | "Delivery";
-export type DeliveryStatus = "Pending" | "Dispatched" | "Delivered";
-export type PrepStatus = "Pending" | "Preparing" | "Ready";
-export type PaymentMethod = "Cash" | "CreditCard" | "DebitCard" | "DigitalWallet" | "Other";
+export const OrderType = {
+  DineIn: "DineIn",
+  Takeout: "Takeout",
+  Delivery: "Delivery",
+} as const;
+
+export type OrderType = (typeof OrderType)[keyof typeof OrderType];
+
+export const DeliveryStatus = {
+  Pending: "Pending",
+  Dispatched: "Dispatched",
+  Delivered: "Delivered",
+} as const;
+
+export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus];
+
+export const PrepStatus = {
+  Pending: "Pending",
+  Preparing: "Preparing",
+  Ready: "Ready",
+} as const;
+
+export type PrepStatus = (typeof PrepStatus)[keyof typeof PrepStatus];
+
+export const PaymentMethod = {
+  Cash: "Cash",
+  CreditCard: "CreditCard",
+  DebitCard: "DebitCard",
+  DigitalWallet: "DigitalWallet",
+  Other: "Other",
+} as const;
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
 export interface AddressDto {
   street: string;

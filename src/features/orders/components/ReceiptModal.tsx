@@ -21,7 +21,7 @@ import {
 import { Button } from "../../../components/ui/button";
 import { formatCurrency } from "../../../utils/currency";
 import { formatDate, getDateFnsLocale } from "../../../utils/date";
-import type { OrderDto } from "../../../types/order";
+import { PaymentMethod, type OrderDto } from "../../../types/order";
 import type { ComputedBill } from "../hooks/useSplitBill";
 
 export interface ReceiptModalProps {
@@ -132,7 +132,7 @@ export function ReceiptModal({ order, bill, open, onOpenChange }: ReceiptModalPr
             <div className="mt-3 space-y-1 rounded border border-emerald-500/30 bg-emerald-500/5 p-2 text-[11px]">
               <div className="flex justify-between font-bold text-emerald-800 dark:text-emerald-300">
                 <span>PAID</span>
-                <span>{bill.paymentMethod || "CreditCard"}</span>
+                <span>{bill.paymentMethod || PaymentMethod.CreditCard}</span>
               </div>
               {bill.tenderAmount !== undefined && (
                 <>

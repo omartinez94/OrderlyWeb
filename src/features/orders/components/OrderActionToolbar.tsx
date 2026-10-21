@@ -25,7 +25,7 @@ import {
 } from "../../../components/ui/tooltip";
 import { CancelOrderDialog } from "./CancelOrderDialog";
 import { PATH } from "../../../router/pathNames";
-import type { OrderDto } from "../../../types/order";
+import { BackendOrderStatus, type OrderDto } from "../../../types/order";
 
 export interface OrderActionToolbarProps {
   order: OrderDto;
@@ -43,12 +43,13 @@ export function OrderActionToolbar({ order }: OrderActionToolbarProps) {
     roles.some((r) => ["SuperAdmin", "RestaurantAdmin", "Manager"].includes(r)) ||
     (permissions as readonly string[]).includes("orders:modify_confirmed");
 
-  const isCancelled = order.status === "Cancelled";
-  const isCompleted = order.status === "Completed";
-  const isDelivered = order.status === "Delivered";
-  const isReady = order.status === "Ready";
-  const isPending = order.status === "Pending";
-  const isConfirmedOrPrep = order.status === "Confirmed" || order.status === "Preparing";
+  const isCancelled = order.status === BackendOrderStatus.Cancelled;
+  const isCompleted = order.status === BackendOrderStatus.Completed;
+  const isDelivered = order.status === BackendOrderStatus.Delivered;
+  const isReady = order.status === BackendOrderStatus.Ready;
+  const isPending = order.status === BackendOrderStatus.Pending;
+  const isConfirmedOrPrep =
+    order.status === BackendOrderStatus.Confirmed || order.status === BackendOrderStatus.Preparing;
 
   // Lock cancellation if finished
   const isCancelLocked = isCompleted || isDelivered || isReady;

@@ -35,7 +35,7 @@ import { PATH } from "../../../router/pathNames";
 import { useNavigateWithTransition } from "../../../hooks/useNavigateWithTransition";
 import { formatCurrency } from "../../../utils/currency";
 import { formatRelativeTime, getDateFnsLocale } from "../../../utils/date";
-import type { OrderDto, OrderType } from "../../../types/order";
+import { OrderType, type OrderDto } from "../../../types/order";
 
 export interface OrderListTableProps {
   orders: OrderDto[];
@@ -48,9 +48,9 @@ export interface OrderListTableProps {
 }
 
 const TYPE_ICONS: Record<OrderType, typeof UtensilsCrossed> = {
-  DineIn: UtensilsCrossed,
-  Takeout: ShoppingBag,
-  Delivery: Bike,
+  [OrderType.DineIn]: UtensilsCrossed,
+  [OrderType.Takeout]: ShoppingBag,
+  [OrderType.Delivery]: Bike,
 };
 
 function formatItemsSummary(items: OrderDto["orderItems"]): { count: number; summary: string } {

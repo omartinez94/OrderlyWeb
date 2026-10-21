@@ -15,7 +15,7 @@ import { Search, X, Plus, UtensilsCrossed, ShoppingBag, Bike } from "lucide-reac
 import { Button, Input } from "../../../components/ui";
 import { PATH } from "../../../router/pathNames";
 import { cn } from "../../../lib/utils";
-import type { BackendOrderStatus, OrderType } from "../../../types/order";
+import { BackendOrderStatus, OrderType } from "../../../types/order";
 
 export interface OrderFilterBarProps {
   status: BackendOrderStatus | undefined;
@@ -43,12 +43,12 @@ type OrderTypeChipKey = "list.allTypes" | "types.DineIn" | "types.Takeout" | "ty
 
 const STATUS_CHIPS: Array<{ key: BackendOrderStatus | "All"; labelKey: StatusChipKey }> = [
   { key: "All", labelKey: "list.filterAll" },
-  { key: "Pending", labelKey: "status.Pending" },
-  { key: "Confirmed", labelKey: "status.Confirmed" },
-  { key: "Preparing", labelKey: "status.Preparing" },
-  { key: "Ready", labelKey: "status.Ready" },
-  { key: "Delivered", labelKey: "status.Delivered" },
-  { key: "Cancelled", labelKey: "status.Cancelled" },
+  { key: BackendOrderStatus.Pending, labelKey: "status.Pending" },
+  { key: BackendOrderStatus.Confirmed, labelKey: "status.Confirmed" },
+  { key: BackendOrderStatus.Preparing, labelKey: "status.Preparing" },
+  { key: BackendOrderStatus.Ready, labelKey: "status.Ready" },
+  { key: BackendOrderStatus.Delivered, labelKey: "status.Delivered" },
+  { key: BackendOrderStatus.Cancelled, labelKey: "status.Cancelled" },
 ];
 
 const ORDER_TYPES: Array<{
@@ -57,9 +57,9 @@ const ORDER_TYPES: Array<{
   icon: typeof UtensilsCrossed;
 }> = [
   { key: "All", labelKey: "list.allTypes", icon: UtensilsCrossed },
-  { key: "DineIn", labelKey: "types.DineIn", icon: UtensilsCrossed },
-  { key: "Takeout", labelKey: "types.Takeout", icon: ShoppingBag },
-  { key: "Delivery", labelKey: "types.Delivery", icon: Bike },
+  { key: OrderType.DineIn, labelKey: "types.DineIn", icon: UtensilsCrossed },
+  { key: OrderType.Takeout, labelKey: "types.Takeout", icon: ShoppingBag },
+  { key: OrderType.Delivery, labelKey: "types.Delivery", icon: Bike },
 ];
 
 export function OrderFilterBar({
