@@ -63,23 +63,50 @@ export const selectUnreadCount = createSelector(
  * "what can I switch to?" menu.
  */
 interface RestaurantQueryState {
-  data?: Array<{ id: string; name: string; role: RestaurantRole }>;
+  data?: Array<{ id: string; name: string; role?: RestaurantRole }>;
 }
 interface UserRestaurantsCache {
   queries: Record<string, RestaurantQueryState | undefined>;
 }
 
+interface CatalogRestaurantQueryState {
+  data?: Array<{ id: string; name: string }>;
+}
+interface CatalogCache {
+  queries: Record<string, CatalogRestaurantQueryState | undefined>;
+}
+
 const selectIdentityQueries = (state: RootState) =>
   (state as unknown as { identityApi?: UserRestaurantsCache }).identityApi?.queries;
 
+const selectCatalogQueries = (state: RootState) =>
+  (state as unknown as { catalogApi?: CatalogCache }).catalogApi?.queries;
+
 export const selectAccessibleRestaurants = createSelector(
-  [selectIdentityQueries],
-  (queries): Restaurant[] => {
-    if (!queries) return [];
-    for (const q of Object.values(queries)) {
-      const data = q?.data;
-      if (Array.isArray(data)) {
-        return data.map((r) => ({ id: r.id, name: r.name, role: r.role }));
+  [selectIdentityQueries, selectCatalogQueries],
+  (identityQueries, catalogQueries): Restaurant[] => {
+    if (identityQueries) {
+      for (const q of Object.values(identityQueries)) {
+        const data = q?.data;
+        if (Array.isArray(data) && data.length > 0 && "role" in data[0]) {
+          return data.map((r) => ({
+            id: r.id,
+            name: r.name,
+            role: (r.role as RestaurantRole) ?? "Staff",
+          }));
+        }
+      }
+    }
+    if (catalogQueries) {
+      for (const q of Object.values(catalogQueries)) {
+        const data = q?.data;
+        if (Array.isArray(data) && data.length > 0 && "name" in data[0] && "id" in data[0]) {
+          return data.map((r) => ({
+            id: r.id,
+            name: r.name,
+            role: "Manager" as RestaurantRole,
+          }));
+        }
       }
     }
     return [];

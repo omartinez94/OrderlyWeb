@@ -86,8 +86,22 @@ export const identityHandlers = [
       initials: "TU",
     }),
   ),
+  http.get(`${BASE_API}/users/me`, () =>
+    HttpResponse.json({
+      id: "u-001",
+      name: "Test User",
+      email: "test@example.com",
+      initials: "TU",
+    }),
+  ),
 
   http.get(`${BASE}/users/me/restaurants`, () =>
+    HttpResponse.json([
+      { id: "r-001", name: "Acme Bistro — Downtown", role: "Owner" },
+      { id: "r-002", name: "Acme Bistro — Marina", role: "Manager" },
+    ]),
+  ),
+  http.get(`${BASE_API}/users/me/restaurants`, () =>
     HttpResponse.json([
       { id: "r-001", name: "Acme Bistro — Downtown", role: "Owner" },
       { id: "r-002", name: "Acme Bistro — Marina", role: "Manager" },

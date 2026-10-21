@@ -59,12 +59,12 @@ const PLACEHOLDER_PREDICATE: AuthPredicate = {
   ],
 };
 
-const isDevOrTest = import.meta.env.DEV || import.meta.env.MODE === "test";
+const isTest = import.meta.env.MODE === "test";
 
 export function useAuthPredicate(): AuthPredicate {
   const real = useAppSelector(selectPredicate, shallowEqual);
 
-  if (isDevOrTest && !real.isAuthenticated) {
+  if (isTest && !real.isAuthenticated) {
     return PLACEHOLDER_PREDICATE;
   }
 

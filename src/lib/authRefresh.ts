@@ -18,7 +18,8 @@ export async function refreshAccessToken(): Promise<RefreshResponse> {
     const res = await fetch(`${env.apiBaseUrl}/identity-api/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ grant_type: "refresh_token" }).toString(),
     });
     if (!res.ok) {
       throw new Error(`Refresh failed: ${res.status}`);

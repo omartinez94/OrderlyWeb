@@ -206,6 +206,12 @@ export const identityApi = createApi({
       query: () => ({
         url: `${env.apiBaseUrl}/identity-api/api/auth/refresh`,
         method: "POST",
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+        }).toString(),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }),
       transformResponse: (res: unknown) => transformAuthResponse(res),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
