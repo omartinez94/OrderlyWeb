@@ -5,6 +5,7 @@ import { axe } from "jest-axe";
 import { renderWithI18n } from "../../../test/i18n-wrapper";
 import { VirtualBumpBarPad } from "./VirtualBumpBarPad";
 import * as bumpBarChannelModule from "../hardware/bumpBarChannel";
+import { BumpBarAction } from "../hardware/types";
 
 describe("VirtualBumpBarPad", () => {
   let publishSpy: ReturnType<typeof vi.spyOn>;
@@ -58,8 +59,8 @@ describe("VirtualBumpBarPad", () => {
     const bumpBtn = screen.getByRole("button", { name: /BUMP/i });
     await user.click(bumpBtn);
 
-    expect(publishSpy).toHaveBeenCalledWith("BUMP_SELECTED", "virtual-popup");
-    expect(onAction).toHaveBeenCalledWith("BUMP_SELECTED");
+    expect(publishSpy).toHaveBeenCalledWith(BumpBarAction.BumpSelected, "virtual-popup");
+    expect(onAction).toHaveBeenCalledWith(BumpBarAction.BumpSelected);
     expect(screen.getByText(/LAST: BUMP/i)).toBeInTheDocument();
   });
 
@@ -72,8 +73,8 @@ describe("VirtualBumpBarPad", () => {
     const slot1Btn = screen.getByRole("button", { name: /^1 \(1\)$/ });
     await user.click(slot1Btn);
 
-    expect(publishSpy).toHaveBeenCalledWith("SLOT_1", "virtual-popup");
-    expect(onAction).toHaveBeenCalledWith("SLOT_1");
+    expect(publishSpy).toHaveBeenCalledWith(BumpBarAction.Slot1, "virtual-popup");
+    expect(onAction).toHaveBeenCalledWith(BumpBarAction.Slot1);
     expect(screen.getByText(/LAST: 1/i)).toBeInTheDocument();
   });
 
@@ -85,7 +86,7 @@ describe("VirtualBumpBarPad", () => {
     const recallBtn = screen.getByRole("button", { name: /RECALL/i });
     await user.click(recallBtn);
 
-    expect(publishSpy).toHaveBeenCalledWith("RECALL_LAST", "virtual-popup");
+    expect(publishSpy).toHaveBeenCalledWith(BumpBarAction.RecallLast, "virtual-popup");
     expect(screen.getByText(/LAST: RECALL/i)).toBeInTheDocument();
   });
 
@@ -95,9 +96,9 @@ describe("VirtualBumpBarPad", () => {
     renderWithI18n(<VirtualBumpBarPad />, "en");
 
     await user.click(screen.getByRole("button", { name: /NEXT/i }));
-    expect(publishSpy).toHaveBeenCalledWith("NEXT_PAGE", "virtual-popup");
+    expect(publishSpy).toHaveBeenCalledWith(BumpBarAction.NextPage, "virtual-popup");
 
     await user.click(screen.getByRole("button", { name: /PREV/i }));
-    expect(publishSpy).toHaveBeenCalledWith("PREV_PAGE", "virtual-popup");
+    expect(publishSpy).toHaveBeenCalledWith(BumpBarAction.PrevPage, "virtual-popup");
   });
 });

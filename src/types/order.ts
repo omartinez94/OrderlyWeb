@@ -17,18 +17,30 @@
  *   served       -> terminal state (maps to Delivered / Completed)
  */
 
-export type BackendOrderStatus =
-  | "Ordering"
-  | "Pending"
-  | "Confirmed"
-  | "Preparing"
-  | "Ready"
-  | "Delivered"
-  | "Completed"
-  | "Cancelled"
-  | "OnHold";
+export const BackendOrderStatus = {
+  Ordering: "Ordering",
+  Pending: "Pending",
+  Confirmed: "Confirmed",
+  Preparing: "Preparing",
+  Ready: "Ready",
+  Delivered: "Delivered",
+  Completed: "Completed",
+  Cancelled: "Cancelled",
+  OnHold: "OnHold",
+} as const;
 
-export type OrderStatus = "new" | "acknowledged" | "preparing" | "plating" | "ready" | "served";
+export type BackendOrderStatus = (typeof BackendOrderStatus)[keyof typeof BackendOrderStatus];
+
+export const OrderStatus = {
+  New: "new",
+  Acknowledged: "acknowledged",
+  Preparing: "preparing",
+  Plating: "plating",
+  Ready: "ready",
+  Served: "served",
+} as const;
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
 export type OrderType = "DineIn" | "Takeout" | "Delivery";
 export type DeliveryStatus = "Pending" | "Dispatched" | "Delivered";

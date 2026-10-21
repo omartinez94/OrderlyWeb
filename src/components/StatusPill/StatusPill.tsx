@@ -19,7 +19,7 @@ import type { OrderStatus } from "../../types/order";
  * re-exported here for backward compatibility with existing consumers
  * that import it from this module.
  */
-export type { OrderStatus } from "../../types/order";
+export { OrderStatus } from "../../types/order";
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
   new: "New",

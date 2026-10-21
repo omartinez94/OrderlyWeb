@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { publishBumpAction } from "../hardware/bumpBarChannel";
-import type { BumpBarAction } from "../hardware/types";
+import { BumpBarAction } from "../hardware/types";
 
 export interface VirtualBumpBarPadProps {
   /** Optional callback fired when any virtual key is pressed */
@@ -35,17 +35,17 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
   );
 
   const row1Keys: PadKeyDef[] = [
-    { id: "s1", action: "SLOT_1", fallbackLabel: "1", hotkey: "1", variant: "slot" },
-    { id: "s2", action: "SLOT_2", fallbackLabel: "2", hotkey: "2", variant: "slot" },
-    { id: "s3", action: "SLOT_3", fallbackLabel: "3", hotkey: "3", variant: "slot" },
-    { id: "s4", action: "SLOT_4", fallbackLabel: "4", hotkey: "4", variant: "slot" },
-    { id: "s5", action: "SLOT_5", fallbackLabel: "5", hotkey: "5", variant: "slot" },
-    { id: "s6", action: "SLOT_6", fallbackLabel: "6", hotkey: "6", variant: "slot" },
-    { id: "s7", action: "SLOT_7", fallbackLabel: "7", hotkey: "7", variant: "slot" },
-    { id: "s8", action: "SLOT_8", fallbackLabel: "8", hotkey: "8", variant: "slot" },
+    { id: "s1", action: BumpBarAction.Slot1, fallbackLabel: "1", hotkey: "1", variant: "slot" },
+    { id: "s2", action: BumpBarAction.Slot2, fallbackLabel: "2", hotkey: "2", variant: "slot" },
+    { id: "s3", action: BumpBarAction.Slot3, fallbackLabel: "3", hotkey: "3", variant: "slot" },
+    { id: "s4", action: BumpBarAction.Slot4, fallbackLabel: "4", hotkey: "4", variant: "slot" },
+    { id: "s5", action: BumpBarAction.Slot5, fallbackLabel: "5", hotkey: "5", variant: "slot" },
+    { id: "s6", action: BumpBarAction.Slot6, fallbackLabel: "6", hotkey: "6", variant: "slot" },
+    { id: "s7", action: BumpBarAction.Slot7, fallbackLabel: "7", hotkey: "7", variant: "slot" },
+    { id: "s8", action: BumpBarAction.Slot8, fallbackLabel: "8", hotkey: "8", variant: "slot" },
     {
       id: "prev",
-      action: "PREV_PAGE",
+      action: BumpBarAction.PrevPage,
       labelKey: "kds:bumpBar.prevPage",
       fallbackLabel: "PREV",
       hotkey: "PgUp",
@@ -53,7 +53,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     },
     {
       id: "next",
-      action: "NEXT_PAGE",
+      action: BumpBarAction.NextPage,
       labelKey: "kds:bumpBar.nextPage",
       fallbackLabel: "NEXT",
       hotkey: "PgDn",
@@ -61,7 +61,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     },
     {
       id: "hold",
-      action: "HOLD_ORDER",
+      action: BumpBarAction.HoldOrder,
       labelKey: "kds:bumpBar.hold",
       fallbackLabel: "HOLD",
       hotkey: "H",
@@ -69,7 +69,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     },
     {
       id: "item",
-      action: "ITEM_PREP_TOGGLE",
+      action: BumpBarAction.ItemPrepToggle,
       fallbackLabel: "ITEM",
       hotkey: "I",
       variant: "function",
@@ -79,14 +79,14 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
   const row2Keys: PadKeyDef[] = [
     {
       id: "prevSlot",
-      action: "PREV_SLOT",
+      action: BumpBarAction.PrevSlot,
       fallbackLabel: "◀",
       hotkey: "←",
       variant: "function",
     },
     {
       id: "nextSlot",
-      action: "NEXT_SLOT",
+      action: BumpBarAction.NextSlot,
       fallbackLabel: "▶",
       hotkey: "→",
       variant: "function",
@@ -96,7 +96,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     { id: "f5", fallbackLabel: "F5", hotkey: "—", variant: "inactive" },
     {
       id: "summ",
-      action: "SUMMARY_COUNTS",
+      action: BumpBarAction.SummaryCounts,
       labelKey: "kds:bumpBar.summary",
       fallbackLabel: "SUMM",
       hotkey: "Space",
@@ -105,7 +105,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     },
     {
       id: "recall",
-      action: "RECALL_LAST",
+      action: BumpBarAction.RecallLast,
       labelKey: "kds:bumpBar.recall",
       fallbackLabel: "RECALL",
       hotkey: "R / -",
@@ -114,7 +114,7 @@ export function VirtualBumpBarPad({ onAction, className = "" }: VirtualBumpBarPa
     },
     {
       id: "bump",
-      action: "BUMP_SELECTED",
+      action: BumpBarAction.BumpSelected,
       labelKey: "kds:bumpBar.bump",
       fallbackLabel: "BUMP",
       hotkey: "ENTER",

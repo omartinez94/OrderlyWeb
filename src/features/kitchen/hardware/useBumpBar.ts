@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { type BumpBarAction, type BumpBarProfile } from "./types";
+import { BumpBarAction, type BumpBarProfile } from "./types";
 import { KB9000_DEFAULT_PROFILE, resolveKeyToAction } from "./bumpBarProfiles";
 import { subscribeBumpAction } from "./bumpBarChannel";
 
@@ -36,7 +36,10 @@ export function isEditableTarget(target: EventTarget | null): boolean {
   );
 }
 
-const DEBOUNCED_ACTIONS: Set<BumpBarAction> = new Set(["BUMP_SELECTED", "RECALL_LAST"]);
+const DEBOUNCED_ACTIONS: Set<BumpBarAction> = new Set([
+  BumpBarAction.BumpSelected,
+  BumpBarAction.RecallLast,
+]);
 
 export function useBumpBar(
   optionsOrHandler: UseBumpBarOptions | ((action: BumpBarAction) => void),

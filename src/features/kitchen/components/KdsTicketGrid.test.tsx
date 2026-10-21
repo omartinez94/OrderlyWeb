@@ -7,13 +7,14 @@ import { store } from "../../../app/store";
 import { renderWithI18n } from "../../../test/i18n-wrapper";
 import { KdsTicketGrid } from "./KdsTicketGrid";
 import type { TicketData } from "./TicketCard";
+import { OrderStatus } from "../../../types/order";
 
 const makeTickets = (count: number): TicketData[] =>
   Array.from({ length: count }, (_, idx) => ({
     id: `ORD-200${idx + 1}`,
     table: `Table ${idx + 1}`,
     items: [`1x Item ${idx + 1}`],
-    status: "preparing",
+    status: OrderStatus.Preparing,
     station: "Line 1",
     elapsed: 60,
     receivedAt: new Date(Date.now() - 60_000).toISOString(),

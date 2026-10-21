@@ -9,12 +9,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { dynamicBaseQuery } from "./base";
 import { env } from "../../lib/env";
-import type {
-  KitchenTicketDto,
-  KitchenTicketItemDto,
-  KitchenQueueResponse,
+import {
   KitchenTicketStatus,
   KitchenItemStatus,
+  type KitchenTicketDto,
+  type KitchenTicketItemDto,
+  type KitchenQueueResponse,
 } from "../../types/kitchen";
 
 export interface GetKitchenQueueParams {
@@ -35,19 +35,35 @@ export interface KitchenItemActionRequest {
 }
 
 function mapTicketStatus(status: unknown): KitchenTicketStatus {
-  if (status === 0 || status === "0" || status === "New") return "New";
-  if (status === 1 || status === "1" || status === "InProgress") return "InProgress";
-  if (status === 2 || status === "2" || status === "Ready") return "Ready";
-  if (status === 3 || status === "3" || status === "Bumped") return "Bumped";
-  if (status === 4 || status === "4" || status === "Cancelled") return "Cancelled";
-  return "New";
+  if (status === 0 || status === "0" || status === KitchenTicketStatus.New) {
+    return KitchenTicketStatus.New;
+  }
+  if (status === 1 || status === "1" || status === KitchenTicketStatus.InProgress) {
+    return KitchenTicketStatus.InProgress;
+  }
+  if (status === 2 || status === "2" || status === KitchenTicketStatus.Ready) {
+    return KitchenTicketStatus.Ready;
+  }
+  if (status === 3 || status === "3" || status === KitchenTicketStatus.Bumped) {
+    return KitchenTicketStatus.Bumped;
+  }
+  if (status === 4 || status === "4" || status === KitchenTicketStatus.Cancelled) {
+    return KitchenTicketStatus.Cancelled;
+  }
+  return KitchenTicketStatus.New;
 }
 
 function mapItemStatus(status: unknown): KitchenItemStatus {
-  if (status === 0 || status === "0" || status === "Pending") return "Pending";
-  if (status === 1 || status === "1" || status === "Preparing") return "Preparing";
-  if (status === 2 || status === "2" || status === "Ready") return "Ready";
-  return "Pending";
+  if (status === 0 || status === "0" || status === KitchenItemStatus.Pending) {
+    return KitchenItemStatus.Pending;
+  }
+  if (status === 1 || status === "1" || status === KitchenItemStatus.Preparing) {
+    return KitchenItemStatus.Preparing;
+  }
+  if (status === 2 || status === "2" || status === KitchenItemStatus.Ready) {
+    return KitchenItemStatus.Ready;
+  }
+  return KitchenItemStatus.Pending;
 }
 
 function normalizeKitchenItem(i: Record<string, unknown>): KitchenTicketItemDto {

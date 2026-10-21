@@ -3,33 +3,38 @@ import { renderHook, act } from "@testing-library/react";
 import { useBumpBar, isEditableTarget } from "./useBumpBar";
 import { NUMPAD_PROFILE, resolveKeyToAction } from "./bumpBarProfiles";
 import { publishBumpAction, closeSenderChannel } from "./bumpBarChannel";
+import { BumpBarAction } from "./types";
 
 describe("bumpBarProfiles", () => {
   it("resolves KB9000 scan codes accurately", () => {
-    expect(resolveKeyToAction({ code: "Digit1" })).toBe("SLOT_1");
-    expect(resolveKeyToAction({ code: "Digit8" })).toBe("SLOT_8");
-    expect(resolveKeyToAction({ code: "Enter" })).toBe("BUMP_SELECTED");
-    expect(resolveKeyToAction({ code: "ControlLeft" })).toBe("BUMP_SELECTED");
-    expect(resolveKeyToAction({ code: "NumpadSubtract" })).toBe("RECALL_LAST");
-    expect(resolveKeyToAction({ code: "KeyR" })).toBe("RECALL_LAST");
-    expect(resolveKeyToAction({ code: "Space" })).toBe("SUMMARY_COUNTS");
-    expect(resolveKeyToAction({ code: "ArrowDown" })).toBe("NEXT_PAGE");
-    expect(resolveKeyToAction({ code: "PageDown" })).toBe("NEXT_PAGE");
-    expect(resolveKeyToAction({ code: "ArrowUp" })).toBe("PREV_PAGE");
-    expect(resolveKeyToAction({ code: "PageUp" })).toBe("PREV_PAGE");
-    expect(resolveKeyToAction({ code: "ArrowRight" })).toBe("NEXT_SLOT");
-    expect(resolveKeyToAction({ code: "ArrowLeft" })).toBe("PREV_SLOT");
-    expect(resolveKeyToAction({ code: "KeyH" })).toBe("HOLD_ORDER");
-    expect(resolveKeyToAction({ code: "KeyI" })).toBe("ITEM_PREP_TOGGLE");
+    expect(resolveKeyToAction({ code: "Digit1" })).toBe(BumpBarAction.Slot1);
+    expect(resolveKeyToAction({ code: "Digit8" })).toBe(BumpBarAction.Slot8);
+    expect(resolveKeyToAction({ code: "Enter" })).toBe(BumpBarAction.BumpSelected);
+    expect(resolveKeyToAction({ code: "ControlLeft" })).toBe(BumpBarAction.BumpSelected);
+    expect(resolveKeyToAction({ code: "NumpadSubtract" })).toBe(BumpBarAction.RecallLast);
+    expect(resolveKeyToAction({ code: "KeyR" })).toBe(BumpBarAction.RecallLast);
+    expect(resolveKeyToAction({ code: "Space" })).toBe(BumpBarAction.SummaryCounts);
+    expect(resolveKeyToAction({ code: "ArrowDown" })).toBe(BumpBarAction.NextPage);
+    expect(resolveKeyToAction({ code: "PageDown" })).toBe(BumpBarAction.NextPage);
+    expect(resolveKeyToAction({ code: "ArrowUp" })).toBe(BumpBarAction.PrevPage);
+    expect(resolveKeyToAction({ code: "PageUp" })).toBe(BumpBarAction.PrevPage);
+    expect(resolveKeyToAction({ code: "ArrowRight" })).toBe(BumpBarAction.NextSlot);
+    expect(resolveKeyToAction({ code: "ArrowLeft" })).toBe(BumpBarAction.PrevSlot);
+    expect(resolveKeyToAction({ code: "KeyH" })).toBe(BumpBarAction.HoldOrder);
+    expect(resolveKeyToAction({ code: "KeyI" })).toBe(BumpBarAction.ItemPrepToggle);
   });
 
   it("resolves Numpad auxiliary profile bindings", () => {
-    expect(resolveKeyToAction({ code: "Numpad1" }, NUMPAD_PROFILE)).toBe("SLOT_1");
-    expect(resolveKeyToAction({ code: "NumpadEnter" }, NUMPAD_PROFILE)).toBe("BUMP_SELECTED");
-    expect(resolveKeyToAction({ code: "NumpadAdd" }, NUMPAD_PROFILE)).toBe("NEXT_PAGE");
-    expect(resolveKeyToAction({ code: "NumpadDecimal" }, NUMPAD_PROFILE)).toBe("PREV_PAGE");
-    expect(resolveKeyToAction({ code: "ArrowRight" }, NUMPAD_PROFILE)).toBe("NEXT_SLOT");
-    expect(resolveKeyToAction({ code: "ArrowLeft" }, NUMPAD_PROFILE)).toBe("PREV_SLOT");
+    expect(resolveKeyToAction({ code: "Numpad1" }, NUMPAD_PROFILE)).toBe(BumpBarAction.Slot1);
+    expect(resolveKeyToAction({ code: "NumpadEnter" }, NUMPAD_PROFILE)).toBe(
+      BumpBarAction.BumpSelected,
+    );
+    expect(resolveKeyToAction({ code: "NumpadAdd" }, NUMPAD_PROFILE)).toBe(BumpBarAction.NextPage);
+    expect(resolveKeyToAction({ code: "NumpadDecimal" }, NUMPAD_PROFILE)).toBe(
+      BumpBarAction.PrevPage,
+    );
+    expect(resolveKeyToAction({ code: "ArrowRight" }, NUMPAD_PROFILE)).toBe(BumpBarAction.NextSlot);
+    expect(resolveKeyToAction({ code: "ArrowLeft" }, NUMPAD_PROFILE)).toBe(BumpBarAction.PrevSlot);
   });
 
   it("returns null for unbound keys", () => {

@@ -4,12 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { renderWithI18n } from "../../../test/i18n-wrapper";
 import { TicketCard, type TicketData } from "./TicketCard";
+import { OrderStatus } from "../../../types/order";
 
 const sampleTicket: TicketData = {
   id: "ORD-1001",
   table: "Table 4",
   items: ["1x Margherita Pizza", "2x Sparkling Water"],
-  status: "preparing",
+  status: OrderStatus.Preparing,
   station: "Station 1",
   elapsed: 120,
   receivedAt: new Date(Date.now() - 120_000).toISOString(),

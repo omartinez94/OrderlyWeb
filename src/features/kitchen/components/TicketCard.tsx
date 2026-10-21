@@ -1,6 +1,6 @@
 import { Clock, CheckCircle2, RotateCcw } from "lucide-react";
 import { Badge, Button } from "../../../components/ui";
-import { StatusPill, type OrderStatus } from "../../../components/StatusPill/StatusPill";
+import { StatusPill, OrderStatus } from "../../../components/StatusPill/StatusPill";
 import { useElapsedTimer } from "../../../hooks/useElapsedTimer";
 import "./TicketCard.css";
 
@@ -49,9 +49,9 @@ export function TicketCard({
   onBump,
   onRecall,
 }: TicketCardProps) {
-  const isReady = ticket.status === "ready";
-  const isServed = ticket.status === "served";
-  const isPreparing = ticket.status === "preparing";
+  const isReady = ticket.status === OrderStatus.Ready;
+  const isServed = ticket.status === OrderStatus.Served;
+  const isPreparing = ticket.status === OrderStatus.Preparing;
 
   const { formatted: liveElapsed } = useElapsedTimer(ticket.receivedAt);
   const formattedTime = ticket.receivedAt ? liveElapsed : formatElapsed(ticket.elapsed ?? 0);

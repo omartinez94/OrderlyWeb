@@ -6,9 +6,23 @@
 
 import type { PaginatedResult } from "./order";
 
-export type KitchenTicketStatus = "New" | "InProgress" | "Ready" | "Bumped" | "Cancelled";
+export const KitchenTicketStatus = {
+  New: "New",
+  InProgress: "InProgress",
+  Ready: "Ready",
+  Bumped: "Bumped",
+  Cancelled: "Cancelled",
+} as const;
 
-export type KitchenItemStatus = "Pending" | "Preparing" | "Ready";
+export type KitchenTicketStatus = (typeof KitchenTicketStatus)[keyof typeof KitchenTicketStatus];
+
+export const KitchenItemStatus = {
+  Pending: "Pending",
+  Preparing: "Preparing",
+  Ready: "Ready",
+} as const;
+
+export type KitchenItemStatus = (typeof KitchenItemStatus)[keyof typeof KitchenItemStatus];
 
 export interface KitchenTicketItemDto {
   id: string;

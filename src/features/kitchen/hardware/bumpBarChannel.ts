@@ -9,6 +9,7 @@ import {
   type BumpBarAction,
   type BumpBarChannelMessage,
   BumpBarChannelMessageSchema,
+  BUMP_ACTION_MESSAGE_TYPE,
 } from "./types";
 
 export const BUMP_BAR_CHANNEL_NAME = "orderly-kds-bumpbar";
@@ -45,7 +46,7 @@ export function publishBumpAction(
   if (!channel) return;
 
   const rawMessage = {
-    type: "BUMP_ACTION",
+    type: BUMP_ACTION_MESSAGE_TYPE,
     action,
     source,
     timestamp: Date.now(),
@@ -75,7 +76,7 @@ export function subscribeBumpAction(
 
   channel.onmessage = (event: MessageEvent<unknown>) => {
     const parsed = BumpBarChannelMessageSchema.safeParse(event.data);
-    if (parsed.success && parsed.data.type === "BUMP_ACTION") {
+    if (parsed.success && parsed.data.type === BUMP_ACTION_MESSAGE_TYPE) {
       onAction(parsed.data.action, parsed.data);
     }
   };

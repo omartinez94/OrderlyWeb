@@ -14,7 +14,9 @@ import {
   setAudioMuted,
 } from "../hardware/audioFeedback";
 import { useBumpOrderMutation, useRecallOrderMutation } from "../../../app/api/kitchen";
-import type { KitchenTicketDto } from "../../../types/kitchen";
+import { KitchenTicketStatus, type KitchenTicketDto } from "../../../types/kitchen";
+import { OrderStatus } from "../../../types/order";
+import { BumpBarAction } from "../hardware/types";
 
 export interface KdsTicketGridProps {
   /** Optional array of tickets (if not provided, empty state is rendered) */
@@ -41,13 +43,13 @@ function normalizeTicket(t: KitchenTicketDto | TicketData): TicketData {
     table: dto.notes ? dto.notes : `Ticket #${dto.orderNumber || dto.id.slice(0, 6)}`,
     items: (dto.items ?? []).map((i) => `${i.quantity}x ${i.menuItemName || "Item"}`),
     status:
-      dto.status === "New" || (dto.status as unknown) === 0
-        ? "new"
-        : dto.status === "InProgress" || (dto.status as unknown) === 1
-          ? "preparing"
-          : dto.status === "Ready" || (dto.status as unknown) === 2
-            ? "ready"
-            : "served",
+      dto.status === KitchenTicketStatus.New || (dto.status as unknown) === 0
+        ? OrderStatus.New
+        : dto.status === KitchenTicketStatus.InProgress || (dto.status as unknown) === 1
+          ? OrderStatus.Preparing
+          : dto.status === KitchenTicketStatus.Ready || (dto.status as unknown) === 2
+            ? OrderStatus.Ready
+            : OrderStatus.Served,
     elapsed: 0,
     receivedAt: dto.receivedAt,
     station: dto.items?.[0]?.stationId ? `Station ${dto.items[0].stationId}` : "Line 1",
@@ -140,31 +142,31 @@ export function KdsTicketGrid({
     useCallback(
       (action) => {
         switch (action) {
-          case "SLOT_1":
+          case BumpBarAction.Slot1:
             if (currentTickets.length > 0) setSelectedSlotIndex(0);
             break;
-          case "SLOT_2":
+          case BumpBarAction.Slot2:
             if (currentTickets.length > 1) setSelectedSlotIndex(1);
             break;
-          case "SLOT_3":
+          case BumpBarAction.Slot3:
             if (currentTickets.length > 2) setSelectedSlotIndex(2);
             break;
-          case "SLOT_4":
+          case BumpBarAction.Slot4:
             if (currentTickets.length > 3) setSelectedSlotIndex(3);
             break;
-          case "SLOT_5":
+          case BumpBarAction.Slot5:
             if (currentTickets.length > 4) setSelectedSlotIndex(4);
             break;
-          case "SLOT_6":
+          case BumpBarAction.Slot6:
             if (currentTickets.length > 5) setSelectedSlotIndex(5);
             break;
-          case "SLOT_7":
+          case BumpBarAction.Slot7:
             if (currentTickets.length > 6) setSelectedSlotIndex(6);
             break;
-          case "SLOT_8":
+          case BumpBarAction.Slot8:
             if (currentTickets.length > 7) setSelectedSlotIndex(7);
             break;
-          case "NEXT_SLOT":
+          case BumpBarAction.NextSlot:
             if (currentTickets.length > 0) {
               if (selectedSlotIndex + 1 < currentTickets.length) {
                 setSelectedSlotIndex((prev) => prev + 1);
@@ -176,7 +178,7 @@ export function KdsTicketGrid({
               }
             }
             break;
-          case "PREV_SLOT":
+          case BumpBarAction.PrevSlot:
             if (currentTickets.length > 0) {
               if (selectedSlotIndex > 0) {
                 setSelectedSlotIndex((prev) => prev - 1);
@@ -188,7 +190,7 @@ export function KdsTicketGrid({
               }
             }
             break;
-          case "BUMP_SELECTED": {
+          case BumpBarAction.BumpSelected: {
             const safeIndex =
               currentTickets.length === 0
                 ? -1
@@ -201,16 +203,16 @@ export function KdsTicketGrid({
             }
             break;
           }
-          case "RECALL_LAST":
+          case BumpBarAction.RecallLast:
             handleRecall();
             break;
-          case "NEXT_PAGE":
+          case BumpBarAction.NextPage:
             if (currentPage < totalPages) {
               setCurrentPage((p) => p + 1);
               setSelectedSlotIndex(0);
             }
             break;
-          case "PREV_PAGE":
+          case BumpBarAction.PrevPage:
             if (currentPage > 1) {
               setCurrentPage((p) => p - 1);
               setSelectedSlotIndex(0);
