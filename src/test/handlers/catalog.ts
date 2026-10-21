@@ -12,6 +12,8 @@ import type {
   AdminRestaurantDetail,
   AdminSettings,
 } from "../../types/catalog";
+import type { GetMenuItemAnalyticsResponse } from "../../types/analytics";
+import type { CustomerFeedbackDto } from "../../types/feedback";
 
 const BASE = "http://localhost:6004/catalog-api";
 
@@ -816,76 +818,88 @@ export const resetMockCatalogState = () => {
 
 export const resetMockMenuItems = resetMockCatalogState;
 
+const getRestaurantsResolver = () => {
+  return HttpResponse.json(
+    mockAdminRestaurants.map((r) => ({
+      id: r.id,
+      brandId: r.brandId,
+      name: r.name,
+      cuisine: r.cuisine,
+      city: r.city,
+      country: r.country,
+      active: r.active,
+    })),
+  );
+};
+
+const getRestaurantByIdResolver = ({ params }: { params: any }) => {
+  const found = mockAdminRestaurants.find((r) => r.id === params.id);
+  if (!found) {
+    return new HttpResponse(null, { status: 404 });
+  }
+  return HttpResponse.json(found);
+};
+
+const postRestaurantResolver = async ({ request }: { request: Request }) => {
+  const body = (await request.json()) as any;
+  const newRestaurant: AdminRestaurantDetail = {
+    id: `r-${Date.now()}`,
+    brandId: body.brandId,
+    name: body.name,
+    cuisine: body.cuisine,
+    city: body.address.city,
+    country: body.address.country,
+    active: body.status !== "archived",
+    status: body.status ?? "active",
+    ownerId: body.ownerId ?? null,
+    address: body.address,
+    phone: body.phone ?? null,
+    email: body.email ?? null,
+    timezone: body.timezone,
+    currency: body.currency,
+    taxRate: body.taxRate,
+    estimatedTurnoverMinutes: body.estimatedTurnoverMinutes ?? 90,
+    autoConfirmReservations: body.autoConfirmReservations ?? true,
+    autoConfirmOrders: body.autoConfirmOrders ?? true,
+    allowAutoSubstitute: body.allowAutoSubstitute ?? false,
+    operatingHours: body.operatingHours ?? [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  mockAdminRestaurants.push(newRestaurant);
+  return HttpResponse.json(newRestaurant, { status: 201 });
+};
+
+const putRestaurantResolver = async ({ params, request }: { params: any; request: Request }) => {
+  const body = (await request.json()) as any;
+  const index = mockAdminRestaurants.findIndex((r) => r.id === params.id);
+  if (index === -1) {
+    return new HttpResponse(null, { status: 404 });
+  }
+  const updated: AdminRestaurantDetail = {
+    ...mockAdminRestaurants[index],
+    ...body,
+    city: body.address?.city ?? mockAdminRestaurants[index].city,
+    country: body.address?.country ?? mockAdminRestaurants[index].country,
+    active: body.status ? body.status !== "archived" : mockAdminRestaurants[index].active,
+    updatedAt: new Date().toISOString(),
+  };
+  mockAdminRestaurants[index] = updated;
+  return HttpResponse.json(updated);
+};
+
 export const catalogHandlers = [
-  http.get(`${BASE}/restaurants`, () => {
-    return HttpResponse.json(
-      mockAdminRestaurants.map((r) => ({
-        id: r.id,
-        brandId: r.brandId,
-        name: r.name,
-        cuisine: r.cuisine,
-        city: r.city,
-        country: r.country,
-        active: r.active,
-      })),
-    );
-  }),
+  http.get(`${BASE}/restaurants`, getRestaurantsResolver),
+  http.get(`${BASE}/v1/restaurants`, getRestaurantsResolver),
 
-  http.get(`${BASE}/restaurants/:id`, ({ params }) => {
-    const found = mockAdminRestaurants.find((r) => r.id === params.id);
-    if (!found) {
-      return new HttpResponse(null, { status: 404 });
-    }
-    return HttpResponse.json(found);
-  }),
+  http.get(`${BASE}/restaurants/:id`, getRestaurantByIdResolver),
+  http.get(`${BASE}/v1/restaurants/:id`, getRestaurantByIdResolver),
 
-  http.post(`${BASE}/restaurants`, async ({ request }) => {
-    const body = (await request.json()) as any;
-    const newRestaurant: AdminRestaurantDetail = {
-      id: `r-${Date.now()}`,
-      brandId: body.brandId,
-      name: body.name,
-      cuisine: body.cuisine,
-      city: body.address.city,
-      country: body.address.country,
-      active: body.status !== "archived",
-      status: body.status ?? "active",
-      ownerId: body.ownerId ?? null,
-      address: body.address,
-      phone: body.phone ?? null,
-      email: body.email ?? null,
-      timezone: body.timezone,
-      currency: body.currency,
-      taxRate: body.taxRate,
-      estimatedTurnoverMinutes: body.estimatedTurnoverMinutes ?? 90,
-      autoConfirmReservations: body.autoConfirmReservations ?? true,
-      autoConfirmOrders: body.autoConfirmOrders ?? true,
-      allowAutoSubstitute: body.allowAutoSubstitute ?? false,
-      operatingHours: body.operatingHours ?? [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    mockAdminRestaurants.push(newRestaurant);
-    return HttpResponse.json(newRestaurant, { status: 201 });
-  }),
+  http.post(`${BASE}/restaurants`, postRestaurantResolver),
+  http.post(`${BASE}/v1/restaurants`, postRestaurantResolver),
 
-  http.put(`${BASE}/restaurants/:id`, async ({ params, request }) => {
-    const body = (await request.json()) as any;
-    const index = mockAdminRestaurants.findIndex((r) => r.id === params.id);
-    if (index === -1) {
-      return new HttpResponse(null, { status: 404 });
-    }
-    const updated: AdminRestaurantDetail = {
-      ...mockAdminRestaurants[index],
-      ...body,
-      city: body.address?.city ?? mockAdminRestaurants[index].city,
-      country: body.address?.country ?? mockAdminRestaurants[index].country,
-      active: body.status ? body.status !== "archived" : mockAdminRestaurants[index].active,
-      updatedAt: new Date().toISOString(),
-    };
-    mockAdminRestaurants[index] = updated;
-    return HttpResponse.json(updated);
-  }),
+  http.put(`${BASE}/restaurants/:id`, putRestaurantResolver),
+  http.put(`${BASE}/v1/restaurants/:id`, putRestaurantResolver),
 
   http.post(`${BASE}/restaurants/:id/archive`, ({ params }) => {
     const restaurant = mockAdminRestaurants.find((r) => r.id === params.id);
@@ -1061,8 +1075,35 @@ export const catalogHandlers = [
     }
     return HttpResponse.json(result);
   }),
+  http.get(`${BASE}/v1/brands`, ({ request }) => {
+    const url = new URL(request.url);
+    const q = url.searchParams.get("q")?.toLowerCase();
+    const activeParam = url.searchParams.get("active");
+
+    let result = [...mockBrands];
+    if (activeParam !== null) {
+      const activeBool = activeParam === "true";
+      result = result.filter((b) => b.active === activeBool);
+    }
+    if (q) {
+      result = result.filter(
+        (b) =>
+          b.name.toLowerCase().includes(q) ||
+          b.slug.toLowerCase().includes(q) ||
+          b.cuisineType.toLowerCase().includes(q),
+      );
+    }
+    return HttpResponse.json(result);
+  }),
 
   http.get(`${BASE}/brands/:id`, ({ params }) => {
+    const brand = mockBrands.find((b) => b.id === params.id);
+    if (!brand) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    return HttpResponse.json(brand);
+  }),
+  http.get(`${BASE}/v1/brands/:id`, ({ params }) => {
     const brand = mockBrands.find((b) => b.id === params.id);
     if (!brand) {
       return new HttpResponse(null, { status: 404 });
@@ -1073,6 +1114,35 @@ export const catalogHandlers = [
   http.post(`${BASE}/brands`, async ({ request }) => {
     const body = (await request.json()) as any;
     // Conflict check for duplicate slug
+    if (mockBrands.some((b) => b.slug.toLowerCase() === body.slug.toLowerCase())) {
+      return HttpResponse.json(
+        {
+          code: "BRAND_DUPLICATE_SLUG",
+          message: "A brand with this slug already exists.",
+        },
+        { status: 409 },
+      );
+    }
+
+    const newBrand: CatalogBrand = {
+      id: `b-${Date.now()}`,
+      name: body.name,
+      slug: body.slug,
+      description: body.description ?? null,
+      logoUrl: body.logoUrl ?? null,
+      contactEmail: body.contactEmail,
+      contactPhone: body.contactPhone ?? null,
+      cuisineType: body.cuisineType,
+      websiteUrl: body.websiteUrl ?? null,
+      active: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockBrands.push(newBrand);
+    return HttpResponse.json(newBrand, { status: 201 });
+  }),
+  http.post(`${BASE}/v1/brands`, async ({ request }) => {
+    const body = (await request.json()) as any;
     if (mockBrands.some((b) => b.slug.toLowerCase() === body.slug.toLowerCase())) {
       return HttpResponse.json(
         {
@@ -1129,8 +1199,44 @@ export const catalogHandlers = [
     mockBrands[index] = updated;
     return HttpResponse.json(updated);
   }),
+  http.put(`${BASE}/v1/brands/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as any;
+    const index = mockBrands.findIndex((b) => b.id === params.id);
+    if (index === -1) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    if (
+      mockBrands.some((b) => b.id !== params.id && b.slug.toLowerCase() === body.slug.toLowerCase())
+    ) {
+      return HttpResponse.json(
+        {
+          code: "BRAND_DUPLICATE_SLUG",
+          message: "A brand with this slug already exists.",
+        },
+        { status: 409 },
+      );
+    }
+
+    const updated: CatalogBrand = {
+      ...mockBrands[index],
+      ...body,
+      updatedAt: new Date().toISOString(),
+    };
+    mockBrands[index] = updated;
+    return HttpResponse.json(updated);
+  }),
 
   http.post(`${BASE}/brands/:id/archive`, ({ params }) => {
+    const brand = mockBrands.find((b) => b.id === params.id);
+    if (!brand) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    brand.active = false;
+    brand.updatedAt = new Date().toISOString();
+    return HttpResponse.json({ success: true });
+  }),
+  http.post(`${BASE}/v1/brands/:id/archive`, ({ params }) => {
     const brand = mockBrands.find((b) => b.id === params.id);
     if (!brand) {
       return new HttpResponse(null, { status: 404 });
@@ -1190,4 +1296,375 @@ export const catalogHandlers = [
     mockAdminSettings = { ...mockAdminSettings, ...body };
     return HttpResponse.json(mockAdminSettings);
   }),
+
+  // Phase 5: Operations Analytics & Kitchen Speed Telemetry
+  http.get(`${BASE}/v1/restaurants/:restaurantId/analytics/menu-items`, ({ params, request }) => {
+    const url = new URL(request.url);
+    const dateRange = url.searchParams.get("dateRange") ?? "today";
+    return HttpResponse.json({
+      ...mockAnalyticsResponse,
+      restaurantId: params.restaurantId as string,
+      dateRange,
+    });
+  }),
+  http.get(`${BASE}/restaurants/:restaurantId/analytics/menu-items`, ({ params, request }) => {
+    const url = new URL(request.url);
+    const dateRange = url.searchParams.get("dateRange") ?? "today";
+    return HttpResponse.json({
+      ...mockAnalyticsResponse,
+      restaurantId: params.restaurantId as string,
+      dateRange,
+    });
+  }),
+
+  // Phase 5: 3 - Customer Feedback & Reward Portal
+  http.get(`${BASE}/v1/restaurants/:restaurantId/feedback`, ({ request }) => {
+    const url = new URL(request.url);
+    const minRating = url.searchParams.get("minRating");
+    const maxRating = url.searchParams.get("maxRating");
+    const rewardRedeemed = url.searchParams.get("rewardRedeemed");
+    const pageIndex = Number(url.searchParams.get("pageIndex") ?? "0");
+    const pageSize = Number(url.searchParams.get("pageSize") ?? "50");
+
+    let items = [...mockCustomerFeedbackList];
+    if (minRating !== null) {
+      items = items.filter((f) => f.overallRating >= Number(minRating));
+    }
+    if (maxRating !== null) {
+      items = items.filter((f) => f.overallRating <= Number(maxRating));
+    }
+    if (rewardRedeemed !== null) {
+      const isRedeemed = rewardRedeemed === "true";
+      items = items.filter((f) => f.rewardRedeemed === isRedeemed);
+    }
+
+    const totalCount = items.length;
+    const paginatedItems = items.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+
+    return HttpResponse.json({
+      items: paginatedItems,
+      totalCount,
+      pageIndex,
+      pageSize,
+    });
+  }),
+  http.get(`${BASE}/restaurants/:restaurantId/feedback`, ({ request }) => {
+    const url = new URL(request.url);
+    const minRating = url.searchParams.get("minRating");
+    const maxRating = url.searchParams.get("maxRating");
+    const rewardRedeemed = url.searchParams.get("rewardRedeemed");
+    const pageIndex = Number(url.searchParams.get("pageIndex") ?? "0");
+    const pageSize = Number(url.searchParams.get("pageSize") ?? "50");
+
+    let items = [...mockCustomerFeedbackList];
+    if (minRating !== null) {
+      items = items.filter((f) => f.overallRating >= Number(minRating));
+    }
+    if (maxRating !== null) {
+      items = items.filter((f) => f.overallRating <= Number(maxRating));
+    }
+    if (rewardRedeemed !== null) {
+      const isRedeemed = rewardRedeemed === "true";
+      items = items.filter((f) => f.rewardRedeemed === isRedeemed);
+    }
+
+    const totalCount = items.length;
+    const paginatedItems = items.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+
+    return HttpResponse.json({
+      items: paginatedItems,
+      totalCount,
+      pageIndex,
+      pageSize,
+    });
+  }),
 ];
+
+export let mockCustomerFeedbackList: CustomerFeedbackDto[] = [
+  {
+    id: 1,
+    restaurantId: "r-001",
+    orderId: "ord-891",
+    overallRating: 5,
+    foodQualityRating: 5,
+    serviceSpeedRating: 5,
+    waiterFriendlinessRating: 5,
+    comments:
+      "Exquisite hand-made pasta! Marco took exceptional care of our anniversary dinner. Will definitely return.",
+    submittedAt: "2026-10-18T19:30:00Z",
+    rewardType: "PercentageDiscount",
+    rewardValue: 15,
+    rewardDescription: "15% off your next visit",
+    rewardCode: "LOYALTY-15-X9Y2",
+    rewardRedeemed: true,
+    redeemedAt: "2026-10-19T20:15:00Z",
+    redeemedInOrderId: "ord-924",
+  },
+  {
+    id: 2,
+    restaurantId: "r-001",
+    orderId: "ord-885",
+    overallRating: 5,
+    foodQualityRating: 5,
+    serviceSpeedRating: 4,
+    waiterFriendlinessRating: 5,
+    comments:
+      "The wood-fired Margherita pizza had the perfect blistered crust. Quick seating via walk-in queue.",
+    submittedAt: "2026-10-18T14:15:00Z",
+    rewardType: "ComplimentaryItem",
+    rewardValue: null,
+    rewardDescription: "Free Artisanal Dessert",
+    rewardCode: "SWEET-TREAT-4K7L",
+    rewardRedeemed: false,
+    redeemedAt: null,
+    redeemedInOrderId: null,
+  },
+  {
+    id: 3,
+    restaurantId: "r-001",
+    orderId: "ord-872",
+    overallRating: 4,
+    foodQualityRating: 5,
+    serviceSpeedRating: 3,
+    waiterFriendlinessRating: 4,
+    comments:
+      "Food was sensational, especially the Rigatoni Carbonara. Kitchen was slightly delayed during peak dinner rush.",
+    submittedAt: "2026-10-17T20:45:00Z",
+    rewardType: "FixedAmount",
+    rewardValue: 10,
+    rewardDescription: "$10 dining voucher",
+    rewardCode: "THANKYOU-10-M3P9",
+    rewardRedeemed: false,
+    redeemedAt: null,
+    redeemedInOrderId: null,
+  },
+  {
+    id: 4,
+    restaurantId: "r-001",
+    orderId: "ord-860",
+    overallRating: 4,
+    foodQualityRating: 4,
+    serviceSpeedRating: 5,
+    waiterFriendlinessRating: 4,
+    comments: "Crisp Calamari and fresh salads. Speedy service and very courteous servers.",
+    submittedAt: "2026-10-17T13:20:00Z",
+    rewardType: "PercentageDiscount",
+    rewardValue: 10,
+    rewardDescription: "10% off your next visit",
+    rewardCode: "SAVE10-A8B2C4",
+    rewardRedeemed: true,
+    redeemedAt: "2026-10-18T18:00:00Z",
+    redeemedInOrderId: "ord-880",
+  },
+  {
+    id: 5,
+    restaurantId: "r-001",
+    orderId: "ord-844",
+    overallRating: 3,
+    foodQualityRating: 4,
+    serviceSpeedRating: 2,
+    waiterFriendlinessRating: 4,
+    comments:
+      "Our entrees arrived staggered by 10 minutes. Sauté station seemed overwhelmed, but table staff apologized gracefully.",
+    submittedAt: "2026-10-16T21:10:00Z",
+    rewardType: "FixedAmount",
+    rewardValue: 15,
+    rewardDescription: "$15 recovery voucher",
+    rewardCode: "RECOVER-15-J8N3",
+    rewardRedeemed: false,
+    redeemedAt: null,
+    redeemedInOrderId: null,
+  },
+  {
+    id: 6,
+    restaurantId: "r-001",
+    orderId: "ord-830",
+    overallRating: 2,
+    foodQualityRating: 3,
+    serviceSpeedRating: 2,
+    waiterFriendlinessRating: 3,
+    comments:
+      "Steak was slightly overcooked and sides arrived lukewarm. Management handled it well and offered a voucher.",
+    submittedAt: "2026-10-15T19:50:00Z",
+    rewardType: "ComplimentaryItem",
+    rewardValue: null,
+    rewardDescription: "Complimentary Chef Starter",
+    rewardCode: "STARTER-COMP-Z1",
+    rewardRedeemed: true,
+    redeemedAt: "2026-10-17T12:00:00Z",
+    redeemedInOrderId: "ord-858",
+  },
+  {
+    id: 7,
+    restaurantId: "r-001",
+    orderId: "ord-815",
+    overallRating: 1,
+    foodQualityRating: 2,
+    serviceSpeedRating: 1,
+    waiterFriendlinessRating: 2,
+    comments:
+      "Waited 45 minutes past our reservation time for a table. Food took another 40 minutes.",
+    submittedAt: "2026-10-14T20:30:00Z",
+    rewardType: "PercentageDiscount",
+    rewardValue: 25,
+    rewardDescription: "25% VIP Apology Voucher",
+    rewardCode: "APOLOGY-25-R4T7",
+    rewardRedeemed: false,
+    redeemedAt: null,
+    redeemedInOrderId: null,
+  },
+];
+
+export let mockAnalyticsResponse: GetMenuItemAnalyticsResponse = {
+  restaurantId: "r-001",
+  dateRange: "today",
+  summary: {
+    grossSales: 4820.5,
+    grossSalesDelta: 12.8,
+    orderCount: 142,
+    orderCountDelta: 8.4,
+    averageTicketSize: 33.95,
+    averageTicketSizeDelta: 4.1,
+    averagePrepTimeMinutes: 14.2,
+    targetPrepTimeMinutes: 12.0,
+    averagePrepTimeDelta: -6.2,
+  },
+  items: [
+    {
+      menuItemId: "m-1",
+      name: "Margherita",
+      categoryName: "Pizza",
+      unitsSold: 45,
+      grossRevenue: 630.0,
+      averagePrepTimeMinutes: 10.5,
+      estimatedPrepTimeMinutes: 10.0,
+      station: "Grill",
+    },
+    {
+      menuItemId: "m-2",
+      name: "Pepperoni Piccante",
+      categoryName: "Pizza",
+      unitsSold: 38,
+      grossRevenue: 627.0,
+      averagePrepTimeMinutes: 11.2,
+      estimatedPrepTimeMinutes: 10.0,
+      station: "Grill",
+    },
+    {
+      menuItemId: "m-3",
+      name: "Rigatoni Carbonara",
+      categoryName: "Pasta",
+      unitsSold: 52,
+      grossRevenue: 936.0,
+      averagePrepTimeMinutes: 16.8,
+      estimatedPrepTimeMinutes: 12.0,
+      station: "Sauté",
+    },
+    {
+      menuItemId: "m-5",
+      name: "Tagliatelle Bolognese",
+      categoryName: "Pasta",
+      unitsSold: 34,
+      grossRevenue: 646.0,
+      averagePrepTimeMinutes: 15.4,
+      estimatedPrepTimeMinutes: 12.0,
+      station: "Sauté",
+    },
+    {
+      menuItemId: "m-6",
+      name: "Caesar Salad",
+      categoryName: "Starters",
+      unitsSold: 28,
+      grossRevenue: 336.0,
+      averagePrepTimeMinutes: 6.2,
+      estimatedPrepTimeMinutes: 7.0,
+      station: "Salad",
+    },
+    {
+      menuItemId: "m-7",
+      name: "Crispy Calamari",
+      categoryName: "Starters",
+      unitsSold: 30,
+      grossRevenue: 450.0,
+      averagePrepTimeMinutes: 14.5,
+      estimatedPrepTimeMinutes: 9.0,
+      station: "Fryer",
+    },
+    {
+      menuItemId: "m-4",
+      name: "San Pellegrino",
+      categoryName: "Beverages",
+      unitsSold: 60,
+      grossRevenue: 270.0,
+      averagePrepTimeMinutes: 2.1,
+      estimatedPrepTimeMinutes: 3.0,
+      station: "Expedite",
+    },
+    {
+      menuItemId: "m-8",
+      name: "Tiramisu",
+      categoryName: "Desserts",
+      unitsSold: 25,
+      grossRevenue: 225.0,
+      averagePrepTimeMinutes: 4.5,
+      estimatedPrepTimeMinutes: 5.0,
+      station: "Expedite",
+    },
+  ],
+  hourlySales: [
+    { hour: "11:00", orderCount: 8, grossSales: 245.0, topItemName: "Margherita" },
+    { hour: "12:00", orderCount: 22, grossSales: 748.0, topItemName: "Rigatoni Carbonara" },
+    { hour: "13:00", orderCount: 26, grossSales: 890.0, topItemName: "Rigatoni Carbonara" },
+    { hour: "14:00", orderCount: 14, grossSales: 460.0, topItemName: "Pepperoni Piccante" },
+    { hour: "15:00", orderCount: 6, grossSales: 185.0, topItemName: "San Pellegrino" },
+    { hour: "16:00", orderCount: 5, grossSales: 160.0, topItemName: "Caesar Salad" },
+    { hour: "17:00", orderCount: 12, grossSales: 410.0, topItemName: "Margherita" },
+    { hour: "18:00", orderCount: 25, grossSales: 915.0, topItemName: "Rigatoni Carbonara" },
+    { hour: "19:00", orderCount: 30, grossSales: 1120.0, topItemName: "Pepperoni Piccante" },
+    { hour: "20:00", orderCount: 24, grossSales: 850.0, topItemName: "Tagliatelle Bolognese" },
+    { hour: "21:00", orderCount: 15, grossSales: 520.0, topItemName: "Crispy Calamari" },
+    { hour: "22:00", orderCount: 7, grossSales: 210.0, topItemName: "Tiramisu" },
+  ],
+  stationMetrics: [
+    {
+      station: "Grill",
+      orderCount: 83,
+      averagePrepTimeMinutes: 10.8,
+      targetPrepTimeMinutes: 10.0,
+      delayPercentage: 8.0,
+      isDelayed: false,
+    },
+    {
+      station: "Salad",
+      orderCount: 42,
+      averagePrepTimeMinutes: 6.2,
+      targetPrepTimeMinutes: 7.0,
+      delayPercentage: 0,
+      isDelayed: false,
+    },
+    {
+      station: "Fryer",
+      orderCount: 38,
+      averagePrepTimeMinutes: 14.5,
+      targetPrepTimeMinutes: 9.0,
+      delayPercentage: 61.1,
+      isDelayed: true,
+    },
+    {
+      station: "Sauté",
+      orderCount: 86,
+      averagePrepTimeMinutes: 16.2,
+      targetPrepTimeMinutes: 12.0,
+      delayPercentage: 35.0,
+      isDelayed: true,
+    },
+    {
+      station: "Expedite",
+      orderCount: 142,
+      averagePrepTimeMinutes: 3.2,
+      targetPrepTimeMinutes: 4.0,
+      delayPercentage: 0,
+      isDelayed: false,
+    },
+  ],
+};

@@ -29,7 +29,16 @@ import type {
   AdminSettings,
 } from "../../types/catalog";
 
+import type {
+  GetMenuItemAnalyticsParams,
+  GetMenuItemAnalyticsResponse,
+} from "../../types/analytics";
+
+import type { GetCustomerFeedbackParams, GetCustomerFeedbackResponse } from "../../types/feedback";
+
 export type * from "../../types/catalog";
+export type * from "../../types/analytics";
+export type * from "../../types/feedback";
 
 export interface ListAuditParams {
   entityType?: AuditEntityType;
@@ -168,12 +177,230 @@ export interface UpdateQueueStatusRequest {
   allocatedTableNumber?: string | null;
 }
 
+interface BackendBrandDto {
+  id?: string;
+  Id?: string;
+  name?: string;
+  Name?: string;
+  slug?: string;
+  Slug?: string;
+  description?: string | null;
+  Description?: string | null;
+  logoUrl?: string | null;
+  LogoUrl?: string | null;
+  contactEmail?: string;
+  ContactEmail?: string;
+  contactPhone?: string | null;
+  ContactPhone?: string | null;
+  cuisineType?: CuisineType | number | string;
+  CuisineType?: CuisineType | number | string;
+  websiteUrl?: string | null;
+  WebsiteUrl?: string | null;
+  active?: boolean;
+  isActive?: boolean;
+  IsActive?: boolean;
+  createdAt?: unknown;
+  CreatedAt?: unknown;
+  updatedAt?: unknown;
+  LastModifiedAt?: unknown;
+}
+
+interface BackendRestaurantDto {
+  id?: string;
+  Id?: string;
+  name?: string;
+  Name?: string;
+  cuisine?: string;
+  Cuisine?: string;
+  city?: string;
+  City?: string;
+  country?: string;
+  Country?: string;
+  address?: string | AdminRestaurantAddress;
+  Address?: string | AdminRestaurantAddress;
+  active?: boolean;
+  isActive?: boolean;
+  IsActive?: boolean;
+  brandId?: string;
+  BrandId?: string;
+  ownerId?: string | null;
+  OwnerId?: string | null;
+  phone?: string | null;
+  phoneNumber?: string | null;
+  PhoneNumber?: string | null;
+  email?: string | null;
+  Email?: string | null;
+  timezone?: string;
+  timeZone?: string;
+  TimeZone?: string;
+  currency?: string;
+  Currency?: string;
+  taxRate?: number;
+  TaxRate?: number;
+  operatingHours?: OperatingHoursDay[];
+  OperatingHours?: OperatingHoursDay[];
+  estimatedTurnoverMinutes?: number;
+  EstimatedTurnoverMinutes?: number;
+  autoConfirmReservations?: boolean;
+  AutoConfirmReservations?: boolean;
+  autoConfirmOrders?: boolean;
+  AutoConfirmOrders?: boolean;
+  allowAutoSubstitute?: boolean;
+  AllowAutoSubstitute?: boolean;
+  status?: RestaurantStatus;
+  Status?: RestaurantStatus;
+  createdAt?: unknown;
+  CreatedAt?: unknown;
+  updatedAt?: unknown;
+  LastModifiedAt?: unknown;
+}
+
+interface BackendBrandListEnvelope {
+  brands?: BackendBrandDto[];
+  Brands?: BackendBrandDto[];
+}
+
+interface BackendRestaurantListEnvelope {
+  restaurants?: BackendRestaurantDto[];
+  Restaurants?: BackendRestaurantDto[];
+}
+
+function parseCuisineType(val: unknown): CuisineType {
+  if (typeof val === "string") {
+    if (
+      val === "Italian" ||
+      val === "Mexican" ||
+      val === "Japanese" ||
+      val === "American" ||
+      val === "Other"
+    ) {
+      return val;
+    }
+    return "Other";
+  }
+  if (typeof val === "number") {
+    switch (val) {
+      case 0:
+        return "American";
+      case 1:
+        return "Italian";
+      case 2:
+        return "Mexican";
+      default:
+        return "Other";
+    }
+  }
+  return "Other";
+}
+
+function normalizeBrand(b: BackendBrandDto): CatalogBrand {
+  const name = b.name ?? b.Name ?? "";
+  const rawCreated = b.createdAt ?? b.CreatedAt;
+  const rawUpdated = b.updatedAt ?? b.LastModifiedAt;
+
+  return {
+    id: b.id ?? b.Id ?? "",
+    name,
+    slug: b.slug ?? b.Slug ?? name.toLowerCase().replace(/\s+/g, "-"),
+    description: b.description ?? b.Description ?? null,
+    logoUrl: b.logoUrl ?? b.LogoUrl ?? null,
+    contactEmail: b.contactEmail ?? b.ContactEmail ?? "",
+    contactPhone: b.contactPhone ?? b.ContactPhone ?? null,
+    cuisineType: parseCuisineType(b.cuisineType ?? b.CuisineType),
+    websiteUrl: b.websiteUrl ?? b.WebsiteUrl ?? null,
+    active: b.active ?? b.isActive ?? b.IsActive ?? true,
+    createdAt: typeof rawCreated === "string" ? rawCreated : new Date().toISOString(),
+    updatedAt: typeof rawUpdated === "string" ? rawUpdated : new Date().toISOString(),
+  };
+}
+
+function normalizeRestaurant(r: BackendRestaurantDto): CatalogRestaurant {
+  const rawAddress =
+    typeof r.address === "string" ? r.address : typeof r.Address === "string" ? r.Address : "";
+  return {
+    id: r.id ?? r.Id ?? "",
+    name: r.name ?? r.Name ?? "",
+    cuisine: r.cuisine ?? r.Cuisine ?? "General",
+    city: r.city ?? r.City ?? rawAddress ?? "Unknown",
+    country: r.country ?? r.Country ?? "MX",
+    active: r.active ?? r.isActive ?? r.IsActive ?? true,
+  };
+}
+
+function normalizeAdminRestaurant(r: BackendRestaurantDto): AdminRestaurantDetail {
+  const base = normalizeRestaurant(r);
+  const rawAddress = r.address ?? r.Address;
+  const address: AdminRestaurantAddress =
+    typeof rawAddress === "object" && rawAddress !== null
+      ? (rawAddress as AdminRestaurantAddress)
+      : {
+          line1: typeof rawAddress === "string" ? rawAddress : "",
+          line2: null,
+          city: r.city ?? r.City ?? "",
+          region: "",
+          postalCode: "",
+          country: r.country ?? r.Country ?? "MX",
+        };
+
+  const rawCreated = r.createdAt ?? r.CreatedAt;
+  const rawUpdated = r.updatedAt ?? r.LastModifiedAt;
+  const isActive = r.active ?? r.isActive ?? r.IsActive ?? true;
+
+  return {
+    ...base,
+    brandId: r.brandId ?? r.BrandId ?? "",
+    ownerId: r.ownerId ?? r.OwnerId ?? null,
+    address,
+    phone: r.phone ?? r.phoneNumber ?? r.PhoneNumber ?? null,
+    email: r.email ?? r.Email ?? null,
+    timezone: r.timezone ?? r.timeZone ?? r.TimeZone ?? "UTC",
+    currency: r.currency ?? r.Currency ?? "MXN",
+    taxRate: Number(r.taxRate ?? r.TaxRate ?? 0),
+    operatingHours: r.operatingHours ?? r.OperatingHours ?? [],
+    estimatedTurnoverMinutes: Number(
+      r.estimatedTurnoverMinutes ?? r.EstimatedTurnoverMinutes ?? 30,
+    ),
+    autoConfirmReservations: Boolean(r.autoConfirmReservations ?? r.AutoConfirmReservations),
+    autoConfirmOrders: Boolean(r.autoConfirmOrders ?? r.AutoConfirmOrders),
+    allowAutoSubstitute: Boolean(r.allowAutoSubstitute ?? r.AllowAutoSubstitute),
+    status: r.status ?? r.Status ?? (isActive ? "active" : "inactive"),
+    createdAt: typeof rawCreated === "string" ? rawCreated : new Date().toISOString(),
+    updatedAt: typeof rawUpdated === "string" ? rawUpdated : new Date().toISOString(),
+  };
+}
+
+function unwrapBrand(response: unknown): BackendBrandDto {
+  if (response && typeof response === "object") {
+    const r = response as Record<string, unknown>;
+    if (r.brand && typeof r.brand === "object") return r.brand as BackendBrandDto;
+    if (r.Brand && typeof r.Brand === "object") return r.Brand as BackendBrandDto;
+  }
+  return (response ?? {}) as BackendBrandDto;
+}
+
+function unwrapRestaurant(response: unknown): BackendRestaurantDto {
+  if (response && typeof response === "object") {
+    const r = response as Record<string, unknown>;
+    if (r.restaurant && typeof r.restaurant === "object")
+      return r.restaurant as BackendRestaurantDto;
+    if (r.Restaurant && typeof r.Restaurant === "object")
+      return r.Restaurant as BackendRestaurantDto;
+  }
+  return (response ?? {}) as BackendRestaurantDto;
+}
+
 export const catalogApi = createApi({
   reducerPath: "catalogApi",
   baseQuery: dynamicBaseQuery,
   endpoints: (build) => ({
     getRestaurants: build.query<CatalogRestaurant[], void>({
-      query: () => `${env.apiBaseUrl}/catalog-api/restaurants`,
+      query: () => `${env.apiBaseUrl}/catalog-api/v1/restaurants`,
+      transformResponse: (response: BackendRestaurantListEnvelope | BackendRestaurantDto[]) => {
+        const rawList = Array.isArray(response)
+          ? response
+          : (response?.restaurants ?? response?.Restaurants ?? []);
+        return rawList.map(normalizeRestaurant);
+      },
       providesTags: (result) =>
         result
           ? [
@@ -184,7 +411,8 @@ export const catalogApi = createApi({
     }),
 
     getRestaurant: build.query<CatalogRestaurant, string>({
-      query: (id) => `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}`,
+      query: (id) => `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(id)}`,
+      transformResponse: (response: unknown) => normalizeRestaurant(unwrapRestaurant(response)),
       providesTags: (_r, _e, id) => [{ type: "Restaurants", id }],
     }),
 
@@ -383,7 +611,13 @@ export const catalogApi = createApi({
         if (params && params.q) qs.set("q", params.q);
         if (params && params.active !== undefined) qs.set("active", String(params.active));
         const queryStr = qs.toString();
-        return `${env.apiBaseUrl}/catalog-api/brands${queryStr ? `?${queryStr}` : ""}`;
+        return `${env.apiBaseUrl}/catalog-api/v1/brands${queryStr ? `?${queryStr}` : ""}`;
+      },
+      transformResponse: (response: BackendBrandListEnvelope | BackendBrandDto[]) => {
+        const rawList = Array.isArray(response)
+          ? response
+          : (response?.brands ?? response?.Brands ?? []);
+        return rawList.map(normalizeBrand);
       },
       providesTags: (result) =>
         result
@@ -395,25 +629,28 @@ export const catalogApi = createApi({
     }),
 
     getBrand: build.query<CatalogBrand, string>({
-      query: (id) => `${env.apiBaseUrl}/catalog-api/brands/${encodeURIComponent(id)}`,
+      query: (id) => `${env.apiBaseUrl}/catalog-api/v1/brands/${encodeURIComponent(id)}`,
+      transformResponse: (response: unknown) => normalizeBrand(unwrapBrand(response)),
       providesTags: (_r, _e, id) => [{ type: "Brands", id }],
     }),
 
     createBrand: build.mutation<CatalogBrand, CreateBrandRequest>({
       query: (body) => ({
-        url: `${env.apiBaseUrl}/catalog-api/brands`,
+        url: `${env.apiBaseUrl}/catalog-api/v1/brands`,
         method: "POST",
         body,
       }),
+      transformResponse: (response: unknown) => normalizeBrand(unwrapBrand(response)),
       invalidatesTags: [{ type: "Brands", id: "LIST" }],
     }),
 
     updateBrand: build.mutation<CatalogBrand, UpdateBrandRequest>({
       query: ({ id, ...body }) => ({
-        url: `${env.apiBaseUrl}/catalog-api/brands/${encodeURIComponent(id)}`,
+        url: `${env.apiBaseUrl}/catalog-api/v1/brands/${encodeURIComponent(id)}`,
         method: "PUT",
         body,
       }),
+      transformResponse: (response: unknown) => normalizeBrand(unwrapBrand(response)),
       invalidatesTags: (_r, _e, { id }) => [
         { type: "Brands", id },
         { type: "Brands", id: "LIST" },
@@ -461,16 +698,20 @@ export const catalogApi = createApi({
 
     // Admin Restaurant Endpoints (Phase 5)
     getAdminRestaurant: build.query<AdminRestaurantDetail, string>({
-      query: (id) => `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}`,
+      query: (id) => `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(id)}`,
+      transformResponse: (response: unknown) =>
+        normalizeAdminRestaurant(unwrapRestaurant(response)),
       providesTags: (_r, _e, id) => [{ type: "Restaurants", id }],
     }),
 
     createRestaurant: build.mutation<AdminRestaurantDetail, CreateRestaurantRequest>({
       query: (body) => ({
-        url: `${env.apiBaseUrl}/catalog-api/restaurants`,
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants`,
         method: "POST",
         body,
       }),
+      transformResponse: (response: unknown) =>
+        normalizeAdminRestaurant(unwrapRestaurant(response)),
       invalidatesTags: (_r, _e, { brandId }) => [
         { type: "Restaurants", id: "LIST" },
         { type: "Brands", id: brandId },
@@ -479,10 +720,12 @@ export const catalogApi = createApi({
 
     updateRestaurant: build.mutation<AdminRestaurantDetail, UpdateRestaurantRequest>({
       query: ({ id, ...body }) => ({
-        url: `${env.apiBaseUrl}/catalog-api/restaurants/${encodeURIComponent(id)}`,
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(id)}`,
         method: "PUT",
         body,
       }),
+      transformResponse: (response: unknown) =>
+        normalizeAdminRestaurant(unwrapRestaurant(response)),
       invalidatesTags: (_r, _e, { id, brandId }) => [
         { type: "Restaurants", id },
         { type: "Restaurants", id: "LIST" },
@@ -516,6 +759,41 @@ export const catalogApi = createApi({
       }),
       invalidatesTags: [{ type: "AdminSettings", id: "GLOBAL" }],
     }),
+
+    // Operational Analytics (Phase 5: 1 & 2)
+    getMenuItemAnalytics: build.query<GetMenuItemAnalyticsResponse, GetMenuItemAnalyticsParams>({
+      query: ({ restaurantId, dateRange }) => ({
+        url: `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(restaurantId)}/analytics/menu-items`,
+        params: dateRange ? { dateRange } : undefined,
+      }),
+      providesTags: (_res, _err, { restaurantId }) => [
+        { type: "Analytics", id: restaurantId },
+        { type: "Analytics", id: "LIST" },
+      ],
+    }),
+
+    // Customer Feedback & Reward Portal (Phase 5: 3)
+    getCustomerFeedback: build.query<GetCustomerFeedbackResponse, GetCustomerFeedbackParams>({
+      query: ({ restaurantId, ...params }) => {
+        const qs = new URLSearchParams();
+        if (params.minRating !== undefined) qs.set("minRating", String(params.minRating));
+        if (params.maxRating !== undefined) qs.set("maxRating", String(params.maxRating));
+        if (params.rewardRedeemed !== undefined)
+          qs.set("rewardRedeemed", String(params.rewardRedeemed));
+        if (params.from) qs.set("from", params.from);
+        if (params.to) qs.set("to", params.to);
+        if (params.pageIndex !== undefined) qs.set("pageIndex", String(params.pageIndex));
+        if (params.pageSize !== undefined) qs.set("pageSize", String(params.pageSize));
+        const queryStr = qs.toString();
+        return `${env.apiBaseUrl}/catalog-api/v1/restaurants/${encodeURIComponent(
+          restaurantId,
+        )}/feedback${queryStr ? `?${queryStr}` : ""}`;
+      },
+      providesTags: (_res, _err, { restaurantId }) => [
+        { type: "Feedback", id: restaurantId },
+        { type: "Feedback", id: "LIST" },
+      ],
+    }),
   }),
   tagTypes: [
     "Restaurants",
@@ -527,6 +805,8 @@ export const catalogApi = createApi({
     "Audit",
     "Reservations",
     "Queue",
+    "Analytics",
+    "Feedback",
   ],
 });
 
@@ -559,4 +839,6 @@ export const {
   useArchiveBrandMutation,
   useAuditForQuery,
   useListAuditQuery,
+  useGetMenuItemAnalyticsQuery,
+  useGetCustomerFeedbackQuery,
 } = catalogApi;
