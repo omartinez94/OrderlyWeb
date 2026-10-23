@@ -29,6 +29,7 @@ import { env } from "../../lib/env";
 import { refreshAccessToken } from "../../lib/authRefresh";
 import i18n, { LANGUAGE_STORAGE_KEY, isSupportedLanguage } from "../../lib/i18n";
 import { clearCredentials, setCredentials } from "../session/sessionSlice";
+import { syncWithHttpDate } from "../../utils/clock";
 
 /**
  * Per-slice fetchBaseQuery configuration. Each slice appends its
@@ -116,12 +117,26 @@ export const dynamicBaseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  const start = Date.now();
   let result = await rawBaseQuery(args, api, extraOptions);
+  const duration = Date.now() - start;
+
+  const dateHeader = result.meta?.response?.headers?.get("date");
+  if (dateHeader) {
+    syncWithHttpDate(dateHeader, duration);
+  }
+
   if (result.error && result.error.status === 401 && !isAuthEndpoint(args)) {
     try {
       const json = await refreshAccessToken();
       api.dispatch(setCredentials(json));
+      const retryStart = Date.now();
       result = await rawBaseQuery(args, api, extraOptions);
+      const retryDuration = Date.now() - retryStart;
+      const retryDate = result.meta?.response?.headers?.get("date");
+      if (retryDate) {
+        syncWithHttpDate(retryDate, retryDuration);
+      }
     } catch {
       api.dispatch(clearCredentials());
     }

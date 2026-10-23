@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { getServerTime } from "../utils/clock";
 
 /**
  * useElapsedTimer — High-resolution timer hook computing elapsed seconds
- * from an ISO timestamp or Unix epoch.
+ * from an ISO timestamp or Unix epoch, synchronized with the server's clock.
  *
  * Consumed across:
  *   - Phase 2 (KDS ticket cards elapsed counter)
@@ -30,7 +31,7 @@ export function useElapsedTimer(startTime: string | number | null | undefined): 
     }
 
     const update = () => {
-      const now = Date.now();
+      const now = getServerTime();
       const diff = Math.max(0, Math.floor((now - startMs) / 1000));
       setElapsedSeconds(diff);
     };
