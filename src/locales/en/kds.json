@@ -20,7 +20,8 @@
     "startPreparing": "Start preparing",
     "markPlating": "Mark plating",
     "markReady": "Mark ready",
-    "markServed": "Mark served"
+    "markServed": "Mark served",
+    "bumped": "Ticket {{id}} bumped"
   },
   "timer": {
     "elapsed": "Elapsed",
@@ -43,6 +44,11 @@
     "virtualTitle": "KB9000 Bump Bar Simulator",
     "bump": "BUMP",
     "recall": "RECALL",
+    "recallLast": "Recall last bumped ticket",
+    "recallLastBtn": "Recall Last",
+    "notBumped": "Ticket is still active on the display and cannot be recalled",
+    "noTicketToRecall": "No recently bumped ticket to recall",
+    "recalled": "Ticket {{id}} recalled",
     "summary": "SUMMARY",
     "prevPage": "PREV",
     "nextPage": "NEXT",

@@ -20,6 +20,7 @@ import { kitchenApi } from "../../app/api/kitchen";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectAccessToken } from "../../app/session/sessionSelectors";
 import { playNewOrderAlert } from "../../features/kitchen/hardware/audioFeedback";
+import { setServerClockOffset } from "../../utils/clock";
 
 export interface SignalRBootProps {
   /** Set true once the session slice reports `authenticated`. */
@@ -41,7 +42,10 @@ function dispatchOrderReceived(
   // Invalidate the kitchen queue for this restaurant so the next
   // render pulls fresh data.
   dispatch(
-    kitchenApi.util.invalidateTags([{ type: "KitchenQueue", id: `LIST-${event.restaurantId}` }]),
+    kitchenApi.util.invalidateTags([
+      { type: "KitchenQueue", id: `LIST-${event.restaurantId}` },
+      { type: "KitchenQueue", id: "LIST" },
+    ]),
   );
 }
 
@@ -52,6 +56,7 @@ function dispatchItemStateChanged(
   // The orders endpoint uses an id-tagged cache; invalidate by
   // orderId so any component viewing this order re-fetches.
   dispatch(ordersApi.util.invalidateTags([{ type: "Orders", id: event.orderId }]));
+  dispatch(kitchenApi.util.invalidateTags([{ type: "KitchenQueue", id: event.orderId }]));
 }
 
 function dispatchOrderReady(
@@ -61,7 +66,47 @@ function dispatchOrderReady(
   dispatch(ordersApi.util.invalidateTags([{ type: "Orders", id: event.orderId }]));
   dispatch(
     kitchenApi.util.invalidateTags([
-      { type: "KitchenQueue", id: `LIST-` /* best-effort; full restaurantId follows */ },
+      { type: "KitchenQueue", id: "LIST" },
+      { type: "KitchenQueue", id: event.orderId },
+    ]),
+  );
+}
+
+function dispatchOrderBumped(
+  dispatch: ReturnType<typeof useAppDispatch>,
+  event: KitchenHubEventMap["OrderBumped"],
+): void {
+  dispatch(ordersApi.util.invalidateTags([{ type: "Orders", id: event.ticketId }]));
+  dispatch(
+    kitchenApi.util.invalidateTags([
+      { type: "KitchenQueue", id: "LIST" },
+      { type: "KitchenQueue", id: event.ticketId },
+    ]),
+  );
+}
+
+function dispatchTicketRecalled(
+  dispatch: ReturnType<typeof useAppDispatch>,
+  event: KitchenHubEventMap["TicketRecalled"],
+): void {
+  dispatch(ordersApi.util.invalidateTags([{ type: "Orders", id: event.ticketId }]));
+  dispatch(
+    kitchenApi.util.invalidateTags([
+      { type: "KitchenQueue", id: "LIST" },
+      { type: "KitchenQueue", id: event.ticketId },
+    ]),
+  );
+}
+
+function dispatchTicketAccepted(
+  dispatch: ReturnType<typeof useAppDispatch>,
+  event: KitchenHubEventMap["TicketAccepted"],
+): void {
+  dispatch(ordersApi.util.invalidateTags([{ type: "Orders", id: event.ticketId }]));
+  dispatch(
+    kitchenApi.util.invalidateTags([
+      { type: "KitchenQueue", id: "LIST" },
+      { type: "KitchenQueue", id: event.ticketId },
     ]),
   );
 }
@@ -88,20 +133,45 @@ export function SignalRBoot({ enabled }: SignalRBootProps): React.ReactElement |
       dispatchItemStateChanged(dispatch, e);
     const onOrderReady = (e: KitchenHubEventMap["OrderReady"]): void =>
       dispatchOrderReady(dispatch, e);
+    const onOrderBumped = (e: KitchenHubEventMap["OrderBumped"]): void =>
+      dispatchOrderBumped(dispatch, e);
+    const onTicketRecalled = (e: KitchenHubEventMap["TicketRecalled"]): void =>
+      dispatchTicketRecalled(dispatch, e);
+    const onTicketAccepted = (e: KitchenHubEventMap["TicketAccepted"]): void =>
+      dispatchTicketAccepted(dispatch, e);
 
     hub.on("OrderReceived", onOrderReceived);
     hub.on("ItemStateChanged", onItemStateChanged);
     hub.on("OrderReady", onOrderReady);
+    hub.on("OrderBumped", onOrderBumped);
+    hub.on("TicketRecalled", onTicketRecalled);
+    hub.on("TicketAccepted", onTicketAccepted);
 
-    hub.start().catch((err) => {
-      // eslint-disable-next-line no-console
-      console.warn("[SignalRBoot] kitchen hub start failed:", err);
-    });
+    hub
+      .start()
+      .then(async () => {
+        try {
+          const t0 = Date.now();
+          const serverMs = await hub.invoke<number>("GetServerTime");
+          const t1 = Date.now();
+          const latency = (t1 - t0) / 2;
+          setServerClockOffset(serverMs - (t1 - latency));
+        } catch {
+          // Fallback to HTTP Date header sync if GetServerTime is unavailable
+        }
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn("[SignalRBoot] kitchen hub start failed:", err);
+      });
 
     return () => {
       hub.off("OrderReceived", onOrderReceived);
       hub.off("ItemStateChanged", onItemStateChanged);
       hub.off("OrderReady", onOrderReady);
+      hub.off("OrderBumped", onOrderBumped);
+      hub.off("TicketRecalled", onTicketRecalled);
+      hub.off("TicketAccepted", onTicketAccepted);
       if (hub.state === HubConnectionState.Connected) {
         void hub.stop();
       }

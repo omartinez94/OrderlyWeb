@@ -1,4 +1,4 @@
-import { Clock, CheckCircle2, RotateCcw } from "lucide-react";
+import { Clock, CheckCircle2, RotateCcw, Play } from "lucide-react";
 import { Badge, Button } from "../../../components/ui";
 import { StatusPill, OrderStatus } from "../../../components/StatusPill/StatusPill";
 import { useElapsedTimer } from "../../../hooks/useElapsedTimer";
@@ -52,9 +52,28 @@ export function TicketCard({
   const isReady = ticket.status === OrderStatus.Ready;
   const isServed = ticket.status === OrderStatus.Served;
   const isPreparing = ticket.status === OrderStatus.Preparing;
+  const isNew = ticket.status === OrderStatus.New;
 
   const { formatted: liveElapsed } = useElapsedTimer(ticket.receivedAt);
   const formattedTime = ticket.receivedAt ? liveElapsed : formatElapsed(ticket.elapsed ?? 0);
+
+  let actionLabel = "Bump";
+  let ActionIcon = CheckCircle2;
+  let actionHandler = onBump || onAdvance;
+
+  if (onAdvance && isNew) {
+    actionLabel = "Start Prep";
+    ActionIcon = Play;
+    actionHandler = onAdvance;
+  } else if (onAdvance && isPreparing) {
+    actionLabel = "Mark Ready";
+    ActionIcon = CheckCircle2;
+    actionHandler = onAdvance;
+  } else {
+    actionLabel = "Bump";
+    ActionIcon = CheckCircle2;
+    actionHandler = onBump || onAdvance;
+  }
 
   return (
     <div
@@ -108,11 +127,11 @@ export function TicketCard({
 
       {/* Status bar top indicator */}
       <div className="z-10 mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {slotNumber !== undefined && (
             <Badge
               variant={isSelected ? "default" : "secondary"}
-              className={`px-2 py-0.5 font-mono text-xs font-black tracking-wider ${
+              className={`px-3 py-1 font-mono text-sm font-black tracking-wider ${
                 isSelected
                   ? "bg-primary text-primary-foreground"
                   : "bg-surface-elevated text-ink-muted border"
@@ -127,7 +146,7 @@ export function TicketCard({
               <span className="fire-flame fire-flame-2">🔥</span>
               <span className="fire-flame fire-flame-3">🔥</span>
               <span
-                className="apple-emoji-spin emoji-sizzle text-lg"
+                className="apple-emoji-spin emoji-sizzle text-2xl"
                 role="img"
                 aria-label="Preparing status"
               >
@@ -135,53 +154,55 @@ export function TicketCard({
               </span>
             </div>
           ) : (
-            <span className="apple-emoji-spin text-lg" role="img" aria-label="Status icon">
+            <span className="apple-emoji-spin text-2xl" role="img" aria-label="Status icon">
               {STATUS_EMOJI[ticket.status] ?? "🔔"}
             </span>
           )}
-          <span className="text-ink font-mono text-sm font-bold">
+          <span className="text-ink font-mono text-base font-bold">
             {ticket.orderNumber || ticket.id}
           </span>
         </div>
-        <StatusPill status={ticket.status} />
+        <div className="origin-right scale-105">
+          <StatusPill status={ticket.status} />
+        </div>
       </div>
 
       {/* Ticket Details */}
-      <div className="z-10 space-y-3">
+      <div className="z-10 space-y-3.5">
         <div className="flex items-center justify-between">
-          <span className="font-display text-ink text-lg font-bold">{ticket.table}</span>
-          <Badge variant="secondary" className="text-ink-muted font-mono text-[11px]">
+          <span className="font-display text-ink text-xl font-bold">{ticket.table}</span>
+          <Badge variant="secondary" className="text-ink-muted px-2.5 py-0.5 font-mono text-xs">
             {ticket.station}
           </Badge>
         </div>
 
-        <ul className="border-border-subtle text-ink-muted space-y-1.5 border-t pt-3 text-sm">
+        <ul className="border-border-subtle text-ink-muted space-y-2.5 border-t pt-3 text-base">
           {ticket.items.map((item, idx) => (
-            <li key={idx} className="ticket-item-slide flex items-center gap-2">
-              <span className="bg-primary/60 h-1.5 w-1.5 rounded-full" />
-              <span className="text-ink font-medium">{item}</span>
+            <li key={idx} className="ticket-item-slide flex items-center gap-2.5">
+              <span className="bg-primary/70 h-2 w-2 shrink-0 rounded-full" />
+              <span className="text-ink leading-snug font-medium">{item}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Footer Controls & Live Counter */}
-      <div className="border-border-subtle z-10 mt-6 flex flex-wrap items-center justify-between gap-2 border-t pt-4">
-        <div className="text-ink-muted flex items-center gap-1.5 font-mono text-xs">
-          <Clock className="text-accent h-3.5 w-3.5 animate-pulse" />
+      <div className="border-border-subtle z-10 mt-6 flex flex-wrap items-center justify-between gap-2.5 border-t pt-4">
+        <div className="text-ink-muted flex items-center gap-2 font-mono text-sm font-bold">
+          <Clock className="text-accent h-4 w-4 animate-pulse" />
           <span>{formattedTime}</span>
         </div>
 
         {/* Hotkey Indicators when selected */}
         {isSelected && (
-          <div className="flex items-center gap-1 rounded border border-emerald-800 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] text-emerald-400">
+          <div className="flex items-center gap-1.5 rounded border border-emerald-800 bg-emerald-950/60 px-2.5 py-1 font-mono text-xs text-emerald-400">
             <span className="font-bold">[ENTER: Bump]</span>
             <span className="opacity-50">·</span>
             <span className="font-bold text-amber-400">[R: Recall]</span>
           </div>
         )}
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {onRecall && (
             <Button
               size="sm"
@@ -190,27 +211,26 @@ export function TicketCard({
                 e.stopPropagation();
                 onRecall();
               }}
-              className="h-8 gap-1 px-2.5 text-xs font-semibold text-amber-500 hover:bg-amber-950/40 hover:text-amber-400"
+              className="h-9 gap-1.5 px-3 text-xs font-semibold text-amber-500 hover:bg-amber-950/40 hover:text-amber-400"
               aria-label={`Recall ticket ${ticket.id}`}
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-4 w-4" />
               Recall
             </Button>
           )}
-          {(onBump || onAdvance) && (
+          {actionHandler && (
             <Button
               size="sm"
               variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
-                if (onBump) onBump();
-                else if (onAdvance) onAdvance();
+                actionHandler();
               }}
-              className="hover:bg-primary h-8 gap-1 px-3 text-xs font-semibold transition-transform hover:text-white active:scale-95"
-              aria-label={`Bump ticket ${ticket.id}`}
+              className="hover:bg-primary h-9 gap-1.5 px-4 text-sm font-bold transition-transform hover:text-white active:scale-95"
+              aria-label={`${actionLabel} ticket ${ticket.id}`}
             >
-              Bump
-              <CheckCircle2 className="h-3.5 w-3.5" />
+              {actionLabel}
+              <ActionIcon className="h-4 w-4" />
             </Button>
           )}
         </div>

@@ -20,6 +20,9 @@
  *   - OrderReceived     — a new order was placed
  *   - ItemStateChanged  — one line item moved to a new status
  *   - OrderReady        — the whole order is ready to serve
+ *   - OrderBumped       — order marked bumped after expo pass
+ *   - TicketRecalled    — bumped order pulled back to ready
+ *   - TicketAccepted    — order accepted and moved to in progress
  *
  * Usage:
  *   const hub = createKitchenHub();
@@ -67,6 +70,30 @@ export interface OrderReadyEvent {
 }
 
 /**
+ * OrderBumped — ticket moved to `Bumped` (expo acknowledged).
+ */
+export interface OrderBumpedEvent {
+  ticketId: string;
+  bumpedAt: string;
+}
+
+/**
+ * TicketRecalled — bumped order pulled back to `Ready`.
+ */
+export interface TicketRecalledEvent {
+  ticketId: string;
+}
+
+/**
+ * TicketAccepted — order moved `New` -> `InProgress`.
+ */
+export interface TicketAcceptedEvent {
+  ticketId: string;
+  acceptedByUserId: string;
+  acceptedAt: string;
+}
+
+/**
  * The full map of hub event names to their payloads. Keep this in
  * sync with the server's Hub Protocol definition.
  */
@@ -74,6 +101,9 @@ export interface KitchenHubEventMap {
   OrderReceived: OrderReceivedEvent;
   ItemStateChanged: ItemStateChangedEvent;
   OrderReady: OrderReadyEvent;
+  OrderBumped: OrderBumpedEvent;
+  TicketRecalled: TicketRecalledEvent;
+  TicketAccepted: TicketAcceptedEvent;
 }
 
 export type KitchenHubEventName = keyof KitchenHubEventMap;

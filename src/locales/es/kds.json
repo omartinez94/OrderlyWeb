@@ -19,7 +19,8 @@
     "startPreparing": "Comenzar preparación",
     "markPlating": "Marcar emplatando",
     "markReady": "Marcar listo",
-    "markServed": "Marcar servido"
+    "markServed": "Marcar servido",
+    "bumped": "Pedido {{id}} despachado"
   },
   "timer": {
     "elapsed": "Transcurrido",
@@ -42,6 +43,11 @@
     "virtualTitle": "Simulador Bump Bar KB9000",
     "bump": "DESPACHAR",
     "recall": "RECUPERAR",
+    "recallLast": "Recuperar último pedido despachado",
+    "recallLastBtn": "Recuperar último",
+    "notBumped": "El pedido sigue activo en pantalla y no se puede recuperar",
+    "noTicketToRecall": "No hay pedidos despachados recientemente para recuperar",
+    "recalled": "Pedido {{id}} recuperado",
     "summary": "RESUMEN",
     "prevPage": "ANTERIOR",
     "nextPage": "SIGUIENTE",
